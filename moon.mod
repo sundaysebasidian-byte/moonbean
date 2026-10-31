@@ -5,7 +5,7 @@ name = "sundaysebasidian-byte/moonbean"
 
 version = "0.1.0"
 
-readme = "README.mbt.md"
+readme = "README.md"
 
 repository = "https://github.com/sundaysebasidian-byte/moonbean"
 
