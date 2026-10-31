@@ -134,7 +134,7 @@ fn analyze(source : String) -> Unit {
 | --- | --- |
 | `check_source(file, source)` | 解析并校验，返回 `ValidatedLedger` |
 | `check_expanded(file, base_dir, source, read)` | 先展开 `include` 再校验 |
-| `expand_includes(source, base_dir, read)` | 返回展开后的源码和缺失的路径 |
+| `expand_includes(source, base_dir, read)` | 返回展开源码、缺失路径和带位置的 include 诊断 |
 | `realize(ledger, at~)` | 生成 inventory、价格库和账簿快照 |
 | `run_query(ledger, bql, at~)` | 执行 BQL 子集 |
 | `format_source(source)` | 对齐金额列 |
@@ -149,9 +149,9 @@ fn analyze(source : String) -> Unit {
 
 | 能力 | 状态 | 边界 |
 | --- | --- | --- |
-| `option` | 部分 | 解析并保留。`title`、`booking_method`、`tolerance_multiplier`、`inferred_tolerance_default`、`infer_tolerance_from_cost` 会影响语义；`account_rounding`、`render_commas` 只解析。只有一个 `operating_currency` 时作为 bal/bs/is 的默认折算币种；`display_precision` 控制报表文本的小数位，JSON 保留原精度 |
+| `option` | 部分 | 解析并保留。`title`、`booking_method`、`tolerance_multiplier`、`inferred_tolerance_default`、`infer_tolerance_from_cost` 会影响语义；`account_rounding`、`render_commas` 只解析。只有一个 `operating_currency` 时作为 bal/bs/is 的默认折算币种；`display_precision` 控制报表文本的小数位，JSON 保留原精度；未显式设置时按币种最常见的账面 scale 推断（并列取较大值） |
 | `plugin` | 部分 | 记录名称和配置，并在指令所在行给出 `validation.plugin` 警告，不执行插件 |
-| `include` | 支持 | 命令行和 `expand_includes` 递归展开；找不到文件时报告路径并保留原行 |
+| `include` | 支持 | 库/CLI 共用 IncludeExpander 栈；循环报 include.cycle，缺失报 include.missing 并保留原行，最大嵌套 1024 |
 | `pushtag` / `poptag` / `pushmeta` / `popmeta` | 支持 | 作用域内的交易继承标签和元数据 |
 | `open` | 支持 | 多币种约束、booking method、重复 open 检查 |
 | `close` | 支持 | 关闭后的交易检查、未开户就关闭、重复 close |
@@ -184,8 +184,8 @@ fn analyze(source : String) -> Unit {
 
 | 能力 | 状态 | 边界 |
 | --- | --- | --- |
-| inventory / 价格库 / 市值折算 | 支持 | 取最新价格，支持逆汇率；`bal --convert` |
-| 试算平衡 / 资产负债表 / 损益表 / register | 支持 | 库提供文本和 JSON 输出；命令行有 `bal`、`bs`、`is`、`register FILE ACCOUNT`（可加 `--json`）和 `dups FILE` |
+| inventory / 价格库 / 市值折算 | 支持 | 按截止日取价，支持逆汇率与带环检测的确定性多跳折算；无路径返回 `report.conversion_incomplete` |
+| 试算平衡 / 资产负债表 / 损益表 / register | 支持 | 资产负债表默认按成本，指定折算币种时按市值并列示未实现估值储备；结转当期及往期收益，按币种合计并显式标记折算不完整。命令行有 `bal`、`bs`、`is`、`register FILE ACCOUNT`（可加 `--json`）和 `dups FILE` |
 | `SELECT ... FROM postings/balances` | 支持 | 列：`date`、`year`、`month`、`flag`、`payee`、`narration`、`account`、`root`、`parent`、`leaf`、`units`、`currency`、`cost`、`value`、`position` |
 | `WHERE` | 部分 | 比较、`is [not] null`、`and/or/not`，支持 `~` 正则字面量；没有 `LIKE` 和子查询 |
 | `HAVING` / 数值算术 | 支持 | `HAVING` 支持聚合条件；Decimal 支持 `+ - * /` 和括号，不含 Amount/Inventory 运算 |
@@ -193,7 +193,7 @@ fn analyze(source : String) -> Unit {
 | `GROUP BY` / `ORDER BY` / `LIMIT` | 支持 | 多键分组和排序，`ASC` / `DESC` |
 | 函数 | 部分 | `year`、`month`、`root`、`parent`、`leaf`、`sum`、`count`；没有其他聚合、窗口和字符串函数 |
 | `BALANCES` / `JOURNAL` | 支持 | `BALANCES AT units|cost FROM OPEN ON date CLOSE ON date`；`JOURNAL <account> [LIMIT n]`；时间点由 `run_query` 的 `at~` 或命令行的 `--at` 控制 |
-| 不支持的 BQL | 不支持 | 子查询、JOIN、`PIVOT`、SQL `LIKE`；OPEN/CLOSE 期间只对默认账户名可靠，不合成币种转换条目 |
+| 不支持的 BQL | 不支持 | 子查询、JOIN、`PIVOT`、SQL `LIKE`；FROM transactions 明确拒绝；BQL CLOSE 尚不合成转换条目，报表层负责关闭/结转 |
 
 ### 格式化与命令行
 
@@ -222,17 +222,20 @@ ledgers: 58, compared: 56, passed: 56, failed: 0, extensions: 2
 ./scripts/oracle.sh --markdown # 重新生成逐份结果表
 ```
 
-**随机差分。** `scripts/random_differential.py` 用 seed `20261031` 生成 1000 份账本，覆盖买入卖出、七种 booking、pad/balance、价格、多币种、容差边界和各类错误：
+**R1 随机差分。** 增强生成器对 seed `7`、`20261101` 各运行 1000 份账本，覆盖跨三个 lot 的减记、同日多 posting、价格路径、七种 booking、pad/balance、多币种和容差/错误场景。下表是每个 seed 的结果：
 
 | 结果 | 数量 | 说明 |
 | --- | ---: | --- |
-| 与 beancount 完全一致 | 858 | 其中 468 份无错误，额外逐项比较余额和固定 BQL，没有差异；390 份是故意写错的账本，只比较诊断 |
+| 与 beancount 完全一致 | 858 | 其中 468 份无错误，比较余额、BQL、posting 行数/成本日期与标签、bs/is、报表恒等式和价格路径；390 份错误账本只比较诊断 |
 | 使用 AVERAGE booking | 142 | beancount 3.2.3 报 `average_unsupported`，MoonBean 实现了 AVERAGE |
 
-这 142 份不是错误，而是 MoonBean 的扩展。把 oracle 的 `average_unsupported` 诊断去掉后，两边的诊断集合完全相同；CI 用 `--allow-known-extensions` 校验这一点，出现任何其他差异都会失败。每份账本的编号和原因记录在 [docs/random-differential.json](docs/random-differential.json)。另有 12 条扩展 BQL 对比（HAVING、算术、正则、tags/links/元数据、期间余额）全部通过。这是基于模板的随机测试，不是穷尽的语法 fuzz。
+这 142 份不是错误，而是 MoonBean 的扩展。把 oracle 的 `average_unsupported` 诊断去掉后，两边的诊断集合完全相同；CI 用 `--allow-known-extensions` 校验这一点，出现任何其他差异都会失败。本轮每个 seed 的统计见 [docs/r1-differential.json](docs/r1-differential.json)；原 [docs/random-differential.json](docs/random-differential.json) 为 R1 前的历史结果。另有 12 条扩展 BQL 对比（HAVING、算术、正则、tags/links/元数据、期间余额）全部通过。这是基于模板的随机测试，不是穷尽的语法 fuzz。
 
 ```sh
-python3 scripts/random_differential.py --allow-known-extensions
+python3 scripts/random_differential.py --seed 7 --out .oracle-cache/r1/seed-7 --allow-known-extensions
+python3 scripts/random_differential.py --seed 20261101 --out .oracle-cache/r1/seed-20261101 --allow-known-extensions
+python3 scripts/review_differential.py
+python3 scripts/include_smoke.py
 python3 scripts/bql_differential.py
 python3 scripts/cli_smoke.py
 ```
@@ -299,4 +302,4 @@ node web/smoke.mjs   # 先运行 ./scripts/build-web.sh
 
 `moon test --target all` 覆盖 wasm、wasm-gc、js、native 四个后端。CI 在 ubuntu、macOS、Windows 上运行同一组命令，另有 playground 和 oracle 两个 job。
 
-`FROM transactions` 本轮明确不支持：解析时返回错误，不再作为 posting 源的别名。
+`FROM transactions` 明确不支持，返回 Unsupported 查询错误。`bs/is --from YYYY-MM-DD --at YYYY-MM-DD` 选择期间（截止日包含当天）；`--convert ''` 取消经营币种默认折算。资产负债表默认期间起点为截止年份 1 月 1 日，损益表不指定起点时包含全部历史。

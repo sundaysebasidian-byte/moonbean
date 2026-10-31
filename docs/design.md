@@ -3,7 +3,7 @@
 ## 目标与约束
 
 MoonBean 以 Beancount v3 的可观察行为为兼容目标，同时保持库的纯函数性：根包
-`lib.mbt` 不访问文件系统，native CLI 才负责读取文件和展开 `include`。因此同一套
+`lib.mbt` 不访问文件系统，宿主（如 native CLI）负责读取文件，库负责维护 `include` 展开栈。因此同一套
 API 能在 native、wasm-gc 与 JavaScript 中编译和调用。
 
 实现是净室的：只依据 Beancount 公开文档描述语法与语义，不接触其源码；所有账本
@@ -22,7 +22,7 @@ API 能在 native、wasm-gc 与 JavaScript 中编译和调用。
 | `query` | BQL 词法/语法、AST、求值、文本/JSON 结果 |
 | `format` | 金额列对齐格式化 |
 | 根包 | 纯库门面：check/expand/realize/query/format；JSON 导出 |
-| `cmd/main` | native CLI：check/bal/query/fmt/export |
+| `cmd/main` | native CLI：check/bal/bs/is/register/dups/query/fmt/export |
 | `examples` | 全年示例账本与库嵌入 demo |
 
 ## 处理流水线
@@ -35,8 +35,8 @@ source
   → report / query                 (text or JSON)
 ```
 
-`include` 在进入 parser 前由 `lib.expand_includes` 或 CLI 递归展开。缺失文件不会
-让库 panic：库返回缺失路径列表，CLI 打印错误并退出 1。
+`include` 在进入 parser 前由库/CLI 共用的 IncludeExpander 迭代展开。缺失文件不会
+让库 panic：库返回缺失路径和 include.missing 诊断，CLI 打印错误并退出 1。
 
 ## 关键算法
 
@@ -92,7 +92,7 @@ JSON（`columns` + `rows`），便于与其他工具 diff。
   错误类别做映射后比较；
 - `loc` 带文件与行号；posting 级错误定位到 posting 行；
 - `errors` 决定成败（CLI 退出 1）；`warnings` 只提示（如不支持的插件），CLI 输出
-  到 stdout 但不导致失败；
+  到 stderr 但不导致失败；
 - 库 API 不抛异常，所有问题通过返回值表达。
 
 ## 性能
@@ -118,3 +118,15 @@ benchmark 由 `scripts/bench.sh` 生成临时账本，不进入仓库。上述�
 js、native 四个后端通过。
 
 `FROM transactions` 本轮明确不支持：解析时返回错误，不再作为 posting 源的别名。
+
+## R1 后端修正
+
+校验只做一次 lot 选择，将 plan 展平为已记账 posting；各行保留 units、成本金额/币种、日期、标签、flag 和 metadata，跨 lot 的总价注解归一化为单位价格。realization 直接累计这些明细，不再二次选 lot；BQL/JOURNAL/register/JSON 导出共享同一表示。
+
+价格图按截止日过滤；每条边选择最新可用的直接/反向报价，BFS 选最短路径，同长路径按币种字典序选择，visited 集防环。只有显式 price 提供市价；成本与交易价格注解都不充当市场报价（未执行 implicit_prices 插件）。资产负债表缺少市价时使用已知成本基础回退并明确标记不完整。找不到路径时，报表 JSON 返回 `complete:false` 和带账户、源/目标币种的 `report.conversion_incomplete`，合计保留币种后缀。
+
+资产负债表不指定折算币种时使用成本基础；期间前与期间内的 Income/Expenses 分别转入 account_previous_earnings / account_current_earnings 所命名的权益账户。CLOSE 的币种/容差余量进入 account_current_conversions。市值相对成本的估值变化单列为权益账户同级的 Unrealized 储备；这是报表调整，不写回账本。报表加法不重复进行 28 位舍入，逆汇率舍入余量也显式进入转换调整，使原始 JSON 按币种精确平衡。引擎的 Decimal 28 位运算语义不变。
+
+文本按币种最常见的 booked units scale 推断显示精度，并列取较大值；display_precision quantum 显式覆盖。JSON amount 保留原始小数，另提供 report.display_precision（币种到小数位数的映射）。
+
+include 使用纯状态机 IncludeExpander：next 请求路径，provide 接收同步或异步宿主读取结果；两个宿主共享同一递归栈、路径规范化、cycle/missing/depth 诊断。最大嵌套 1024，避免符号链接等未规范化宿主别名造成无限展开；300 层纯库和 100 层真实 CLI 合法路径已测试。

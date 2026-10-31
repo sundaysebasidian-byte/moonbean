@@ -63,3 +63,11 @@ Initial release.
 - Windows CI path/shell correction, pinned oracle bootstrap and differential jobs.
 - 94 tests on native/js/wasm-gc; remaining boundaries in conformance/performance reports.
 - Browser playground (`playground/` JS exports, static page in `web/`) with a Pages workflow and a node smoke test.
+
+## Review R1 backend (2026-10-31)
+
+- Preserve split booked lot details across BQL, journals, register and export; reject FROM transactions.
+- Close prior/current earnings, balance cost/market reports, expose incomplete conversion and per-currency totals.
+- Add deterministic dated multihop price paths and inferred text display precision; keep JSON exact.
+- Share cycle-safe include traversal across library and CLI, including Windows/UNC normalization.
+- Expand independent review and two-seed random oracle comparisons to row-level costs, reports and price paths.
