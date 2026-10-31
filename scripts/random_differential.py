@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 import random
 import conformance as c
-import review_differential as review
+import report_differential as review
 
 METHODS = ['STRICT', 'STRICT_WITH_SIZE', 'FIFO', 'LIFO', 'HIFO', 'NONE', 'AVERAGE']
 

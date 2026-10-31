@@ -7,7 +7,7 @@ import subprocess
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--ours',default='_build/native/debug/build/cmd/main/main.exe')
 a=p.parse_args()
-root=Path('.oracle-cache/r1/include-cases').resolve()
+root=Path('.oracle-cache/differential/include-cases').resolve()
 root.mkdir(parents=True,exist_ok=True)
 (root/'self.beancount').write_text('include "./self.beancount"\n')
 (root/'a.beancount').write_text('include "sub/../b.beancount"\n')

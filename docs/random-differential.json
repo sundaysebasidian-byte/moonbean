@@ -1,1430 +1,367 @@
 {
-  "seed": 20261031,
-  "count": 1000,
-  "mismatches": 142,
-  "clean_queries": 468,
   "oracle": "beancount 3.2.3 / beanquery 0.2.0",
-  "matching_error_ledgers": 390,
-  "differences": [
-    {
-      "ledger": "0006.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0006.beancount', 'average_unsupported', 37), ('0006.beancount', 'inactive_account', 45)]",
-        "got [('0006.beancount', 'inactive_account', 45)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0013.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0013.beancount', 'average_unsupported', 31), ('0013.beancount', 'unbalanced', 38)]",
-        "got [('0013.beancount', 'unbalanced', 38)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0020.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0020.beancount', 'average_unsupported', 25)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0027.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0027.beancount', 'average_unsupported', 49), ('0027.beancount', 'currency', 56)]",
-        "got [('0027.beancount', 'currency', 56)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0034.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0034.beancount', 'average_unsupported', 28)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0041.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0041.beancount', 'average_unsupported', 31)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0048.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0048.beancount', 'average_unsupported', 28), ('0048.beancount', 'unknown_account', 35)]",
-        "got [('0048.beancount', 'unknown_account', 35)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0055.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0055.beancount', 'average_unsupported', 31)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0062.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0062.beancount', 'average_unsupported', 49)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0069.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0069.beancount', 'average_unsupported', 40), ('0069.beancount', 'balance', 47)]",
-        "got [('0069.beancount', 'balance', 47)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0076.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0076.beancount', 'average_unsupported', 40)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0083.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0083.beancount', 'average_unsupported', 43), ('0083.beancount', 'inactive_account', 51)]",
-        "got [('0083.beancount', 'inactive_account', 51)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0090.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0090.beancount', 'average_unsupported', 43), ('0090.beancount', 'unbalanced', 50)]",
-        "got [('0090.beancount', 'unbalanced', 50)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0097.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0097.beancount', 'average_unsupported', 49)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0104.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0104.beancount', 'average_unsupported', 43), ('0104.beancount', 'currency', 50)]",
-        "got [('0104.beancount', 'currency', 50)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0111.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0111.beancount', 'average_unsupported', 28)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0118.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0118.beancount', 'average_unsupported', 28)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0125.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0125.beancount', 'average_unsupported', 37), ('0125.beancount', 'unknown_account', 44)]",
-        "got [('0125.beancount', 'unknown_account', 44)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0132.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0132.beancount', 'average_unsupported', 49)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0139.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0139.beancount', 'average_unsupported', 34)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0146.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0146.beancount', 'average_unsupported', 46), ('0146.beancount', 'balance', 53)]",
-        "got [('0146.beancount', 'balance', 53)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0153.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0153.beancount', 'average_unsupported', 31)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0160.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0160.beancount', 'average_unsupported', 46), ('0160.beancount', 'inactive_account', 54)]",
-        "got [('0160.beancount', 'inactive_account', 54)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0167.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0167.beancount', 'average_unsupported', 28), ('0167.beancount', 'unbalanced', 35)]",
-        "got [('0167.beancount', 'unbalanced', 35)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0174.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0174.beancount', 'average_unsupported', 34)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0181.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0181.beancount', 'average_unsupported', 25), ('0181.beancount', 'currency', 32)]",
-        "got [('0181.beancount', 'currency', 32)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0188.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0188.beancount', 'average_unsupported', 25)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0195.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0195.beancount', 'average_unsupported', 34)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0202.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0202.beancount', 'average_unsupported', 49), ('0202.beancount', 'unknown_account', 56)]",
-        "got [('0202.beancount', 'unknown_account', 56)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0209.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0209.beancount', 'average_unsupported', 31)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0216.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0216.beancount', 'average_unsupported', 40)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0223.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0223.beancount', 'average_unsupported', 43), ('0223.beancount', 'balance', 50)]",
-        "got [('0223.beancount', 'balance', 50)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0230.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0230.beancount', 'average_unsupported', 31)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0237.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0237.beancount', 'average_unsupported', 34), ('0237.beancount', 'inactive_account', 42)]",
-        "got [('0237.beancount', 'inactive_account', 42)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0244.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0244.beancount', 'average_unsupported', 25), ('0244.beancount', 'unbalanced', 32)]",
-        "got [('0244.beancount', 'unbalanced', 32)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0251.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0251.beancount', 'average_unsupported', 46)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0258.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0258.beancount', 'average_unsupported', 37), ('0258.beancount', 'currency', 44)]",
-        "got [('0258.beancount', 'currency', 44)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0265.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0265.beancount', 'average_unsupported', 25)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0272.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0272.beancount', 'average_unsupported', 46)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0279.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0279.beancount', 'average_unsupported', 34), ('0279.beancount', 'unknown_account', 41)]",
-        "got [('0279.beancount', 'unknown_account', 41)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0286.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0286.beancount', 'average_unsupported', 25)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0293.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0293.beancount', 'average_unsupported', 43)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0300.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0300.beancount', 'average_unsupported', 28), ('0300.beancount', 'balance', 35)]",
-        "got [('0300.beancount', 'balance', 35)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0307.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0307.beancount', 'average_unsupported', 31)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0314.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0314.beancount', 'average_unsupported', 40), ('0314.beancount', 'inactive_account', 48)]",
-        "got [('0314.beancount', 'inactive_account', 48)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0321.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0321.beancount', 'average_unsupported', 31), ('0321.beancount', 'unbalanced', 38)]",
-        "got [('0321.beancount', 'unbalanced', 38)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0328.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0328.beancount', 'average_unsupported', 31)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0335.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0335.beancount', 'average_unsupported', 31), ('0335.beancount', 'currency', 38)]",
-        "got [('0335.beancount', 'currency', 38)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0342.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0342.beancount', 'average_unsupported', 34)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0349.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0349.beancount', 'average_unsupported', 46)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0356.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0356.beancount', 'average_unsupported', 34), ('0356.beancount', 'unknown_account', 41)]",
-        "got [('0356.beancount', 'unknown_account', 41)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0363.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0363.beancount', 'average_unsupported', 28)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0370.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0370.beancount', 'average_unsupported', 28)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0377.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0377.beancount', 'average_unsupported', 40), ('0377.beancount', 'balance', 47)]",
-        "got [('0377.beancount', 'balance', 47)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0384.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0384.beancount', 'average_unsupported', 40)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0391.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0391.beancount', 'average_unsupported', 25), ('0391.beancount', 'inactive_account', 33)]",
-        "got [('0391.beancount', 'inactive_account', 33)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0398.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0398.beancount', 'average_unsupported', 31), ('0398.beancount', 'unbalanced', 38)]",
-        "got [('0398.beancount', 'unbalanced', 38)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0405.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0405.beancount', 'average_unsupported', 40)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0412.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0412.beancount', 'average_unsupported', 40), ('0412.beancount', 'currency', 47)]",
-        "got [('0412.beancount', 'currency', 47)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0419.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0419.beancount', 'average_unsupported', 43)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0426.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0426.beancount', 'average_unsupported', 34)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0433.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0433.beancount', 'average_unsupported', 49), ('0433.beancount', 'unknown_account', 56)]",
-        "got [('0433.beancount', 'unknown_account', 56)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0440.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0440.beancount', 'average_unsupported', 37)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0447.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0447.beancount', 'average_unsupported', 49)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0454.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0454.beancount', 'average_unsupported', 28), ('0454.beancount', 'balance', 35)]",
-        "got [('0454.beancount', 'balance', 35)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0461.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0461.beancount', 'average_unsupported', 40)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0468.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0468.beancount', 'average_unsupported', 28), ('0468.beancount', 'inactive_account', 36)]",
-        "got [('0468.beancount', 'inactive_account', 36)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0475.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0475.beancount', 'average_unsupported', 37), ('0475.beancount', 'unbalanced', 44)]",
-        "got [('0475.beancount', 'unbalanced', 44)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0482.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0482.beancount', 'average_unsupported', 43)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0489.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0489.beancount', 'average_unsupported', 31), ('0489.beancount', 'currency', 38)]",
-        "got [('0489.beancount', 'currency', 38)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0496.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0496.beancount', 'average_unsupported', 37)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0503.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0503.beancount', 'average_unsupported', 43)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0510.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0510.beancount', 'average_unsupported', 40), ('0510.beancount', 'unknown_account', 47)]",
-        "got [('0510.beancount', 'unknown_account', 47)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0517.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0517.beancount', 'average_unsupported', 46)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0524.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0524.beancount', 'average_unsupported', 49)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0531.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0531.beancount', 'average_unsupported', 34), ('0531.beancount', 'balance', 41)]",
-        "got [('0531.beancount', 'balance', 41)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0538.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0538.beancount', 'average_unsupported', 34)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0545.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0545.beancount', 'average_unsupported', 49), ('0545.beancount', 'inactive_account', 57)]",
-        "got [('0545.beancount', 'inactive_account', 57)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0552.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0552.beancount', 'average_unsupported', 28), ('0552.beancount', 'unbalanced', 35)]",
-        "got [('0552.beancount', 'unbalanced', 35)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0559.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0559.beancount', 'average_unsupported', 31)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0566.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0566.beancount', 'average_unsupported', 43), ('0566.beancount', 'currency', 50)]",
-        "got [('0566.beancount', 'currency', 50)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0573.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0573.beancount', 'average_unsupported', 40)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0580.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0580.beancount', 'average_unsupported', 28)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0587.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0587.beancount', 'average_unsupported', 46), ('0587.beancount', 'unknown_account', 53)]",
-        "got [('0587.beancount', 'unknown_account', 53)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0594.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0594.beancount', 'average_unsupported', 46)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0601.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0601.beancount', 'average_unsupported', 34)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0608.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0608.beancount', 'average_unsupported', 25), ('0608.beancount', 'balance', 32)]",
-        "got [('0608.beancount', 'balance', 32)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0615.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0615.beancount', 'average_unsupported', 37)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0622.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0622.beancount', 'average_unsupported', 43), ('0622.beancount', 'inactive_account', 51)]",
-        "got [('0622.beancount', 'inactive_account', 51)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0629.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0629.beancount', 'average_unsupported', 43), ('0629.beancount', 'unbalanced', 50)]",
-        "got [('0629.beancount', 'unbalanced', 50)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0636.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0636.beancount', 'average_unsupported', 28)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0643.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0643.beancount', 'average_unsupported', 46), ('0643.beancount', 'currency', 53)]",
-        "got [('0643.beancount', 'currency', 53)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0650.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0650.beancount', 'average_unsupported', 34)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0657.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0657.beancount', 'average_unsupported', 46)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0664.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0664.beancount', 'average_unsupported', 49), ('0664.beancount', 'unknown_account', 56)]",
-        "got [('0664.beancount', 'unknown_account', 56)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0671.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0671.beancount', 'average_unsupported', 46)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0678.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0678.beancount', 'average_unsupported', 37)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0685.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0685.beancount', 'average_unsupported', 43), ('0685.beancount', 'balance', 50)]",
-        "got [('0685.beancount', 'balance', 50)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0692.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0692.beancount', 'average_unsupported', 40)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0699.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0699.beancount', 'average_unsupported', 37), ('0699.beancount', 'inactive_account', 45)]",
-        "got [('0699.beancount', 'inactive_account', 45)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0706.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0706.beancount', 'average_unsupported', 25), ('0706.beancount', 'unbalanced', 32)]",
-        "got [('0706.beancount', 'unbalanced', 32)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0713.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0713.beancount', 'average_unsupported', 28)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0720.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0720.beancount', 'average_unsupported', 37), ('0720.beancount', 'currency', 44)]",
-        "got [('0720.beancount', 'currency', 44)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0727.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0727.beancount', 'average_unsupported', 49)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0734.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0734.beancount', 'average_unsupported', 49)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0741.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0741.beancount', 'average_unsupported', 46), ('0741.beancount', 'unknown_account', 53)]",
-        "got [('0741.beancount', 'unknown_account', 53)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0748.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0748.beancount', 'average_unsupported', 28)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0755.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0755.beancount', 'average_unsupported', 37)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0762.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0762.beancount', 'average_unsupported', 34), ('0762.beancount', 'balance', 41)]",
-        "got [('0762.beancount', 'balance', 41)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0769.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0769.beancount', 'average_unsupported', 34)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0776.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0776.beancount', 'average_unsupported', 34), ('0776.beancount', 'inactive_account', 42)]",
-        "got [('0776.beancount', 'inactive_account', 42)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0783.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0783.beancount', 'average_unsupported', 25), ('0783.beancount', 'unbalanced', 32)]",
-        "got [('0783.beancount', 'unbalanced', 32)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0790.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0790.beancount', 'average_unsupported', 43)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0797.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0797.beancount', 'average_unsupported', 46), ('0797.beancount', 'currency', 53)]",
-        "got [('0797.beancount', 'currency', 53)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0804.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0804.beancount', 'average_unsupported', 25)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0811.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0811.beancount', 'average_unsupported', 25)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0818.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0818.beancount', 'average_unsupported', 34), ('0818.beancount', 'unknown_account', 41)]",
-        "got [('0818.beancount', 'unknown_account', 41)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0825.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0825.beancount', 'average_unsupported', 31)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0832.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0832.beancount', 'average_unsupported', 46)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0839.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0839.beancount', 'average_unsupported', 25), ('0839.beancount', 'balance', 32)]",
-        "got [('0839.beancount', 'balance', 32)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0846.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0846.beancount', 'average_unsupported', 34)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0853.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0853.beancount', 'average_unsupported', 46), ('0853.beancount', 'inactive_account', 54)]",
-        "got [('0853.beancount', 'inactive_account', 54)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0860.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0860.beancount', 'average_unsupported', 43), ('0860.beancount', 'unbalanced', 50)]",
-        "got [('0860.beancount', 'unbalanced', 50)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0867.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0867.beancount', 'average_unsupported', 49)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0874.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0874.beancount', 'average_unsupported', 25), ('0874.beancount', 'currency', 32)]",
-        "got [('0874.beancount', 'currency', 32)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0881.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0881.beancount', 'average_unsupported', 46)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0888.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0888.beancount', 'average_unsupported', 28)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0895.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0895.beancount', 'average_unsupported', 49), ('0895.beancount', 'unknown_account', 56)]",
-        "got [('0895.beancount', 'unknown_account', 56)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0902.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0902.beancount', 'average_unsupported', 43)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0909.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0909.beancount', 'average_unsupported', 34)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0916.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0916.beancount', 'average_unsupported', 40), ('0916.beancount', 'balance', 47)]",
-        "got [('0916.beancount', 'balance', 47)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0923.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0923.beancount', 'average_unsupported', 46)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0930.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0930.beancount', 'average_unsupported', 46), ('0930.beancount', 'inactive_account', 54)]",
-        "got [('0930.beancount', 'inactive_account', 54)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0937.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0937.beancount', 'average_unsupported', 40), ('0937.beancount', 'unbalanced', 47)]",
-        "got [('0937.beancount', 'unbalanced', 47)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0944.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0944.beancount', 'average_unsupported', 31)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0951.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0951.beancount', 'average_unsupported', 28), ('0951.beancount', 'currency', 35)]",
-        "got [('0951.beancount', 'currency', 35)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0958.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0958.beancount', 'average_unsupported', 25)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0965.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0965.beancount', 'average_unsupported', 34)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0972.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0972.beancount', 'average_unsupported', 40), ('0972.beancount', 'unknown_account', 47)]",
-        "got [('0972.beancount', 'unknown_account', 47)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0979.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0979.beancount', 'average_unsupported', 49)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0986.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0986.beancount', 'average_unsupported', 28)]",
-        "got []"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
-    },
-    {
-      "ledger": "0993.beancount",
-      "method": "AVERAGE",
-      "diagnostics": [
-        false,
-        "expected [('0993.beancount', 'average_unsupported', 46), ('0993.beancount', 'balance', 53)]",
-        "got [('0993.beancount', 'balance', 53)]"
-      ],
-      "reason": "Pinned oracle rejects AVERAGE; MoonBean implements it as an extension."
+  "accepted_build": {
+    "head": "36372cee8de87bb361d7f68d47fee99c45389386",
+    "binary_sha256": "ab485ae6c9028401ae62e4ddb1adb33dcebc3a8e14db24ea26dcef3ee240e3aa",
+    "executable": ".oracle-cache/differential/release-moonbean.exe"
+  },
+  "seeds": [
+    {
+      "seed": 7,
+      "count": 1000,
+      "matching": 858,
+      "average_differences": 142,
+      "non_average_differences": 0,
+      "clean_ledgers": 468,
+      "matching_error_ledgers": 390,
+      "clean_three_lot_reductions": 234,
+      "checks": {
+        "totals": 468,
+        "by-date": 468,
+        "year": 468,
+        "root": 468,
+        "limit": 468,
+        "balances": 468,
+        "posting-details": 468,
+        "bs": 468,
+        "balance-sheet-identity": 468,
+        "is": 468,
+        "price-path": 468
+      },
+      "average_ledger_ids": [
+        "0006.beancount",
+        "0013.beancount",
+        "0020.beancount",
+        "0027.beancount",
+        "0034.beancount",
+        "0041.beancount",
+        "0048.beancount",
+        "0055.beancount",
+        "0062.beancount",
+        "0069.beancount",
+        "0076.beancount",
+        "0083.beancount",
+        "0090.beancount",
+        "0097.beancount",
+        "0104.beancount",
+        "0111.beancount",
+        "0118.beancount",
+        "0125.beancount",
+        "0132.beancount",
+        "0139.beancount",
+        "0146.beancount",
+        "0153.beancount",
+        "0160.beancount",
+        "0167.beancount",
+        "0174.beancount",
+        "0181.beancount",
+        "0188.beancount",
+        "0195.beancount",
+        "0202.beancount",
+        "0209.beancount",
+        "0216.beancount",
+        "0223.beancount",
+        "0230.beancount",
+        "0237.beancount",
+        "0244.beancount",
+        "0251.beancount",
+        "0258.beancount",
+        "0265.beancount",
+        "0272.beancount",
+        "0279.beancount",
+        "0286.beancount",
+        "0293.beancount",
+        "0300.beancount",
+        "0307.beancount",
+        "0314.beancount",
+        "0321.beancount",
+        "0328.beancount",
+        "0335.beancount",
+        "0342.beancount",
+        "0349.beancount",
+        "0356.beancount",
+        "0363.beancount",
+        "0370.beancount",
+        "0377.beancount",
+        "0384.beancount",
+        "0391.beancount",
+        "0398.beancount",
+        "0405.beancount",
+        "0412.beancount",
+        "0419.beancount",
+        "0426.beancount",
+        "0433.beancount",
+        "0440.beancount",
+        "0447.beancount",
+        "0454.beancount",
+        "0461.beancount",
+        "0468.beancount",
+        "0475.beancount",
+        "0482.beancount",
+        "0489.beancount",
+        "0496.beancount",
+        "0503.beancount",
+        "0510.beancount",
+        "0517.beancount",
+        "0524.beancount",
+        "0531.beancount",
+        "0538.beancount",
+        "0545.beancount",
+        "0552.beancount",
+        "0559.beancount",
+        "0566.beancount",
+        "0573.beancount",
+        "0580.beancount",
+        "0587.beancount",
+        "0594.beancount",
+        "0601.beancount",
+        "0608.beancount",
+        "0615.beancount",
+        "0622.beancount",
+        "0629.beancount",
+        "0636.beancount",
+        "0643.beancount",
+        "0650.beancount",
+        "0657.beancount",
+        "0664.beancount",
+        "0671.beancount",
+        "0678.beancount",
+        "0685.beancount",
+        "0692.beancount",
+        "0699.beancount",
+        "0706.beancount",
+        "0713.beancount",
+        "0720.beancount",
+        "0727.beancount",
+        "0734.beancount",
+        "0741.beancount",
+        "0748.beancount",
+        "0755.beancount",
+        "0762.beancount",
+        "0769.beancount",
+        "0776.beancount",
+        "0783.beancount",
+        "0790.beancount",
+        "0797.beancount",
+        "0804.beancount",
+        "0811.beancount",
+        "0818.beancount",
+        "0825.beancount",
+        "0832.beancount",
+        "0839.beancount",
+        "0846.beancount",
+        "0853.beancount",
+        "0860.beancount",
+        "0867.beancount",
+        "0874.beancount",
+        "0881.beancount",
+        "0888.beancount",
+        "0895.beancount",
+        "0902.beancount",
+        "0909.beancount",
+        "0916.beancount",
+        "0923.beancount",
+        "0930.beancount",
+        "0937.beancount",
+        "0944.beancount",
+        "0951.beancount",
+        "0958.beancount",
+        "0965.beancount",
+        "0972.beancount",
+        "0979.beancount",
+        "0986.beancount",
+        "0993.beancount"
+      ],
+      "input_manifest_sha256": "3f2f7906516058c3a7e3b2a499cbb912d42e983c75428a76cc58206cb355a058"
+    },
+    {
+      "seed": 20261101,
+      "count": 1000,
+      "matching": 858,
+      "average_differences": 142,
+      "non_average_differences": 0,
+      "clean_ledgers": 468,
+      "matching_error_ledgers": 390,
+      "clean_three_lot_reductions": 234,
+      "checks": {
+        "totals": 468,
+        "by-date": 468,
+        "year": 468,
+        "root": 468,
+        "limit": 468,
+        "balances": 468,
+        "posting-details": 468,
+        "bs": 468,
+        "balance-sheet-identity": 468,
+        "is": 468,
+        "price-path": 468
+      },
+      "average_ledger_ids": [
+        "0006.beancount",
+        "0013.beancount",
+        "0020.beancount",
+        "0027.beancount",
+        "0034.beancount",
+        "0041.beancount",
+        "0048.beancount",
+        "0055.beancount",
+        "0062.beancount",
+        "0069.beancount",
+        "0076.beancount",
+        "0083.beancount",
+        "0090.beancount",
+        "0097.beancount",
+        "0104.beancount",
+        "0111.beancount",
+        "0118.beancount",
+        "0125.beancount",
+        "0132.beancount",
+        "0139.beancount",
+        "0146.beancount",
+        "0153.beancount",
+        "0160.beancount",
+        "0167.beancount",
+        "0174.beancount",
+        "0181.beancount",
+        "0188.beancount",
+        "0195.beancount",
+        "0202.beancount",
+        "0209.beancount",
+        "0216.beancount",
+        "0223.beancount",
+        "0230.beancount",
+        "0237.beancount",
+        "0244.beancount",
+        "0251.beancount",
+        "0258.beancount",
+        "0265.beancount",
+        "0272.beancount",
+        "0279.beancount",
+        "0286.beancount",
+        "0293.beancount",
+        "0300.beancount",
+        "0307.beancount",
+        "0314.beancount",
+        "0321.beancount",
+        "0328.beancount",
+        "0335.beancount",
+        "0342.beancount",
+        "0349.beancount",
+        "0356.beancount",
+        "0363.beancount",
+        "0370.beancount",
+        "0377.beancount",
+        "0384.beancount",
+        "0391.beancount",
+        "0398.beancount",
+        "0405.beancount",
+        "0412.beancount",
+        "0419.beancount",
+        "0426.beancount",
+        "0433.beancount",
+        "0440.beancount",
+        "0447.beancount",
+        "0454.beancount",
+        "0461.beancount",
+        "0468.beancount",
+        "0475.beancount",
+        "0482.beancount",
+        "0489.beancount",
+        "0496.beancount",
+        "0503.beancount",
+        "0510.beancount",
+        "0517.beancount",
+        "0524.beancount",
+        "0531.beancount",
+        "0538.beancount",
+        "0545.beancount",
+        "0552.beancount",
+        "0559.beancount",
+        "0566.beancount",
+        "0573.beancount",
+        "0580.beancount",
+        "0587.beancount",
+        "0594.beancount",
+        "0601.beancount",
+        "0608.beancount",
+        "0615.beancount",
+        "0622.beancount",
+        "0629.beancount",
+        "0636.beancount",
+        "0643.beancount",
+        "0650.beancount",
+        "0657.beancount",
+        "0664.beancount",
+        "0671.beancount",
+        "0678.beancount",
+        "0685.beancount",
+        "0692.beancount",
+        "0699.beancount",
+        "0706.beancount",
+        "0713.beancount",
+        "0720.beancount",
+        "0727.beancount",
+        "0734.beancount",
+        "0741.beancount",
+        "0748.beancount",
+        "0755.beancount",
+        "0762.beancount",
+        "0769.beancount",
+        "0776.beancount",
+        "0783.beancount",
+        "0790.beancount",
+        "0797.beancount",
+        "0804.beancount",
+        "0811.beancount",
+        "0818.beancount",
+        "0825.beancount",
+        "0832.beancount",
+        "0839.beancount",
+        "0846.beancount",
+        "0853.beancount",
+        "0860.beancount",
+        "0867.beancount",
+        "0874.beancount",
+        "0881.beancount",
+        "0888.beancount",
+        "0895.beancount",
+        "0902.beancount",
+        "0909.beancount",
+        "0916.beancount",
+        "0923.beancount",
+        "0930.beancount",
+        "0937.beancount",
+        "0944.beancount",
+        "0951.beancount",
+        "0958.beancount",
+        "0965.beancount",
+        "0972.beancount",
+        "0979.beancount",
+        "0986.beancount",
+        "0993.beancount"
+      ],
+      "input_manifest_sha256": "d983025a5a9a46d5580530b0aedba81e0a7d1976ad79f01b30964d4e228676e1"
     }
-  ]
+  ],
+  "fixed_oracle": {
+    "total": 58,
+    "comparable": 56,
+    "passed": 56,
+    "extensions": 2,
+    "failed": 0
+  },
+  "regression": {
+    "ledger_files": 22,
+    "scenario_records": 25,
+    "checks": 144,
+    "failures": 0
+  },
+  "extended_bql": {
+    "checks": 12,
+    "failed": 0
+  },
+  "backend_unit_tests": 108,
+  "web_smoke": 29,
+  "web_dom_smoke": 5,
+  "include_cli_smoke": 5
 }

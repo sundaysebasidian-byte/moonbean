@@ -129,9 +129,9 @@ jobs:
         env:
           MOONBEAN_ORACLE_VENV: ${{ runner.temp }}/oracle-venv
         run: |
-          python3 scripts/random_differential.py --seed 7 --out .oracle-cache/r1/seed-7 --oracle "$MOONBEAN_ORACLE_VENV/bin" --allow-known-extensions
-          python3 scripts/random_differential.py --seed 20261101 --out .oracle-cache/r1/seed-20261101 --oracle "$MOONBEAN_ORACLE_VENV/bin" --allow-known-extensions
-          python3 scripts/review_differential.py --oracle "$MOONBEAN_ORACLE_VENV/bin"
+          python3 scripts/random_differential.py --seed 7 --out .oracle-cache/differential/seed-7 --oracle "$MOONBEAN_ORACLE_VENV/bin" --allow-known-extensions
+          python3 scripts/random_differential.py --seed 20261101 --out .oracle-cache/differential/seed-20261101 --oracle "$MOONBEAN_ORACLE_VENV/bin" --allow-known-extensions
+          python3 scripts/report_differential.py --oracle "$MOONBEAN_ORACLE_VENV/bin"
           python3 scripts/include_smoke.py
           python3 scripts/bql_differential.py --oracle "$MOONBEAN_ORACLE_VENV/bin"
 
@@ -143,7 +143,7 @@ jobs:
           include-hidden-files: true
           path: |
             conformance.md
-            .oracle-cache/r1/seed-7/results.json
-            .oracle-cache/r1/seed-20261101/results.json
-            .oracle-cache/r1/review.json
+            .oracle-cache/differential/seed-7/results.json
+            .oracle-cache/differential/seed-20261101/results.json
+            .oracle-cache/differential/reports.json
           if-no-files-found: warn

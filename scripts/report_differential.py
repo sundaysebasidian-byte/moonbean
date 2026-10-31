@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""R1 report and booked-posting checks against external Beancount executables."""
+"""Report and booked-posting checks against external Beancount executables."""
 import argparse
 from collections import Counter, defaultdict
 from decimal import Decimal
@@ -128,8 +128,8 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--ours', default='_build/native/debug/build/cmd/main/main.exe')
     p.add_argument('--oracle', default='.oracle-venv/bin')
-    p.add_argument('--ledgers', default='tests/review')
-    p.add_argument('--out', default='.oracle-cache/r1/review.json')
+    p.add_argument('--ledgers', default='tests/regression')
+    p.add_argument('--out', default='.oracle-cache/differential/reports.json')
     a = p.parse_args()
     results = []
     for path in sorted(Path(a.ledgers).glob('*.beancount')):
