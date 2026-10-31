@@ -1,0 +1,17 @@
+option "account_current_earnings" "Profit:Current"
+option "account_previous_earnings" "Profit:Previous"
+2023-01-01 open Assets:Cash USD,EUR
+2023-01-01 open Income:Salary USD,EUR
+2023-01-01 open Expenses:Food USD
+2023-02-01 * "prior"
+  Assets:Cash 50.00 USD
+  Income:Salary -50.00 USD
+2024-01-02 * "current"
+  Assets:Cash 1000.00 USD
+  Income:Salary -1000.00 USD
+2024-01-03 * "food"
+  Assets:Cash -200.00 USD
+  Expenses:Food 200.00 USD
+2024-01-04 * "foreign"
+  Assets:Cash 20.00 EUR
+  Income:Salary -20.00 EUR

@@ -126,7 +126,9 @@ jobs:
         env:
           MOONBEAN_ORACLE_VENV: ${{ runner.temp }}/oracle-venv
         run: |
-          python3 scripts/random_differential.py --oracle "$MOONBEAN_ORACLE_VENV/bin" --allow-known-extensions
+          python3 scripts/random_differential.py --seed 7 --out .oracle-cache/r1/seed-7 --oracle "$MOONBEAN_ORACLE_VENV/bin" --allow-known-extensions
+          python3 scripts/random_differential.py --seed 20261101 --out .oracle-cache/r1/seed-20261101 --oracle "$MOONBEAN_ORACLE_VENV/bin" --allow-known-extensions
+          python3 scripts/review_differential.py --oracle "$MOONBEAN_ORACLE_VENV/bin"
           python3 scripts/bql_differential.py --oracle "$MOONBEAN_ORACLE_VENV/bin"
 
       - name: Upload conformance report
@@ -136,5 +138,7 @@ jobs:
           name: conformance-report
           path: |
             conformance.md
-            .oracle-cache/random/results.json
+            .oracle-cache/r1/seed-7/results.json
+            .oracle-cache/r1/seed-20261101/results.json
+            .oracle-cache/r1/review.json
           if-no-files-found: warn

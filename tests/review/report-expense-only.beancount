@@ -1,0 +1,6 @@
+2024-01-01 open Assets:Cash CNY
+2024-01-01 open Income:Salary CNY
+2024-01-01 open Expenses:Food CNY
+2024-01-03 * "expense"
+  Assets:Cash -200.00 CNY
+  Expenses:Food 200.00 CNY

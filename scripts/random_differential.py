@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 import random
 import conformance as c
+import review_differential as review
 
 METHODS = ['STRICT', 'STRICT_WITH_SIZE', 'FIFO', 'LIFO', 'HIFO', 'NONE', 'AVERAGE']
 
@@ -36,17 +37,22 @@ def generate(rng, index):
         lines += [f'2024-01-{day:02} * "purchase {rng.randrange(100000)}" #shop ^receipt',
                   f'  Assets:Cash -{amount:.2f} {currency}',
                   f'  Expenses:Food {amount:.2f} {currency}']
-    for day, price in [(16, cost), (17, cost + rng.randint(1, 10))]:
+    for day, price in [(16, cost), (17, cost + rng.randint(1, 10)), (18, cost + 20)]:
         lines += [f'2024-01-{day} * "buy"',
                   f'  Assets:Stock {n} AAA {{{price} {currency}}}',
                   f'  Assets:Cash {-n * price} {currency}']
     # Exact-size STRICT_WITH_SIZE; explicit lot selection for STRICT/NONE.
-    reduction = n if method == 'STRICT_WITH_SIZE' else rng.randint(1, n)
+    reduction = (2*n + rng.randint(1,n-1)) if method in ['FIFO','LIFO','HIFO','AVERAGE'] else n if method == 'STRICT_WITH_SIZE' else rng.randint(1,n)
     selector = f'{{{cost} {currency}}}' if method in ['STRICT', 'NONE'] else '{}'
-    lines += ['2024-01-18 * "sell"', f'  Assets:Stock -{reduction} AAA {selector}',
-              '  Assets:Cash', f'2024-01-19 price AAA {cost + 7} {currency}',
+    lines += ['2024-01-19 * "sell"', f'  Assets:Stock -{reduction} AAA {selector}',
+              '  Assets:Cash', f'2024-01-20 price AAA {cost + 7} {currency}',
               '2024-01-20 * "foreign"', '  Assets:Foreign 17.25 GBP',
-              '  Equity:Foreign -17.25 GBP']
+              '  Equity:Foreign -17.25 GBP',
+              f'2024-01-20 price {currency} 7 JPY', f'2024-01-20 price GBP 2 {currency}',
+              '2024-01-20 * "same-day-multi-posting"',
+              f'  Expenses:Food 1.25 {currency}', f'  Expenses:Food 2.75 {currency}', f'  Assets:Cash -4.00 {currency}',
+              '2024-01-20 * "same-day-second-transaction"',
+              f'  Expenses:Food 3.50 {currency}', f'  Assets:Cash -3.50 {currency}']
     if kind in [0, 1, 2]:
         residual = ['0.004', '0.005', '0.006'][kind]
         lines += ['2024-01-21 * "tolerance"', f'  Assets:Cash 1.00 {currency}',
@@ -87,6 +93,13 @@ def main():
         path, method, kind, digest = item
         result = c.compare_ledger(str(Path(a.ours).resolve()), str(Path(a.oracle).resolve()), path, False)
         result.update(method=method, kind=kind, sha256=digest)
+        if result['diagnostics'][0] and result['queries'] and result['queries'][0][0] != 'skip':
+            result['queries'].append(('posting-details',*review.compare_postings(str(Path(a.ours).resolve()),str(Path(a.oracle).resolve()),path)))
+            result['queries'].extend(review.compare_reports(str(Path(a.ours).resolve()),str(Path(a.oracle).resolve()),path))
+            # The explicit quote bridge makes the oracle's conversion route observable.
+            source=Path(path).read_text()
+            bridge=source.split('open Assets:Cash ')[1].splitlines()[0]
+            result['queries'].append(('price-path',*review.compare_market(str(Path(a.ours).resolve()),str(Path(a.oracle).resolve()),path,bridge,'JPY')))
         result['ok'] = c.format_result(result)[2]
         return result
     with ThreadPoolExecutor(max_workers=a.workers) as pool:
@@ -97,6 +110,7 @@ def main():
                 print(f'compared {len(results)}; mismatches {sum(not r["ok"] for r in results)}', flush=True)
     summary = dict(seed=a.seed, count=a.count, mismatches=sum(not r['ok'] for r in results),
                    clean_queries=sum(bool(r['queries']) and r['queries'][0][0] != 'skip' for r in results),
+                   non_average_mismatches=sum(not r['ok'] and r['method'] != 'AVERAGE' for r in results),
                    results=results)
     (out / 'results.json').write_text(json.dumps(summary, indent=2))
     print(json.dumps({k: v for k, v in summary.items() if k != 'results'}))
