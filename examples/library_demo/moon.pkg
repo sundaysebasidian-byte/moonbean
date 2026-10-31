@@ -1,0 +1,5 @@
+import {
+  "sundaysebasidian-byte/moonbean",
+}
+
+pkgtype(kind: "executable")
