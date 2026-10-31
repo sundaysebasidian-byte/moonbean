@@ -46,6 +46,20 @@ test "date functions and descending order with limit" {
 }
 
 ///|
+test "multiple order keys use the first key as primary" {
+  let result = queried(
+    ledger_source(),
+    "SELECT date, account, units ORDER BY date, account",
+  )
+  inspect(result.rows.length(), content="4")
+  inspect(result.rows[0][0].to_text(), content="2024-02-01")
+  inspect(result.rows[0][1].to_text(), content="Assets:Cash")
+  inspect(result.rows[1][1].to_text(), content="Income:Salary")
+  inspect(result.rows[2][1].to_text(), content="Assets:Cash")
+  inspect(result.rows[3][1].to_text(), content="Expenses:Food")
+}
+
+///|
 test "group by account aggregates units" {
   let result = queried(
     ledger_source(),

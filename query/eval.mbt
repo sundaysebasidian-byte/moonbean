@@ -504,30 +504,37 @@ fn build_output(query : SelectQuery, rows : Array[BqlRow]) -> Array[OutputRow] {
 
 ///|
 fn sort_outputs(outputs : Array[OutputRow], orders : Array[OrderSpec]) -> Unit {
-  for spec in orders {
-    let mut i = 1
-    while i < outputs.length() {
-      let current = outputs[i]
-      let mut j = i
-      while j > 0 {
-        let prev = outputs[j - 1]
-        let a = eval_grouped(spec.expr, prev.group)
-        let b = eval_grouped(spec.expr, current.group)
-        let order = match value_compare(a, b) {
-          Some(value) => value
-          None => 0
-        }
-        let after = if spec.descending { order < 0 } else { order > 0 }
-        if after {
-          outputs[j - 1] = current
-          outputs[j] = prev
-          j = j - 1
-        } else {
-          break
+  let mut i = 1
+  while i < outputs.length() {
+    let current = outputs[i]
+    let mut j = i
+    while j > 0 {
+      let prev = outputs[j - 1]
+      let mut before = false
+      let mut decided = false
+      for spec in orders {
+        if !decided {
+          let a = eval_grouped(spec.expr, prev.group)
+          let b = eval_grouped(spec.expr, current.group)
+          let order = match value_compare(a, b) {
+            Some(value) => value
+            None => 0
+          }
+          if order != 0 {
+            before = if spec.descending { order < 0 } else { order > 0 }
+            decided = true
+          }
         }
       }
-      i = i + 1
+      if before {
+        outputs[j - 1] = current
+        outputs[j] = prev
+        j = j - 1
+      } else {
+        break
+      }
     }
+    i = i + 1
   }
 }
 
