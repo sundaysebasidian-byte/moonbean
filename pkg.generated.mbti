@@ -1,11 +1,43 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "sundaysebasidian-byte/moonbean"
 
+import {
+  "sundaysebasidian-byte/moonbean/ast",
+  "sundaysebasidian-byte/moonbean/query",
+  "sundaysebasidian-byte/moonbean/realization",
+  "sundaysebasidian-byte/moonbean/validation",
+}
+
 // Values
+pub fn check_expanded(String, String, String, (String) -> String?) -> @validation.ValidatedLedger
+
+pub fn check_source(String, String) -> @validation.ValidatedLedger
+
+pub fn diagnostic_text(@ast.Diagnostic) -> String
+
+pub fn expand_includes(String, String, (String) -> String?) -> ExpandedSource
+
+pub fn export_json(String, @validation.ValidatedLedger) -> String
+
+pub fn format_source(String) -> String
+
+pub fn include_target(String) -> String?
+
+pub fn path_dirname(String) -> String
+
+pub fn path_join(String, String) -> String
+
+pub fn realize(@validation.ValidatedLedger, at? : @ast.Date?) -> @realization.RealizedLedger
+
+pub fn run_query(@validation.ValidatedLedger, String, at? : @ast.Date?) -> @query.QueryResult
 
 // Errors
 
 // Types and methods
+pub(all) struct ExpandedSource {
+  source : String
+  missing : Array[String]
+}
 
 // Type aliases
 

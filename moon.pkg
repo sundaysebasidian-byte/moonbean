@@ -1,2 +1,9 @@
 import {
+  "sundaysebasidian-byte/moonbean/ast",
+  "sundaysebasidian-byte/moonbean/decimal",
+  "sundaysebasidian-byte/moonbean/format",
+  "sundaysebasidian-byte/moonbean/query",
+  "sundaysebasidian-byte/moonbean/realization",
+  "sundaysebasidian-byte/moonbean/syntax",
+  "sundaysebasidian-byte/moonbean/validation",
 }
