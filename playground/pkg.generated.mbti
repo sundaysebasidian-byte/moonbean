@@ -1,0 +1,25 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "sundaysebasidian-byte/moonbean/playground"
+
+// Values
+pub fn balance_sheet(String) -> String
+
+pub fn check(String) -> String
+
+pub fn format(String) -> String
+
+pub fn income_statement(String) -> String
+
+pub fn query(String) -> String
+
+pub fn register(String) -> String
+
+pub fn trial_balance(String) -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

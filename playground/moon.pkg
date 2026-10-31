@@ -1,0 +1,24 @@
+import {
+  "moonbitlang/core/json",
+  "sundaysebasidian-byte/moonbean",
+  "sundaysebasidian-byte/moonbean/ast",
+  "sundaysebasidian-byte/moonbean/realization",
+  "sundaysebasidian-byte/moonbean/validation",
+}
+
+options(
+  link: {
+    "js": {
+      "exports": [
+        "check",
+        "balance_sheet",
+        "income_statement",
+        "trial_balance",
+        "register",
+        "query",
+        "format",
+      ],
+      "format": "esm",
+    },
+  },
+)
