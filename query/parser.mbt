@@ -524,7 +524,7 @@ fn parse_source(parser : QueryParser) -> QuerySource? {
   match parser.take_word() {
     Some(word) =>
       match word.to_lower() {
-        "postings" | "transactions" => Some(SrcPostings)
+        "postings" => Some(SrcPostings)
         "balances" => Some(SrcBalances)
         _ => {
           parser.fail("unknown FROM source `" + word + "`")

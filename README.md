@@ -186,7 +186,7 @@ fn analyze(source : String) -> Unit {
 | --- | --- | --- |
 | inventory / 价格库 / 市值折算 | 支持 | 取最新价格，支持逆汇率；`bal --convert` |
 | 试算平衡 / 资产负债表 / 损益表 / register | 支持 | 库提供文本和 JSON 输出；命令行有 `bal`、`bs`、`is`、`register FILE ACCOUNT`（可加 `--json`）和 `dups FILE` |
-| `SELECT ... FROM postings/transactions/balances` | 支持 | 列：`date`、`year`、`month`、`flag`、`payee`、`narration`、`account`、`root`、`parent`、`leaf`、`units`、`currency`、`cost`、`value`、`position` |
+| `SELECT ... FROM postings/balances` | 支持 | 列：`date`、`year`、`month`、`flag`、`payee`、`narration`、`account`、`root`、`parent`、`leaf`、`units`、`currency`、`cost`、`value`、`position` |
 | `WHERE` | 部分 | 比较、`is [not] null`、`and/or/not`，支持 `~` 正则字面量；没有 `LIKE` 和子查询 |
 | `HAVING` / 数值算术 | 支持 | `HAVING` 支持聚合条件；Decimal 支持 `+ - * /` 和括号，不含 Amount/Inventory 运算 |
 | tags / links / 元数据 | 支持 | `tags`、`links` 在 JSON 里是数组；`meta('key')` 读取 posting 元数据 |
@@ -298,3 +298,5 @@ node web/smoke.mjs   # 先运行 ./scripts/build-web.sh
 ```
 
 `moon test --target all` 覆盖 wasm、wasm-gc、js、native 四个后端。CI 在 ubuntu、macOS、Windows 上运行同一组命令，另有 playground 和 oracle 两个 job。
+
+`FROM transactions` 本轮明确不支持：解析时返回错误，不再作为 posting 源的别名。

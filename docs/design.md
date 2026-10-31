@@ -116,3 +116,5 @@ benchmark 由 `scripts/bench.sh` 生成临时账本，不进入仓库。上述�
 为纯 MoonBit，不依赖 fs/env。CLI 通过 `moonbitlang/core/async/fs` 读取文件并声明
 `supported_targets = "-all+native"`。`moon test --target all` 在 wasm、wasm-gc、
 js、native 四个后端通过。
+
+`FROM transactions` 本轮明确不支持：解析时返回错误，不再作为 posting 源的别名。
