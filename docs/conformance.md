@@ -135,7 +135,7 @@ runtime.
   MoonBean inventory but the oracle's CSV output for `BALANCES` does not expose
   them in a stable way.
 
-## Stage 3a: seeded differential (2026-10-31)
+## Seeded differential (2026-10-31)
 
 `python3 scripts/random_differential.py --seed 20261031 --count 1000`
 uses only Python stdlib and independently authored templates with randomized
@@ -157,9 +157,9 @@ bounded template-based random testing, not exhaustive grammar fuzzing.
 All 142 differences are the AVERAGE extension: ledger IDs `6 + 7*k` for
 `k=0..141`. The pinned oracle emits `average_unsupported`, while MoonBean
 implements AVERAGE. Each ledger ID, full expected/actual diagnostic set and
-reason is recorded in `docs/random-differential.json`; raw results, generated
-inputs and SHA256 hashes remain in `.oracle-cache/acceptance-random/`.
-No diagnostic differences are removed from the reported count. The default
+reason is recorded in `docs/random-differential.json`; the runner writes raw
+results and the generated ledgers to its `--out` directory. No diagnostic
+differences are removed from the reported count. The default
 runner exits 1 for these differences. `--allow-known-extensions` permits CI
 success only when deleting the oracle's AVERAGE-unsupported diagnostics makes
 the complete diagnostic sets identical; unexpected differences still fail.
@@ -172,7 +172,7 @@ then compare exact Decimals. The baseline 56 comparable ledgers still pass.
 Reproduction (build via `./scripts/oracle.sh` first):
 
 ```sh
-python3 scripts/random_differential.py --out .oracle-cache/acceptance-random --allow-known-extensions
+python3 scripts/random_differential.py --allow-known-extensions
 python3 scripts/bql_differential.py
 python3 scripts/cli_smoke.py
 ```
@@ -218,4 +218,4 @@ https://www.moonbitlang.com/download . Windows explicitly uses pwsh and
 USERPROFILE instead of a hard-coded runner username. Oracle bootstrap pins
 pip 25.2, Beancount 3.2.3 and beanquery 0.2.0 with Python 3.12 in CI. The
 workflow runs random differential and extended BQL checks and uploads evidence.
-No GitHub Actions execution occurred in this local-only phase.
+The workflows have not been executed on GitHub yet.

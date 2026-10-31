@@ -54,7 +54,7 @@ Initial release.
   56 passing) and a 100k-transaction benchmark.
 - CI for ubuntu/macOS/Windows plus an upstream oracle job.
 
-## Stage 3a (2026-10-31, local only)
+## Unreleased
 
 - Reproducible 1000-ledger differential; exact oracle inventories before CSV rendering.
 - HAVING, Decimal arithmetic, regex, tags/links/posting metadata and partial period balance queries.
@@ -62,3 +62,4 @@ Initial release.
 - Single-buffer decimal parsing; host API docs and typed query failure categories.
 - Windows CI path/shell correction, pinned oracle bootstrap and differential jobs.
 - 94 tests on native/js/wasm-gc; remaining boundaries in conformance/performance reports.
+- Browser playground (`playground/` JS exports, static page in `web/`) with a Pages workflow and a node smoke test.

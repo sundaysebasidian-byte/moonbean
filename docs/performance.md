@@ -3,7 +3,7 @@
 2026-10-31, macOS 27.2 arm64, MoonBit 0.1.20261028, native release.
 Same independently generated 100,000 transactions, one warmup and five measured
 runs per command; wall-clock median, including process start and file I/O.
-Another task used CPU during both measurements; these are local observations,
+Other processes used CPU during both measurements; these are local observations,
 not a cross-machine guarantee. The previous 0.63s check result used a different
 single-run fixture and is not the baseline below.
 
@@ -38,8 +38,7 @@ For before, only `decimal/decimal.mbt` is taken from `e7c98b1` (keeping the
 precision constant private); after uses the single-buffer implementation from
 `5dd6b0c`. A local try/finally driver restored the final source after comparison.
 Do not reset a working tree containing user changes.
-Full timing arrays and the sample are retained locally under
-`.oracle-cache/perf-controlled-before`, `.oracle-cache/perf-controlled-after`, `.oracle-cache/profile-before`.
+The raw timing arrays and the profiler sample are not committed.
 
 The controlled query median increased from 0.755s to 0.973s, with after samples
 0.829–1.963s. This result does **not** demonstrate a query speedup. Concurrent
@@ -47,6 +46,5 @@ CPU contention and allocation/GC effects remain unisolated; check/bal improved
 in this measurement, but the query observation must be retained as a limitation.
 
 A follow-up five-run query-only measurement on the final binary returned
-0.684s median (0.670–0.705s), retained in `.oracle-cache/query-followup.json`.
-Both measurements are reported; this variation prevents a stable query-speedup
+0.684s median (0.670–0.705s). Both measurements are reported; this variation prevents a stable query-speedup
 claim from these wall-clock runs.
