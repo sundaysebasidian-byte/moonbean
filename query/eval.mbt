@@ -190,6 +190,8 @@ fn eval_column(row : BqlRow, name : String) -> QueryValue {
 ///|
 fn eval_expr(expr : Expr, row : BqlRow) -> QueryValue {
   match expr {
+    EBinary(left, op, right) =>
+      arithmetic(eval_expr(left, row), op, eval_expr(right, row))
     ECol(name) => eval_column(row, name)
     EStr(text) => QText(text)
     ENum(number) => QNumber(number)
@@ -282,6 +284,7 @@ fn cond_holds(cond : Cond, row : BqlRow) -> Bool {
 ///|
 fn expr_label(expr : Expr) -> String {
   match expr {
+    EBinary(left, op, right) => expr_label(left) + op + expr_label(right)
     ECol(name) => name
     EStr(text) => "\"" + text + "\""
     ENum(number) => number.to_string()
@@ -304,6 +307,7 @@ fn expr_label(expr : Expr) -> String {
 ///|
 fn contains_sum(expr : Expr) -> Bool {
   match expr {
+    EBinary(left, _, right) => contains_sum(left) || contains_sum(right)
     ECall("sum", _) | ECall("count", _) => true
     ECall(_, args) => {
       for arg in args {
@@ -419,7 +423,9 @@ fn eval_aggregate(expr : Expr, rows : Array[BqlRow]) -> QueryValue {
 
 ///|
 fn eval_grouped(expr : Expr, rows : Array[BqlRow]) -> QueryValue {
-  if contains_sum(expr) {
+  if expr is EBinary(left, op, right) {
+    arithmetic(eval_grouped(left, rows), op, eval_grouped(right, rows))
+  } else if contains_sum(expr) {
     eval_aggregate(expr, rows)
   } else if rows.length() > 0 {
     eval_expr(expr, rows[0])
@@ -550,7 +556,9 @@ fn run_select(
       rows.push(row)
     }
   }
-  let mut outputs = build_output(query, rows)
+  let mut outputs = build_output(query, rows).filter(fn(output) {
+    grouped_cond(query.having, output.group)
+  })
   sort_outputs(outputs, query.orders)
   match query.limit {
     Some(limit) =>
@@ -663,5 +671,55 @@ pub fn run_query(
     PqSelect(query) => run_select(realized, query)
     PqBalances => run_balances(realized)
     PqJournal(account, limit) => run_journal(realized, account, limit)
+  }
+}
+
+///|
+fn arithmetic(a : QueryValue, op : String, b : QueryValue) -> QueryValue {
+  match (a, b) {
+    (QNumber(x), QNumber(y)) =>
+      match op {
+        "+" => QNumber(x.add(y))
+        "-" => QNumber(x.sub(y))
+        "*" => QNumber(x.mul(y))
+        "/" =>
+          match x.div(y) {
+            Some(n) => QNumber(n)
+            None => QNull
+          }
+        _ => QNull
+      }
+    _ => QNull
+  }
+}
+
+///|
+fn grouped_cond(cond : Cond, rows : Array[BqlRow]) -> Bool {
+  match cond {
+    CTrue => true
+    CNot(c) => !grouped_cond(c, rows)
+    CAnd(a, b) => grouped_cond(a, rows) && grouped_cond(b, rows)
+    COr(a, b) => grouped_cond(a, rows) || grouped_cond(b, rows)
+    CIsNull(e, negated) => (eval_grouped(e, rows) is QNull) != negated
+    CTruthy(e) =>
+      match eval_grouped(e, rows) {
+        QNumber(n) => !n.is_zero()
+        QNull => false
+        _ => true
+      }
+    CCmp(a, op, b) =>
+      match value_compare(eval_grouped(a, rows), eval_grouped(b, rows)) {
+        Some(n) =>
+          match op {
+            "=" | "==" => n == 0
+            "!=" | "<>" => n != 0
+            "<" => n < 0
+            "<=" => n <= 0
+            ">" => n > 0
+            ">=" => n >= 0
+            _ => false
+          }
+        None => false
+      }
   }
 }

@@ -85,7 +85,15 @@ fn bql_read_number(text : String, start : Int32) -> (String, Int32) {
       Some(c) => c
       None => break
     }
-    if c.is_ascii_digit() || c == '-' || c == '.' {
+    if c.is_ascii_digit() ||
+      c == '.' ||
+      (
+        c == '-' &&
+        i - start < 10 &&
+        text.length() >= start + 10 &&
+        bql_char(text, start + 4) == Some('-') &&
+        bql_char(text, start + 7) == Some('-')
+      ) {
       sb.write_char(c)
       i = i + 1
     } else {
@@ -152,17 +160,6 @@ fn bql_number_token(raw : String) -> BTok {
 }
 
 ///|
-fn bql_starts_signed_number(text : String, index : Int32) -> Bool {
-  if bql_char(text, index) != Some('-') {
-    return false
-  }
-  match bql_char(text, index + 1) {
-    Some(d) => d.is_ascii_digit()
-    None => false
-  }
-}
-
-///|
 fn lex_bql(text : String) -> Array[BTok] {
   let tokens : Array[BTok] = []
   let mut i = 0
@@ -182,7 +179,7 @@ fn lex_bql(text : String) -> Array[BTok] {
       i = next
       continue
     }
-    if c.is_ascii_digit() || bql_starts_signed_number(text, i) {
+    if c.is_ascii_digit() {
       let (raw, next) = bql_read_number(text, i)
       tokens.push(bql_number_token(raw))
       i = next

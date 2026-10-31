@@ -195,3 +195,20 @@ test "invalid queries report errors" {
   let empty = queried(ledger_source(), "  ")
   inspect(empty.is_ok(), content="false")
 }
+
+///|
+test "arithmetic precedence unary operators and aggregate HAVING" {
+  let r = queried(
+    ledger_source(),
+    "SELECT account, count(*) * 2 + 1 GROUP BY account HAVING count(*) > 1 ORDER BY account",
+  )
+  inspect(r.is_ok(), content="true")
+  inspect(r.rows.length(), content="1")
+  inspect(r.rows[0][1].to_text(), content="5")
+  let a = queried(ledger_source(), "SELECT 1+2*3, (1+2)*3, -2+5, 6/4 LIMIT 1")
+  inspect(a.is_ok(), content="true")
+  inspect(a.rows[0][0].to_text(), content="7")
+  inspect(a.rows[0][1].to_text(), content="9")
+  inspect(a.rows[0][2].to_text(), content="3")
+  inspect(a.rows[0][3].to_text(), content="1.5")
+}

@@ -19,6 +19,7 @@ priv enum Expr {
   EStar
   EBool(Bool)
   ECall(String, Array[Expr])
+  EBinary(Expr, String, Expr)
 }
 
 ///|
@@ -49,6 +50,7 @@ priv struct SelectQuery {
   projections : Array[Expr]
   source : QuerySource
   filter : Cond
+  having : Cond
   groups : Array[Expr]
   orders : Array[OrderSpec]
   limit : Int32?
@@ -199,7 +201,7 @@ fn QueryParser::take_int(self : QueryParser) -> Int32? {
 }
 
 ///|
-fn parse_expr(parser : QueryParser) -> Expr? {
+fn parse_primary(parser : QueryParser) -> Expr? {
   match parser.peek() {
     BWord(word) => {
       parser.advance() |> ignore
@@ -261,7 +263,21 @@ fn parse_expr(parser : QueryParser) -> Expr? {
       Some(EDate(date))
     }
     BSym(symbol) =>
-      if symbol == "*" {
+      if symbol == "(" {
+        parser.advance() |> ignore
+        let expr = parse_expr(parser)
+        if !parser.expect_sym(")") {
+          return None
+        }
+        expr
+      } else if symbol == "-" || symbol == "+" {
+        parser.advance() |> ignore
+        match parse_primary(parser) {
+          Some(expr) =>
+            Some(EBinary(ENum(@decimal.Decimal::zero()), symbol, expr))
+          None => None
+        }
+      } else if symbol == "*" {
         parser.advance() |> ignore
         Some(EStar)
       } else {
@@ -273,6 +289,40 @@ fn parse_expr(parser : QueryParser) -> Expr? {
       None
     }
   }
+}
+
+///|
+fn parse_binary(parser : QueryParser, min_prec : Int32) -> Expr? {
+  let mut left = match parse_primary(parser) {
+    Some(e) => e
+    None => return None
+  }
+  while true {
+    let op = match parser.peek_sym() {
+      Some(s) => s
+      None => break
+    }
+    let prec = match op {
+      "+" | "-" => 1
+      "*" | "/" => 2
+      _ => 0
+    }
+    if prec < min_prec || prec == 0 {
+      break
+    }
+    parser.advance() |> ignore
+    let right = match parse_binary(parser, prec + 1) {
+      Some(e) => e
+      None => return None
+    }
+    left = EBinary(left, op, right)
+  }
+  Some(left)
+}
+
+///|
+fn parse_expr(parser : QueryParser) -> Expr? {
+  parse_binary(parser, 1)
 }
 
 ///|
@@ -462,6 +512,13 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
         )
     }
   }
+  let mut having = CTrue
+  if parser.match_keyword("having") {
+    match parse_cond_or(parser) {
+      Some(cond) => having = cond
+      None => return PqError("invalid HAVING clause")
+    }
+  }
   let orders : Array[OrderSpec] = []
   if parser.match_keyword("order") {
     if !parser.expect_keyword("by") {
@@ -516,7 +573,7 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   if !parser.at_end() {
     return PqError("unexpected input after query")
   }
-  PqSelect({ projections, source, filter, groups, orders, limit, })
+  PqSelect({ projections, source, filter, having, groups, orders, limit, })
 }
 
 ///|
