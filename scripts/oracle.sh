@@ -47,6 +47,11 @@ fi
 BEANCOUNT_ACTUAL="$("$VENV/bin/python" -c 'import beancount; print(beancount.__version__)')"
 BEANQUERY_ACTUAL="$("$VENV/bin/python" -c 'import beanquery; print(beanquery.__version__)')"
 
+if [ "$BEANCOUNT_ACTUAL" != "$BEANCOUNT_VERSION" ] || [ "$BEANQUERY_ACTUAL" != "$BEANQUERY_VERSION" ]; then
+  echo "oracle version mismatch; use a separate pinned virtual environment" >&2
+  exit 1
+fi
+
 if ! command -v moon >/dev/null 2>&1; then
   if [ -d "$HOME/.moon/bin" ]; then
     export PATH="$HOME/.moon/bin:$PATH"

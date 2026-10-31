@@ -95,10 +95,19 @@ jobs:
         run: |
           ./scripts/oracle.sh --markdown | tee conformance.md
 
+      - name: Seeded differential and extended BQL
+        env:
+          MOONBEAN_ORACLE_VENV: ${{ runner.temp }}/oracle-venv
+        run: |
+          python3 scripts/random_differential.py --oracle "$MOONBEAN_ORACLE_VENV/bin" --allow-known-extensions
+          python3 scripts/bql_differential.py --oracle "$MOONBEAN_ORACLE_VENV/bin"
+
       - name: Upload conformance report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: conformance-report
-          path: conformance.md
+          path: |
+            conformance.md
+            .oracle-cache/random/results.json
           if-no-files-found: warn
