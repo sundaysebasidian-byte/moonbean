@@ -74,7 +74,7 @@ balance 配对使用，余额不足时插入补记；年末未使用的 pad 报�
 
 ### BQL
 
-BQL 走独立词法/语法/求值链：`SELECT` 投影、`FROM postings|transactions|balances`、
+BQL 走独立词法/语法/求值链：`SELECT` 投影、`FROM postings|balances`、
 `WHERE` 布尔条件、`GROUP BY`、`ORDER BY`、`LIMIT`，以及 `BALANCES`、`JOURNAL`。
 行集来自 `RealizedLedger`；`sum(position)` 按 lot 合并。结果是稳定的文本表格或
 JSON（`columns` + `rows`），便于与其他工具 diff。

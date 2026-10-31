@@ -84,7 +84,7 @@ test("balance_sheet: converts to the operating currency by default", () => {
   const rows = Object.fromEntries(res.report.rows.map((r) => [r.account, text(r.amount)]));
   assert.equal(rows["Assets:Bank:Checking"], "166600.00 CNY");
   assert.equal(rows["Assets:Broker:Cash"], "13578.0000 CNY");
-  assert.equal(rows["Assets:Broker:Stocks"], "55 AAPL");
+  assert.equal(rows["Assets:Broker:Stocks"], "70262.5000 CNY");
   assert.equal(rows["Liabilities:CreditCard"], "-3200.00 CNY");
 });
 
@@ -101,7 +101,7 @@ test("balance_sheet: at limits the report to a date", () => {
   const res = call("balance_sheet", { at: "2024-06-30" });
   const rows = Object.fromEntries(res.report.rows.map((r) => [r.account, text(r.amount)]));
   assert.equal(rows["Assets:Bank:Checking"], "92200.00 CNY");
-  assert.equal(rows["Assets:Broker:Stocks"], "45 AAPL");
+  assert.equal(rows["Assets:Broker:Stocks"], "48937.5000 CNY");
 });
 
 test("income_statement: totals and period start", () => {
@@ -218,9 +218,9 @@ test("lib: account tree sums children per currency", () => {
   assert.deepEqual(forest.map((n) => n.name), ["Assets", "Equity", "Liabilities"]);
   const assets = forest[0];
   assert.equal(decimalToString(assets.totals.get("CNY")), "318000.00");
-  assert.equal(decimalToString(assets.totals.get("USD")), "1860.00");
-  assert.equal(decimalToString(assets.totals.get("AAPL")), "55");
-  assert.equal(nodeCount(forest), 12);
+  assert.equal(decimalToString(assets.totals.get("USD")), "10510.00");
+  assert.equal(assets.totals.has("AAPL"), false);
+  assert.equal(nodeCount(forest), 14);
   const income = buildTree(call("income_statement", {}).report.rows).filter((n) => ["Income", "Expenses"].includes(n.name));
   const net = negate(sumRoots(income));
   assert.deepEqual(net.map(([c, d]) => `${decimalToString(d)} ${c}`), ["143123.0000 CNY"]);

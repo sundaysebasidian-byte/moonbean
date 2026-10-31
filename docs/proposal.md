@@ -24,7 +24,7 @@ MoonBean 是用 MoonBit 从零实现的 Beancount v3 兼容复式记账引擎。
 
 ## 明确不支持
 - 插件执行：只记录并警告。要执行 Python 插件就得嵌入解释器，与“纯函数、可在 wasm 和浏览器里运行”的目标冲突。`document` 同理不检查文件是否存在。
-- BQL 子查询、JOIN、PIVOT、SQL `LIKE`：不在常见账本查询范围内，解析时明确报错；`LIKE` 可用 `~` 正则代替。
+- BQL FROM transactions、子查询、JOIN、PIVOT、SQL `LIKE`：不在常见账本查询范围内，解析时明确报错；`LIKE` 可用 `~` 正则代替。
 
 ## 净室实现与 GPL 隔离
 Beancount 和 beanquery 是 GPL-2.0，MoonBean 以 Apache-2.0 发布。实现只依据公开文档，不复制源码、注释、测试数据、样式或资源；所有测试账本和示例都是自己写的。Beancount 只作为外部黑盒 oracle，固定版本装进临时 virtualenv，运行后比较输出，不链接、不嵌入、不分发。详见 NOTICE。
