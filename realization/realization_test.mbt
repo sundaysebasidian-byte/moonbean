@@ -294,3 +294,32 @@ test "report display precision rounds text and preserves JSON" {
   )
   inspect(report.to_json().contains("1.234"), content="true")
 }
+
+///|
+test "price paths use dated shortest paths inverse edges and terminate on cycles" {
+  let db = @realization.PriceDb::new()
+  let jan = @ast.Date::parse("2024-01-01").unwrap()
+  let feb = @ast.Date::parse("2024-02-01").unwrap()
+  db.add(jan, "AAPL", "USD", @decimal.Decimal::from_int(175))
+  db.add(jan, "CNY", "USD", @decimal.Decimal::parse("0.2").unwrap())
+  db.add(feb, "USD", "CNY", @decimal.Decimal::from_int(7))
+  inspect(db.rate("AAPL", "CNY", Some(jan)).unwrap().to_string(), content="875")
+  inspect(
+    db.rate("AAPL", "CNY", Some(feb)).unwrap().to_string(),
+    content="1225",
+  )
+  db.add(jan, "CNY", "EUR", @decimal.Decimal::from_int(2))
+  db.add(jan, "EUR", "AAPL", @decimal.Decimal::from_int(3))
+  inspect(db.rate("AAPL", "JPY", None) is None, content="true")
+  let tie = @realization.PriceDb::new()
+  for currency in ["BBB", "AAA"] {
+    tie.add(
+      jan,
+      "SRC",
+      currency,
+      @decimal.Decimal::from_int(if currency == "AAA" { 2 } else { 4 }),
+    )
+    tie.add(jan, currency, "DST", @decimal.Decimal::from_int(3))
+  }
+  inspect(tie.rate("SRC", "DST", None).unwrap().to_string(), content="6")
+}

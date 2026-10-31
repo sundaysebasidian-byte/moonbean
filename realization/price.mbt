@@ -139,6 +139,48 @@ pub fn PriceDb::latest(
 }
 
 ///|
+fn PriceDb::edge(
+  self : PriceDb,
+  base : String,
+  quote : String,
+  at : @ast.Date?,
+) -> @decimal.Decimal? {
+  let mut latest : PricePoint? = None
+  for point in self.points {
+    if (
+        (point.base == base && point.quote == quote) ||
+        (point.base == quote && point.quote == base)
+      ) &&
+      date_allows(point.date, at) &&
+      point.rate.is_positive() {
+      let newer = match latest {
+        None => true
+        Some(old) =>
+          old.date.less_than(point.date) ||
+          (
+            old.date.equal(point.date) &&
+            (point.base == base || old.base != base)
+          )
+      }
+      if newer {
+        latest = Some(point)
+      }
+    }
+  }
+  match latest {
+    Some(point) =>
+      if point.base == base {
+        Some(point.rate)
+      } else {
+        @decimal.Decimal::one().div(point.rate)
+      }
+    None => None
+  }
+}
+
+///|
+/// Finds the shortest dated quote path. Equal-length paths use lexical currency order.
+/// Each currency is visited once, so cycles cannot cause nontermination.
 pub fn PriceDb::rate(
   self : PriceDb,
   base : String,
@@ -148,19 +190,39 @@ pub fn PriceDb::rate(
   if base == quote {
     return Some(@decimal.Decimal::one())
   }
-  match self.latest(base, quote, at) {
-    Some(rate) => Some(rate)
-    None =>
-      match self.latest(quote, base, at) {
-        Some(rate) =>
-          if rate.is_zero() {
-            None
-          } else {
-            @decimal.Decimal::one().div(rate)
-          }
-        None => None
+  let currencies : Array[String] = []
+  for point in self.points {
+    if date_allows(point.date, at) {
+      if !currencies.contains(point.base) {
+        currencies.push(point.base)
       }
+      if !currencies.contains(point.quote) {
+        currencies.push(point.quote)
+      }
+    }
   }
+  currencies.sort()
+  let queue = [(base, @decimal.Decimal::one())]
+  let seen : Map[String, Bool] = Map([])
+  seen.set(base, true)
+  let mut index = 0
+  while index < queue.length() {
+    let (currency, accumulated) = queue[index]
+    index += 1
+    for next in currencies {
+      if seen.get(next) is None {
+        if self.edge(currency, next, at) is Some(rate) {
+          let combined = accumulated.mul(rate)
+          if next == quote {
+            return Some(combined)
+          }
+          seen.set(next, true)
+          queue.push((next, combined))
+        }
+      }
+    }
+  }
+  None
 }
 
 ///|
