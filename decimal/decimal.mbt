@@ -6,7 +6,7 @@
 // (such as one that strips trailing zeros) cannot be used here.
 
 ///|
-pub let decimal_precision : Int32 = 28
+let decimal_precision : Int32 = 28
 
 ///|
 pub(all) struct Decimal {
@@ -158,8 +158,8 @@ pub fn Decimal::parse(input : String) -> Decimal? {
       }
     None => return None
   }
-  let int_digits = StringBuilder()
-  let frac_digits = StringBuilder()
+  let digits = StringBuilder()
+  let mut scale = 0
   let mut seen_digit = false
   let mut seen_dot = false
   let mut last_was_comma = false
@@ -171,10 +171,9 @@ pub fn Decimal::parse(input : String) -> Decimal? {
     }
     if c >= '0' && c <= '9' {
       if seen_dot {
-        frac_digits.write_char(c)
-      } else {
-        int_digits.write_char(c)
+        scale = scale + 1
       }
+      digits.write_char(c)
       seen_digit = true
       last_was_comma = false
     } else if c == '.' {
@@ -196,18 +195,11 @@ pub fn Decimal::parse(input : String) -> Decimal? {
   if !seen_digit || last_was_comma {
     return None
   }
-  let int_part = if int_digits.is_empty() {
-    "0"
-  } else {
-    int_digits.to_string()
-  }
-  let frac_part = frac_digits.to_string()
-  let digits = int_part + frac_part
-  let mut mantissa = @bigint.BigInt::from_string(digits)
+  let mut mantissa = @bigint.BigInt::from_string(digits.to_string())
   if negative && !mantissa.is_zero() {
     mantissa = mantissa.neg()
   }
-  Some({ mantissa, scale: frac_part.length(), })
+  Some({ mantissa, scale, })
 }
 
 ///|

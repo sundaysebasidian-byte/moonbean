@@ -99,3 +99,16 @@ test "decimal negative zero and signs" {
   inspect(dec("-1.5").abs().to_string(), content="1.5")
   inspect(dec("1.5").neg().to_string(), content="-1.5")
 }
+
+///|
+test "single-buffer decimal parser preserves scale and signs" {
+  for text in [".50", "-.50", "+1,234.500", "0.", "000.0010"] {
+    let value = @decimal.Decimal::parse(text).unwrap()
+    inspect(
+      @decimal.Decimal::parse(value.to_string()).unwrap().equal(value),
+      content="true",
+    )
+  }
+  inspect(@decimal.Decimal::parse("1.2300").unwrap().scale(), content="4")
+  inspect(@decimal.Decimal::parse("1,,2") is None, content="true")
+}

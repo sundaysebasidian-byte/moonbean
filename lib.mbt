@@ -78,6 +78,7 @@ fn lib_is_separator(c : Char) -> Bool {
 }
 
 ///|
+/// Return the parent directory using portable slash handling.
 pub fn path_dirname(path : String) -> String {
   let mut i = path.length() - 1
   while i >= 0 {
@@ -132,6 +133,7 @@ fn lib_normalize_path(path : String) -> String {
 }
 
 ///|
+/// Resolve a relative include path against its containing directory.
 pub fn path_join(base : String, relative : String) -> String {
   if relative.length() > 0 &&
     lib_is_separator(
@@ -206,6 +208,7 @@ pub fn expand_includes(
 }
 
 ///|
+/// Parse, book and validate text without filesystem access; inspect returned errors before reporting balances.
 pub fn check_source(
   file : String,
   source : String,
@@ -214,6 +217,7 @@ pub fn check_source(
 }
 
 ///|
+/// Expand includes using the host callback, then validate the expanded ledger.
 pub fn check_expanded(
   file : String,
   base_dir : String,
@@ -225,6 +229,7 @@ pub fn check_expanded(
 }
 
 ///|
+/// Build account inventories and prices; at includes entries through that date.
 pub fn realize(
   ledger : @validation.ValidatedLedger,
   at~ : @ast.Date? = None,
@@ -233,6 +238,7 @@ pub fn realize(
 }
 
 ///|
+/// Run the supported BQL subset; inspect QueryResult.error before consuming rows.
 pub fn run_query(
   ledger : @validation.ValidatedLedger,
   statement : String,
@@ -242,11 +248,13 @@ pub fn run_query(
 }
 
 ///|
+/// Align posting amounts while preserving ledger semantics.
 pub fn format_source(source : String) -> String {
   @format.format_source(source)
 }
 
 ///|
+/// Render the stable diagnostic code and original source location.
 pub fn diagnostic_text(diagnostic : @ast.Diagnostic) -> String {
   diagnostic.loc.file +
   ":" +
