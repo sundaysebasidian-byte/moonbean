@@ -1,0 +1,5 @@
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Expenses:Food USD
+2024-01-02 * "rounding"
+  Assets:Cash -10.00 USD
+  Expenses:Food 9.995 USD

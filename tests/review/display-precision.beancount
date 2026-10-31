@@ -1,0 +1,6 @@
+option "display_precision" "CNY:4"
+2024-01-01 open Assets:Cash CNY
+2024-01-01 open Equity:Opening CNY
+2024-01-02 * "opening"
+  Assets:Cash 1.2 CNY
+  Equity:Opening -1.2 CNY

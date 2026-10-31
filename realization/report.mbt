@@ -516,6 +516,7 @@ pub(all) struct RegisterRow {
   account : String
   amount : @ast.Amount
   running : @ast.Amount
+  cost : @ast.CostSpec?
 }
 
 ///|
@@ -550,6 +551,7 @@ pub fn register_rows(
                   narration: txn.narration,
                   account: posting.account,
                   amount: units,
+                  cost: posting.cost,
                   running: @ast.Amount::new(next, units.currency),
                 })
               }
@@ -585,6 +587,10 @@ pub fn register_to_text(rows : Array[RegisterRow]) -> String {
     sb.write_string("  ")
     sb.write_string(pad_right(amount_text(row.running), 18))
     sb.write_string("  ")
+    match row.cost {
+      Some(cost) => sb.write_string(cost.to_string() + "  ")
+      None => ()
+    }
     sb.write_string(register_description(row))
     sb.write_string("\n")
   }
@@ -610,7 +616,14 @@ pub fn register_to_json(rows : Array[RegisterRow]) -> String {
     sb.write_string(json_escape(row.narration))
     sb.write_string("\",\"account\":\"")
     sb.write_string(json_escape(row.account))
-    sb.write_string("\",\"amount\":")
+    sb.write_string("\",\"cost\":")
+    sb.write_string(
+      match row.cost {
+        Some(cost) => "\"" + json_escape(cost.to_string()) + "\""
+        None => "null"
+      },
+    )
+    sb.write_string(",\"amount\":")
     sb.write_string(amount_json(row.amount))
     sb.write_string(",\"running\":")
     sb.write_string(amount_json(row.running))

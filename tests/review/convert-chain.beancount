@@ -1,0 +1,8 @@
+option "operating_currency" "CNY"
+2024-01-01 open Assets:Stock AAPL "FIFO"
+2024-01-01 open Equity:Opening USD
+2024-01-02 * "buy"
+  Assets:Stock 1 AAPL {150.00 USD}
+  Equity:Opening -150.00 USD
+2024-12-31 price AAPL 175.00 USD
+2024-12-31 price USD 7.00 CNY

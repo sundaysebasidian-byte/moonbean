@@ -1,0 +1,4 @@
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Equity:Opening USD
+2024-01-02 pad Assets:Cash Equity:Opening
+2024-01-03 balance Assets:Cash 100.00 USD

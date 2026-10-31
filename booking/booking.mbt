@@ -17,19 +17,24 @@ pub fn BookingIssue::new(code : String, message : String) -> BookingIssue {
 ///|
 pub(all) struct BookingOutcome {
   weights : Array[@ast.Amount]
+  positions : Array[Position]
   issue : BookingIssue?
   needs_inference : Bool
 }
 
 ///|
-fn outcome_ok(weights : Array[@ast.Amount]) -> BookingOutcome {
-  { weights, issue: None, needs_inference: false, }
+fn outcome_ok(
+  weights : Array[@ast.Amount],
+  positions~ : Array[Position] = [],
+) -> BookingOutcome {
+  { weights, positions, issue: None, needs_inference: false, }
 }
 
 ///|
 fn outcome_issue(code : String, message : String) -> BookingOutcome {
   {
     weights: [],
+    positions: [],
     issue: Some(BookingIssue::new(code, message)),
     needs_inference: false,
   }
@@ -37,7 +42,7 @@ fn outcome_issue(code : String, message : String) -> BookingOutcome {
 
 ///|
 fn needs_inference_outcome() -> BookingOutcome {
-  { weights: [], issue: None, needs_inference: true, }
+  { weights: [], positions: [], issue: None, needs_inference: true, }
 }
 
 ///|
@@ -566,7 +571,9 @@ fn reduce_with_average(
         Some(cost),
       )
       apply_plan(inv, plan)
-      outcome_ok(negate_weights(weights))
+      outcome_ok(negate_weights(weights), positions=[
+        Position::new(units, Some(cost)),
+      ])
     }
   }
 }
@@ -601,6 +608,7 @@ pub fn book_posting(
           Some(cost) =>
             outcome_ok(
               book_augmentation(state, account, units, cost, posting.price),
+              positions=[Position::new(units, Some(cost))],
             )
           None =>
             if spec_has_number(spec) && spec.currency is Some(_) {
@@ -628,7 +636,7 @@ pub fn book_posting(
               inv.add({ units, cost: Some(cost), })
               let weights = []
               add_weights(weights, cost_weight(units.number, cost))
-              outcome_ok(weights)
+              outcome_ok(weights, positions=[Position::new(units, Some(cost))])
             }
             None => {
               inv.add({ units, cost: None, })
@@ -655,7 +663,12 @@ pub fn book_posting(
           )
           match issue {
             Some(issue) =>
-              { weights: [], issue: Some(issue), needs_inference: false, }
+              {
+                weights: [],
+                positions: [],
+                issue: Some(issue),
+                needs_inference: false,
+              }
             None => {
               let weights = plan_weights(
                 inv,
@@ -664,8 +677,14 @@ pub fn book_posting(
                 posting.price,
                 None,
               )
+              let positions = plan.map(fn(item) {
+                Position::new(
+                  @ast.Amount::new(item.1.neg(), units.currency),
+                  inv.positions[item.0].cost,
+                )
+              })
               apply_plan(inv, plan)
-              outcome_ok(negate_weights(weights))
+              outcome_ok(negate_weights(weights), positions~)
             }
           }
         }

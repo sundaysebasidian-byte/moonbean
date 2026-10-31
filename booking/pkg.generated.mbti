@@ -27,6 +27,7 @@ pub fn BookingIssue::new(String, String) -> Self
 
 pub(all) struct BookingOutcome {
   weights : Array[@ast.Amount]
+  positions : Array[Position]
   issue : BookingIssue?
   needs_inference : Bool
 }

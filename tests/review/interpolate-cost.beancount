@@ -1,0 +1,5 @@
+2024-01-01 open Assets:Stock HOOL "FIFO"
+2024-01-01 open Assets:Cash USD
+2024-01-02 * "buy"
+  Assets:Stock 3 HOOL {10.00 USD}
+  Assets:Cash

@@ -636,6 +636,7 @@ fn book_explicit(
   index : Int32,
   posting : @ast.Posting,
   weights : Array[@ast.Amount],
+  booked : Map[Int32, Array[@ast.Posting]],
 ) -> Bool {
   let outcome = @booking.book_posting(
     ctx.state,
@@ -659,6 +660,25 @@ fn book_explicit(
         )
         false
       } else {
+        if outcome.positions.length() > 0 {
+          booked.set(
+            index,
+            outcome.positions.map(fn(position) {
+              {
+                ..posting,
+                units: Some(position.units),
+                cost: position.cost.map(fn(cost) {
+                  @ast.CostSpec::new_per(
+                    cost.number,
+                    cost.currency,
+                    cost.date,
+                    cost.label,
+                  )
+                }),
+              }
+            }),
+          )
+        }
         for weight in outcome.weights {
           add_weight(weights, weight)
         }
@@ -1002,6 +1022,7 @@ fn process_transaction(
   txn : @ast.Transaction,
 ) -> Unit {
   let postings = txn.postings
+  let booked : Map[Int32, Array[@ast.Posting]] = Map([])
   let mut booking_failed = !resolve_missing_currencies(ctx, entry, postings)
   for posting in postings {
     let info = check_account(ctx, posting.account, entry.date, entry.loc, true)
@@ -1025,7 +1046,7 @@ fn process_transaction(
         match posting.cost {
           Some(_) =>
             if units.number.is_negative() {
-              if !book_explicit(ctx, entry, i, posting, weights) {
+              if !book_explicit(ctx, entry, i, posting, weights, booked) {
                 booking_failed = true
               }
             }
@@ -1043,12 +1064,12 @@ fn process_transaction(
             if !units.number.is_negative() {
               if needs_cost_inference(spec) {
                 deferred.push(i)
-              } else if !book_explicit(ctx, entry, i, posting, weights) {
+              } else if !book_explicit(ctx, entry, i, posting, weights, booked) {
                 booking_failed = true
               }
             }
           None =>
-            if !book_explicit(ctx, entry, i, posting, weights) {
+            if !book_explicit(ctx, entry, i, posting, weights, booked) {
               booking_failed = true
             }
         }
@@ -1086,6 +1107,15 @@ fn process_transaction(
   // matching Beancount's error precedence.
   if !booking_failed {
     check_balanced(ctx, entry, postings, weights)
+    let detailed : Array[@ast.Posting] = []
+    for i in 0..<postings.length() {
+      match booked.get(i) {
+        Some(parts) => detailed.append(parts)
+        None => detailed.push(postings[i])
+      }
+    }
+    postings.clear()
+    postings.append(detailed)
   }
 }
 

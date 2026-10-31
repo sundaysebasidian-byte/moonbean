@@ -83,6 +83,7 @@ pub(all) struct RegisterRow {
   account : String
   amount : @ast.Amount
   running : @ast.Amount
+  cost : @ast.CostSpec?
 }
 
 pub(all) struct Report {

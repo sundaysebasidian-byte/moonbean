@@ -21,94 +21,47 @@ fn entry_in_range(entry : @ast.Entry, at : @ast.Date?) -> Bool {
 }
 
 ///|
-fn replay_book(
-  state : @booking.BookingState,
-  entry : @ast.Entry,
-  posting : @ast.Posting,
-  default_method : String,
-) -> Unit {
-  if posting.units is Some(_) {
-    @booking.book_posting(
-      state,
-      posting.account,
-      posting,
-      entry.date,
-      default_method,
-    )
-    |> ignore
-  }
-}
-
-///|
-fn replay_transaction(
-  state : @booking.BookingState,
-  entry : @ast.Entry,
-  txn : @ast.Transaction,
-  default_method : String,
-) -> Unit {
-  for posting in txn.postings {
-    match posting.units {
-      Some(units) =>
-        match posting.cost {
-          Some(_) =>
-            if units.number.is_negative() {
-              replay_book(state, entry, posting, default_method)
-            }
-          None => ()
-        }
-      None => ()
-    }
-  }
-  for posting in txn.postings {
-    match posting.units {
-      Some(units) =>
-        match posting.cost {
-          Some(_) =>
-            if !units.number.is_negative() {
-              replay_book(state, entry, posting, default_method)
-            }
-          None => replay_book(state, entry, posting, default_method)
-        }
-      None => ()
-    }
-  }
-}
-
-///|
 fn replay_inventories(
   ledger : @validation.ValidatedLedger,
   at : @ast.Date?,
 ) -> Map[String, @booking.Inventory] {
-  let state = @booking.BookingState::new()
+  let inventories : Map[String, @booking.Inventory] = Map([])
   for name in ledger.accounts.keys().to_array() {
-    match ledger.accounts.get(name) {
-      Some(info) =>
-        match info.booking {
-          Some(booking) => state.set_booking(name, booking)
-          None => ()
-        }
-      None => ()
-    }
+    inventories.set(name, @booking.Inventory::new())
   }
   for entry in ledger.entries {
     if entry_in_range(entry, at) {
-      match entry.directive {
-        DTransaction(txn) =>
-          replay_transaction(state, entry, txn, ledger.options.booking_method)
-        _ => ()
+      if entry.directive is DTransaction(txn) {
+        for posting in txn.postings {
+          if posting.units is Some(units) {
+            let inventory = match inventories.get(posting.account) {
+              Some(inv) => inv
+              None => {
+                let inv = @booking.Inventory::new()
+                inventories.set(posting.account, inv)
+                inv
+              }
+            }
+            let cost = match posting.cost {
+              Some(spec) =>
+                match (spec.number_per, spec.currency) {
+                  (Some(number), Some(currency)) =>
+                    Some(
+                      @ast.Cost::new(number, currency, spec.date, spec.label),
+                    )
+                  _ => None
+                }
+              None => None
+            }
+            inventory.add(@booking.Position::new(units, cost))
+            if ledger.options.booking_method == "AVERAGE" ||
+              ledger.accounts.get(posting.account).map(fn(a) { a.booking }) ==
+              Some(Some("AVERAGE")) {
+              inventory.merge_average(units.currency)
+            }
+          }
+        }
       }
-    }
-  }
-  let inventories : Map[String, @booking.Inventory] = Map([])
-  for name in state.accounts.keys().to_array() {
-    match state.accounts.get(name) {
-      Some(account) => inventories.set(name, account.inventory.copy())
-      None => ()
-    }
-  }
-  for name in ledger.accounts.keys().to_array() {
-    if inventories.get(name) is None {
-      inventories.set(name, @booking.Inventory::new())
     }
   }
   inventories

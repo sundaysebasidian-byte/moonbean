@@ -86,7 +86,17 @@ fn query_cost_json(cost : @ast.Cost?) -> String {
       c.number.to_string() +
       "\", \"currency\": \"" +
       query_json_escape(c.currency) +
-      "\" }"
+      "\", \"date\":" +
+      (match c.date {
+        Some(d) => "\"" + d.to_string() + "\""
+        None => "null"
+      }) +
+      ", \"label\":" +
+      (match c.label {
+        Some(l) => "\"" + query_json_escape(l) + "\""
+        None => "null"
+      }) +
+      " }"
     None => "null"
   }
 }

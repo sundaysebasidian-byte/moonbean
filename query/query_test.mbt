@@ -290,3 +290,25 @@ test "hosts can match query failure categories" {
     content="true",
   )
 }
+
+///|
+test "transaction source is rejected rather than duplicating postings" {
+  inspect(
+    queried(ledger_source(), "SELECT date, narration FROM transactions").failure()
+    is Some(@query.Unsupported(_)),
+    content="true",
+  )
+}
+
+///|
+test "FIFO reduction preserves separate booked posting costs" {
+  let source = "2024-01-01 open Assets:Stock HOOL \"FIFO\"\n2024-01-01 open Assets:Cash USD\n2024-01-02 * \"first\"\n  Assets:Stock 10 HOOL {10 USD}\n  Assets:Cash -100 USD\n2024-01-03 * \"second\"\n  Assets:Stock 10 HOOL {20 USD}\n  Assets:Cash -200 USD\n2024-01-04 * \"sell\"\n  Assets:Stock -15 HOOL {}\n  Assets:Cash 200 USD\n"
+  let r = queried(
+    source, "SELECT position WHERE date = 2024-01-04 AND account = 'Assets:Stock'",
+  )
+  inspect(r.rows.length(), content="2")
+  inspect(r.rows[0][0].to_text(), content="-10 HOOL {10 USD, 2024-01-02}")
+  inspect(r.rows[1][0].to_text(), content="-5 HOOL {20 USD, 2024-01-03}")
+  let journal = queried(source, "JOURNAL Assets:Stock")
+  inspect(journal.rows.length(), content="4")
+}

@@ -1,0 +1,14 @@
+option "operating_currency" "CNY"
+2024-01-01 open Assets:Cash CNY
+2024-01-01 open Equity:Opening CNY
+2024-01-01 open Income:Salary CNY
+2024-01-01 open Expenses:Food CNY
+2024-01-01 * "opening"
+  Assets:Cash 100.00 CNY
+  Equity:Opening -100.00 CNY
+2024-01-02 * "salary"
+  Assets:Cash 1000.00 CNY
+  Income:Salary -1000.00 CNY
+2024-01-03 * "food"
+  Assets:Cash -200.00 CNY
+  Expenses:Food 200.00 CNY
