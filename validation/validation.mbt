@@ -969,10 +969,7 @@ fn resolve_missing_currencies(
   let missing : Array[Int32] = []
   for i in 0..<postings.length() {
     match postings[i].units {
-      Some(units) =>
-        if units.currency == "" {
-          missing.push(i)
-        }
+      Some(units) => if units.currency == "" { missing.push(i) }
       None => ()
     }
   }
@@ -982,11 +979,7 @@ fn resolve_missing_currencies(
   let currencies = transaction_currencies(postings)
   if currencies.length() != 1 {
     let target = postings[missing[0]].loc
-    let loc = if target.line > 0 {
-      target
-    } else {
-      entry.loc
-    }
+    let loc = if target.line > 0 { target } else { entry.loc }
     error(
       ctx,
       "validation.cost",
@@ -1065,11 +1058,7 @@ fn process_transaction(
   if deferred.length() > 1 {
     for index in deferred {
       let target = postings[index].loc
-      let loc = if target.line > 0 {
-        target
-      } else {
-        entry.loc
-      }
+      let loc = if target.line > 0 { target } else { entry.loc }
       error(
         ctx,
         "validation.cost",
@@ -1084,15 +1073,9 @@ fn process_transaction(
   if missing.length() > 1 {
     let last = missing[missing.length() - 1]
     let target = postings[last].loc
-    let loc = if target.line > 0 {
-      target
-    } else {
-      entry.loc
-    }
+    let loc = if target.line > 0 { target } else { entry.loc }
     error(
-      ctx,
-      "validation.missing",
-      "You may not have more than one auto-posting per currency",
+      ctx, "validation.missing", "You may not have more than one auto-posting per currency",
       loc,
     )
     booking_failed = true

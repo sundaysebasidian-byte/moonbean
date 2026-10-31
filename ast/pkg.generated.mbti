@@ -225,6 +225,7 @@ pub(all) struct Posting {
   mut cost : CostSpec?
   mut price : PriceAnno?
   meta : Meta
+  mut loc : Loc
 }
 pub fn Posting::new(String) -> Self
 

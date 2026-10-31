@@ -50,6 +50,7 @@ pub fn Inventory::average_cost(Self, String) -> @ast.Cost?
 pub fn Inventory::copy(Self) -> Self
 pub fn Inventory::currencies(Self) -> Array[String]
 pub fn Inventory::is_empty(Self) -> Bool
+pub fn Inventory::merge_average(Self, String) -> Unit
 pub fn Inventory::new() -> Self
 pub fn Inventory::quantity(Self, String) -> @decimal.Decimal
 pub fn Inventory::remove_at(Self, Int32) -> Unit

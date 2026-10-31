@@ -68,7 +68,9 @@ test "expand_includes follows nested includes and reports missing" {
 test "expand_includes resolves absolute base directories" {
   let files : Map[String, String] = Map([])
   files.set("/tmp/docs/a.beancount", "2024-01-01 open Assets:Cash USD\n")
-  files.set("/tmp/docs/includes/b.beancount", "2024-01-01 open Equity:Opening USD\n")
+  files.set(
+    "/tmp/docs/includes/b.beancount", "2024-01-01 open Equity:Opening USD\n",
+  )
   let read = fn(path) {
     match files.get(path) {
       Some(content) => Some(content)
