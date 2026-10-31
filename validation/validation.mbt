@@ -661,19 +661,36 @@ fn book_explicit(
         false
       } else {
         if outcome.positions.length() > 0 {
+          let price = match posting.price {
+            Some(@ast.Total(amount)) =>
+              if outcome.positions.length() > 1 {
+                let rate = amount.number
+                  .div(posting.units.unwrap().number.abs())
+                  .unwrap()
+                Some(@ast.PerUnit(@ast.Amount::new(rate, amount.currency)))
+              } else {
+                posting.price
+              }
+            _ => posting.price
+          }
           booked.set(
             index,
             outcome.positions.map(fn(position) {
               {
                 ..posting,
                 units: Some(position.units),
+                price,
                 cost: position.cost.map(fn(cost) {
-                  @ast.CostSpec::new_per(
+                  let spec = @ast.CostSpec::new_per(
                     cost.number,
                     cost.currency,
                     cost.date,
                     cost.label,
                   )
+                  {
+                    ..spec,
+                    merge: posting.cost.map(fn(c) { c.merge }).unwrap_or(false),
+                  }
                 }),
               }
             }),

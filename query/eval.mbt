@@ -794,7 +794,9 @@ fn opening_rows(
     if row.date.less_than(start) {
       let root = @ast.account_root(row.account)
       let account = if root == "Income" || root == "Expenses" {
-        "Equity:Earnings:Previous"
+        realized.options.equity_account(
+          "account_previous_earnings", "Earnings:Previous",
+        )
       } else {
         row.account
       }
@@ -857,7 +859,9 @@ fn opening_rows(
       }
       summaries.push({
         ..row,
-        account: "Equity:Opening-Balances",
+        account: realized.options.equity_account(
+          "account_previous_balances", "Opening-Balances",
+        ),
         units: amount,
         cost: None,
         value: None,

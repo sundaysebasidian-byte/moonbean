@@ -53,6 +53,9 @@ fn replay_inventories(
                 }
               None => None
             }
+            if posting.cost.map(fn(c) { c.merge }).unwrap_or(false) {
+              inventory.merge_average(units.currency)
+            }
             inventory.add(@booking.Position::new(units, cost))
             if ledger.options.booking_method == "AVERAGE" ||
               ledger.accounts.get(posting.account).map(fn(a) { a.booking }) ==

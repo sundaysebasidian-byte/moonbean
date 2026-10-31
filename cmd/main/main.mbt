@@ -67,6 +67,7 @@ struct CliOptions {
   mut file : String
   mut bql : String
   mut at : @ast.Date?
+  mut start : @ast.Date?
   mut convert : String?
   mut json : Bool
   mut write : Bool
@@ -89,6 +90,7 @@ fn parse_options(command : String, args : Array[String]) -> CliOptions {
     file: "",
     bql: "",
     at: None,
+    start: None,
     convert: None,
     json: false,
     write: false,
@@ -97,7 +99,13 @@ fn parse_options(command : String, args : Array[String]) -> CliOptions {
   let mut i = 0
   while i < args.length() {
     let arg = args[i]
-    if arg == "--at" {
+    if arg == "--from" {
+      if i + 1 >= args.length() {
+        fail("--from requires a date")
+      }
+      options.start = Some(parse_date(args[i + 1], "--from"))
+      i += 2
+    } else if arg == "--at" {
       if i + 1 >= args.length() {
         fail("--at requires a date")
       }
@@ -194,7 +202,7 @@ async fn cmd_bal(command : String, args : Array[String]) -> Unit {
       }
       let realized = @moonbean.realize(ledger, at=options.at)
       let convert = match options.convert {
-        Some(currency) => Some(currency)
+        Some(currency) => if currency == "" { None } else { Some(currency) }
         None =>
           if ledger.options.operating_currencies.length() == 1 {
             Some(ledger.options.operating_currencies[0])
@@ -229,8 +237,14 @@ async fn cmd_bal(command : String, args : Array[String]) -> Unit {
         }
       } else {
         let report = match command {
-          "bs" => @realization.balance_sheet(realized, convert~)
-          "is" => @realization.income_statement(realized, convert~)
+          "bs" =>
+            @realization.balance_sheet(realized, convert~, start=options.start)
+          "is" =>
+            @realization.income_statement(
+              realized,
+              convert~,
+              start=options.start,
+            )
           _ => @realization.trial_balance(realized, convert~)
         }
         println(

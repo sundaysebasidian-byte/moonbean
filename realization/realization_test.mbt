@@ -130,7 +130,7 @@ test "balance sheet totals each root and converts positions" {
   )
   inspect(
     row_for(report.totals, "Total Equity").unwrap().amount.to_string(),
-    content="-500 USD",
+    content="-1000 USD",
   )
 }
 
@@ -322,4 +322,114 @@ test "price paths use dated shortest paths inverse edges and terminate on cycles
     tie.add(jan, currency, "DST", @decimal.Decimal::from_int(3))
   }
   inspect(tie.rate("SRC", "DST", None).unwrap().to_string(), content="6")
+}
+
+///|
+fn assert_balanced_report(report : @realization.Report) -> Unit raise {
+  let sums : Map[String, @decimal.Decimal] = Map([])
+  for row in report.rows {
+    let currency = row.amount.currency
+    sums.set(
+      currency,
+      sums
+      .get(currency)
+      .unwrap_or(@decimal.Decimal::zero())
+      .add(row.amount.number),
+    )
+  }
+  for (_, number) in sums {
+    inspect(number.is_zero(), content="true")
+  }
+}
+
+///|
+test "balance sheet closes current and prior earnings and respects account options" {
+  let prefix = "option \"account_current_earnings\" \"Profit:This\"\noption \"account_previous_earnings\" \"Profit:Prior\"\n2023-01-01 open Assets:Cash USD,EUR\n2023-01-01 open Equity:Opening USD\n2023-01-01 open Income:Salary USD,EUR\n2023-01-01 open Expenses:Food USD,EUR\n2023-02-01 * \"prior\"\n  Assets:Cash 50 USD\n  Income:Salary -50 USD\n"
+  for expense in [0, 200, 1200] {
+    let source = prefix +
+      "2024-01-01 * \"salary\"\n  Assets:Cash 1000 USD\n  Income:Salary -1000 USD\n2024-01-02 * \"food\"\n  Assets:Cash -" +
+      expense.to_string() +
+      " USD\n  Expenses:Food " +
+      expense.to_string() +
+      " USD\n2024-01-03 * \"foreign\"\n  Assets:Cash 10 EUR\n  Income:Salary -10 EUR\n"
+    let report = @realization.balance_sheet(realized(source))
+    assert_balanced_report(report)
+    inspect(
+      row_for(report.rows, "Equity:Profit:Prior").unwrap().amount.number.equal(
+        @decimal.Decimal::from_int(-50),
+      ),
+      content="true",
+    )
+    inspect(
+      report.rows.any(fn(r) { r.label == "Equity:Profit:This" }),
+      content="true",
+    )
+    assert_balanced_report(
+      @realization.balance_sheet(realized(source, at=Some("2023-12-31"))),
+    )
+  }
+}
+
+///|
+test "incomplete conversion has structured diagnostics and currency totals" {
+  let source = "2024-01-01 open Assets:Cash USD\n2024-01-01 open Assets:Foreign EUR\n2024-01-01 open Equity:Opening\n2024-01-02 * \"cash\"\n  Assets:Cash 10.00 USD\n  Assets:Foreign 3 EUR\n  Equity:Opening -10.00 USD\n  Equity:Opening -3 EUR\n"
+  let report = @realization.trial_balance(realized(source), convert=Some("USD"))
+  inspect(report.diagnostics.length(), content="2")
+  inspect(report.diagnostics[0].code, content="report.conversion_incomplete")
+  inspect(report.totals.length(), content="2")
+  inspect(report.totals.any(fn(r) { r.label == "Total" }), content="false")
+  inspect(report.to_json().contains("\"complete\":false"), content="true")
+  assert_balanced_report(@realization.balance_sheet(realized(source)))
+}
+
+///|
+test "text precision is inferred per currency and JSON preserves source scale" {
+  let source = "2024-01-01 open Assets:Cash USD\n2024-01-01 open Equity:Opening USD\n2024-01-02 * \"initial\"\n  Assets:Cash 10.00 USD\n  Equity:Opening -10.00 USD\n2024-01-03 * \"extra\"\n  Assets:Cash 1.2340 USD\n  Equity:Opening -1.2340 USD\n"
+  let report = @realization.trial_balance(realized(source))
+  inspect(report.display_scales.get("USD").unwrap(), content="4")
+  inspect(report.to_text().contains("0.0000 USD"), content="true")
+  inspect(report.to_json().contains("11.2340"), content="true")
+}
+
+///|
+test "report combines explicit retained earnings and computed closing earnings" {
+  let source = "2024-01-01 open Assets:Cash USD\n2024-01-01 open Equity:Earnings:Current USD\n2024-01-01 open Income:Salary USD\n2024-01-02 * \"closed\"\n  Assets:Cash 50 USD\n  Equity:Earnings:Current -50 USD\n2024-01-03 * \"current\"\n  Assets:Cash 100 USD\n  Income:Salary -100 USD\n"
+  let report = @realization.balance_sheet(realized(source))
+  inspect(
+    report.rows.filter(fn(r) { r.label == "Equity:Earnings:Current" }).length(),
+    content="1",
+  )
+  inspect(
+    row_for(report.rows, "Equity:Earnings:Current").unwrap().amount.to_string(),
+    content="-150 USD",
+  )
+  assert_balanced_report(report)
+}
+
+///|
+test "split total price stays per unit and cost does not override sale price" {
+  let source = "2024-01-01 open Assets:Stock HOOL \"FIFO\"\n2024-01-01 open Assets:Cash USD\n2024-01-01 open Income:Gains USD\n2024-01-02 * \"first\"\n  Assets:Stock 10 HOOL {10 USD}\n  Assets:Cash -100 USD\n2024-01-03 * \"second\"\n  Assets:Stock 10 HOOL {20 USD}\n  Assets:Cash -200 USD\n2024-01-04 * \"sell\"\n  Assets:Stock -15 HOOL {} @@ 300 USD\n  Assets:Cash 300 USD\n  Income:Gains -100 USD\n"
+  let r = realized(source)
+  inspect(r.rate("HOOL", "USD").unwrap().to_string(), content="20")
+  inspect(@realization.register_rows(r, "Assets:Stock").length(), content="4")
+  assert_balanced_report(@realization.balance_sheet(r))
+}
+
+///|
+test "explicit price wins over same-day inferred cost and total price" {
+  let r = realized(
+    "2024-01-01 open Assets:Stock HOOL\n2024-01-01 open Assets:Cash USD\n2024-01-02 price HOOL 25 USD\n2024-01-02 * \"buy\"\n  Assets:Stock 10 HOOL {10 USD} @@ 200 USD\n  Assets:Cash -100 USD\n",
+  )
+  inspect(r.rate("HOOL", "USD").unwrap().to_string(), content="25")
+}
+
+///|
+test "cost merge extension retains its booked inventory during replay" {
+  let r = realized(
+    "2024-01-01 open Assets:Stock HOOL \"FIFO\"\n2024-01-01 open Assets:Cash USD\n2024-01-02 * \"a\"\n  Assets:Stock 10 HOOL {10 USD}\n  Assets:Cash -100 USD\n2024-01-03 * \"b\"\n  Assets:Stock 10 HOOL {20 USD}\n  Assets:Cash -200 USD\n2024-01-04 * \"merge\"\n  Assets:Stock -10 HOOL {*}\n  Assets:Cash 150 USD\n",
+  )
+  let inv = r.inventory("Assets:Stock")
+  inspect(inv.positions.length(), content="1")
+  inspect(inv.positions[0].units.to_string(), content="10 HOOL")
+  inspect(inv.positions[0].cost.unwrap().number.to_string(), content="15")
 }

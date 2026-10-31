@@ -9,7 +9,7 @@ import {
 }
 
 // Values
-pub fn balance_sheet(RealizedLedger, convert? : String?) -> Report
+pub fn balance_sheet(RealizedLedger, convert? : String?, start? : @ast.Date?) -> Report
 
 pub fn income_statement(RealizedLedger, start? : @ast.Date?, convert? : String?) -> Report
 
@@ -36,6 +36,13 @@ pub fn trial_balance(RealizedLedger, convert? : String?) -> Report
 // Errors
 
 // Types and methods
+pub(all) struct ConversionIssue {
+  code : String
+  account : String
+  currency : String
+  target : String
+}
+
 pub(all) struct InventoryReportRow {
   account : String
   units : @ast.Amount
@@ -90,6 +97,8 @@ pub(all) struct Report {
   title : String
   rows : Array[ReportRow]
   totals : Array[ReportRow]
+  diagnostics : Array[ConversionIssue]
+  display_scales : Map[String, Int32]
 }
 pub fn Report::to_json(Self) -> String
 pub fn Report::to_text(Self) -> String

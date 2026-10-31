@@ -634,3 +634,23 @@ pub fn account_parent(account : String) -> String {
     sb.to_string()
   }
 }
+
+///|
+/// Resolves an equity subaccount option, including the configured equity root.
+pub fn Options::equity_account(
+  self : Options,
+  option : String,
+  default_suffix : String,
+) -> String {
+  let mut root = "Equity"
+  let mut suffix = default_suffix
+  for (key, value) in self.raw {
+    if key == "name_equity" {
+      root = value
+    }
+    if key == option {
+      suffix = value
+    }
+  }
+  root + ":" + suffix
+}

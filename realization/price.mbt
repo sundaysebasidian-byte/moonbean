@@ -45,6 +45,31 @@ fn add_posting_price(
     Some(units) => units
     None => return
   }
+  if !units.number.is_negative() {
+    match posting.cost {
+      Some(spec) =>
+        match spec.currency {
+          Some(currency) =>
+            match spec.number_per {
+              Some(number) => db.add(date, units.currency, currency, number)
+              None =>
+                match spec.number_total {
+                  Some(total) =>
+                    if !units.number.is_zero() {
+                      match total.abs().div(units.number.abs()) {
+                        Some(rate) =>
+                          db.add(date, units.currency, currency, rate)
+                        None => ()
+                      }
+                    }
+                  None => ()
+                }
+            }
+          None => ()
+        }
+      None => ()
+    }
+  }
   match posting.price {
     Some(price) =>
       match price {
@@ -60,47 +85,27 @@ fn add_posting_price(
       }
     None => ()
   }
-  match posting.cost {
-    Some(spec) =>
-      match spec.currency {
-        Some(currency) =>
-          match spec.number_per {
-            Some(number) => db.add(date, units.currency, currency, number)
-            None =>
-              match spec.number_total {
-                Some(total) =>
-                  if !units.number.is_zero() {
-                    match total.abs().div(units.number.abs()) {
-                      Some(rate) => db.add(date, units.currency, currency, rate)
-                      None => ()
-                    }
-                  }
-                None => ()
-              }
-          }
-        None => ()
-      }
-    None => ()
-  }
 }
 
 ///|
 pub fn PriceDb::from_entries(entries : Array[@ast.Entry]) -> PriceDb {
   let db = PriceDb::new()
   for entry in entries {
-    match entry.directive {
-      DPrice(price) =>
-        db.add(
-          entry.date,
-          price.currency,
-          price.amount.currency,
-          price.amount.number,
-        )
-      DTransaction(txn) =>
-        for posting in txn.postings {
-          add_posting_price(db, entry.date, posting)
-        }
-      _ => ()
+    if entry.directive is DTransaction(txn) {
+      for posting in txn.postings {
+        add_posting_price(db, entry.date, posting)
+      }
+    }
+  }
+  // Explicit quotes win over inferred posting quotes on the same date.
+  for entry in entries {
+    if entry.directive is DPrice(price) {
+      db.add(
+        entry.date,
+        price.currency,
+        price.amount.currency,
+        price.amount.number,
+      )
     }
   }
   db

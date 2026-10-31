@@ -13,6 +13,17 @@ pub(all) struct Report {
   title : String
   rows : Array[ReportRow]
   totals : Array[ReportRow]
+  diagnostics : Array[ConversionIssue]
+  display_scales : Map[String, Int32]
+}
+
+///|
+/// A report retains its values when conversion is incomplete; hosts must inspect this diagnostic.
+pub(all) struct ConversionIssue {
+  code : String
+  account : String
+  currency : String
+  target : String
 }
 
 ///|
@@ -82,7 +93,7 @@ fn render_rows(
 }
 
 ///|
-pub fn Report::to_text(self : Report) -> String {
+fn Report::render_text(self : Report) -> String {
   let sb = StringBuilder()
   sb.write_string(self.title)
   sb.write_string("\n")
@@ -97,7 +108,39 @@ pub fn Report::to_text(self : Report) -> String {
     sb.write_string("\n")
     render_rows(sb, self.totals, label_width, amount_width)
   }
+  for issue in self.diagnostics {
+    sb.write_string(
+      "WARNING " +
+      issue.code +
+      ": " +
+      issue.account +
+      " " +
+      issue.currency +
+      " -> " +
+      issue.target +
+      "\n",
+    )
+  }
   sb.to_string()
+}
+
+///|
+/// Renders using inferred currency precision without changing stored amounts.
+pub fn Report::to_text(self : Report) -> String {
+  fn display(row : ReportRow) -> ReportRow {
+    match self.display_scales.get(row.amount.currency) {
+      Some(scale) =>
+        {
+          ..row,
+          amount: @ast.Amount::new(
+            row.amount.number.quantize(scale),
+            row.amount.currency,
+          ),
+        }
+      None => row
+    }
+  }
+  { ..self, rows: self.rows.map(display), totals: self.totals.map(display), }.render_text()
 }
 
 ///|
@@ -131,12 +174,41 @@ fn rows_json(rows : Array[ReportRow]) -> String {
 
 ///|
 pub fn Report::to_json(self : Report) -> String {
+  let currencies = self.display_scales.keys().to_array()
+  currencies.sort()
   "{\"title\":\"" +
   json_escape(self.title) +
   "\",\"rows\":" +
   rows_json(self.rows) +
   ",\"totals\":" +
   rows_json(self.totals) +
+  ",\"display_precision\":{" +
+  currencies
+  .map(fn(currency) {
+    "\"" +
+    json_escape(currency) +
+    "\":" +
+    self.display_scales.get(currency).unwrap().to_string()
+  })
+  .join(",") +
+  "}" +
+  ",\"complete\":" +
+  (if self.diagnostics.is_empty() { "true" } else { "false" }) +
+  ",\"diagnostics\":[" +
+  self.diagnostics
+  .map(fn(d) {
+    "{\"code\":\"" +
+    d.code +
+    "\",\"account\":\"" +
+    json_escape(d.account) +
+    "\",\"currency\":\"" +
+    json_escape(d.currency) +
+    "\",\"target\":\"" +
+    json_escape(d.target) +
+    "\"}"
+  })
+  .join(",") +
+  "]" +
   "}"
 }
 
@@ -249,26 +321,201 @@ fn built_rows(
 }
 
 ///|
-fn sum_rows(rows : Array[ReportRow]) -> @ast.Amount? {
-  if rows.length() == 0 {
-    return None
-  }
-  let currency = rows[0].amount.currency
-  let mut total = @decimal.Decimal::zero()
+fn grouped_amounts(rows : Array[ReportRow]) -> Array[@ast.Amount] {
+  let amounts : Array[@ast.Amount] = []
   for row in rows {
-    if row.amount.currency != currency {
-      return None
-    }
-    total = total.add(row.amount.number)
+    add_amount(amounts, row.amount)
   }
-  Some(@ast.Amount::new(total, currency))
+  amounts.sort_by(fn(a, b) { a.currency.lexical_compare(b.currency) })
+  amounts
 }
 
 ///|
 fn total_row(label : String, rows : Array[ReportRow]) -> Array[ReportRow] {
-  match sum_rows(rows) {
-    Some(amount) => [{ label, amount, }]
-    None => []
+  let amounts = grouped_amounts(rows)
+  amounts.map(fn(amount) {
+    {
+      label: label +
+      (if amounts.length() > 1 { " " + amount.currency } else { "" }),
+      amount,
+    }
+  })
+}
+
+///|
+fn converted_amount(
+  realized : RealizedLedger,
+  amount : @ast.Amount,
+  convert : String?,
+) -> @ast.Amount {
+  match convert {
+    Some(target) => realized.convert(amount, target).unwrap_or(amount)
+    None => amount
+  }
+}
+
+///|
+fn book_amount(posting : @ast.Posting, units : @ast.Amount) -> @ast.Amount {
+  match posting.cost {
+    Some(spec) =>
+      match (spec.number_per, spec.currency) {
+        (Some(number), Some(currency)) =>
+          @ast.Amount::new(units.number.mul(number), currency)
+        _ => units
+      }
+    None => units
+  }
+}
+
+///|
+fn book_rows(
+  realized : RealizedLedger,
+  roots : Array[String],
+  convert : String?,
+  market : Bool,
+) -> Array[ReportRow] {
+  let rows : Array[ReportRow] = []
+  for account in realized.account_names() {
+    if root_allowed(account, roots) {
+      let amounts : Array[@ast.Amount] = []
+      for position in realized.inventory(account).positions {
+        let cost = match position.cost {
+          Some(c) =>
+            @ast.Amount::new(position.units.number.mul(c.number), c.currency)
+          None => position.units
+        }
+        let amount = if market {
+          match convert {
+            Some(target) =>
+              match realized.convert(position.units, target) {
+                Some(a) => a
+                None => converted_amount(realized, cost, convert)
+              }
+            None => cost
+          }
+        } else {
+          converted_amount(realized, cost, convert)
+        }
+        add_amount(amounts, amount)
+      }
+      for amount in amounts {
+        rows.push({ label: account, amount, })
+      }
+    }
+  }
+  rows
+}
+
+///|
+fn make_report(
+  realized : RealizedLedger,
+  title : String,
+  rows : Array[ReportRow],
+  totals : Array[ReportRow],
+  convert : String?,
+  roots : Array[String],
+) -> Report {
+  let diagnostics : Array[ConversionIssue] = []
+  let seen : Map[String, Bool] = Map([])
+  if convert is Some(target) {
+    for account in realized.account_names() {
+      if root_allowed(account, roots) {
+        for position in realized.inventory(account).positions {
+          let key = account + " " + position.units.currency
+          if realized.convert(position.units, target) is None &&
+            seen.get(key) is None {
+            seen.set(key, true)
+            diagnostics.push({
+              code: "report.conversion_incomplete",
+              account,
+              currency: position.units.currency,
+              target,
+            })
+          }
+        }
+      }
+    }
+  }
+  let counts : Map[String, Map[Int32, Int32]] = Map([])
+  for entry in realized.entries {
+    if entry.directive is DTransaction(txn) {
+      for posting in txn.postings {
+        if posting.units is Some(units) {
+          let scales = match counts.get(units.currency) {
+            Some(m) => m
+            None => {
+              let m = Map([])
+              counts.set(units.currency, m)
+              m
+            }
+          }
+          let scale = units.number.scale()
+          scales.set(scale, scales.get(scale).unwrap_or(0) + 1)
+        }
+      }
+    }
+  }
+  let display_scales : Map[String, Int32] = Map([])
+  for currency in counts.keys().to_array() {
+    let scales = counts.get(currency).unwrap()
+    let mut best = 0
+    let mut occurrences = 0
+    for scale in scales.keys().to_array() {
+      let count = scales.get(scale).unwrap()
+      if count > occurrences || (count == occurrences && scale > best) {
+        best = scale
+        occurrences = count
+      }
+    }
+    display_scales.set(currency, best)
+  }
+  for row in rows {
+    if display_scales.get(row.amount.currency) is None {
+      display_scales.set(row.amount.currency, row.amount.number.scale())
+    }
+  }
+  for (currency, precision) in realized.options.display_precision {
+    display_scales.set(currency, precision.scale())
+  }
+  let totals = if diagnostics.is_empty() {
+    totals
+  } else {
+    totals.map(fn(row) {
+      {
+        ..row,
+        label: if row.label.has_suffix(" " + row.amount.currency) {
+          row.label
+        } else {
+          row.label + " " + row.amount.currency
+        },
+      }
+    })
+  }
+  let combined : Array[ReportRow] = []
+  let indices : Map[String, Int32] = Map([])
+  for row in rows {
+    let key = row.label + " " + row.amount.currency
+    match indices.get(key) {
+      Some(i) =>
+        combined[i] = {
+          ..row,
+          amount: @ast.Amount::new(
+            combined[i].amount.number.add(row.amount.number),
+            row.amount.currency,
+          ),
+        }
+      None => {
+        indices.set(key, combined.length())
+        combined.push(row)
+      }
+    }
+  }
+  {
+    title,
+    rows: sorted_report_rows(combined),
+    totals,
+    diagnostics,
+    display_scales,
   }
 }
 
@@ -291,22 +538,96 @@ pub fn trial_balance(
   let all_roots = ["Assets", "Liabilities", "Equity", "Income", "Expenses"]
   let rows = built_rows(realized, all_roots, convert)
   let totals = total_row("Total", rows)
-  { title: "Trial Balance", rows, totals, }
+  make_report(realized, "Trial Balance", rows, totals, convert, all_roots)
 }
 
 ///|
 pub fn balance_sheet(
   realized : RealizedLedger,
   convert~ : String? = None,
+  start~ : @ast.Date? = None,
 ) -> Report {
-  let rows = built_rows(realized, ["Assets", "Liabilities", "Equity"], convert)
-  let totals = []
-  for root in ["Assets", "Liabilities", "Equity"] {
-    for row in total_row("Total " + root, rows_with_root(rows, root)) {
-      totals.push(row)
+  let roots = ["Assets", "Liabilities", "Equity"]
+  let all = ["Assets", "Liabilities", "Equity", "Income", "Expenses"]
+  let rows = book_rows(realized, roots, convert, convert is Some(_))
+  let mut year = 1
+  for entry in realized.entries {
+    if entry.date.year > year {
+      year = entry.date.year
     }
   }
-  { title: "Balance Sheet", rows, totals, }
+  if realized.at is Some(at) {
+    year = at.year
+  }
+  let start = start.unwrap_or(@ast.Date::new(year, 1, 1).unwrap())
+  let previous = {
+    ..realized,
+    entries: realized.entries.filter(fn(e) { e.date.less_than(start) }),
+  }
+  let prior = income_rows(previous, None, convert)
+  let current = income_rows(realized, Some(start), convert)
+  for
+    (period, amounts) in [
+      ("previous", grouped_amounts(prior)),
+      ("current", grouped_amounts(current)),
+    ] {
+    let account = if period == "previous" {
+      realized.options.equity_account(
+        "account_previous_earnings", "Earnings:Previous",
+      )
+    } else {
+      realized.options.equity_account(
+        "account_current_earnings", "Earnings:Current",
+      )
+    }
+    for amount in amounts {
+      if !amount.number.is_zero() {
+        rows.push({ label: account, amount, })
+      }
+    }
+  }
+  // CLOSE normalizes residual currency balances, including tolerated residuals.
+  for amount in grouped_amounts(book_rows(realized, all, None, false)) {
+    if !amount.number.is_zero() {
+      rows.push({
+        label: realized.options.equity_account(
+          "account_current_conversions", "Conversions:Current",
+        ),
+        amount: converted_amount(
+          realized,
+          @ast.Amount::new(amount.number.neg(), amount.currency),
+          convert,
+        ),
+      })
+    }
+  }
+  if convert is Some(_) {
+    let changes = book_rows(realized, roots, convert, false)
+    for row in book_rows(realized, roots, convert, true) {
+      changes.push({
+        label: row.label,
+        amount: @ast.Amount::new(row.amount.number.neg(), row.amount.currency),
+      })
+    }
+    for amount in grouped_amounts(changes) {
+      if !amount.number.is_zero() {
+        rows.push({
+          label: @ast.account_parent(
+            realized.options.equity_account(
+              "account_current_earnings", "Earnings:Current",
+            ),
+          ) +
+          ":Unrealized",
+          amount,
+        })
+      }
+    }
+  }
+  let totals : Array[ReportRow] = []
+  for root in roots {
+    totals.append(total_row("Total " + root, rows_with_root(rows, root)))
+  }
+  make_report(realized, "Balance Sheet", rows, totals, convert, all)
 }
 
 ///|
@@ -328,14 +649,11 @@ fn income_rows(
             if root_allowed(posting.account, ["Income", "Expenses"]) {
               match posting.units {
                 Some(units) => {
-                  let amount = match convert {
-                    Some(target) =>
-                      match realized.convert(units, target) {
-                        Some(converted) => converted
-                        None => units
-                      }
-                    None => units
-                  }
+                  let amount = converted_amount(
+                    realized,
+                    book_amount(posting, units),
+                    convert,
+                  )
                   let mut found = false
                   for i in 0..<rows.length() {
                     if rows[i].label == posting.account &&
@@ -382,15 +700,15 @@ pub fn income_statement(
     totals.push(row)
   }
   let combined = income.copy() + expenses.copy()
-  match sum_rows(combined) {
-    Some(amount) =>
-      totals.push({
-        label: "Net Income",
-        amount: @ast.Amount::new(amount.number.neg(), amount.currency),
-      })
-    None => ()
+  for row in total_row("Net Income", combined) {
+    totals.push({
+      ..row,
+      amount: @ast.Amount::new(row.amount.number.neg(), row.amount.currency),
+    })
   }
-  { title: "Income Statement", rows, totals, }
+  make_report(realized, "Income Statement", rows, totals, convert, [
+    "Income", "Expenses",
+  ])
 }
 
 ///|
@@ -640,22 +958,9 @@ pub fn Report::to_text_with_options(
   self : Report,
   options : @ast.Options,
 ) -> String {
-  if options.display_precision.is_empty() {
-    return self.to_text()
+  let scales = self.display_scales.copy()
+  for (currency, precision) in options.display_precision {
+    scales.set(currency, precision.scale())
   }
-  let sb = StringBuilder()
-  sb.write_string(self.title + "\nAccount  Amount\n")
-  for row in self.rows.copy() + self.totals.copy() {
-    let number = match options.display_precision.get(row.amount.currency) {
-      Some(precision) =>
-        row.amount.number
-        .quantize(precision.scale())
-        .to_display(min_scale=precision.scale())
-      None => row.amount.number.to_string()
-    }
-    sb.write_string(
-      row.label + "  " + number + " " + row.amount.currency + "\n",
-    )
-  }
-  sb.to_string()
+  { ..self, display_scales: scales, }.to_text()
 }

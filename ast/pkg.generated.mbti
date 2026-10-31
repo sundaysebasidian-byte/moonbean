@@ -203,6 +203,7 @@ pub(all) struct Options {
   raw : Array[(String, String)]
 }
 pub fn Options::add_raw(Self, String, String) -> Unit
+pub fn Options::equity_account(Self, String, String) -> String
 pub fn Options::get(Self, String) -> String?
 pub fn Options::get_all(Self, String) -> Array[String]
 pub fn Options::new() -> Self
