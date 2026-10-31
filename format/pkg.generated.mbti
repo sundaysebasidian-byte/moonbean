@@ -2,6 +2,7 @@
 package "sundaysebasidian-byte/moonbean/format"
 
 // Values
+pub fn format_source(String) -> String
 
 // Errors
 
