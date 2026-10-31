@@ -727,6 +727,9 @@ fn infer_cost(
             None => entry.date
           }
           let cost = @ast.Cost::new(number, currency, Some(date), spec.label)
+          posting.cost = Some(
+            @ast.CostSpec::new_per(number, currency, Some(date), spec.label),
+          )
           let booked = @booking.book_augmentation_with_cost(
             ctx.state,
             posting.account,
