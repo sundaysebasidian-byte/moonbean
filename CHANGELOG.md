@@ -53,3 +53,12 @@ Initial release.
 - Oracle conformance harness with 58 self-written ledgers (56 compared,
   56 passing) and a 100k-transaction benchmark.
 - CI for ubuntu/macOS/Windows plus an upstream oracle job.
+
+## Stage 3a (2026-10-31, local only)
+
+- Reproducible 1000-ledger differential; exact oracle inventories before CSV rendering.
+- HAVING, Decimal arithmetic, regex, tags/links/posting metadata and partial period balance queries.
+- CLI bs/is/register/dups, single operating currency and report display precision.
+- Single-buffer decimal parsing; host API docs and typed query failure categories.
+- Windows CI path/shell correction, pinned oracle bootstrap and differential jobs.
+- 94 tests on native/js/wasm-gc; remaining boundaries in conformance/performance reports.

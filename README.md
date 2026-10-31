@@ -123,7 +123,7 @@ fn analyze(source : String) -> Unit {
 
 | 能力 | 状态 | 边界 |
 | --- | --- | --- |
-| `option` | 部分 | 解析并保留；`title`、`booking_method`、`tolerance_multiplier`、`inferred_tolerance_default`、`infer_tolerance_from_cost` 参与语义；`account_rounding`、`display_precision`、`render_commas`、`operating_currency` 仅解析，暂不改变输出 |
+| `option` | 部分 | 解析并保留；`title`、`booking_method`、`tolerance_multiplier`、`inferred_tolerance_default`、`infer_tolerance_from_cost` 参与语义；`account_rounding`、`render_commas` 仅解析；单一 `operating_currency` 作为 bal/bs/is 默认折算币种，`display_precision` 控制报表文本小数位，JSON 保留精度 |
 | `plugin` | 部分 | 记录名称/配置并在指令行发出 `validation.plugin` 警告；不执行插件 |
 | `include` | 支持 | CLI 与 `expand_includes` 递归展开；缺失文件报告路径并保留原行 |
 | `pushtag` / `poptag` / `pushmeta` / `popmeta` | 支持 | 作用域内交易继承标签与元数据 |
@@ -159,13 +159,13 @@ fn analyze(source : String) -> Unit {
 | 能力 | 状态 | 边界 |
 | --- | --- | --- |
 | inventory / 价格库 / 市值折算 | 支持 | 最新价格、逆汇率；`bal --convert` |
-| 试算平衡 / 资产负债表 / 损益表 / register | 支持 | 文本与 JSON API；CLI 的 `bal` 输出试算平衡表 |
+| 试算平衡 / 资产负债表 / 损益表 / register | 支持 | 文本与 JSON API；CLI 提供 `bal`、`bs`、`is`、`register FILE ACCOUNT`（可用 `--json`）和 `dups FILE` |
 | `SELECT ... FROM postings/transactions/balances` | 支持 | 列：`date`、`year`、`month`、`flag`、`payee`、`narration`、`account`、`root`、`parent`、`leaf`、`units`、`currency`、`cost`、`value`、`position` |
-| `WHERE` | 部分 | 比较、`is [not] null`、`and/or/not`；无 `LIKE`、子查询、表达式算术 |
+| `WHERE` | 部分 | 比较、`is [not] null`、`and/or/not`；支持 `~` 字面量正则；无 `LIKE`、子查询 |
 | `GROUP BY` / `ORDER BY` / `LIMIT` | 支持 | 多键分组/排序，`ASC`/`DESC` |
 | 函数 | 部分 | `year`、`month`、`root`、`parent`、`leaf`、`sum`、`count`；无其他聚合/窗口/字符串函数 |
-| `BALANCES` / `JOURNAL` | 支持 | `BALANCES` 无参数；`JOURNAL <account> [LIMIT n]`；时间点由 `run_query` 的 `at~` 或 CLI `--at` 控制 |
-| 不支持的 BQL | 不支持 | 子查询、JOIN、`HAVING`、`PIVOT`、`BALANCES AT/FROM`、元数据/标签列 |
+| `BALANCES` / `JOURNAL` | 支持 | `BALANCES AT units|cost FROM OPEN ON date CLOSE ON date`；`JOURNAL <account> [LIMIT n]`；时间点由 `run_query` 的 `at~` 或 CLI `--at` 控制 |
+| 不支持的 BQL | 不支持 | 子查询、JOIN、`PIVOT`、SQL `LIKE`；`HAVING`、数值算术、tags/links、`meta(key)`、默认账户名下的 OPEN/CLOSE 期间已实现 |
 
 ### 格式化与 CLI
 
@@ -198,13 +198,13 @@ ledgers: 58, compared: 56, passed: 56, failed: 0, extensions: 2
 脚本只在临时虚拟环境安装 GPL 的 beancount/beanquery 作为黑盒 oracle，不链接、
 不嵌入、不分发。CI 的 `oracle` job 会在 ubuntu 上运行并上传报告。
 
-性能基准（native release，100,000 笔交易 / 300,007 行 / 8.2 MB）：
+性能基准（native release，100,000 笔交易，5 次中位数；复现和优化前后见 `docs/performance.md`）：
 
 | 操作 | 耗时 |
 | --- | --- |
-| `check`（解析 + 校验 + booking） | 0.63 s |
-| `bal`（realization + 试算平衡） | 0.66 s |
-| BQL 聚合查询 | 0.72 s |
+| `check`（解析 + 校验 + booking） | 0.589 s |
+| `bal`（realization + 试算平衡） | 0.637 s |
+| BQL 聚合查询 | 0.973 s |
 
 ```sh
 ./scripts/bench.sh
@@ -225,14 +225,14 @@ MoonBean 的输入输出以 Beancount 账本和 `bean-check` 行为为兼容目�
 
 - 插件只记录并警告，不执行 Python 插件。
 - `document` 不检查文件存在；未知/未实现的 option 不改变行为。
-- BQL 是子集，不支持子查询、JOIN、`HAVING`、元数据列和字符串函数。
+- BQL 是子集，不支持子查询、JOIN、PIVOT、SQL LIKE 和通用字符串函数；数值算术仅支持 Decimal，不包含 Amount/Inventory 运算。
 - 报表 CLI 只暴露试算平衡表；资产负债表、损益表、register 目前通过库 API 使用。
 - 尚无浏览器 Playground；库 API 已为 wasm-gc/js 准备好。
 
 路线图：
 
 1. 插件扩展点（宿主可注册的自定义校验/变换）。
-2. 更完整的 BQL（表达式算术、元数据列、更多聚合）。
+2. 更完整的 BQL（金额运算、更多聚合、期间转换归一化）。
 3. `account_rounding` / `display_precision` 输出语义。
 4. 基于库 API 的 wasm 账本查看器。
 5. 更大规模账本的增量 realize 与缓存。
@@ -261,3 +261,13 @@ moon info && git diff --exit-code
 
 `moon test --target all` 会覆盖 wasm、wasm-gc、js、native 四个后端。CI 在
 ubuntu/macOS/Windows 上执行同一组命令，另设 oracle job。
+
+阶段 3a 随机差分（seed 20261031）：1000 份，858 一致、142 份 AVERAGE 扩展差异；468 份执行精确余额/固定 BQL 比较，错误账本只比较诊断。新增 BQL oracle 12/12；详细边界见 `docs/conformance.md`。
+
+```sh
+python3 scripts/random_differential.py --allow-known-extensions
+python3 scripts/bql_differential.py
+python3 scripts/cli_smoke.py
+```
+
+`HAVING` 支持聚合条件；数值表达式支持 `+ - * /` 与括号。`tags`/`links` 的 JSON 值为数组；`meta('key')` 读取 posting 元数据。正则采用 MoonBit core Regex 子集，非法/不支持模式明确报错。CI 已配置，尚未在 GitHub 执行。

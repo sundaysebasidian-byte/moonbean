@@ -44,7 +44,7 @@ ledgers: 58, compared: 56, passed: 56, failed: 0, extensions: 2
 ```
 
 Raw pass rate over compared ledgers: **56 / 56 = 100%**.
-All 58 ledgers pass the diagnostics comparison.
+The 56 compared ledgers pass diagnostics; the two extensions are checked only against MoonBean expectations.
 
 | Ledger | Diagnostics | BQL | Result | Notes |
 | --- | --- | --- | --- | --- |
@@ -134,3 +134,88 @@ runtime.
 - Cost date and label are ignored when comparing lots; they are preserved in the
   MoonBean inventory but the oracle's CSV output for `BALANCES` does not expose
   them in a stable way.
+
+## Stage 3a: seeded differential (2026-10-31)
+
+`python3 scripts/random_differential.py --seed 20261031 --count 1000`
+uses only Python stdlib and independently authored templates with randomized
+currencies, amounts, dates, lot sizes/costs and descriptions. Eleven scenario
+families include two purchase lots and reductions, seven booking methods,
+pad/balance, price directives, multiple currencies, tolerance residuals
+0.004/0.005/0.006, unknown/closed accounts and invalid currencies. This is
+bounded template-based random testing, not exhaustive grammar fuzzing.
+
+| Check | Actual count |
+| --- | ---: |
+| Generated / diagnostic comparisons attempted | 1000 |
+| Fully matching ledgers | 858 |
+| Nonmatching diagnostic sets | 142 |
+| Matching error ledgers (queries skipped) | 390 |
+| Clean ledgers with six balance/BQL comparisons each | 468 |
+| Clean-ledger balance/BQL mismatches | 0 |
+
+All 142 differences are the AVERAGE extension: ledger IDs `6 + 7*k` for
+`k=0..141`. The pinned oracle emits `average_unsupported`, while MoonBean
+implements AVERAGE. Each ledger ID, full expected/actual diagnostic set and
+reason is recorded in `docs/random-differential.json`; raw results, generated
+inputs and SHA256 hashes remain in `.oracle-cache/acceptance-random/`.
+No diagnostic differences are removed from the reported count. The default
+runner exits 1 for these differences. `--allow-known-extensions` permits CI
+success only when deleting the oracle's AVERAGE-unsupported diagnostics makes
+the complete diagnostic sets identical; unexpected differences still fail.
+
+The original CSV runner rounded inventory quantities using beanquery's display
+precision. This produced 166 false balance differences on the initial random
+run. Oracle queries now stringify inventory values **before** CSV rendering,
+then compare exact Decimals. The baseline 56 comparable ledgers still pass.
+
+Reproduction (build via `./scripts/oracle.sh` first):
+
+```sh
+python3 scripts/random_differential.py --out .oracle-cache/acceptance-random --allow-known-extensions
+python3 scripts/bql_differential.py
+python3 scripts/cli_smoke.py
+```
+
+### Extended query matrix
+
+12/12 additional external beanquery comparisons pass on independently written
+ledger fixtures: aggregate HAVING, numeric precedence/parentheses/unary/division,
+regex account filtering, populated tags/links and posting metadata, and four
+unit/cost balance views combining OPEN/CLOSE periods.
+
+| Capability | Status and precise boundary |
+| --- | --- |
+| HAVING | Aggregate comparisons, boolean combinations and null tests |
+| Arithmetic | Decimal `+ - * /`, precedence and parentheses; no Amount/Inventory arithmetic; zero division produces null |
+| `~` | Case-insensitive literal regex via MoonBit core; invalid/unsupported patterns return an error; regex dialect is not Python's entire dialect |
+| SQL LIKE | Unsupported; beanquery 0.2.0 also rejects this syntax; use `~` |
+| tags / links | Structured arrays in JSON, comma-separated text |
+| `meta('key')` | Posting metadata; no entry_meta or arbitrary dynamic metadata expression |
+| BALANCES AT / FROM | AT units/cost; FROM postings/balances or OPEN/CLOSE ON dates, optional WHERE |
+| OPEN ON | Summarizes earlier lots, transfers Income/Expenses to Equity:Earnings:Previous; uses default opening/earnings account names |
+| CLOSE ON | Exclusive date cutoff; currency-conversion normalization entries are not synthesized; partial compatibility |
+| FROM transaction predicates | Unsupported; this implementation's FROM accepts the sources/period forms above |
+| Subqueries / JOIN / PIVOT | Unsupported; rejected by parser, reserved for later work |
+
+These comparisons cover ordinary default-name period balances. They do not
+prove exact synthetic metadata/ordering, custom summarization account options,
+or conversion normalization. Period support is deliberately marked partial.
+
+### API and CI audit
+
+All pure library packages typecheck/test on native, js and wasm-gc (also wasm).
+The native-only CLI owns filesystem/process access; hosts call the pure library.
+`QueryResult.failure()` exposes matchable Syntax/Unsupported variants while
+retaining the existing `error` text. Unknown columns now return an explicit
+error. `Diagnostic.code` and `loc` remain available for validation matching.
+The internal decimal precision constant is no longer public. Host-facing root
+functions and new APIs have documentation; legacy lower-level API documentation
+is not yet complete, and `.mbti` data records remain public for host integration.
+
+CI installs MoonBit using the official unix/PowerShell URLs documented at
+https://www.moonbitlang.com/download . Windows explicitly uses pwsh and
+USERPROFILE instead of a hard-coded runner username. Oracle bootstrap pins
+pip 25.2, Beancount 3.2.3 and beanquery 0.2.0 with Python 3.12 in CI. The
+workflow runs random differential and extended BQL checks and uploads evidence.
+No GitHub Actions execution occurred in this local-only phase.
