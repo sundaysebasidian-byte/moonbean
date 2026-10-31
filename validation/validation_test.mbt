@@ -123,6 +123,39 @@ test "interpolates one missing posting amount" {
 }
 
 ///|
+test "infers a posting currency from the rest of the transaction" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-01 open Equity:Opening USD\n" +
+    "2024-01-02 * \"infer currency\"\n" +
+    "  Assets:Cash -10.00\n" +
+    "  Equity:Opening 10.00 USD\n",
+  )
+  inspect(v.errors.length(), content="0")
+  let txn = match find_transaction(v, "infer currency") {
+    Some(txn) => txn
+    None => abort("transaction not found")
+  }
+  match txn.postings[0].units {
+    Some(units) => inspect(units.to_string(), content="-10.00 USD")
+    None => abort("missing units")
+  }
+}
+
+///|
+test "rejects a transaction whose currencies cannot be inferred" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-01 open Equity:Opening USD\n" +
+    "2024-01-02 * \"no currency\"\n" +
+    "  Assets:Cash -10.00\n" +
+    "  Equity:Opening 10.00\n",
+  )
+  inspect(has_error(v, "validation.cost"), content="true")
+  inspect(has_error(v, "validation.unbalanced"), content="false")
+}
+
+///|
 test "rejects more than one missing posting" {
   let v = validated(
     "2024-01-01 open Assets:Cash USD\n" +
@@ -256,6 +289,34 @@ test "inserts a padding transaction for a balance assertion" {
     }
   }
   inspect(padding_count, content="1")
+}
+
+///|
+test "reports unused pads when no padding is inserted" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-01 open Equity:Opening USD\n" +
+    "2024-01-02 pad Assets:Cash Equity:Opening\n" +
+    "2024-01-03 balance Assets:Cash 0.00 USD\n",
+  )
+  inspect(has_error(v, "validation.pad"), content="true")
+  inspect(v.errors.length(), content="1")
+}
+
+///|
+test "a booking failure suppresses the balancing error" {
+  let v = validated(
+    "2024-01-01 open Assets:Stock HOOL \"FIFO\"\n" +
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-02 * \"buy\"\n" +
+    "  Assets:Stock  10 HOOL {10.00 USD}\n" +
+    "  Assets:Cash  -100.00 USD\n" +
+    "2024-01-03 * \"sell too many\"\n" +
+    "  Assets:Stock  -20 HOOL {10.00 USD}\n" +
+    "  Assets:Cash  200.00 USD\n",
+  )
+  inspect(has_error(v, "validation.booking"), content="true")
+  inspect(has_error(v, "validation.unbalanced"), content="false")
 }
 
 ///|

@@ -466,7 +466,7 @@ fn accumulated_quantity(
 
 ///|
 fn balance_tolerance(ctx : Context, balance : @ast.Balance) -> @decimal.Decimal {
-  let mut tolerance = match balance.tolerance {
+  match balance.tolerance {
     Some(explicit) => explicit.abs()
     None =>
       balance.amount.number
@@ -474,11 +474,6 @@ fn balance_tolerance(ctx : Context, balance : @ast.Balance) -> @decimal.Decimal 
       .abs()
       .mul(ctx.options.tolerance_multiplier)
   }
-  match ctx.options.inferred_tolerance_default.get(balance.amount.currency) {
-    Some(default) => tolerance = larger(tolerance, default)
-    None => ()
-  }
-  tolerance
 }
 
 ///|
@@ -589,11 +584,12 @@ fn process_balance(
   match pad_index {
     Some(index) => {
       let pad = ctx.pads[index]
-      pad.consumed = true
-      ctx.pads[index] = pad
       if difference.abs().less_equal(tolerance) {
+        // A pad is only consumed when it actually inserts a padding entry.
         return
       }
+      pad.consumed = true
+      ctx.pads[index] = pad
       insert_padding(ctx, pad, balance.amount, difference)
       return
     }
@@ -640,7 +636,7 @@ fn book_explicit(
   index : Int32,
   posting : @ast.Posting,
   weights : Array[@ast.Amount],
-) -> Unit {
+) -> Bool {
   let outcome = @booking.book_posting(
     ctx.state,
     posting.account,
@@ -649,7 +645,10 @@ fn book_explicit(
     ctx.options.booking_method,
   )
   match outcome.issue {
-    Some(issue) => error(ctx, "validation.booking", issue.message, entry.loc)
+    Some(issue) => {
+      error(ctx, "validation.booking", issue.message, entry.loc)
+      false
+    }
     None =>
       if outcome.needs_inference {
         error(
@@ -658,10 +657,12 @@ fn book_explicit(
           "Failed to categorize posting " + (index + 1).to_string(),
           entry.loc,
         )
+        false
       } else {
         for weight in outcome.weights {
           add_weight(weights, weight)
         }
+        true
       }
   }
 }
@@ -919,16 +920,103 @@ fn check_balanced(
 }
 
 ///|
+fn add_currency(currencies : Array[String], currency : String) -> Unit {
+  if currency == "" {
+    return
+  }
+  if !currencies.contains(currency) {
+    currencies.push(currency)
+  }
+}
+
+///|
+fn transaction_currencies(postings : Array[@ast.Posting]) -> Array[String] {
+  let currencies : Array[String] = []
+  for posting in postings {
+    match posting.units {
+      Some(units) => add_currency(currencies, units.currency)
+      None => ()
+    }
+    match posting.units_currency {
+      Some(currency) => add_currency(currencies, currency)
+      None => ()
+    }
+    match posting.cost {
+      Some(spec) =>
+        match spec.currency {
+          Some(currency) => add_currency(currencies, currency)
+          None => ()
+        }
+      None => ()
+    }
+    match posting.price {
+      Some(price) => add_currency(currencies, price.amount().currency)
+      None => ()
+    }
+  }
+  currencies
+}
+
+///|
+/// Resolves postings written with a bare number and no currency. When the
+/// transaction mentions exactly one currency it is applied to every such
+/// posting; otherwise the transaction cannot be categorized.
+fn resolve_missing_currencies(
+  ctx : Context,
+  entry : @ast.Entry,
+  postings : Array[@ast.Posting],
+) -> Bool {
+  let missing : Array[Int32] = []
+  for i in 0..<postings.length() {
+    match postings[i].units {
+      Some(units) =>
+        if units.currency == "" {
+          missing.push(i)
+        }
+      None => ()
+    }
+  }
+  if missing.length() == 0 {
+    return true
+  }
+  let currencies = transaction_currencies(postings)
+  if currencies.length() != 1 {
+    let target = postings[missing[0]].loc
+    let loc = if target.line > 0 {
+      target
+    } else {
+      entry.loc
+    }
+    error(
+      ctx,
+      "validation.cost",
+      "Failed to categorize posting " + (missing[0] + 1).to_string(),
+      loc,
+    )
+    return false
+  }
+  for index in missing {
+    let units = postings[index].units.unwrap()
+    postings[index].units = Some(@ast.Amount::new(units.number, currencies[0]))
+  }
+  true
+}
+
+///|
 fn process_transaction(
   ctx : Context,
   entry : @ast.Entry,
   txn : @ast.Transaction,
 ) -> Unit {
   let postings = txn.postings
+  let mut booking_failed = !resolve_missing_currencies(ctx, entry, postings)
   for posting in postings {
     let info = check_account(ctx, posting.account, entry.date, entry.loc, true)
     match posting.units {
-      Some(units) => check_currency(ctx, info, units.currency, entry.loc)
+      Some(units) =>
+        if units.currency != "" {
+          check_currency(ctx, info, units.currency, entry.loc)
+        }
       None => ()
     }
   }
@@ -944,7 +1032,9 @@ fn process_transaction(
         match posting.cost {
           Some(_) =>
             if units.number.is_negative() {
-              book_explicit(ctx, entry, i, posting, weights)
+              if !book_explicit(ctx, entry, i, posting, weights) {
+                booking_failed = true
+              }
             }
           None => ()
         }
@@ -960,38 +1050,60 @@ fn process_transaction(
             if !units.number.is_negative() {
               if needs_cost_inference(spec) {
                 deferred.push(i)
-              } else {
-                book_explicit(ctx, entry, i, posting, weights)
+              } else if !book_explicit(ctx, entry, i, posting, weights) {
+                booking_failed = true
               }
             }
-          None => book_explicit(ctx, entry, i, posting, weights)
+          None =>
+            if !book_explicit(ctx, entry, i, posting, weights) {
+              booking_failed = true
+            }
         }
       None => missing.push(i)
     }
   }
   if deferred.length() > 1 {
     for index in deferred {
+      let target = postings[index].loc
+      let loc = if target.line > 0 {
+        target
+      } else {
+        entry.loc
+      }
       error(
         ctx,
         "validation.cost",
         "Failed to categorize posting " + (index + 1).to_string(),
-        entry.loc,
+        loc,
       )
     }
+    booking_failed = true
   } else if deferred.length() == 1 {
     infer_cost(ctx, entry, deferred[0], postings[deferred[0]], weights)
   }
   if missing.length() > 1 {
+    let last = missing[missing.length() - 1]
+    let target = postings[last].loc
+    let loc = if target.line > 0 {
+      target
+    } else {
+      entry.loc
+    }
     error(
       ctx,
       "validation.missing",
       "You may not have more than one auto-posting per currency",
-      entry.loc,
+      loc,
     )
+    booking_failed = true
   } else if missing.length() == 1 {
     interpolate_missing(ctx, entry, postings[missing[0]], weights)
   }
-  check_balanced(ctx, entry, postings, weights)
+  // A transaction whose postings cannot be booked is aborted before balancing,
+  // matching Beancount's error precedence.
+  if !booking_failed {
+    check_balanced(ctx, entry, postings, weights)
+  }
 }
 
 ///|
@@ -1036,6 +1148,11 @@ pub fn validate_ledger(ledger : @ast.Ledger) -> ValidatedLedger {
       DCommodity(_) | DPrice(_) | DEvent(_) | DQuery(_) | DCustom(_) => ()
     }
     ctx.entries.push(entry)
+  }
+  for pad in ctx.pads {
+    if !pad.consumed {
+      error(ctx, "validation.pad", "Unused Pad entry", pad.loc)
+    }
   }
   let entries = sorted_entries(ctx.entries)
   let accounts : Map[String, AccountInfo] = Map([])
