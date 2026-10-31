@@ -1,0 +1,555 @@
+option "title" "MoonBean household ledger 2024"
+option "operating_currency" "CNY"
+
+2024-01-01 commodity CNY
+2024-01-01 commodity USD
+2024-01-01 commodity AAPL
+
+; Account lifecycle
+2024-01-01 open Assets:Bank:Checking CNY
+2024-01-01 open Assets:Bank:Savings CNY
+2024-01-01 open Assets:Cash CNY
+2024-01-01 open Assets:Broker:Stocks AAPL "FIFO"
+2024-01-01 open Assets:Broker:Cash USD
+2024-01-01 open Liabilities:CreditCard CNY,USD
+2024-01-01 open Equity:Opening CNY,USD
+2024-01-01 open Income:Salary CNY
+2024-01-01 open Income:Interest CNY
+2024-01-01 open Income:Dividends USD
+2024-01-01 open Income:CapitalGains USD
+2024-01-01 open Expenses:Housing:Rent CNY
+2024-01-01 open Expenses:Food:Groceries CNY
+2024-01-01 open Expenses:Food:Dining CNY
+2024-01-01 open Expenses:Transport CNY
+2024-01-01 open Expenses:Utilities CNY
+2024-01-01 open Expenses:Travel CNY
+2024-01-01 open Expenses:Health CNY
+2024-01-01 open Expenses:Books CNY
+2024-01-01 open Expenses:Equipment CNY
+2024-01-01 open Expenses:Donations CNY
+2024-01-01 open Expenses:Taxes CNY
+
+; Opening balances
+2024-01-01 * "Opening balances"
+  Assets:Bank:Checking        50000.00 CNY
+  Assets:Bank:Savings        120000.00 CNY
+  Assets:Cash                  2000.00 CNY
+  Assets:Broker:Stocks           40 AAPL {150.00 USD}
+  Assets:Broker:Cash           4000.00 USD
+  Liabilities:CreditCard      -3200.00 CNY
+  Equity:Opening            -168800.00 CNY
+  Equity:Opening             -10000.00 USD
+
+; Monthly household flow
+2024-01-01 * "Rent"
+  Assets:Bank:Checking        -6000.00 CNY
+  Expenses:Housing:Rent        6000.00 CNY
+
+2024-01-02 * "Savings transfer"
+  Assets:Bank:Checking        -2000.00 CNY
+  Assets:Bank:Savings          2000.00 CNY
+
+2024-01-08 * "Groceries"
+  Assets:Bank:Checking         -800.00 CNY
+  Expenses:Food:Groceries       800.00 CNY
+
+2024-01-10 * "Transit pass"
+  Assets:Bank:Checking         -300.00 CNY
+  Expenses:Transport            300.00 CNY
+
+2024-01-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard       -700.00 CNY
+  Expenses:Food:Dining          700.00 CNY
+
+2024-01-15 * "Utilities"
+  Liabilities:CreditCard       -500.00 CNY
+  Expenses:Utilities            500.00 CNY
+
+2024-01-18 * "Lunch"
+  Assets:Cash                  -100.00 CNY
+  Expenses:Food:Dining          100.00 CNY
+
+2024-01-20 * "Credit card payment"
+  Assets:Bank:Checking        -1200.00 CNY
+  Liabilities:CreditCard       1200.00 CNY
+
+2024-01-25 * "Salary"
+  Assets:Bank:Checking        20000.00 CNY
+  Income:Salary             -20000.00 CNY
+
+2024-02-01 * "Rent"
+  Assets:Bank:Checking        -6000.00 CNY
+  Expenses:Housing:Rent        6000.00 CNY
+
+2024-02-02 * "Savings transfer"
+  Assets:Bank:Checking        -2000.00 CNY
+  Assets:Bank:Savings          2000.00 CNY
+
+2024-02-08 * "Groceries"
+  Assets:Bank:Checking         -800.00 CNY
+  Expenses:Food:Groceries       800.00 CNY
+
+2024-02-10 * "Transit pass"
+  Assets:Bank:Checking         -300.00 CNY
+  Expenses:Transport            300.00 CNY
+
+2024-02-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard       -700.00 CNY
+  Expenses:Food:Dining          700.00 CNY
+
+2024-02-15 * "Utilities"
+  Liabilities:CreditCard       -500.00 CNY
+  Expenses:Utilities            500.00 CNY
+
+2024-02-18 * "Lunch"
+  Assets:Cash                  -100.00 CNY
+  Expenses:Food:Dining          100.00 CNY
+
+2024-02-20 * "Credit card payment"
+  Assets:Bank:Checking        -1200.00 CNY
+  Liabilities:CreditCard       1200.00 CNY
+
+2024-02-25 * "Salary"
+  Assets:Bank:Checking        20000.00 CNY
+  Income:Salary             -20000.00 CNY
+
+2024-03-01 * "Rent"
+  Assets:Bank:Checking        -6000.00 CNY
+  Expenses:Housing:Rent        6000.00 CNY
+
+2024-03-02 * "Savings transfer"
+  Assets:Bank:Checking        -2000.00 CNY
+  Assets:Bank:Savings          2000.00 CNY
+
+2024-03-08 * "Groceries"
+  Assets:Bank:Checking         -800.00 CNY
+  Expenses:Food:Groceries       800.00 CNY
+
+2024-03-10 * "Transit pass"
+  Assets:Bank:Checking         -300.00 CNY
+  Expenses:Transport            300.00 CNY
+
+2024-03-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard       -700.00 CNY
+  Expenses:Food:Dining          700.00 CNY
+
+2024-03-15 * "Utilities"
+  Liabilities:CreditCard       -500.00 CNY
+  Expenses:Utilities            500.00 CNY
+
+2024-03-18 * "Lunch"
+  Assets:Cash                  -100.00 CNY
+  Expenses:Food:Dining          100.00 CNY
+
+2024-03-20 * "Credit card payment"
+  Assets:Bank:Checking        -1200.00 CNY
+  Liabilities:CreditCard       1200.00 CNY
+
+2024-03-25 * "Salary"
+  Assets:Bank:Checking        20000.00 CNY
+  Income:Salary             -20000.00 CNY
+
+2024-04-01 * "Rent"
+  Assets:Bank:Checking        -6000.00 CNY
+  Expenses:Housing:Rent        6000.00 CNY
+
+2024-04-02 * "Savings transfer"
+  Assets:Bank:Checking        -2000.00 CNY
+  Assets:Bank:Savings          2000.00 CNY
+
+2024-04-08 * "Groceries"
+  Assets:Bank:Checking         -800.00 CNY
+  Expenses:Food:Groceries       800.00 CNY
+
+2024-04-10 * "Transit pass"
+  Assets:Bank:Checking         -300.00 CNY
+  Expenses:Transport            300.00 CNY
+
+2024-04-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard       -700.00 CNY
+  Expenses:Food:Dining          700.00 CNY
+
+2024-04-15 * "Utilities"
+  Liabilities:CreditCard       -500.00 CNY
+  Expenses:Utilities            500.00 CNY
+
+2024-04-18 * "Lunch"
+  Assets:Cash                  -100.00 CNY
+  Expenses:Food:Dining          100.00 CNY
+
+2024-04-20 * "Credit card payment"
+  Assets:Bank:Checking        -1200.00 CNY
+  Liabilities:CreditCard       1200.00 CNY
+
+2024-04-25 * "Salary"
+  Assets:Bank:Checking        20000.00 CNY
+  Income:Salary             -20000.00 CNY
+
+2024-05-01 * "Rent"
+  Assets:Bank:Checking        -6000.00 CNY
+  Expenses:Housing:Rent        6000.00 CNY
+
+2024-05-02 * "Savings transfer"
+  Assets:Bank:Checking        -2000.00 CNY
+  Assets:Bank:Savings          2000.00 CNY
+
+2024-05-08 * "Groceries"
+  Assets:Bank:Checking         -800.00 CNY
+  Expenses:Food:Groceries       800.00 CNY
+
+2024-05-10 * "Transit pass"
+  Assets:Bank:Checking         -300.00 CNY
+  Expenses:Transport            300.00 CNY
+
+2024-05-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard       -700.00 CNY
+  Expenses:Food:Dining          700.00 CNY
+
+2024-05-15 * "Utilities"
+  Liabilities:CreditCard       -500.00 CNY
+  Expenses:Utilities            500.00 CNY
+
+2024-05-18 * "Lunch"
+  Assets:Cash                  -100.00 CNY
+  Expenses:Food:Dining          100.00 CNY
+
+2024-05-20 * "Credit card payment"
+  Assets:Bank:Checking        -1200.00 CNY
+  Liabilities:CreditCard       1200.00 CNY
+
+2024-05-25 * "Salary"
+  Assets:Bank:Checking        20000.00 CNY
+  Income:Salary             -20000.00 CNY
+
+2024-06-01 * "Rent"
+  Assets:Bank:Checking        -6000.00 CNY
+  Expenses:Housing:Rent        6000.00 CNY
+
+2024-06-02 * "Savings transfer"
+  Assets:Bank:Checking        -2000.00 CNY
+  Assets:Bank:Savings          2000.00 CNY
+
+2024-06-08 * "Groceries"
+  Assets:Bank:Checking         -800.00 CNY
+  Expenses:Food:Groceries       800.00 CNY
+
+2024-06-10 * "Transit pass"
+  Assets:Bank:Checking         -300.00 CNY
+  Expenses:Transport            300.00 CNY
+
+2024-06-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard       -700.00 CNY
+  Expenses:Food:Dining          700.00 CNY
+
+2024-06-15 * "Utilities"
+  Liabilities:CreditCard       -500.00 CNY
+  Expenses:Utilities            500.00 CNY
+
+2024-06-18 * "Lunch"
+  Assets:Cash                  -100.00 CNY
+  Expenses:Food:Dining          100.00 CNY
+
+2024-06-20 * "Credit card payment"
+  Assets:Bank:Checking        -1200.00 CNY
+  Liabilities:CreditCard       1200.00 CNY
+
+2024-06-25 * "Salary"
+  Assets:Bank:Checking        20000.00 CNY
+  Income:Salary             -20000.00 CNY
+
+2024-07-01 * "Rent"
+  Assets:Bank:Checking        -6000.00 CNY
+  Expenses:Housing:Rent        6000.00 CNY
+
+2024-07-02 * "Savings transfer"
+  Assets:Bank:Checking        -2000.00 CNY
+  Assets:Bank:Savings          2000.00 CNY
+
+2024-07-08 * "Groceries"
+  Assets:Bank:Checking         -800.00 CNY
+  Expenses:Food:Groceries       800.00 CNY
+
+2024-07-10 * "Transit pass"
+  Assets:Bank:Checking         -300.00 CNY
+  Expenses:Transport            300.00 CNY
+
+2024-07-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard       -700.00 CNY
+  Expenses:Food:Dining          700.00 CNY
+
+2024-07-15 * "Utilities"
+  Liabilities:CreditCard       -500.00 CNY
+  Expenses:Utilities            500.00 CNY
+
+2024-07-18 * "Lunch"
+  Assets:Cash                  -100.00 CNY
+  Expenses:Food:Dining          100.00 CNY
+
+2024-07-20 * "Credit card payment"
+  Assets:Bank:Checking        -1200.00 CNY
+  Liabilities:CreditCard       1200.00 CNY
+
+2024-07-25 * "Salary"
+  Assets:Bank:Checking        20000.00 CNY
+  Income:Salary             -20000.00 CNY
+
+2024-08-01 * "Rent"
+  Assets:Bank:Checking        -6000.00 CNY
+  Expenses:Housing:Rent        6000.00 CNY
+
+2024-08-02 * "Savings transfer"
+  Assets:Bank:Checking        -2000.00 CNY
+  Assets:Bank:Savings          2000.00 CNY
+
+2024-08-08 * "Groceries"
+  Assets:Bank:Checking         -800.00 CNY
+  Expenses:Food:Groceries       800.00 CNY
+
+2024-08-10 * "Transit pass"
+  Assets:Bank:Checking         -300.00 CNY
+  Expenses:Transport            300.00 CNY
+
+2024-08-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard       -700.00 CNY
+  Expenses:Food:Dining          700.00 CNY
+
+2024-08-15 * "Utilities"
+  Liabilities:CreditCard       -500.00 CNY
+  Expenses:Utilities            500.00 CNY
+
+2024-08-18 * "Lunch"
+  Assets:Cash                  -100.00 CNY
+  Expenses:Food:Dining          100.00 CNY
+
+2024-08-20 * "Credit card payment"
+  Assets:Bank:Checking        -1200.00 CNY
+  Liabilities:CreditCard       1200.00 CNY
+
+2024-08-25 * "Salary"
+  Assets:Bank:Checking        20000.00 CNY
+  Income:Salary             -20000.00 CNY
+
+2024-09-01 * "Rent"
+  Assets:Bank:Checking        -6000.00 CNY
+  Expenses:Housing:Rent        6000.00 CNY
+
+2024-09-02 * "Savings transfer"
+  Assets:Bank:Checking        -2000.00 CNY
+  Assets:Bank:Savings          2000.00 CNY
+
+2024-09-08 * "Groceries"
+  Assets:Bank:Checking         -800.00 CNY
+  Expenses:Food:Groceries       800.00 CNY
+
+2024-09-10 * "Transit pass"
+  Assets:Bank:Checking         -300.00 CNY
+  Expenses:Transport            300.00 CNY
+
+2024-09-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard       -700.00 CNY
+  Expenses:Food:Dining          700.00 CNY
+
+2024-09-15 * "Utilities"
+  Liabilities:CreditCard       -500.00 CNY
+  Expenses:Utilities            500.00 CNY
+
+2024-09-18 * "Lunch"
+  Assets:Cash                  -100.00 CNY
+  Expenses:Food:Dining          100.00 CNY
+
+2024-09-20 * "Credit card payment"
+  Assets:Bank:Checking        -1200.00 CNY
+  Liabilities:CreditCard       1200.00 CNY
+
+2024-09-25 * "Salary"
+  Assets:Bank:Checking        20000.00 CNY
+  Income:Salary             -20000.00 CNY
+
+2024-10-01 * "Rent"
+  Assets:Bank:Checking        -6000.00 CNY
+  Expenses:Housing:Rent        6000.00 CNY
+
+2024-10-02 * "Savings transfer"
+  Assets:Bank:Checking        -2000.00 CNY
+  Assets:Bank:Savings          2000.00 CNY
+
+2024-10-08 * "Groceries"
+  Assets:Bank:Checking         -800.00 CNY
+  Expenses:Food:Groceries       800.00 CNY
+
+2024-10-10 * "Transit pass"
+  Assets:Bank:Checking         -300.00 CNY
+  Expenses:Transport            300.00 CNY
+
+2024-10-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard       -700.00 CNY
+  Expenses:Food:Dining          700.00 CNY
+
+2024-10-15 * "Utilities"
+  Liabilities:CreditCard       -500.00 CNY
+  Expenses:Utilities            500.00 CNY
+
+2024-10-18 * "Lunch"
+  Assets:Cash                  -100.00 CNY
+  Expenses:Food:Dining          100.00 CNY
+
+2024-10-20 * "Credit card payment"
+  Assets:Bank:Checking        -1200.00 CNY
+  Liabilities:CreditCard       1200.00 CNY
+
+2024-10-25 * "Salary"
+  Assets:Bank:Checking        20000.00 CNY
+  Income:Salary             -20000.00 CNY
+
+2024-11-01 * "Rent"
+  Assets:Bank:Checking        -6000.00 CNY
+  Expenses:Housing:Rent        6000.00 CNY
+
+2024-11-02 * "Savings transfer"
+  Assets:Bank:Checking        -2000.00 CNY
+  Assets:Bank:Savings          2000.00 CNY
+
+2024-11-08 * "Groceries"
+  Assets:Bank:Checking         -800.00 CNY
+  Expenses:Food:Groceries       800.00 CNY
+
+2024-11-10 * "Transit pass"
+  Assets:Bank:Checking         -300.00 CNY
+  Expenses:Transport            300.00 CNY
+
+2024-11-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard       -700.00 CNY
+  Expenses:Food:Dining          700.00 CNY
+
+2024-11-15 * "Utilities"
+  Liabilities:CreditCard       -500.00 CNY
+  Expenses:Utilities            500.00 CNY
+
+2024-11-18 * "Lunch"
+  Assets:Cash                  -100.00 CNY
+  Expenses:Food:Dining          100.00 CNY
+
+2024-11-20 * "Credit card payment"
+  Assets:Bank:Checking        -1200.00 CNY
+  Liabilities:CreditCard       1200.00 CNY
+
+2024-11-25 * "Salary"
+  Assets:Bank:Checking        20000.00 CNY
+  Income:Salary             -20000.00 CNY
+
+2024-12-01 * "Rent"
+  Assets:Bank:Checking        -6000.00 CNY
+  Expenses:Housing:Rent        6000.00 CNY
+
+2024-12-02 * "Savings transfer"
+  Assets:Bank:Checking        -2000.00 CNY
+  Assets:Bank:Savings          2000.00 CNY
+
+2024-12-08 * "Groceries"
+  Assets:Bank:Checking         -800.00 CNY
+  Expenses:Food:Groceries       800.00 CNY
+
+2024-12-10 * "Transit pass"
+  Assets:Bank:Checking         -300.00 CNY
+  Expenses:Transport            300.00 CNY
+
+2024-12-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard       -700.00 CNY
+  Expenses:Food:Dining          700.00 CNY
+
+2024-12-15 * "Utilities"
+  Liabilities:CreditCard       -500.00 CNY
+  Expenses:Utilities            500.00 CNY
+
+2024-12-18 * "Lunch"
+  Assets:Cash                  -100.00 CNY
+  Expenses:Food:Dining          100.00 CNY
+
+2024-12-20 * "Credit card payment"
+  Assets:Bank:Checking        -1200.00 CNY
+  Liabilities:CreditCard       1200.00 CNY
+
+2024-12-25 * "Salary"
+  Assets:Bank:Checking        20000.00 CNY
+  Income:Salary             -20000.00 CNY
+
+; One-off events
+2024-02-10 * "Buy shares" "First lot of the year"
+  Assets:Broker:Stocks           20 AAPL {160.00 USD}
+  Assets:Broker:Cash         -3200.00 USD
+
+2024-03-15 * "Annual health insurance" #insurance
+  receipt: "policy-2024"
+  Assets:Bank:Checking        -3600.00 CNY
+  Expenses:Health              3600.00 CNY
+
+2024-03-20 * "Dividend"
+  Assets:Broker:Cash            60.00 USD
+  Income:Dividends             -60.00 USD
+
+2024-04-10 * "Income tax"
+  Assets:Bank:Checking       -12000.00 CNY
+  Expenses:Taxes             12000.00 CNY
+
+2024-05-20 * "Books"
+  Assets:Bank:Checking         -600.00 CNY
+  Expenses:Books                600.00 CNY
+
+2024-06-15 * "Sell shares" "Raise cash"
+  Assets:Broker:Stocks          -15 AAPL {150.00 USD} @ 180.00 USD
+  Assets:Broker:Cash         2700.00 USD
+  Income:CapitalGains        -450.00 USD
+
+2024-06-30 * "Savings interest"
+  Assets:Bank:Checking          200.00 CNY
+  Income:Interest              -200.00 CNY
+
+; Mid-year cash count: the pad fills the difference to the counted amount
+2024-06-30 pad Assets:Cash Equity:Opening
+2024-07-01 balance Assets:Cash 8000.00 CNY
+
+2024-08-05 * "Hangzhou" "Family trip" #travel ^trip-2024
+  Assets:Bank:Checking        -5000.00 CNY
+  Expenses:Travel              5000.00 CNY
+
+2024-09-10 * "Store" "Work laptop"
+  receipt: "laptop-2024-09-10.pdf"
+  Assets:Bank:Checking        -8000.00 CNY
+  Expenses:Equipment           8000.00 CNY
+
+2024-09-10 document Assets:Bank:Checking "receipts/laptop-2024-09-10.pdf"
+
+2024-10-05 * "Buy shares" "Top up holding"
+  Assets:Broker:Stocks           10 AAPL {170.00 USD}
+  Assets:Broker:Cash         -1700.00 USD
+
+2024-11-25 * "Bonus"
+  Assets:Bank:Checking        30000.00 CNY
+  Income:Salary             -30000.00 CNY
+
+2024-12-20 * "Charity donation"
+  Assets:Bank:Checking        -1000.00 CNY
+  Expenses:Donations           1000.00 CNY
+
+2024-12-31 * "Savings interest"
+  Assets:Bank:Checking          200.00 CNY
+  Income:Interest              -200.00 CNY
+
+; Market data, notes and custom values
+2024-01-01 price USD 7.10 CNY
+2024-06-28 price USD 7.25 CNY
+2024-12-31 price USD 7.30 CNY
+2024-12-31 price AAPL 175.00 USD
+
+2024-07-01 event "location" "Hangzhou"
+2024-12-31 note Assets:Bank:Checking "Reconciled against the December statement"
+2024-12-31 custom "budget" "food" 12000.00 CNY 2024-01-01 2024-12-31
+2024-01-01 query "monthly" "SELECT year(date), month(date), sum(position) GROUP BY 1, 2"
+
+; Year-end assertions (asserted at the start of 2025-01-01)
+2025-01-01 balance Assets:Bank:Checking 166600.00 CNY
+2025-01-01 balance Assets:Bank:Savings 144000.00 CNY
+2025-01-01 balance Assets:Cash 7400.00 CNY
+2025-01-01 balance Liabilities:CreditCard -3200.00 CNY
+2025-01-01 balance Assets:Broker:Stocks 55 AAPL
+2025-01-01 balance Assets:Broker:Cash 1860.00 USD
