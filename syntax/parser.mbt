@@ -760,6 +760,7 @@ fn parse_posting(
   }
   let posting = @ast.Posting::new(account)
   posting.flag = flag
+  posting.loc = @ast.Loc::new(parser.file, line)
   match cursor.kind() {
     Word(w) =>
       if looks_like_number(w) {
@@ -777,12 +778,9 @@ fn parse_posting(
                   )
                   return None
                 }
-              None => {
-                parser.error(
-                  line, "parse.currency", "posting amount is missing a currency",
-                )
-                return None
-              }
+              // A bare number is resolved against the currencies of the other
+              // postings during validation.
+              None => ""
             }
             posting.units = Some(@ast.Amount::new(number, currency))
           }

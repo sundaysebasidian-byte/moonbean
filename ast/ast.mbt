@@ -330,6 +330,7 @@ pub(all) struct Posting {
   mut cost : CostSpec?
   mut price : PriceAnno?
   meta : Meta
+  mut loc : Loc
 }
 
 ///|
@@ -342,6 +343,7 @@ pub fn Posting::new(account : String) -> Posting {
     cost: None,
     price: None,
     meta: Meta::new(),
+    loc: Loc::new("", 0),
   }
 }
 
