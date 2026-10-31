@@ -117,9 +117,9 @@ benchmark 由 `scripts/bench.sh` 生成临时账本，不进入仓库。上述�
 `supported_targets = "-all+native"`。`moon test --target all` 在 wasm、wasm-gc、
 js、native 四个后端通过。
 
-`FROM transactions` 本轮明确不支持：解析时返回错误，不再作为 posting 源的别名。
+`FROM transactions` 明确不支持：解析时返回错误，不会作为 posting 源的别名。
 
-## R1 后端修正
+## 报表、lot、价格与 include
 
 校验只做一次 lot 选择，将 plan 展平为已记账 posting；各行保留 units、成本金额/币种、日期、标签、flag 和 metadata，跨 lot 的总价注解归一化为单位价格。realization 直接累计这些明细，不再二次选 lot；BQL/JOURNAL/register/JSON 导出共享同一表示。
 

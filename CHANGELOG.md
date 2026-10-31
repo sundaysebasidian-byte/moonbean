@@ -61,13 +61,13 @@ Initial release.
 - CLI bs/is/register/dups, single operating currency and report display precision.
 - Single-buffer decimal parsing; host API docs and typed query failure categories.
 - Windows CI path/shell correction, pinned oracle bootstrap and differential jobs.
-- 94 tests on native/js/wasm-gc; remaining boundaries in conformance/performance reports.
-- Browser playground (`playground/` JS exports, static page in `web/`) with a Pages workflow and a node smoke test.
-
-## Review R1 backend (2026-10-31)
-
-- Preserve split booked lot details across BQL, journals, register and export; reject FROM transactions.
-- Close prior/current earnings, balance cost/market reports, expose incomplete conversion and per-currency totals.
-- Add deterministic dated multihop price paths and inferred text display precision; keep JSON exact.
-- Share cycle-safe include traversal across library and CLI, including Windows/UNC normalization.
-- Expand independent review and two-seed random oracle comparisons to row-level costs, reports and price paths.
+- 108 tests on native, js, wasm-gc and wasm; remaining boundaries in conformance/performance reports.
+- Browser playground (`playground/` JS exports, static page in `web/`) with a Pages workflow, a node smoke test and a headless-Chrome check that ledger text never becomes markup.
+- Playground shows the engine's own totals, marks incomplete currency conversion and reports whether the balance sheet balances.
+- Booked lot postings are kept whole across BQL, `JOURNAL`, register and JSON export; a reduction spanning lots is several rows.
+- Balance sheet carries prior and current earnings into `Equity:Earnings:*`, lists market-value changes as an `Unrealized` reserve and balances exactly per currency.
+- Deterministic dated multi-hop price paths with cycle detection; a missing path returns `report.conversion_incomplete` and totals split by currency.
+- Text reports use one display scale per currency; JSON keeps exact amounts and adds `display_precision`.
+- `FROM transactions` is rejected as unsupported instead of aliasing `postings`.
+- `include` expansion shares one cycle-safe iterative stack between the library and the CLI (`include.cycle`, `include.missing`, depth 1024).
+- Oracle differential extended to posting-level rows, reports and price paths; two seeds of 1000 ledgers show no difference other than the AVERAGE extension.

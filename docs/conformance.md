@@ -131,51 +131,72 @@ runtime.
 - The `document` directive is parsed and its account is validated. MoonBean does
   not stat the referenced file, so a missing receipt produces no diagnostic,
   unlike the oracle. Linking a document is treated as metadata-only.
-- The original aggregate BALANCES check ignores cost date/label. R1 adds an independent posting-level check using `str(position)` that compares both fields and duplicate row counts.
+- The aggregate BALANCES check ignores cost date and label. A separate posting-level check compares them through `str(position)`, together with duplicate row counts.
 
-## Historical aggregate-only differential (pre-R1, 2026-10-31)
+## Seeded differential
 
-`python3 scripts/random_differential.py --seed 20261031 --count 1000`
-uses only Python stdlib and independently authored templates with randomized
-currencies, amounts, dates, lot sizes/costs and descriptions. Eleven scenario
-families include two purchase lots and reductions, seven booking methods,
-pad/balance, price directives, multiple currencies, tolerance residuals
-0.004/0.005/0.006, unknown/closed accounts and invalid currencies. This is
-bounded template-based random testing, not exhaustive grammar fuzzing.
+`scripts/random_differential.py` writes template-based random ledgers (random
+currencies, amounts, dates, lot sizes and costs) and compares each one with
+beancount 3.2.3. Scenario families include reductions that reach into a third
+lot, several postings on one day, quote bridges between currencies, the seven
+booking methods, pad/balance, tolerance residuals and deliberately invalid
+ledgers (unknown or closed accounts, bad currencies). This is bounded template
+testing, not exhaustive grammar fuzzing.
 
-| Check | Actual count |
-| --- | ---: |
-| Generated / diagnostic comparisons attempted | 1000 |
-| Fully matching ledgers | 858 |
-| Nonmatching diagnostic sets | 142 |
-| Matching error ledgers (queries skipped) | 390 |
-| Clean ledgers with six balance/BQL comparisons each | 468 |
-| Clean-ledger balance/BQL mismatches | 0 |
+For each clean ledger the run compares aggregate balances and scalar queries,
+posting-level rows (row count, cost amount, currency, date and label, duplicate
+multiplicity), balance sheet and income statement, the balance-sheet identity
+and a price-path conversion. Ordering among postings with identical date and
+account is not compared. Invalid ledgers compare diagnostics only.
 
-All 142 differences are the AVERAGE extension: ledger IDs `6 + 7*k` for
-`k=0..141`. The pinned oracle emits `average_unsupported`, while MoonBean
-implements AVERAGE. Each ledger ID, full expected/actual diagnostic set and
-reason is recorded in `docs/random-differential.json`; the runner writes raw
-results and the generated ledgers to its `--out` directory. No diagnostic
-differences are removed from the reported count. The default
-runner exits 1 for these differences. `--allow-known-extensions` permits CI
-success only when deleting the oracle's AVERAGE-unsupported diagnostics makes
-the complete diagnostic sets identical; unexpected differences still fail.
+| Seed | Ledgers | Matching | AVERAGE differences | Other differences | Clean-ledger checks |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 7 | 1000 | 858 | 142 | 0 | 5148 |
+| 20261101 | 1000 | 858 | 142 | 0 | 5148 |
 
-The original CSV runner rounded inventory quantities using beanquery's display
-precision. This produced 166 false balance differences on the initial random
-run. Oracle queries now stringify inventory values **before** CSV rendering,
-then compare exact Decimals. The baseline 56 comparable ledgers still pass.
-
-Reproduction (build via `./scripts/oracle.sh` first):
+Each seed has 468 clean ledgers and 390 invalid ledgers whose diagnostics match;
+234 of the clean ledgers contain a reduction crossing three lots. All 142
+differences per seed are the AVERAGE extension: beancount 3.2.3 reports
+`average_unsupported`, MoonBean implements AVERAGE. With the oracle's
+`average_unsupported` diagnostics removed the diagnostic sets are identical.
+The default runner exits 1 for these differences; `--allow-known-extensions`
+accepts only that exact delta, and any other difference still fails. Per-seed
+counts and the AVERAGE ledger ids are in `docs/random-differential.json`.
 
 ```sh
-python3 scripts/random_differential.py --allow-known-extensions
+./scripts/oracle.sh
+python3 scripts/random_differential.py --seed 7 --count 1000 --out .oracle-cache/differential/seed-7 --allow-known-extensions
+python3 scripts/random_differential.py --seed 20261101 --count 1000 --out .oracle-cache/differential/seed-20261101 --allow-known-extensions
+python3 scripts/report_differential.py
+python3 scripts/include_smoke.py
 python3 scripts/bql_differential.py
-python3 scripts/cli_smoke.py
 ```
 
-### Extended query matrix
+## Reports, lots, prices and includes
+
+`tests/regression/` holds 22 independently written ledgers (three-lot
+reductions, cost dates and labels, tolerance edges, income-only, expense-only,
+loss and multi-year reports). `scripts/report_differential.py` runs them plus
+three price-path scenarios: 25 scenario records and 144 checks, all passing.
+
+| Area | Behaviour and how it is checked |
+| --- | --- |
+| Balance sheet | Cost-basis report matches beanquery `FROM OPEN ON ... CLOSE ON ... CLEAR`; the income statement matches the same period before `CLEAR`. Prior and current earnings go to the accounts named by the earnings options. Market-value changes appear as an `Equity:Earnings:Unrealized` reserve and exact FX rounding as a separate adjustment, so Assets + Liabilities + Equity is exactly zero per currency. |
+| Currency conversion | Date-filtered BFS over direct and inverse quotes, lexical tie-break, cycle detection. When a path is missing the report sets `complete: false`, lists `report.conversion_incomplete` diagnostics and splits totals by currency. |
+| Lots | A reduction that spans lots is stored as several booked postings; BQL, `JOURNAL`, register and JSON export show the same rows. |
+| `FROM transactions` | Rejected at parse time as unsupported; there is no transaction row source. |
+| Includes | One iterative stack shared by the library and the CLI. Self, mutual, absolute and normalized cycles report `include.cycle`; missing files report `include.missing`; maximum depth 1024. Cycles are covered by `scripts/include_smoke.py` instead of the oracle, because beancount reports a duplicate-filename error at `<load>:0` while MoonBean reports the including file and line. |
+| Display precision | Text reports use one scale per currency (the most common booked scale, ties to the larger; an explicit `display_precision` wins). JSON keeps exact amounts and adds `display_precision`. |
+
+Still outside the engine: subqueries, JOIN, PIVOT, plugins, and BQL `CLOSE ON`
+conversion entries (the report layer closes and carries earnings instead).
+
+Backend checks run on native, js and wasm-gc (108 tests each, plus wasm); the
+browser bundle has 29 node checks and 5 headless-Chrome checks (`web/smoke.mjs`,
+`web/dom-smoke.mjs`). Oracle comparison of the 58 original ledgers is unchanged
+at 56 of 56, with two extensions.
+
+## Extended query matrix
 
 12/12 additional external beanquery comparisons pass on independently written
 ledger fixtures: aggregate HAVING, numeric precedence/parentheses/unary/division,
@@ -200,7 +221,7 @@ These comparisons cover ordinary default-name period balances. They do not
 prove exact synthetic metadata/ordering, custom summarization account options,
 or conversion normalization. Period support is deliberately marked partial.
 
-### API and CI audit
+## API and CI
 
 All pure library packages typecheck/test on native, js and wasm-gc (also wasm).
 The native-only CLI owns filesystem/process access; hosts call the pure library.
@@ -217,66 +238,3 @@ USERPROFILE instead of a hard-coded runner username. Oracle bootstrap pins
 pip 25.2, Beancount 3.2.3 and beanquery 0.2.0 with Python 3.12 in CI. The
 workflow runs random differential and extended BQL checks and uploads evidence.
 The workflows have not been executed on GitHub yet.
-
-## R1 backend review fixes
-
-The historical run above only establishes aggregate compatibility for its old
-bounded templates. The generator has since changed: it is not a reproduction of
-those old inputs. R1 evidence and reproduction commands below supersede that
-coverage claim; this remains bounded template testing, not grammar fuzzing.
-
-| Issue | Implemented behavior and evidence |
-| --- | --- |
-| B-02 | Cost-basis bs matches beanquery `FROM OPEN ON ... CLOSE ON ... CLEAR`; is matches the same period before CLEAR. Earnings account options, prior/current periods, profit/loss, foreign currency and inclusive snapshots tested. Market valuation changes and exact FX rounding are separate equity report adjustments. |
-| I-01 | Date-filtered BFS, inverse edges, lexical tie breaking and cycle detection. The independent chain matches beanquery conversion. Missing paths produce structured diagnostics and grouped currency totals; a single unqualified total requires complete conversion. |
-| I-02 | Save split booked postings once; compare posting counts, cost amount/currency/date/label. JOURNAL, register and JSON export are checked independently against the same oracle posting multiset. |
-| I-03 | FROM transactions returns Unsupported at parse time; independent transaction source remains unimplemented. |
-| I-04 | One iterative include stack for pure callback API and async native CLI. Self/mutual/absolute/normalized cycles, missing files and deep valid loads tested. CLI cycle timeout guard is 5s; errors retain the including path and line. |
-| S-01 backend | Infer one display scale per currency; explicit quantum overrides it. Raw JSON values remain exact and expose display metadata separately. |
-| S-02 | Three purchase lots, reductions reaching partially into a third lot, multiple same-day postings/transactions, explicit quote bridges and accounting invariants added. |
-
-The 18 independently authored review ledgers are retained in `tests/review/`,
-plus four new income/expense/loss/multi-year ledgers. The review runner includes
-additional chain and historical report checks; current totals are recorded in
-`docs/r1-differential.json`. Cyclic includes are separate host regression tests:
-the oracle reports Duplicate filename parsed at `<load>:0`; MoonBean returns the
-requested include.cycle with the actual including filename/line. This intentional
-location/category distinction is not hidden in the random ledger counts.
-
-For each clean random ledger the suite runs six original aggregate/scalar/lot
-queries plus posting details, bs, is, the bs identity and a quote-bridge conversion
-comparison. Posting comparison preserves duplicate multiplicities; ordering among
-identical date/account keys is not compared. Error ledgers compare diagnostics
-only. AVERAGE is still an explicitly counted oracle extension.
-
-```sh
-export PATH="$HOME/.moon/bin:$PATH"
-./scripts/oracle.sh
-python3 scripts/review_differential.py
-python3 scripts/include_smoke.py
-python3 scripts/random_differential.py --seed 7 --count 1000 --out .oracle-cache/r1/seed-7 --allow-known-extensions
-python3 scripts/random_differential.py --seed 20261101 --count 1000 --out .oracle-cache/r1/seed-20261101 --allow-known-extensions
-```
-
-The accepted native executable is fingerprinted with the source checkpoint in
-`.oracle-cache/r1/release-build.json`; the final two datasets and complete raw
-results are retained in `.oracle-cache/r1/release-seed-*`. Structured committed
-summary evidence is in `docs/r1-differential.json`. Default random-run exit status
-remains nonzero for counted AVERAGE differences; the opt-in flag permits only the
-exact known diagnostic delta. No non-AVERAGE difference may be waived.
-
-Remaining scope: FROM transactions, subqueries/JOIN/PIVOT, BQL CLOSE conversion
-normalization, plugins, the front-end XSS/diagnostic display and publishing are
-outside this fix. No UI source changed; only affected web smoke assertions were
-updated. GitHub CI has not executed and nothing was pushed or published.
-
-### Final R1 measured counts
-
-| Seed | Ledgers | Matching | AVERAGE diagnostic differences | Non-AVERAGE differences | Clean-ledger detailed checks |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| 7 | 1000 | 858 | 142 | 0 | 5148 |
-| 20261101 | 1000 | 858 | 142 | 0 | 5148 |
-
-Each seed includes 468 clean ledgers and 390 matching deliberately invalid ledgers. Each has 234 clean FIFO/LIFO/HIFO reductions crossing three lots.
-
-Original oracle: 56/56 comparable (58 total, two extensions). Review: 22 retained ledger files, 25 scenario records, 144/144 checks. Extended BQL 12/12; three required backends 108/108 each; extra wasm 108/108; web smoke 21/21 and CLI include smoke 5/5.
