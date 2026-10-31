@@ -1,1 +1,10 @@
-// no imports yet
+import {
+  "sundaysebasidian-byte/moonbean/ast",
+  "sundaysebasidian-byte/moonbean/booking",
+  "sundaysebasidian-byte/moonbean/decimal",
+  "sundaysebasidian-byte/moonbean/validation",
+}
+
+import {
+  "sundaysebasidian-byte/moonbean/syntax",
+} for "test"
