@@ -15,7 +15,7 @@ pub fn check_source(String, String) -> @validation.ValidatedLedger
 
 pub fn diagnostic_text(@ast.Diagnostic) -> String
 
-pub fn expand_includes(String, String, (String) -> String?) -> ExpandedSource
+pub fn expand_includes(String, String, (String) -> String?, file? : String) -> ExpandedSource
 
 pub fn export_json(String, @validation.ValidatedLedger) -> String
 
@@ -37,7 +37,22 @@ pub fn run_query(@validation.ValidatedLedger, String, at? : @ast.Date?) -> @quer
 pub(all) struct ExpandedSource {
   source : String
   missing : Array[String]
+  errors : Array[@ast.Diagnostic]
 }
+
+pub struct IncludeExpander {
+  frames : Array[IncludeFrame]
+  output : Array[String]
+  missing : Array[String]
+  errors : Array[@ast.Diagnostic]
+  mut pending : (String, String, @ast.Loc)?
+}
+pub fn IncludeExpander::finish(Self) -> ExpandedSource
+pub fn IncludeExpander::new(String, String, String) -> Self
+pub fn IncludeExpander::next(Self) -> String?
+pub fn IncludeExpander::provide(Self, String?) -> Unit
+
+type IncludeFrame
 
 // Type aliases
 

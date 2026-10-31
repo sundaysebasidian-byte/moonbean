@@ -98,7 +98,8 @@ pub fn path_dirname(path : String) -> String {
 }
 
 ///|
-fn lib_normalize_path(path : String) -> String {
+fn lib_normalize_path(input : String) -> String {
+  let path = input.replace_all(old="\\", new="/")
   let absolute = match path.get_char(0) {
     Some(c) => c == '/'
     None => false
@@ -112,7 +113,7 @@ fn lib_normalize_path(path : String) -> String {
     if part == ".." {
       if parts.length() > 0 && parts[parts.length() - 1] != ".." {
         parts.pop() |> ignore
-      } else {
+      } else if !absolute {
         parts.push(part)
       }
       continue
@@ -152,59 +153,155 @@ pub fn path_join(base : String, relative : String) -> String {
 }
 
 ///|
+/// Expanded text plus deterministic include failures. Repeated non-ancestor includes are allowed.
 pub(all) struct ExpandedSource {
   source : String
   missing : Array[String]
+  errors : Array[@ast.Diagnostic]
 }
 
 ///|
-fn lib_expand_into(
+struct IncludeFrame {
+  file : String
+  base : String
+  lines : Array[String]
+  mut index : Int32
+}
+
+///|
+/// Pure request/response include walker shared by synchronous and asynchronous hosts.
+/// Call next(), supply the requested file with provide(), then finish() after next returns None.
+pub struct IncludeExpander {
+  frames : Array[IncludeFrame]
+  output : Array[String]
+  missing : Array[String]
+  errors : Array[@ast.Diagnostic]
+  mut pending : (String, String, @ast.Loc)?
+}
+
+///|
+/// Seeds the recursion stack with the normalized root filename.
+pub fn IncludeExpander::new(
+  file : String,
+  base_dir : String,
   source : String,
-  base : String,
-  read : (String) -> String?,
-  missing : Array[String],
-  lines : Array[String],
-) -> Unit {
-  for view in source.split("\n") {
-    let line = lib_view(view)
-    match lib_include_target(line) {
+) -> IncludeExpander {
+  {
+    frames: [
+      {
+        file: path_join("", file),
+        base: base_dir,
+        lines: source.split("\n").map(lib_view).to_array(),
+        index: 0,
+      },
+    ],
+    output: [],
+    missing: [],
+    errors: [],
+    pending: None,
+  }
+}
+
+///|
+/// Returns the next path to load. Detects cycles before requesting host I/O.
+pub fn IncludeExpander::next(self : IncludeExpander) -> String? {
+  if self.pending is Some((path, _, _)) {
+    return Some(path)
+  }
+  while self.frames.length() > 0 {
+    let frame = self.frames[self.frames.length() - 1]
+    if frame.index >= frame.lines.length() {
+      self.frames.pop() |> ignore
+      continue
+    }
+    let line = frame.lines[frame.index]
+    frame.index += 1
+    match include_target(line) {
+      None => self.output.push(line)
       Some(relative) => {
-        let path = path_join(base, relative)
-        match read(path) {
-          Some(included) =>
-            lib_expand_into(included, path_dirname(path), read, missing, lines)
-          None => {
-            missing.push(path)
-            lines.push(line)
-          }
+        let path = path_join(frame.base, relative)
+        let loc = @ast.Loc::new(frame.file, frame.index)
+        if self.frames.any(fn(f) { f.file == path }) {
+          self.errors.push(
+            @ast.Diagnostic::new(
+              "include.cycle",
+              "Include cycle: " +
+              self.frames.map(fn(f) { f.file }).join(" -> ") +
+              " -> " +
+              path,
+              loc,
+            ),
+          )
+        } else if self.frames.length() >= 1024 {
+          self.errors.push(
+            @ast.Diagnostic::new(
+              "include.depth", "Include nesting exceeds 1024 files", loc,
+            ),
+          )
+        } else {
+          self.pending = Some((path, line, loc))
+          return Some(path)
         }
       }
-      None => lines.push(line)
+    }
+  }
+  None
+}
+
+///|
+/// Supplies a requested file; None retains the directive and records include.missing.
+pub fn IncludeExpander::provide(
+  self : IncludeExpander,
+  content : String?,
+) -> Unit {
+  if self.pending is Some((path, line, loc)) {
+    self.pending = None
+    match content {
+      Some(source) =>
+        self.frames.push({
+          file: path,
+          base: path_dirname(path),
+          lines: source.split("\n").map(lib_view).to_array(),
+          index: 0,
+        })
+      None => {
+        self.missing.push(path)
+        self.output.push(line)
+        self.errors.push(
+          @ast.Diagnostic::new(
+            "include.missing",
+            "Cannot read include: " + path,
+            loc,
+          ),
+        )
+      }
     }
   }
 }
 
 ///|
-/// Expands `include "path"` directives recursively.  `read` receives a path
-/// joined to `base_dir` (or to the including file's directory) and returns the
-/// file content, or None when the file cannot be read.  Missing paths are
-/// reported separately and the include line is kept.
+/// Returns accumulated output and diagnostics after all requests have been served.
+pub fn IncludeExpander::finish(self : IncludeExpander) -> ExpandedSource {
+  {
+    source: self.output.join("\n"),
+    missing: self.missing,
+    errors: self.errors,
+  }
+}
+
+///|
+/// Expands includes with a synchronous loader. Async hosts use the same walker directly.
 pub fn expand_includes(
   source : String,
   base_dir : String,
   read : (String) -> String?,
+  file~ : String = "<input>",
 ) -> ExpandedSource {
-  let lines : Array[String] = []
-  let missing : Array[String] = []
-  lib_expand_into(source, base_dir, read, missing, lines)
-  let sb = StringBuilder()
-  for i in 0..<lines.length() {
-    if i > 0 {
-      sb.write_string("\n")
-    }
-    sb.write_string(lines[i])
+  let walker = IncludeExpander::new(file, base_dir, source)
+  while walker.next() is Some(path) {
+    walker.provide(read(path))
   }
-  { source: sb.to_string(), missing, }
+  walker.finish()
 }
 
 ///|
@@ -224,8 +321,10 @@ pub fn check_expanded(
   source : String,
   read : (String) -> String?,
 ) -> @validation.ValidatedLedger {
-  let expanded = expand_includes(source, base_dir, read)
-  check_source(file, expanded.source)
+  let expanded = expand_includes(source, base_dir, read, file~)
+  let ledger = check_source(file, expanded.source)
+  ledger.errors.append(expanded.errors)
+  ledger
 }
 
 ///|

@@ -38,58 +38,6 @@ async fn read_text(path : String) -> String? {
 }
 
 ///|
-async fn expand_into(
-  source : String,
-  base : String,
-  missing : Array[String],
-  lines : Array[String],
-) -> Unit {
-  for view in source.split("\n") {
-    let line = cli_view(view)
-    match @moonbean.include_target(line) {
-      Some(relative) => {
-        let path = @moonbean.path_join(base, relative)
-        match read_text(path) {
-          Some(included) =>
-            expand_into(included, @moonbean.path_dirname(path), missing, lines)
-          None => {
-            missing.push(path)
-            lines.push(line)
-          }
-        }
-      }
-      None => lines.push(line)
-    }
-  }
-}
-
-///|
-async fn load_ledger(file : String) -> String? {
-  match read_text(file) {
-    None => None
-    Some(source) => {
-      let lines : Array[String] = []
-      let missing : Array[String] = []
-      expand_into(source, @moonbean.path_dirname(file), missing, lines)
-      if missing.length() > 0 {
-        for path in missing {
-          eprintln("moonbean: cannot read include: " + path)
-        }
-        return None
-      }
-      let sb = StringBuilder()
-      for i in 0..<lines.length() {
-        if i > 0 {
-          sb.write_string("\n")
-        }
-        sb.write_string(lines[i])
-      }
-      Some(sb.to_string())
-    }
-  }
-}
-
-///|
 fn print_diagnostics(diagnostics : Array[@ast.Diagnostic]) -> Unit {
   for diagnostic in diagnostics {
     eprintln(@moonbean.diagnostic_text(diagnostic))
@@ -184,9 +132,25 @@ fn parse_options(command : String, args : Array[String]) -> CliOptions {
 
 ///|
 async fn check_file(file : String) -> @validation.ValidatedLedger? {
-  match load_ledger(file) {
-    None => None
-    Some(source) => Some(@moonbean.check_source(file, source))
+  match read_text(file) {
+    None => {
+      eprintln("moonbean: cannot read " + file)
+      None
+    }
+    Some(source) => {
+      let walker = @moonbean.IncludeExpander::new(
+        file,
+        @moonbean.path_dirname(file),
+        source,
+      )
+      while walker.next() is Some(path) {
+        walker.provide(read_text(path))
+      }
+      let expanded = walker.finish()
+      let ledger = @moonbean.check_source(file, expanded.source)
+      ledger.errors.append(expanded.errors)
+      Some(ledger)
+    }
   }
 }
 

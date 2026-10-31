@@ -129,3 +129,46 @@ test "export_json includes diagnostics for a bad ledger" {
     content="true",
   )
 }
+
+///|
+test "include walker rejects self and mutual cycles with original include locations" {
+  let files : Map[String, String] = {
+    "/docs/self": "include \"./self\"",
+    "/docs/a": "include \"sub/../b\"",
+    "/docs/b": "include \"/docs/a\"",
+  }
+  let self = @moonbean.check_expanded(
+    "/docs/self",
+    "/docs",
+    files.get("/docs/self").unwrap(),
+    fn(p) { files.get(p) },
+  )
+  inspect(self.errors.length(), content="1")
+  inspect(self.errors[0].code, content="include.cycle")
+  inspect(self.errors[0].loc.to_string(), content="/docs/self:1")
+  let mutual = @moonbean.check_expanded(
+    "/docs/a",
+    "/docs",
+    files.get("/docs/a").unwrap(),
+    fn(p) { files.get(p) },
+  )
+  inspect(mutual.errors[0].code, content="include.cycle")
+  inspect(mutual.errors[0].loc.to_string(), content="/docs/b:1")
+}
+
+///|
+test "include stack permits deep acyclic loads and repeated siblings" {
+  let files : Map[String, String] = Map([])
+  for i in 0..<300 {
+    files.set("d/" + i.to_string(), "include \"" + (i + 1).to_string() + "\"")
+  }
+  files.set("d/300", "2024-01-01 open Assets:Cash USD")
+  let result = @moonbean.expand_includes("include \"0\"\ninclude \"0\"", "d", fn(
+    p,
+  ) {
+    files.get(p)
+  })
+  inspect(result.errors.length(), content="0")
+  inspect(result.source.split("Assets:Cash").count(), content="3")
+  inspect(@moonbean.path_join("/", "../../a"), content="/a")
+}
