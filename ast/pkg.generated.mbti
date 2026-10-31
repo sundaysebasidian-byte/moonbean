@@ -1,0 +1,258 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "sundaysebasidian-byte/moonbean/ast"
+
+import {
+  "sundaysebasidian-byte/moonbean/decimal",
+}
+
+// Values
+pub fn account_leaf(String) -> String
+
+pub fn account_parent(String) -> String
+
+pub fn account_parts(String) -> Array[String]
+
+pub fn account_root(String) -> String
+
+// Errors
+
+// Types and methods
+pub(all) struct Amount {
+  number : @decimal.Decimal
+  currency : String
+}
+pub fn Amount::new(@decimal.Decimal, String) -> Self
+pub fn Amount::to_string(Self) -> String
+
+pub(all) struct Balance {
+  account : String
+  amount : Amount
+  tolerance : @decimal.Decimal?
+}
+
+pub(all) struct Close {
+  account : String
+}
+
+pub(all) struct Commodity {
+  currency : String
+}
+
+pub(all) struct Cost {
+  number : @decimal.Decimal
+  currency : String
+  date : Date?
+  label : String?
+}
+pub fn Cost::new(@decimal.Decimal, String, Date?, String?) -> Self
+pub fn Cost::to_string(Self) -> String
+
+pub(all) struct CostSpec {
+  number_per : @decimal.Decimal?
+  number_total : @decimal.Decimal?
+  currency : String?
+  date : Date?
+  label : String?
+  merge : Bool
+  present : Bool
+}
+pub fn CostSpec::empty() -> Self
+pub fn CostSpec::is_empty_spec(Self) -> Bool
+pub fn CostSpec::new_per(@decimal.Decimal, String, Date?, String?) -> Self
+pub fn CostSpec::new_total(@decimal.Decimal, String) -> Self
+pub fn CostSpec::to_string(Self) -> String
+
+pub(all) struct Custom {
+  custom_type : String
+  values : Array[CustomValue]
+}
+
+pub(all) enum CustomValue {
+  CString(String)
+  CBool(Bool)
+  CDate(Date)
+  CNumber(@decimal.Decimal)
+  CAmount(Amount)
+  CAccount(String)
+  CCurrency(String)
+  CTag(String)
+}
+pub fn CustomValue::to_string(Self) -> String
+
+pub(all) struct Date {
+  year : Int32
+  month : Int32
+  day : Int32
+}
+pub fn Date::compare(Self, Self) -> Int32
+pub fn Date::day_of_year(Self) -> Int32
+pub fn Date::days_in_month(Int32, Int32) -> Int32
+pub fn Date::equal(Self, Self) -> Bool
+pub fn Date::is_leap(Int32) -> Bool
+pub fn Date::less_equal(Self, Self) -> Bool
+pub fn Date::less_than(Self, Self) -> Bool
+pub fn Date::new(Int32, Int32, Int32) -> Self?
+pub fn Date::parse(String) -> Self?
+pub fn Date::to_string(Self) -> String
+
+pub(all) struct Diagnostic {
+  code : String
+  message : String
+  loc : Loc
+}
+pub fn Diagnostic::new(String, String, Loc) -> Self
+pub fn Diagnostic::to_string(Self) -> String
+
+pub(all) enum Directive {
+  DOpen(Open)
+  DClose(Close)
+  DCommodity(Commodity)
+  DPad(Pad)
+  DBalance(Balance)
+  DPrice(Price)
+  DEvent(Event)
+  DQuery(QueryDirective)
+  DCustom(Custom)
+  DNote(Note)
+  DDocument(Document)
+  DTransaction(Transaction)
+}
+
+pub(all) struct Document {
+  account : String
+  filename : String
+  tags : Array[String]
+  links : Array[String]
+}
+
+pub(all) struct Entry {
+  date : Date
+  loc : Loc
+  meta : Meta
+  directive : Directive
+}
+pub fn Entry::is_transaction(Self) -> Bool
+pub fn Entry::new(Date, Loc, Directive) -> Self
+
+pub(all) struct Event {
+  event_type : String
+  description : String
+}
+
+pub(all) struct Ledger {
+  entries : Array[Entry]
+  errors : Array[Diagnostic]
+  options : Options
+  plugins : Array[Plugin]
+}
+pub fn Ledger::add_error(Self, Diagnostic) -> Unit
+pub fn Ledger::new() -> Self
+
+pub(all) struct Loc {
+  file : String
+  line : Int32
+}
+pub fn Loc::new(String, Int32) -> Self
+pub fn Loc::to_string(Self) -> String
+
+pub(all) struct Meta {
+  entries : Array[(String, MetaValue)]
+}
+pub fn Meta::copy(Self) -> Self
+pub fn Meta::get(Self, String) -> MetaValue?
+pub fn Meta::has(Self, String) -> Bool
+pub fn Meta::is_empty(Self) -> Bool
+pub fn Meta::new() -> Self
+pub fn Meta::remove(Self, String) -> Unit
+pub fn Meta::set(Self, String, MetaValue) -> Unit
+
+pub(all) enum MetaValue {
+  MString(String)
+  MNumber(@decimal.Decimal)
+  MDate(Date)
+  MAccount(String)
+  MCurrency(String)
+  MTag(String)
+  MBool(Bool)
+}
+pub fn MetaValue::to_string(Self) -> String
+
+pub(all) struct Note {
+  account : String
+  comment : String
+}
+
+pub(all) struct Open {
+  account : String
+  currencies : Array[String]
+  booking : String?
+}
+
+pub(all) struct Options {
+  title : String?
+  booking_method : String
+  tolerance_multiplier : @decimal.Decimal
+  inferred_tolerance_default : Map[String, @decimal.Decimal]
+  infer_tolerance_from_cost : Bool
+  account_rounding : String?
+  operating_currencies : Array[String]
+  documents : Array[String]
+  display_precision : Map[String, @decimal.Decimal]
+  render_commas : Bool
+  raw : Array[(String, String)]
+}
+pub fn Options::add_raw(Self, String, String) -> Unit
+pub fn Options::get(Self, String) -> String?
+pub fn Options::get_all(Self, String) -> Array[String]
+pub fn Options::new() -> Self
+
+pub(all) struct Pad {
+  account : String
+  source_account : String
+}
+
+pub(all) struct Plugin {
+  name : String
+  config : String?
+}
+
+pub(all) struct Posting {
+  flag : String?
+  account : String
+  units : Amount?
+  units_currency : String?
+  cost : CostSpec?
+  price : PriceAnno?
+  meta : Meta
+}
+pub fn Posting::new(String) -> Self
+
+pub(all) struct Price {
+  currency : String
+  amount : Amount
+}
+
+pub(all) enum PriceAnno {
+  PerUnit(Amount)
+  Total(Amount)
+}
+pub fn PriceAnno::amount(Self) -> Amount
+pub fn PriceAnno::to_string(Self) -> String
+
+pub(all) struct QueryDirective {
+  name : String
+  query : String
+}
+
+pub(all) struct Transaction {
+  flag : String
+  payee : String?
+  narration : String
+  tags : Array[String]
+  links : Array[String]
+  postings : Array[Posting]
+}
+
+// Type aliases
+
+// Traits
