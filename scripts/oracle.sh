@@ -39,7 +39,7 @@ fi
 if [ ! -x "$VENV/bin/bean-check" ] || [ ! -x "$VENV/bin/bean-query" ]; then
   echo "==> creating oracle virtual environment at $VENV" >&2
   "$PYTHON" -m venv "$VENV"
-  "$VENV/bin/python" -m pip install --quiet --upgrade pip
+  "$VENV/bin/python" -m pip install --quiet "pip==25.2"
   "$VENV/bin/python" -m pip install --quiet \
     "beancount==$BEANCOUNT_VERSION" "beanquery==$BEANQUERY_VERSION"
 fi
