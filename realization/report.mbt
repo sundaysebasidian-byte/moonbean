@@ -620,3 +620,29 @@ pub fn register_to_json(rows : Array[RegisterRow]) -> String {
   sb.write_string("]")
   sb.to_string()
 }
+
+///|
+/// Renders report amounts using CCY:NUMBER precision options; JSON stays exact.
+pub fn Report::to_text_with_options(
+  self : Report,
+  options : @ast.Options,
+) -> String {
+  if options.display_precision.is_empty() {
+    return self.to_text()
+  }
+  let sb = StringBuilder()
+  sb.write_string(self.title + "\nAccount  Amount\n")
+  for row in self.rows.copy() + self.totals.copy() {
+    let number = match options.display_precision.get(row.amount.currency) {
+      Some(precision) =>
+        row.amount.number
+        .quantize(precision.scale())
+        .to_display(min_scale=precision.scale())
+      None => row.amount.number.to_string()
+    }
+    sb.write_string(
+      row.label + "  " + number + " " + row.amount.currency + "\n",
+    )
+  }
+  sb.to_string()
+}

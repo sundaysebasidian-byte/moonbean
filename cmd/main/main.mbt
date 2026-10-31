@@ -21,7 +21,9 @@ fn usage() -> Unit {
     "moonbean - a Beancount-compatible plain text accounting engine\n\n" +
     "usage:\n" +
     "  moonbean check FILE...\n" +
-    "  moonbean bal FILE [--at DATE] [--convert CCY]\n" +
+    "  moonbean bal|bs|is FILE [--at DATE] [--convert CCY] [--json]\n" +
+    "  moonbean register FILE ACCOUNT [--json]\n" +
+    "  moonbean dups FILE\n" +
     "  moonbean query FILE 'BQL' [--at DATE] [--json]\n" +
     "  moonbean fmt FILE [--write]\n" +
     "  moonbean export FILE --json\n",
@@ -143,7 +145,7 @@ fn parse_options(command : String, args : Array[String]) -> CliOptions {
     json: false,
     write: false,
   }
-  let is_query = command == "query"
+  let is_query = command == "query" || command == "register"
   let mut i = 0
   while i < args.length() {
     let arg = args[i]
@@ -213,8 +215,8 @@ async fn cmd_check(args : Array[String]) -> Unit {
 }
 
 ///|
-async fn cmd_bal(args : Array[String]) -> Unit {
-  let options = parse_options("bal", args)
+async fn cmd_bal(command : String, args : Array[String]) -> Unit {
+  let options = parse_options(command, args)
   if options.file == "" {
     fail("bal needs a ledger file")
   }
@@ -227,8 +229,54 @@ async fn cmd_bal(args : Array[String]) -> Unit {
         exit(1)
       }
       let realized = @moonbean.realize(ledger, at=options.at)
-      let report = @realization.trial_balance(realized, convert=options.convert)
-      println(report.to_text())
+      let convert = match options.convert {
+        Some(currency) => Some(currency)
+        None =>
+          if ledger.options.operating_currencies.length() == 1 {
+            Some(ledger.options.operating_currencies[0])
+          } else {
+            None
+          }
+      }
+      if command == "register" {
+        if options.bql == "" {
+          fail("register needs an account")
+        }
+        let rows = @realization.register_rows(realized, options.bql)
+        println(
+          if options.json {
+            @realization.register_to_json(rows)
+          } else {
+            @realization.register_to_text(rows)
+          },
+        )
+      } else if command == "dups" {
+        let duplicates = @validation.find_duplicate_transactions(ledger.entries)
+        for (first, duplicate) in duplicates {
+          println(
+            duplicate.file +
+            ":" +
+            duplicate.line.to_string() +
+            ": duplicate of " +
+            first.file +
+            ":" +
+            first.line.to_string(),
+          )
+        }
+      } else {
+        let report = match command {
+          "bs" => @realization.balance_sheet(realized, convert~)
+          "is" => @realization.income_statement(realized, convert~)
+          _ => @realization.trial_balance(realized, convert~)
+        }
+        println(
+          if options.json {
+            report.to_json()
+          } else {
+            report.to_text_with_options(ledger.options)
+          },
+        )
+      }
     }
   }
 }
@@ -316,7 +364,7 @@ async fn main {
   }
   match args[1] {
     "check" => cmd_check(rest)
-    "bal" => cmd_bal(rest)
+    "bal" | "bs" | "is" | "register" | "dups" => cmd_bal(args[1], rest)
     "query" => cmd_query(rest)
     "fmt" => cmd_fmt(rest)
     "export" => cmd_export(rest)

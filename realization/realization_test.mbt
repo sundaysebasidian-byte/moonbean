@@ -279,3 +279,18 @@ test "subaccount subtree aggregation" {
     content="false",
   )
 }
+
+///|
+test "report display precision rounds text and preserves JSON" {
+  let ledger = @validation.validate_ledger(
+    @syntax.parse_source(
+      "precision", "option \"display_precision\" \"USD:0.01\"\n2024-01-01 open Assets:Cash USD\n2024-01-01 open Equity:Opening USD\n2024-01-02 * \"opening\"\n  Assets:Cash 1.234 USD\n  Equity:Opening -1.234 USD\n",
+    ),
+  )
+  let report = @realization.trial_balance(@realization.realize(ledger))
+  inspect(
+    report.to_text_with_options(ledger.options).contains("1.23 USD"),
+    content="true",
+  )
+  inspect(report.to_json().contains("1.234"), content="true")
+}
