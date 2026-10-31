@@ -233,3 +233,17 @@ test "tags links and posting metadata retain structured values" {
   inspect(r.rows[0][1].to_json(), content="[\"receipt\"]")
   inspect(r.rows[0][2].to_text(), content="abc")
 }
+
+///|
+test "CLOSE ON is exclusive and BALANCES AT supports unit and cost views" {
+  let r = queried(ledger_source(), "BALANCES AT units FROM CLOSE ON 2024-03-05")
+  inspect(r.is_ok(), content="true")
+  inspect(r.rows.length(), content="2")
+  inspect(r.rows[0][1].to_text(), content="1000 USD")
+  let c = queried(
+    ledger_source(),
+    "BALANCES AT cost FROM CLOSE ON 2024-03-06 WHERE account = 'Expenses:Food'",
+  )
+  inspect(c.is_ok(), content="true")
+  inspect(c.rows[0][1].to_text(), content="20 USD")
+}

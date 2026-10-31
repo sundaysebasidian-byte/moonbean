@@ -44,6 +44,8 @@ priv struct OrderSpec {
 priv enum QuerySource {
   SrcPostings
   SrcBalances
+  SrcClose(@ast.Date)
+  SrcOpen(@ast.Date, @ast.Date?)
 }
 
 ///|
@@ -456,6 +458,48 @@ fn parse_expr_list(parser : QueryParser) -> Array[Expr]? {
 
 ///|
 fn parse_source(parser : QueryParser) -> QuerySource? {
+  if parser.match_keyword("open") {
+    if !parser.expect_keyword("on") {
+      return None
+    }
+    let start = match parser.advance() {
+      BDate(date) => date
+      _ => {
+        parser.fail("OPEN ON requires a date")
+        return None
+      }
+    }
+    if start.year == 1 && start.month == 1 && start.day == 1 {
+      parser.fail("OPEN ON requires a date after 0001-01-01")
+      return None
+    }
+    let mut close = None
+    if parser.match_keyword("close") {
+      if !parser.expect_keyword("on") {
+        return None
+      }
+      close = match parser.advance() {
+        BDate(date) => Some(date)
+        _ => {
+          parser.fail("CLOSE ON requires a date")
+          return None
+        }
+      }
+    }
+    return Some(SrcOpen(start, close))
+  }
+  if parser.match_keyword("close") {
+    if !parser.expect_keyword("on") {
+      return None
+    }
+    return match parser.advance() {
+      BDate(date) => Some(SrcClose(date))
+      _ => {
+        parser.fail("CLOSE ON requires a date")
+        None
+      }
+    }
+  }
   match parser.take_word() {
     Some(word) =>
       match word.to_lower() {
@@ -650,11 +694,51 @@ fn parse_query(text : String) -> ParsedQuery {
           if parser.at_end() {
             PqBalances
           } else {
-            PqError("unexpected input after BALANCES")
+            parse_balances(parser)
           }
         "journal" => parse_journal(parser)
         _ => PqError("unknown statement `" + word + "`")
       }
     None => PqError("query must start with SELECT, BALANCES or JOURNAL")
   }
+}
+
+///|
+fn parse_balances(parser : QueryParser) -> ParsedQuery {
+  let mut mode = "position"
+  if parser.match_keyword("at") {
+    mode = match parser.take_word() {
+      Some(word) =>
+        match word.to_lower() {
+          "units" => "units"
+          "cost" => "weight"
+          _ => return PqError("BALANCES AT supports UNITS or COST")
+        }
+      None => return PqError("BALANCES AT expects a function")
+    }
+  }
+  let tokens = [
+    BWord("account"),
+    BSym(","),
+    BWord("sum"),
+    BSym("("),
+    BWord(mode),
+    BSym(")"),
+  ]
+  for i in parser.index..<(parser.tokens.length() - 1) {
+    tokens.push(parser.tokens[i])
+  }
+  for
+    token in [
+      BWord("group"),
+      BWord("by"),
+      BWord("account"),
+      BWord("order"),
+      BWord("by"),
+      BWord("account"),
+      BEof,
+    ] {
+    tokens.push(token)
+  }
+  parse_select(QueryParser::new(tokens))
 }

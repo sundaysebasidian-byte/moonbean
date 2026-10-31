@@ -163,6 +163,9 @@ fn source_rows(
   match source {
     SrcPostings => posting_rows(realized)
     SrcBalances => balance_rows(realized)
+    SrcOpen(start, close) => opening_rows(realized, start, close)
+    SrcClose(date) =>
+      posting_rows(realized).filter(fn(row) { row.date.less_than(date) })
   }
 }
 
@@ -183,6 +186,14 @@ fn eval_column(row : BqlRow, name : String) -> QueryValue {
     "leaf" => QText(@ast.account_leaf(row.account))
     "units" => QAmount(row.units)
     "currency" => QText(row.units.currency)
+    "weight" =>
+      match row.cost {
+        Some(cost) =>
+          QAmount(
+            @ast.Amount::new(row.units.number.mul(cost.number), cost.currency),
+          )
+        None => QAmount(row.units)
+      }
     "cost" =>
       match row.cost {
         Some(cost) => QAmount(@ast.Amount::new(cost.number, cost.currency))
@@ -406,6 +417,15 @@ fn eval_aggregate(expr : Expr, rows : Array[BqlRow]) -> QueryValue {
             inventory.add(row.position)
           }
           QInventory(inventory)
+        }
+        ECol("weight") => {
+          let values : Array[@ast.Amount] = []
+          for row in rows {
+            if eval_column(row, "weight") is QAmount(a) {
+              values.push(a)
+            }
+          }
+          sum_amounts(values)
         }
         ECol("units") => {
           let values : Array[@ast.Amount] = []
@@ -759,4 +779,91 @@ fn grouped_cond(cond : Cond, rows : Array[BqlRow]) -> Bool {
         None => false
       }
   }
+}
+
+///|
+fn opening_rows(
+  realized : @realization.RealizedLedger,
+  start : @ast.Date,
+  close : @ast.Date?,
+) -> Array[BqlRow] {
+  let inventories : Map[String, @booking.Inventory] = Map([])
+  let names : Array[String] = []
+  let rows : Array[BqlRow] = []
+  for row in posting_rows(realized) {
+    if row.date.less_than(start) {
+      let root = @ast.account_root(row.account)
+      let account = if root == "Income" || root == "Expenses" {
+        "Equity:Earnings:Previous"
+      } else {
+        row.account
+      }
+      let inventory = match inventories.get(account) {
+        Some(i) => i
+        None => {
+          let i = @booking.Inventory::new()
+          inventories.set(account, i)
+          names.push(account)
+          i
+        }
+      }
+      inventory.add(row.position)
+    } else {
+      let in_period = match close {
+        Some(date) => row.date.less_than(date)
+        None => true
+      }
+      if in_period {
+        rows.push(row)
+      }
+    }
+  }
+  let date = if start.day > 1 {
+    @ast.Date::new(start.year, start.month, start.day - 1).unwrap()
+  } else {
+    let year = if start.month == 1 { start.year - 1 } else { start.year }
+    let month = if start.month == 1 { 12 } else { start.month - 1 }
+    @ast.Date::new(year, month, @ast.Date::days_in_month(year, month)).unwrap()
+  }
+  let summaries : Array[BqlRow] = []
+  names.sort()
+  for account in names {
+    let inventory = inventories.get(account).unwrap()
+    for position in inventory.positions {
+      let narration = "Opening balance for '" + account + "' (Summarization)"
+      let row : BqlRow = {
+        date,
+        flag: "S",
+        payee: "",
+        narration,
+        tags: [],
+        links: [],
+        meta: @ast.Meta::new(),
+        account,
+        units: position.units,
+        cost: position.cost,
+        value: posting_value(position.units, position.cost, None),
+        position,
+      }
+      summaries.push(row)
+      let amount = match position.cost {
+        Some(c) =>
+          @ast.Amount::new(
+            position.units.number.mul(c.number).neg(),
+            c.currency,
+          )
+        None =>
+          @ast.Amount::new(position.units.number.neg(), position.units.currency)
+      }
+      summaries.push({
+        ..row,
+        account: "Equity:Opening-Balances",
+        units: amount,
+        cost: None,
+        value: None,
+        position: @booking.Position::new(amount, None),
+      })
+    }
+  }
+  summaries + rows
 }
