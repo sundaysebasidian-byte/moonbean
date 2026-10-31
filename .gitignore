@@ -8,3 +8,4 @@ target
 .oracle-cache/
 __pycache__/
 *.pyc
+web/dist/

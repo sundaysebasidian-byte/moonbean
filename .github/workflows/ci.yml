@@ -65,6 +65,33 @@ jobs:
           moon run cmd/main --target native -- fmt examples/full-year-2024.beancount
           moon run cmd/main --target native -- export examples/full-year-2024.beancount --json
 
+  playground:
+    name: playground bundle and smoke test
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install MoonBit
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build bundle
+        run: |
+          moon update
+          scripts/build-web.sh
+
+      - name: Smoke test
+        run: node web/smoke.mjs
+
   oracle:
     name: upstream conformance (beancount 3.2.3)
     permissions:
