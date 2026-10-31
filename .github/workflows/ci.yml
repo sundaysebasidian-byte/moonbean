@@ -92,6 +92,9 @@ jobs:
       - name: Smoke test
         run: node web/smoke.mjs
 
+      - name: Browser smoke test
+        run: node web/dom-smoke.mjs
+
   oracle:
     name: upstream conformance (beancount 3.2.3)
     permissions:

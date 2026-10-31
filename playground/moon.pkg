@@ -2,6 +2,7 @@ import {
   "moonbitlang/core/json",
   "sundaysebasidian-byte/moonbean",
   "sundaysebasidian-byte/moonbean/ast",
+  "sundaysebasidian-byte/moonbean/decimal",
   "sundaysebasidian-byte/moonbean/realization",
   "sundaysebasidian-byte/moonbean/validation",
 }

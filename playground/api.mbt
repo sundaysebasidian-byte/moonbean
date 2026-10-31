@@ -307,12 +307,16 @@ fn diagnostic_items(diagnostics : Array[@ast.Diagnostic]) -> Array[Json] {
 fn report_response(
   req : Map[String, Json],
   build : (@realization.RealizedLedger, String?) -> @realization.Report,
+  with_balance~ : Bool = false,
 ) -> Json raise Error {
   let ledger = load_valid_ledger(req)
   let convert = convert_field(req, ledger)
   let realized = @moonbean.realize(ledger, at=date_field(req, "at"))
   let report = build(realized, convert)
   let fields = [("report", parse_embedded(report.to_json()))]
+  if with_balance {
+    fields.push(("balanced", balanced_json(report)))
+  }
   for field in ledger_meta(ledger, convert) {
     fields.push(field)
   }
@@ -320,15 +324,48 @@ fn report_response(
 }
 
 ///|
+/// Assets + Liabilities + Equity must be zero in every currency the report
+/// totals mention (liabilities and equity carry the ledger's negative sign).
+/// `null` when the report has no such totals.
+fn balanced_json(report : @realization.Report) -> Json {
+  let sums : Map[String, @decimal.Decimal] = Map([])
+  let mut seen = false
+  for row in report.totals {
+    if row.label.has_prefix("Total Assets") ||
+      row.label.has_prefix("Total Liabilities") ||
+      row.label.has_prefix("Total Equity") {
+      seen = true
+      let currency = row.amount.currency
+      let before = sums.get(currency).unwrap_or(@decimal.Decimal::zero())
+      sums[currency] = before.add(row.amount.number)
+    }
+  }
+  if !seen {
+    return Json::null()
+  }
+  for _, total in sums {
+    if !total.is_zero() {
+      return Json::boolean(false)
+    }
+  }
+  Json::boolean(true)
+}
+
+///|
 /// Request: `{"source", "convert"?, "at"?}`. `convert` defaults to the single
 /// operating currency; pass `""` to keep original currencies.
-/// Response: `{"ok":true,"report":{title,rows,totals},"operating_currencies","convert"}`.
+/// Response: `{"ok":true,"report":{title,rows,totals,complete,diagnostics,
+/// display_precision},"operating_currencies","convert"}`. `complete` is false
+/// and `diagnostics` lists `{code,account,currency,target}` when some amounts
+/// could not be converted. `balance_sheet` also returns `balanced`.
 pub fn balance_sheet(request : String) -> String {
   respond(fn() raise Error {
     let req = parse_request(request)
-    report_response(req, fn(realized, convert) {
-      @realization.balance_sheet(realized, convert~)
-    })
+    report_response(
+      req,
+      fn(realized, convert) { @realization.balance_sheet(realized, convert~) },
+      with_balance=true,
+    )
   })
 }
 

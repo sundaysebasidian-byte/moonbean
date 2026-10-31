@@ -13,12 +13,13 @@ import {
   buildTree,
   cellLines,
   decimalToString,
+  escapeHtml,
+  formatDecimal,
   group,
   highlightLine,
   nodeCount,
   parseDecimal,
-  negate,
-  sumRoots,
+  quantize,
 } from "./lib.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -88,6 +89,44 @@ test("balance_sheet: converts to the operating currency by default", () => {
   assert.equal(rows["Liabilities:CreditCard"], "-3200.00 CNY");
 });
 
+test("balance_sheet: includes the earnings accounts and balances", () => {
+  const res = call("balance_sheet", {});
+  const rows = Object.fromEntries(res.report.rows.map((r) => [r.account, text(r.amount)]));
+  assert.equal(rows["Equity:Earnings:Previous"], "-143123.0000 CNY");
+  assert.equal(rows["Equity:Earnings:Unrealized"], "-7117.5000 CNY");
+  const totals = Object.fromEntries(res.report.totals.map((r) => [r.account, text(r.amount)]));
+  assert.deepEqual(totals, {
+    "Total Assets": "401840.5000 CNY",
+    "Total Liabilities": "-3200.00 CNY",
+    "Total Equity": "-398640.5000 CNY",
+  });
+  assert.equal(res.report.complete, true);
+  assert.deepEqual(res.report.diagnostics, []);
+  assert.deepEqual(res.report.display_precision, { CNY: 2, USD: 2, AAPL: 0 });
+  assert.equal(res.balanced, true);
+});
+
+test("balance_sheet: unconverted amounts are reported and totals split by currency", () => {
+  const res = call("balance_sheet", { at: "2024-06-30" });
+  assert.equal(res.report.complete, false);
+  assert.deepEqual(res.report.diagnostics, [
+    { code: "report.conversion_incomplete", account: "Assets:Broker:Stocks", currency: "AAPL", target: "CNY" },
+  ]);
+  const labels = res.report.totals.map((r) => r.account);
+  assert.ok(labels.every((label) => /^Total (Assets|Liabilities|Equity)( [A-Z]+)?$/.test(label)), labels.join());
+  assert.equal(res.balanced, true);
+  const plain = call("balance_sheet", { convert: "" });
+  assert.equal(plain.report.complete, true);
+  assert.equal(plain.balanced, true);
+  assert.ok(plain.report.totals.some((r) => r.amount.currency === "USD"));
+});
+
+test("balance_sheet: balanced is null without totals and only the balance sheet reports it", () => {
+  assert.equal(call("balance_sheet", { source: "" }).balanced, null);
+  assert.equal("balanced" in call("income_statement", {}), false);
+  assert.equal("balanced" in call("trial_balance", {}), false);
+});
+
 test("balance_sheet: empty convert keeps original currencies", () => {
   const res = call("balance_sheet", { convert: "" });
   assert.equal(res.convert, null);
@@ -129,6 +168,8 @@ test("register: running balance ends at the account balance", () => {
   assert.equal(res.rows.length, 82);
   assert.equal(text(res.rows.at(-1).running), "166600.00 CNY");
   assert.equal(res.rows[0].narration, "Opening balances");
+  const stocks = call("register", { account: "Assets:Broker:Stocks" });
+  assert.equal(stocks.rows[0].cost, "{150.00 USD, 2024-01-01}");
 });
 
 test("register: subtree includes child accounts", () => {
@@ -181,6 +222,51 @@ test("format: aligns amounts, is idempotent and keeps the ledger", () => {
   assert.deepEqual(call("balance_sheet", { source: first.output }).report, call("balance_sheet", {}).report);
 });
 
+// Strings an attacker could put into a shared ledger.
+const hostile = {
+  currency: '" onmouseover="window.__xss=1" data-probe="',
+  tag: "<img src=x onerror=window.__xss=1>",
+  narration: '</td><script>window.__xss=1</script>"\'',
+};
+
+test("xss: hostile operating_currency is data, not markup", () => {
+  const ledger = `option "operating_currency" ${JSON.stringify(hostile.currency)}\n2024-01-01 open Assets:A\n`;
+  const res = call("check", { source: ledger });
+  assert.deepEqual(res.operating_currencies, [hostile.currency]);
+  const escaped = escapeHtml(res.operating_currencies[0]);
+  assert.doesNotMatch(escaped, /["'<>]/);
+  assert.equal(`<option value="${escaped}">`.match(/"/g).length, 2);
+});
+
+test("xss: hostile narration, payee and metadata survive only as text", () => {
+  const ledger =
+    `2024-01-01 open Assets:A\n2024-01-01 open Equity:B\n` +
+    `2024-01-02 * ${JSON.stringify(hostile.tag)} ${JSON.stringify(hostile.narration)}\n  note: ${JSON.stringify(hostile.tag)}\n` +
+    `  Assets:A  1 USD\n  Equity:B\n`;
+  const check = call("check", { source: ledger });
+  assert.equal(check.valid, true);
+  const rows = call("register", { source: ledger, account: "Assets:A" }).rows;
+  assert.equal(rows[0].payee, hostile.tag);
+  assert.equal(rows[0].narration, hostile.narration);
+  for (const line of ledger.split("\n")) {
+    const html = highlightLine(line);
+    assert.doesNotMatch(html.replace(/<\/?i( class="t-[a-z]")?>/g, ""), /[<>]/, line);
+    assert.doesNotMatch(html, /<(img|script)/i, line);
+  }
+  assert.equal(escapeHtml(hostile.narration), "&lt;/td&gt;&lt;script&gt;window.__xss=1&lt;/script&gt;&quot;&#39;");
+});
+
+test("xss: hostile account names and BQL cells escape to text", () => {
+  const bad = call("check", { source: '2024-01-01 open Assets:"><img src=x onerror=window.__xss=1>\n' });
+  assert.equal(bad.valid, false);
+  assert.equal(typeof bad.errors[0].message, "string");
+  const ledger = `2024-01-01 open Assets:A\n2024-01-01 open Equity:B\n2024-01-02 * ${JSON.stringify(hostile.narration)}\n  Assets:A  1 USD\n  Equity:B\n`;
+  const res = call("query", { source: ledger, bql: "SELECT narration, account FROM postings ORDER BY account" });
+  assert.equal(res.ok, true);
+  assert.equal(cellLines(res.rows[0][0]).lines[0], hostile.narration);
+  assert.equal(escapeHtml("a&b<c>d\"e'f"), "a&amp;b&lt;c&gt;d&quot;e&#39;f");
+});
+
 test("bad requests are JSON errors, never exceptions", () => {
   for (const name of names) {
     const garbage = JSON.parse(api[name]("not json"));
@@ -223,20 +309,32 @@ test("lib: account tree sums children per currency", () => {
   assert.equal(decimalToString(assets.totals.get("USD")), "10510.00");
   assert.equal(assets.totals.has("AAPL"), false);
   assert.equal(nodeCount(forest), 14);
-  const income = buildTree(call("income_statement", {}).report.rows).filter((n) => ["Income", "Expenses"].includes(n.name));
-  const net = negate(sumRoots(income));
-  assert.deepEqual(net.map(([c, d]) => `${decimalToString(d)} ${c}`), ["143123.0000 CNY"]);
+});
+
+test("lib: display precision rounds half to even and keeps grouping", () => {
+  assert.equal(decimalToString(quantize(parseDecimal("2.345"), 2)), "2.34");
+  assert.equal(decimalToString(quantize(parseDecimal("2.355"), 2)), "2.36");
+  assert.equal(decimalToString(quantize(parseDecimal("-2.345"), 2)), "-2.34");
+  assert.equal(decimalToString(quantize(parseDecimal("12"), 2)), "12.00");
+  assert.equal(formatDecimal(parseDecimal("13578.0000"), "CNY", { CNY: 2 }), "13,578.00");
+  assert.equal(formatDecimal(parseDecimal("13578.0000"), "XYZ", { CNY: 2 }), "13,578.0000");
+});
+
+test("income_statement: totals come from the engine", () => {
+  const res = call("income_statement", {});
+  const totals = Object.fromEntries(res.report.totals.map((r) => [r.account, text(r.amount)]));
+  assert.equal(totals["Net Income"], "143123.0000 CNY");
 });
 
 test("lib: highlighter keeps the text and marks tokens", () => {
   for (const line of source.split("\n")) {
     const html = highlightLine(line);
-    const plain = html.replace(/<[^>]+>/g, "").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+    const plain = html.replace(/<[^>]+>/g, "").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&");
     assert.equal(plain, line);
   }
   const html = highlightLine('2024-01-01 * "Rent <b>" #trip');
   assert.match(html, /t-d">2024-01-01/);
-  assert.match(html, /t-s">"Rent &lt;b&gt;"/);
+  assert.match(html, /t-s">&quot;Rent &lt;b&gt;&quot;/);
   assert.match(html, /t-t">#trip/);
 });
 

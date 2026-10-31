@@ -3,15 +3,13 @@ import example from "./example.js";
 import {
   buildTree,
   cellLines,
-  decimalToString,
   escapeHtml,
+  formatDecimal,
   group,
   highlightLine,
   isZero,
-  negate,
   nodeCount,
   parseDecimal,
-  sumRoots,
 } from "./lib.js";
 
 const $ = (id) => document.getElementById(id);
@@ -41,6 +39,14 @@ function el(tag, className, text) {
   return node;
 }
 
+/** Ledger text only ever reaches the page through `.value`, `.textContent` or escapeHtml. */
+function option(value, label) {
+  const node = document.createElement("option");
+  node.value = value;
+  node.textContent = label;
+  return node;
+}
+
 /* ---------- state ---------- */
 
 const state = {
@@ -55,6 +61,7 @@ const state = {
   stale: new Set(),
   collapsed: new Set(),
   seeded: new Set(),
+  issues: new Map(),
   queryText: "SELECT account, sum(units) FROM postings GROUP BY account ORDER BY account",
   formatted: null,
 };
@@ -160,16 +167,16 @@ function fillControls() {
   const check = state.check;
   if (!check?.ok) return;
   const accounts = $("dl-accounts");
-  accounts.innerHTML = check.accounts.map((a) => `<option value="${escapeHtml(a)}">`).join("");
+  accounts.replaceChildren(...check.accounts.map((a) => option(a, "")));
   if (!state.account) {
     state.account = check.accounts.find((a) => a.startsWith("Assets")) ?? check.accounts[0] ?? "";
     $("account").value = state.account;
   }
   const select = $("convert");
-  const options = [["", "原币"], ...check.operating_currencies.map((c) => [c, c])];
-  const wanted = state.convert ?? (check.operating_currencies.length === 1 ? check.operating_currencies[0] : "");
-  select.innerHTML = options.map(([v, l]) => `<option value="${escapeHtml(v)}">${escapeHtml(l)}</option>`).join("");
-  select.value = options.some(([v]) => v === wanted) ? wanted : "";
+  const currencies = check.operating_currencies;
+  const wanted = state.convert ?? (currencies.length === 1 ? currencies[0] : "");
+  select.replaceChildren(option("", "原币"), ...currencies.map((c) => option(c, c)));
+  select.value = wanted === "" || currencies.includes(wanted) ? wanted : "";
 }
 
 /* ---------- diagnostics ---------- */
@@ -194,9 +201,13 @@ function renderDiagnostics() {
 
   const verdict = el("div", `verdict ${errors ? "no" : "ok"}`, errors ? `${errors} 个错误` : "通过");
   const facts = el("div", "facts");
-  facts.innerHTML =
-    `<span><b>${check.entries}</b>条目</span><span><b>${check.accounts.length}</b>账户</span>` +
-    (warnings ? `<span><b>${warnings}</b>警告</span>` : "");
+  const fact = (count, label) => {
+    const span = el("span");
+    span.append(el("b", "", String(count)), label);
+    return span;
+  };
+  facts.append(fact(check.entries, "条目"), fact(check.accounts.length, "账户"));
+  if (warnings) facts.append(fact(warnings, "警告"));
   summary.append(verdict, facts);
 
   const items = [
@@ -218,13 +229,14 @@ const CHEVRON =
 
 function amountsColumn(totals) {
   const box = el("div", "amts");
+  const scales = state.reportData?.report?.display_precision ?? {};
   const entries = totals.filter(([, d]) => !isZero(d));
   if (entries.length === 0) {
     box.textContent = "0";
     box.classList.add("dim");
   }
   for (const [currency, d] of entries) {
-    box.append(el("div", "", `${group(decimalToString(d))} ${currency}`));
+    box.append(el("div", "", `${formatDecimal(d, currency, scales)} ${currency}`));
   }
   return box;
 }
@@ -253,6 +265,12 @@ function renderNode(node, depth) {
     name.append(el("span", "spacer"));
   }
   name.append(el("span", "label", node.name));
+  const issues = state.issues.get(node.path);
+  if (issues && !hasChildren) {
+    const flag = el("span", "flag");
+    flag.title = issues;
+    name.append(flag);
+  }
   row.append(name, amountsColumn([...node.totals]));
   wrap.append(row);
   wrap.classList.toggle("open", hasChildren && !collapsed);
@@ -272,26 +290,38 @@ function totalRow(label, totals) {
 
 function renderReport() {
   const host = $("report");
-  host.innerHTML = "";
+  host.replaceChildren();
+  const tag = $("incomplete");
+  tag.hidden = true;
   const data = state.reportData;
   if (!data) return;
   if (!data.ok) {
     host.append(errorBlock(data));
     return;
   }
-  const forest = buildTree(data.report.rows);
-  const tree = el("div", "tree");
-  for (const root of forest) tree.append(renderNode(root, 0));
-  host.append(tree);
-  if (state.kind === "income_statement") {
-    const income = forest.filter((n) => n.name === "Income" || n.name === "Expenses");
-    host.append(totalRow("Net Income", negate(sumRoots(income))));
-  } else if (state.kind === "trial_balance") {
-    // The engine only totals a report that is in one currency.
-    for (const total of data.report.totals) {
-      host.append(totalRow(total.account, [[total.amount.currency, parseDecimal(total.amount.number)]]));
-    }
+  const report = data.report;
+  state.issues = new Map();
+  for (const d of report.diagnostics ?? []) {
+    const line = `${d.currency} → ${d.target}`;
+    state.issues.set(d.account, [state.issues.get(d.account), line].filter(Boolean).join("\n"));
   }
+  if (report.complete === false) {
+    tag.hidden = false;
+    tag.title = report.diagnostics.map((d) => `${d.account}  ${d.currency} → ${d.target}`).join("\n");
+  }
+  // Rows are the engine's leaf amounts; the tree only groups them for folding.
+  const tree = el("div", "tree");
+  for (const root of buildTree(report.rows)) tree.append(renderNode(root, 0));
+  host.append(tree);
+  // Totals are the engine's own, already grouped by currency when needed.
+  const totals = el("div", "totals");
+  for (const total of report.totals) {
+    totals.append(totalRow(total.account, [[total.amount.currency, parseDecimal(total.amount.number)]]));
+  }
+  if (typeof data.balanced === "boolean") {
+    totals.append(el("div", `balance ${data.balanced ? "ok" : "no"}`, data.balanced ? "平衡" : "不平衡"));
+  }
+  if (totals.children.length) host.append(totals);
 }
 
 function errorBlock(data) {
@@ -344,22 +374,27 @@ function loadRegister() {
     return;
   }
   const table = el("table");
-  table.innerHTML = "<thead><tr><th>日期</th><th>摘要</th><th class='num'>金额</th><th class='num'>余额</th></tr></thead>";
+  const head = el("tr");
+  for (const [label, numeric] of [["日期", false], ["摘要", false], ["金额", true], ["余额", true]]) {
+    head.append(el("th", numeric ? "num" : "", label));
+  }
+  const thead = el("thead");
+  thead.append(head);
   const body = el("tbody");
   for (const row of data.rows) {
-    const showAccount = row.account !== state.account;
     const tr = el("tr");
-    const memo = [row.payee, row.narration].filter(Boolean).join(" · ");
-    tr.innerHTML =
-      `<td class="mono dim">${escapeHtml(row.date)}</td>` +
-      `<td><div class="truncate">${escapeHtml(memo)}</div>` +
-      (showAccount ? `<div class="dim mono" style="font-size:11px">${escapeHtml(row.account)}</div>` : "") +
-      `</td>` +
-      `<td class="num"><div>${escapeHtml(group(row.amount.number))} ${escapeHtml(row.amount.currency)}</div></td>` +
-      `<td class="num dim"><div>${escapeHtml(group(row.running.number))} ${escapeHtml(row.running.currency)}</div></td>`;
+    const memo = el("td");
+    memo.append(el("div", "truncate", [row.payee, row.narration].filter(Boolean).join(" · ")));
+    const detail = [row.account !== state.account ? row.account : "", row.cost ?? ""].filter(Boolean).join("  ");
+    if (detail) memo.append(el("div", "dim sub", detail));
+    const amount = el("td", "num");
+    amount.append(el("div", "", `${group(row.amount.number)} ${row.amount.currency}`));
+    const running = el("td", "num dim");
+    running.append(el("div", "", `${group(row.running.number)} ${row.running.currency}`));
+    tr.append(el("td", "mono dim", row.date), memo, amount, running);
     body.append(tr);
   }
-  table.append(body);
+  table.append(thead, body);
   host.append(table);
 }
 

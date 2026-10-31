@@ -41,6 +41,9 @@ jobs:
       - name: Smoke test
         run: node web/smoke.mjs
 
+      - name: Browser smoke test
+        run: node web/dom-smoke.mjs
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3

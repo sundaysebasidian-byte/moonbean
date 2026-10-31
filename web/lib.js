@@ -82,26 +82,31 @@ export function nodeCount(forest) {
   return forest.reduce((sum, node) => sum + 1 + nodeCount(node.children), 0);
 }
 
-/** Per-currency sum of the given roots, as an ordered list of [currency, decimal]. */
-export function sumRoots(roots) {
-  const totals = new Map();
-  for (const node of roots) {
-    for (const [currency, number] of node.totals) {
-      const before = totals.get(currency);
-      totals.set(currency, before ? addDecimal(before, number) : number);
-    }
-  }
-  return [...totals].sort((a, b) => (a[0] < b[0] ? -1 : 1));
+/* ---------- display precision ---------- */
+
+/** Rounds to `scale` fraction digits, ties to even (the same rule the engine uses). */
+export function quantize(decimal, scale) {
+  if (scale === decimal.scale) return decimal;
+  if (scale > decimal.scale) return { value: decimal.value * 10n ** BigInt(scale - decimal.scale), scale };
+  const base = 10n ** BigInt(decimal.scale - scale);
+  let quotient = decimal.value / base;
+  const remainder = decimal.value % base;
+  const twice = (remainder < 0n ? -remainder : remainder) * 2n;
+  if (twice > base || (twice === base && quotient % 2n !== 0n)) quotient += decimal.value < 0n ? -1n : 1n;
+  return { value: quotient, scale };
 }
 
-export function negate(totals) {
-  return totals.map(([currency, d]) => [currency, { value: -d.value, scale: d.scale }]);
+/** Grouped text for a decimal, rounded to the report's display scale for that currency when it has one. */
+export function formatDecimal(decimal, currency, scales = {}) {
+  const scale = scales[currency];
+  return group(decimalToString(scale === undefined ? decimal : quantize(decimal, scale)));
 }
 
 /* ---------- highlighting ---------- */
 
-const escapes = { "&": "&amp;", "<": "&lt;", ">": "&gt;" };
-export const escapeHtml = (text) => text.replace(/[&<>]/g, (c) => escapes[c]);
+const escapes = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+/** Safe for element text and for quoted attribute values. */
+export const escapeHtml = (text) => String(text).replace(/[&<>"']/g, (c) => escapes[c]);
 
 const KEYWORDS =
   "open|close|commodity|balance|pad|price|note|event|query|custom|document|txn|option|plugin|include|pushtag|poptag|pushmeta|popmeta";
