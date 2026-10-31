@@ -1,11 +1,39 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "sundaysebasidian-byte/moonbean/query"
 
+import {
+  "sundaysebasidian-byte/moonbean/ast",
+  "sundaysebasidian-byte/moonbean/booking",
+  "sundaysebasidian-byte/moonbean/decimal",
+  "sundaysebasidian-byte/moonbean/realization",
+}
+
 // Values
+pub fn run_query(@realization.RealizedLedger, String) -> QueryResult
 
 // Errors
 
 // Types and methods
+pub(all) struct QueryResult {
+  columns : Array[String]
+  rows : Array[Array[QueryValue]]
+  error : String?
+}
+pub fn QueryResult::is_ok(Self) -> Bool
+pub fn QueryResult::to_json(Self) -> String
+pub fn QueryResult::to_text(Self) -> String
+
+pub(all) enum QueryValue {
+  QText(String)
+  QNumber(@decimal.Decimal)
+  QDate(@ast.Date)
+  QAmount(@ast.Amount)
+  QPosition(@booking.Position)
+  QInventory(@booking.Inventory)
+  QNull
+}
+pub fn QueryValue::to_json(Self) -> String
+pub fn QueryValue::to_text(Self) -> String
 
 // Type aliases
 

@@ -158,7 +158,7 @@ pub fn RealizedLedger::account_names(self : RealizedLedger) -> Array[String] {
     let mut j = i
     while j > 0 {
       let prev = names[j - 1]
-      if prev.compare(current) > 0 {
+      if prev.lexical_compare(current) > 0 {
         names[j - 1] = current
         names[j] = prev
         j = j - 1

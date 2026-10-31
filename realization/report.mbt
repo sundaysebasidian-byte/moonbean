@@ -213,8 +213,10 @@ fn sorted_report_rows(rows : Array[ReportRow]) -> Array[ReportRow] {
     let mut j = i
     while j > 0 {
       let prev = result[j - 1]
-      let key_cmp = prev.label.compare(current.label)
-      let ccy_cmp = prev.amount.currency.compare(current.amount.currency)
+      let key_cmp = prev.label.lexical_compare(current.label)
+      let ccy_cmp = prev.amount.currency.lexical_compare(
+        current.amount.currency,
+      )
       let after = key_cmp > 0 || (key_cmp == 0 && ccy_cmp > 0)
       if after {
         result[j - 1] = current
