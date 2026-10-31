@@ -1,11 +1,43 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "sundaysebasidian-byte/moonbean/syntax"
 
+import {
+  "sundaysebasidian-byte/moonbean/ast",
+}
+
 // Values
+pub fn is_valid_account(String) -> Bool
+
+pub fn is_valid_currency(String) -> Bool
+
+pub fn parse_source(String, String) -> @ast.Ledger
+
+pub fn tokenize(String) -> Array[Token]
 
 // Errors
 
 // Types and methods
+pub(all) struct Token {
+  kind : TokenKind
+  pos : Int32
+}
+
+pub(all) enum TokenKind {
+  Word(String)
+  Str(String)
+  LBrace
+  RBrace
+  LDoubleBrace
+  RDoubleBrace
+  At
+  AtAt
+  Tilde
+  Comma
+  Star
+  Tag(String)
+  Link(String)
+  Eof
+}
 
 // Type aliases
 

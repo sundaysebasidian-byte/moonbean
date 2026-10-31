@@ -323,12 +323,12 @@ pub fn PriceAnno::to_string(self : PriceAnno) -> String {
 
 ///|
 pub(all) struct Posting {
-  flag : String?
+  mut flag : String?
   account : String
-  units : Amount?
-  units_currency : String?
-  cost : CostSpec?
-  price : PriceAnno?
+  mut units : Amount?
+  mut units_currency : String?
+  mut cost : CostSpec?
+  mut price : PriceAnno?
   meta : Meta
 }
 
@@ -353,6 +353,17 @@ pub(all) struct Transaction {
   tags : Array[String]
   links : Array[String]
   postings : Array[Posting]
+}
+
+///|
+pub fn Transaction::new(
+  flag : String,
+  payee : String?,
+  narration : String,
+  tags : Array[String],
+  links : Array[String],
+) -> Transaction {
+  { flag, payee, narration, tags, links, postings: [], }
 }
 
 ///|
@@ -469,7 +480,7 @@ pub(all) enum Directive {
 pub(all) struct Entry {
   date : Date
   loc : Loc
-  meta : Meta
+  mut meta : Meta
   directive : Directive
 }
 
@@ -491,16 +502,16 @@ pub(all) struct Plugin {
 
 ///|
 pub(all) struct Options {
-  title : String?
-  booking_method : String
-  tolerance_multiplier : @decimal.Decimal
+  mut title : String?
+  mut booking_method : String
+  mut tolerance_multiplier : @decimal.Decimal
   inferred_tolerance_default : Map[String, @decimal.Decimal]
-  infer_tolerance_from_cost : Bool
-  account_rounding : String?
+  mut infer_tolerance_from_cost : Bool
+  mut account_rounding : String?
   operating_currencies : Array[String]
   documents : Array[String]
   display_precision : Map[String, @decimal.Decimal]
-  render_commas : Bool
+  mut render_commas : Bool
   raw : Array[(String, String)]
 }
 
@@ -552,13 +563,20 @@ pub fn Options::get_all(self : Options, name : String) -> Array[String] {
 pub(all) struct Ledger {
   entries : Array[Entry]
   errors : Array[Diagnostic]
-  options : Options
+  mut options : Options
   plugins : Array[Plugin]
+  includes : Array[(String, Loc)]
 }
 
 ///|
 pub fn Ledger::new() -> Ledger {
-  { entries: [], errors: [], options: Options::new(), plugins: [], }
+  {
+    entries: [],
+    errors: [],
+    options: Options::new(),
+    plugins: [],
+    includes: [],
+  }
 }
 
 ///|
