@@ -132,7 +132,7 @@ test "FIFO consumes oldest lots" {
     "STRICT",
   )
   inspect(outcome.issue is None, content="true")
-  inspect(outcome.weights[0].to_string(), content="400 USD")
+  inspect(outcome.weights[0].to_string(), content="-400 USD")
   inspect(
     state.inventory_for("Assets:Stock").to_string(),
     content="6 HOOL {100 USD, 2024-01-02}, 10 HOOL {120 USD, 2024-01-03}",
@@ -219,7 +219,7 @@ test "strict with size disambiguates by lot size" {
     "STRICT",
   )
   inspect(outcome.issue is None, content="true")
-  inspect(outcome.weights[0].to_string(), content="600 USD")
+  inspect(outcome.weights[0].to_string(), content="-600 USD")
 }
 
 ///|
@@ -249,7 +249,7 @@ test "explicit cost picks a matching lot and total cost is divided" {
     "STRICT",
   )
   inspect(outcome.issue is None, content="true")
-  inspect(outcome.weights[0].to_string(), content="480 USD")
+  inspect(outcome.weights[0].to_string(), content="-480 USD")
   let total_state = @booking.BookingState::new()
   let total_posting = bare_posting("10", "HOOL")
   total_posting.cost = Some(@ast.CostSpec::new_total(dec("1050"), "USD"))
@@ -293,7 +293,7 @@ test "average booking uses weighted average cost" {
     "STRICT",
   )
   inspect(outcome.issue is None, content="true")
-  inspect(outcome.weights[0].to_string(), content="550 USD")
+  inspect(outcome.weights[0].to_string(), content="-550 USD")
 }
 
 ///|

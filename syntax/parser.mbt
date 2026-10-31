@@ -806,18 +806,12 @@ fn parse_open(
   while !cursor.eof() {
     match cursor.kind() {
       Comma => cursor.advance() |> ignore
-      Str(s) =>
-        if is_booking_method(s) {
-          booking = Some(s)
-          cursor.advance() |> ignore
-        } else {
-          parser.error(
-            line,
-            "parse.booking",
-            "unknown booking method `" + s + "`",
-          )
-          cursor.advance() |> ignore
-        }
+      Str(s) => {
+        // Booking method names are validated semantically so that an invalid
+        // method produces a bean-check style diagnostic on the open directive.
+        booking = Some(s)
+        cursor.advance() |> ignore
+      }
       Word(w) =>
         if is_booking_method(w) {
           booking = Some(w)
@@ -1064,22 +1058,6 @@ fn parse_balance(
         line, "parse.balance", "balance directive is missing a currency",
       )
       return None
-    }
-  }
-  if cursor.kind() is Tilde {
-    cursor.advance() |> ignore
-    match cursor.take_word() {
-      Some(w) =>
-        match @decimal.Decimal::parse(w) {
-          Some(n) => tolerance = Some(n)
-          None =>
-            parser.error(
-              line,
-              "parse.balance",
-              "invalid balance tolerance `" + w + "`",
-            )
-        }
-      None => parser.error(line, "parse.balance", "expected a number after `~`")
     }
   }
   if !cursor.eof() {
@@ -1460,14 +1438,15 @@ fn apply_option(
         "unknown booking method `" + value + "`",
       )
     }
-  } else if name == "inferred_tolerance_multiplier" {
+  } else if name == "tolerance_multiplier" ||
+    name == "inferred_tolerance_multiplier" {
     match @decimal.Decimal::parse(value) {
       Some(n) => options.tolerance_multiplier = n
       None =>
         parser.error(
           line,
           "parse.option",
-          "invalid inferred_tolerance_multiplier `" + value + "`",
+          "invalid " + name + " `" + value + "`",
         )
     }
   } else if name == "inferred_tolerance_default" {

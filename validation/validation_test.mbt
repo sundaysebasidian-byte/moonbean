@@ -1,0 +1,341 @@
+///|
+fn validated(source : String) -> @validation.ValidatedLedger {
+  @validation.validate_ledger(@syntax.parse_source("test.beancount", source))
+}
+
+///|
+fn has_error(v : @validation.ValidatedLedger, code : String) -> Bool {
+  for diagnostic in v.errors {
+    if diagnostic.code == code {
+      return true
+    }
+  }
+  false
+}
+
+///|
+fn find_transaction(
+  v : @validation.ValidatedLedger,
+  narration : String,
+) -> @ast.Transaction? {
+  for entry in v.entries {
+    match entry.directive {
+      DTransaction(txn) => if txn.narration == narration { return Some(txn) }
+      _ => ()
+    }
+  }
+  None
+}
+
+///|
+test "validates accounts and inventories" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-01 open Equity:Opening USD\n" +
+    "2024-01-02 * \"fund\"\n" +
+    "  Assets:Cash 10 USD\n" +
+    "  Equity:Opening -10 USD\n",
+  )
+  inspect(v.errors.length(), content="0")
+  inspect(v.accounts.length(), content="2")
+  let inventory = v.inventory("Assets:Cash")
+  inspect(inventory.quantity("USD").to_string(), content="10")
+}
+
+///|
+test "reports unknown and inactive accounts with source lines" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-01 open Equity:Opening USD\n" +
+    "2024-02-01 close Assets:Cash\n" +
+    "2023-12-31 * \"early\"\n" +
+    "  Assets:Cash 1 USD\n" +
+    "  Equity:Opening -1 USD\n" +
+    "2024-02-02 * \"late\"\n" +
+    "  Assets:Cash 1 USD\n" +
+    "  Equity:Opening -1 USD\n" +
+    "2024-01-05 * \"unknown\"\n" +
+    "  Assets:Missing 1 USD\n" +
+    "  Equity:Opening -1 USD\n",
+  )
+  inspect(v.errors.length(), content="4")
+  inspect(has_error(v, "validation.inactive_account"), content="true")
+  inspect(has_error(v, "validation.unknown_account"), content="true")
+  let inactive_lines = []
+  for diagnostic in v.errors {
+    if diagnostic.code == "validation.inactive_account" {
+      inactive_lines.push(diagnostic.loc.line)
+    }
+  }
+  inspect(inactive_lines.contains(4), content="true")
+  inspect(inactive_lines.contains(7), content="true")
+}
+
+///|
+test "accepts transactions on the close date" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-01 open Equity:Opening USD\n" +
+    "2024-02-01 close Assets:Cash\n" +
+    "2024-02-01 * \"closing day\"\n" +
+    "  Assets:Cash 1 USD\n" +
+    "  Equity:Opening -1 USD\n",
+  )
+  inspect(v.errors.length(), content="0")
+}
+
+///|
+test "infers tolerance from fractional units" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-01 open Equity:Opening USD\n" +
+    "2024-01-02 * \"tiny\"\n" +
+    "  Assets:Cash 10.00 USD\n" +
+    "  Equity:Opening -10.004 USD\n" +
+    "2024-01-03 * \"bad\"\n" +
+    "  Assets:Cash 10 USD\n" +
+    "  Equity:Opening -9 USD\n",
+  )
+  inspect(v.errors.length(), content="1")
+  inspect(v.errors[0].code, content="validation.unbalanced")
+  inspect(v.errors[0].message.contains("(1 USD)"), content="true")
+}
+
+///|
+test "interpolates one missing posting amount" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-01 open Equity:Opening USD\n" +
+    "2024-01-02 * \"one missing\"\n" +
+    "  Assets:Cash 10 USD\n" +
+    "  Equity:Opening\n",
+  )
+  inspect(v.errors.length(), content="0")
+  let txn = match find_transaction(v, "one missing") {
+    Some(txn) => txn
+    None => abort("transaction not found")
+  }
+  inspect(txn.postings[1].units is Some(_), content="true")
+  match txn.postings[1].units {
+    Some(units) => inspect(units.to_string(), content="-10 USD")
+    None => abort("missing units")
+  }
+}
+
+///|
+test "rejects more than one missing posting" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-01 open Equity:Opening USD\n" +
+    "2024-01-02 * \"two missing\"\n" +
+    "  Assets:Cash\n" +
+    "  Equity:Opening\n",
+  )
+  inspect(has_error(v, "validation.missing"), content="true")
+}
+
+///|
+test "infers an empty cost from the residual" {
+  let v = validated(
+    "2024-01-01 open Assets:Stock HOOL\n" +
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-02 * \"buy\"\n" +
+    "  Assets:Stock 10 HOOL {}\n" +
+    "  Assets:Cash -1000 USD\n",
+  )
+  inspect(v.errors.length(), content="0")
+  let inventory = v.inventory("Assets:Stock")
+  inspect(inventory.positions.length(), content="1")
+  match inventory.positions[0].cost {
+    Some(cost) => {
+      inspect(cost.number.to_string(), content="100")
+      inspect(cost.currency, content="USD")
+    }
+    None => abort("expected an inferred cost")
+  }
+}
+
+///|
+test "books reductions with FIFO during validation" {
+  let v = validated(
+    "2024-01-01 open Assets:Stock HOOL \"FIFO\"\n" +
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-02 * \"buy1\"\n" +
+    "  Assets:Stock 10 HOOL {100 USD}\n" +
+    "  Assets:Cash -1000 USD\n" +
+    "2024-01-03 * \"buy2\"\n" +
+    "  Assets:Stock 10 HOOL {120 USD}\n" +
+    "  Assets:Cash -1200 USD\n" +
+    "2024-01-04 * \"sell\"\n" +
+    "  Assets:Stock -4 HOOL {}\n" +
+    "  Assets:Cash 400 USD\n",
+  )
+  inspect(v.errors.length(), content="0")
+  let inventory = v.inventory("Assets:Stock")
+  inspect(inventory.quantity("HOOL").to_string(), content="16")
+  inspect(inventory.positions.length(), content="2")
+  inspect(inventory.positions[0].units.number.to_string(), content="6")
+  inspect(inventory.positions[1].units.number.to_string(), content="10")
+}
+
+///|
+test "reports ambiguous lot matching under STRICT" {
+  let v = validated(
+    "2024-01-01 open Assets:Stock HOOL \"STRICT\"\n" +
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-02 * \"buy1\"\n" +
+    "  Assets:Stock 10 HOOL {100 USD}\n" +
+    "  Assets:Cash -1000 USD\n" +
+    "2024-01-03 * \"buy2\"\n" +
+    "  Assets:Stock 10 HOOL {120 USD}\n" +
+    "  Assets:Cash -1200 USD\n" +
+    "2024-01-04 * \"sell\"\n" +
+    "  Assets:Stock -4 HOOL {}\n" +
+    "  Assets:Cash 400 USD\n",
+  )
+  inspect(has_error(v, "validation.booking"), content="true")
+  for diagnostic in v.errors {
+    if diagnostic.code == "validation.booking" {
+      inspect(diagnostic.message.contains("Ambiguous matches"), content="true")
+    }
+  }
+}
+
+///|
+test "checks balance assertions including subaccounts" {
+  let v = validated(
+    "2024-01-01 open Assets:Bank USD\n" +
+    "2024-01-01 open Assets:Bank:Cash USD\n" +
+    "2024-01-01 open Equity:Opening USD\n" +
+    "2024-01-02 * \"fund\"\n" +
+    "  Assets:Bank:Cash 10 USD\n" +
+    "  Equity:Opening -10 USD\n" +
+    "2024-01-03 balance Assets:Bank 10 USD\n" +
+    "2024-01-04 balance Assets:Bank 11 USD\n",
+  )
+  inspect(v.errors.length(), content="1")
+  inspect(v.errors[0].code, content="validation.balance")
+  inspect(v.errors[0].loc.line, content="8")
+}
+
+///|
+test "balance assertions see the pre-transaction state on the same day" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-01 open Equity:Opening USD\n" +
+    "2024-01-02 balance Assets:Cash 0 USD\n" +
+    "2024-01-02 * \"fund\"\n" +
+    "  Assets:Cash 10 USD\n" +
+    "  Equity:Opening -10 USD\n",
+  )
+  inspect(v.errors.length(), content="0")
+}
+
+///|
+test "inserts a padding transaction for a balance assertion" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-01 open Equity:Opening USD\n" +
+    "2024-01-02 pad Assets:Cash Equity:Opening\n" +
+    "2024-01-03 balance Assets:Cash 100.00 USD\n",
+  )
+  inspect(v.errors.length(), content="0")
+  inspect(
+    v.inventory("Assets:Cash").quantity("USD").to_string(),
+    content="100.00",
+  )
+  let mut padding_count = 0
+  for entry in v.entries {
+    match entry.directive {
+      DTransaction(txn) =>
+        if txn.flag == "P" {
+          padding_count = padding_count + 1
+          inspect(txn.narration.contains("Padding inserted"), content="true")
+        }
+      _ => ()
+    }
+  }
+  inspect(padding_count, content="1")
+}
+
+///|
+test "detects duplicate balance assertions with different amounts" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-01 open Equity:Opening USD\n" +
+    "2024-01-02 * \"fund\"\n" +
+    "  Assets:Cash 10 USD\n" +
+    "  Equity:Opening -10 USD\n" +
+    "2024-01-03 balance Assets:Cash 10 USD\n" +
+    "2024-01-03 balance Assets:Cash 11 USD\n",
+  )
+  inspect(has_error(v, "validation.duplicate_balance"), content="true")
+}
+
+///|
+test "reports duplicate open directives and invalid booking methods" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-02 open Assets:Cash USD\n" +
+    "2024-01-03 open Assets:Stock HOOL \"BADBOOK\"\n",
+  )
+  inspect(has_error(v, "validation.duplicate_open"), content="true")
+  inspect(has_error(v, "validation.booking_method"), content="true")
+}
+
+///|
+test "applies account currency constraints" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-01 open Equity:Opening\n" +
+    "2024-01-02 * \"euro\"\n" +
+    "  Assets:Cash 10 EUR\n" +
+    "  Equity:Opening -10 EUR\n",
+  )
+  inspect(v.errors.length(), content="1")
+  inspect(v.errors[0].code, content="validation.currency")
+  inspect(v.errors[0].message.contains("EUR"), content="true")
+}
+
+///|
+test "warns about unsupported plugins" {
+  let v = validated(
+    "plugin \"beancount.plugins.auto_accounts\"\n" +
+    "2024-01-01 open Assets:Cash USD\n",
+  )
+  inspect(v.warnings.length(), content="1")
+  inspect(v.warnings[0].code, content="validation.plugin")
+}
+
+///|
+test "finds exact duplicate transactions on request" {
+  let ledger = @syntax.parse_source(
+    "test.beancount",
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-01 open Equity:Opening USD\n" +
+    "2024-01-02 * \"dup\"\n" +
+    "  Assets:Cash 10 USD\n" +
+    "  Equity:Opening -10 USD\n" +
+    "2024-01-02 * \"dup\"\n" +
+    "  Assets:Cash 10 USD\n" +
+    "  Equity:Opening -10 USD\n",
+  )
+  let duplicates = @validation.find_duplicate_transactions(ledger.entries)
+  inspect(duplicates.length(), content="1")
+  inspect(
+    has_error(
+      validated(
+        "2024-01-01 open Assets:Cash USD\n" +
+        "2024-01-01 open Equity:Opening USD\n" +
+        "2024-01-02 * \"dup\"\n" +
+        "  Assets:Cash 10 USD\n" +
+        "  Equity:Opening -10 USD\n" +
+        "2024-01-02 * \"dup\"\n" +
+        "  Assets:Cash 10 USD\n" +
+        "  Equity:Opening -10 USD\n",
+      ),
+      "validation.duplicate",
+    ),
+    content="false",
+  )
+}

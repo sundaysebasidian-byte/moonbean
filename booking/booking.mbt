@@ -441,6 +441,15 @@ fn plan_weights(
 }
 
 ///|
+fn negate_weights(weights : Array[@ast.Amount]) -> Array[@ast.Amount] {
+  let result = []
+  for weight in weights {
+    result.push(@ast.Amount::new(weight.number.neg(), weight.currency))
+  }
+  result
+}
+
+///|
 fn resolve_cost(
   spec : @ast.CostSpec,
   units : @ast.Amount,
@@ -554,7 +563,7 @@ fn reduce_with_average(
         Some(cost),
       )
       apply_plan(inv, plan)
-      outcome_ok(weights)
+      outcome_ok(negate_weights(weights))
     }
   }
 }
@@ -646,7 +655,7 @@ pub fn book_posting(
                 None,
               )
               apply_plan(inv, plan)
-              outcome_ok(weights)
+              outcome_ok(negate_weights(weights))
             }
           }
         }

@@ -1,11 +1,43 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "sundaysebasidian-byte/moonbean/validation"
 
+import {
+  "sundaysebasidian-byte/moonbean/ast",
+  "sundaysebasidian-byte/moonbean/booking",
+}
+
 // Values
+pub fn find_duplicate_transactions(Array[@ast.Entry]) -> Array[(@ast.Loc, @ast.Loc)]
+
+pub fn validate_ledger(@ast.Ledger) -> ValidatedLedger
 
 // Errors
 
 // Types and methods
+pub(all) struct AccountInfo {
+  account : String
+  open_date : @ast.Date
+  mut close_date : @ast.Date?
+  currencies : Array[String]
+  booking : String?
+  loc : @ast.Loc
+}
+
+pub(all) struct ValidatedLedger {
+  entries : Array[@ast.Entry]
+  errors : Array[@ast.Diagnostic]
+  warnings : Array[@ast.Diagnostic]
+  options : @ast.Options
+  plugins : Array[@ast.Plugin]
+  accounts : Map[String, AccountInfo]
+  state : @booking.BookingState
+}
+pub fn ValidatedLedger::account_info(Self, String) -> AccountInfo?
+pub fn ValidatedLedger::account_names(Self) -> Array[String]
+pub fn ValidatedLedger::error_count(Self) -> Int32
+pub fn ValidatedLedger::has_errors(Self) -> Bool
+pub fn ValidatedLedger::inventory(Self, String) -> @booking.Inventory
+pub fn ValidatedLedger::warning_count(Self) -> Int32
 
 // Type aliases
 
