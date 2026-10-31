@@ -70,7 +70,7 @@ test "explicit prices are inverse convertible" {
     "2024-01-01 open Equity:Opening USD\n" +
     "2024-01-02 * \"buy euros\"\n" +
     "  Assets:Euro 100 EUR {1.10 USD}\n" +
-    "  Equity:Opening -110 USD\n",
+    "  Equity:Opening -110 USD\n2024-01-02 price EUR 1.10 USD\n",
   )
   inspect(r.rate("EUR", "USD").unwrap().to_string(), content="1.10")
   let usd = r.rate("USD", "EUR").unwrap()
@@ -407,16 +407,28 @@ test "report combines explicit retained earnings and computed closing earnings" 
 }
 
 ///|
-test "split total price stays per unit and cost does not override sale price" {
+test "split total price stays per unit without inventing a market quote" {
   let source = "2024-01-01 open Assets:Stock HOOL \"FIFO\"\n2024-01-01 open Assets:Cash USD\n2024-01-01 open Income:Gains USD\n2024-01-02 * \"first\"\n  Assets:Stock 10 HOOL {10 USD}\n  Assets:Cash -100 USD\n2024-01-03 * \"second\"\n  Assets:Stock 10 HOOL {20 USD}\n  Assets:Cash -200 USD\n2024-01-04 * \"sell\"\n  Assets:Stock -15 HOOL {} @@ 300 USD\n  Assets:Cash 300 USD\n  Income:Gains -100 USD\n"
   let r = realized(source)
-  inspect(r.rate("HOOL", "USD").unwrap().to_string(), content="20")
+  inspect(r.rate("HOOL", "USD") is None, content="true")
+  for entry in r.entries {
+    if entry.directive is DTransaction(txn) && txn.narration == "sell" {
+      for posting in txn.postings {
+        if posting.account == "Assets:Stock" {
+          inspect(
+            posting.price.unwrap().amount().number.to_string(),
+            content="20",
+          )
+        }
+      }
+    }
+  }
   inspect(@realization.register_rows(r, "Assets:Stock").length(), content="4")
   assert_balanced_report(@realization.balance_sheet(r))
 }
 
 ///|
-test "explicit price wins over same-day inferred cost and total price" {
+test "cost and total price annotations do not replace explicit market prices" {
   let r = realized(
     "2024-01-01 open Assets:Stock HOOL\n2024-01-01 open Assets:Cash USD\n2024-01-02 price HOOL 25 USD\n2024-01-02 * \"buy\"\n  Assets:Stock 10 HOOL {10 USD} @@ 200 USD\n  Assets:Cash -100 USD\n",
   )

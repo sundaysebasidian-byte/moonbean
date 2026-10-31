@@ -101,7 +101,9 @@ test("balance_sheet: at limits the report to a date", () => {
   const res = call("balance_sheet", { at: "2024-06-30" });
   const rows = Object.fromEntries(res.report.rows.map((r) => [r.account, text(r.amount)]));
   assert.equal(rows["Assets:Bank:Checking"], "92200.00 CNY");
-  assert.equal(rows["Assets:Broker:Stocks"], "48937.5000 CNY");
+  assert.equal(rows["Assets:Broker:Stocks"], "50387.5000 CNY");
+  assert.equal(res.report.complete, false);
+  assert.ok(res.report.diagnostics.some((d) => d.account === "Assets:Broker:Stocks" && d.code === "report.conversion_incomplete"));
 });
 
 test("income_statement: totals and period start", () => {

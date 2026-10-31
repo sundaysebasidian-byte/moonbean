@@ -149,6 +149,10 @@ def main():
         actual=report(a.ours,minimal,'bs','--convert','','--at','2024-01-02','--from','2024-01-01')
         expected=oracle_balances(c.oracle_query(a.oracle,minimal,'SELECT account,str(sum(cost(position))) FROM CLOSE ON 2024-01-03 CLEAR GROUP BY account ORDER BY account'))
         results.append(dict(ledger='historical-balance-sheet',checks=[('snapshot',report_balances(actual)==expected,'')]))
+    example='examples/full-year-2024.beancount'
+    dated=report(a.ours,example,'bal','--convert','CNY','--at','2024-06-30')
+    expected=oracle_balances(c.oracle_query(a.oracle,example,"SELECT account,str(sum(convert(position,'CNY',2024-06-30))) FROM CLOSE ON 2024-07-01 GROUP BY account ORDER BY account"))
+    results.append(dict(ledger='dated-unquoted-stock',checks=[('dated-price-path',report_balances(dated)==expected and not dated['complete'] and any(d['code']=='report.conversion_incomplete' for d in dated['diagnostics']),'')]))
     checks=[v for r in results for v in r['checks']]
     data=dict(ledgers=len(results),checks=len(checks),failures=sum(not x[1] for x in checks),results=results)
     Path(a.out).parent.mkdir(parents=True,exist_ok=True)

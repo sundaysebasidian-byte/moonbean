@@ -1,5 +1,5 @@
-// Price database.  Prices come from `price` directives and from implicit
-// prices on postings (cost basis and `@` annotations).  Conversion uses the
+// Price database. Only explicit `price` directives define market quotes.
+// Booking costs and annotations do not imply fresh market quotes. Conversion uses the
 // most recent price at or before the requested date, and falls back to the
 // inverse quote when only the opposite direction is available.
 
@@ -36,68 +36,9 @@ pub fn PriceDb::add(
 }
 
 ///|
-fn add_posting_price(
-  db : PriceDb,
-  date : @ast.Date,
-  posting : @ast.Posting,
-) -> Unit {
-  let units = match posting.units {
-    Some(units) => units
-    None => return
-  }
-  if !units.number.is_negative() {
-    match posting.cost {
-      Some(spec) =>
-        match spec.currency {
-          Some(currency) =>
-            match spec.number_per {
-              Some(number) => db.add(date, units.currency, currency, number)
-              None =>
-                match spec.number_total {
-                  Some(total) =>
-                    if !units.number.is_zero() {
-                      match total.abs().div(units.number.abs()) {
-                        Some(rate) =>
-                          db.add(date, units.currency, currency, rate)
-                        None => ()
-                      }
-                    }
-                  None => ()
-                }
-            }
-          None => ()
-        }
-      None => ()
-    }
-  }
-  match posting.price {
-    Some(price) =>
-      match price {
-        PerUnit(amount) =>
-          db.add(date, units.currency, amount.currency, amount.number)
-        Total(amount) =>
-          if !units.number.is_zero() {
-            match amount.number.abs().div(units.number.abs()) {
-              Some(rate) => db.add(date, units.currency, amount.currency, rate)
-              None => ()
-            }
-          }
-      }
-    None => ()
-  }
-}
-
-///|
 pub fn PriceDb::from_entries(entries : Array[@ast.Entry]) -> PriceDb {
   let db = PriceDb::new()
-  for entry in entries {
-    if entry.directive is DTransaction(txn) {
-      for posting in txn.postings {
-        add_posting_price(db, entry.date, posting)
-      }
-    }
-  }
-  // Explicit quotes win over inferred posting quotes on the same date.
+  // Transaction costs and annotations are not market quotes without a plugin.
   for entry in entries {
     if entry.directive is DPrice(price) {
       db.add(
