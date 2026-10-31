@@ -215,6 +215,7 @@ pub(all) struct Pad {
 pub(all) struct Plugin {
   name : String
   config : String?
+  loc : Loc
 }
 
 pub(all) struct Posting {

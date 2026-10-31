@@ -1726,7 +1726,11 @@ fn parse_plugin(parser : Parser, tokens : Array[Token], line : Int32) -> Unit {
       " at end of plugin directive",
     )
   }
-  parser.ledger.plugins.push({ name, config, })
+  parser.ledger.plugins.push({
+    name,
+    config,
+    loc: @ast.Loc::new(parser.file, line),
+  })
 }
 
 ///|

@@ -500,6 +500,7 @@ pub fn Entry::is_transaction(self : Entry) -> Bool {
 pub(all) struct Plugin {
   name : String
   config : String?
+  loc : Loc
 }
 
 ///|

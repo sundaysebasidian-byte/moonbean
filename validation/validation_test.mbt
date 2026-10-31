@@ -366,6 +366,7 @@ test "warns about unsupported plugins" {
   )
   inspect(v.warnings.length(), content="1")
   inspect(v.warnings[0].code, content="validation.plugin")
+  inspect(v.warnings[0].loc.line, content="1")
 }
 
 ///|

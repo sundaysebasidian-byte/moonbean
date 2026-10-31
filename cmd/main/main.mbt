@@ -95,6 +95,13 @@ fn print_diagnostics(diagnostics : Array[@ast.Diagnostic]) -> Unit {
 }
 
 ///|
+fn print_warnings(ledger : @validation.ValidatedLedger) -> Unit {
+  for diagnostic in ledger.warnings {
+    println("warning: " + @moonbean.diagnostic_text(diagnostic))
+  }
+}
+
+///|
 fn parse_date(text : String, flag : String) -> @ast.Date {
   match @ast.Date::parse(text) {
     Some(date) => date
@@ -191,6 +198,7 @@ async fn cmd_check(args : Array[String]) -> Unit {
     match check_file(file) {
       None => exit(1)
       Some(ledger) => {
+        print_warnings(ledger)
         print_diagnostics(ledger.errors)
         total_errors = total_errors + ledger.errors.length()
         if ledger.errors.length() == 0 {
@@ -213,6 +221,7 @@ async fn cmd_bal(args : Array[String]) -> Unit {
   match check_file(options.file) {
     None => exit(1)
     Some(ledger) => {
+      print_warnings(ledger)
       if ledger.errors.length() > 0 {
         print_diagnostics(ledger.errors)
         exit(1)
@@ -236,6 +245,7 @@ async fn cmd_query(args : Array[String]) -> Unit {
   match check_file(options.file) {
     None => exit(1)
     Some(ledger) => {
+      print_warnings(ledger)
       if ledger.errors.length() > 0 {
         print_diagnostics(ledger.errors)
         exit(1)
@@ -283,6 +293,7 @@ async fn cmd_export(args : Array[String]) -> Unit {
   match check_file(options.file) {
     None => exit(1)
     Some(ledger) => {
+      print_warnings(ledger)
       if ledger.errors.length() > 0 {
         print_diagnostics(ledger.errors)
         exit(1)

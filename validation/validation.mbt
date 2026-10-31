@@ -1102,7 +1102,7 @@ pub fn validate_ledger(ledger : @ast.Ledger) -> ValidatedLedger {
       ctx,
       "validation.plugin",
       "Plugin '" + plugin.name + "' is not supported and will be ignored",
-      @ast.Loc::new(ledger_file_name(ledger), 0),
+      plugin.loc,
     )
   }
   for pair in ledger.options.raw {
