@@ -86,6 +86,9 @@ pub fn path_dirname(path : String) -> String {
       None => break
     }
     if lib_is_separator(c) {
+      if i == 0 {
+        return "/"
+      }
       return lib_view(path[0:i])
     }
     i = i - 1
@@ -95,6 +98,10 @@ pub fn path_dirname(path : String) -> String {
 
 ///|
 fn lib_normalize_path(path : String) -> String {
+  let absolute = match path.get_char(0) {
+    Some(c) => c == '/'
+    None => false
+  }
   let parts : Array[String] = []
   for view in path.split("/") {
     let part = lib_view(view)
@@ -112,6 +119,9 @@ fn lib_normalize_path(path : String) -> String {
     parts.push(part)
   }
   let sb = StringBuilder()
+  if absolute {
+    sb.write_string("/")
+  }
   for i in 0..<parts.length() {
     if i > 0 {
       sb.write_string("/")

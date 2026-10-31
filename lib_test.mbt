@@ -24,9 +24,19 @@ test "path helpers normalize and join" {
   )
   inspect(
     @moonbean.path_join("docs", "/abs/a.beancount"),
-    content="abs/a.beancount",
+    content="/abs/a.beancount",
   )
   inspect(@moonbean.path_join("", "a.beancount"), content="a.beancount")
+  inspect(
+    @moonbean.path_join("/tmp/docs", "includes/a.beancount"),
+    content="/tmp/docs/includes/a.beancount",
+  )
+  inspect(
+    @moonbean.path_join("/tmp/docs", "../a.beancount"),
+    content="/tmp/a.beancount",
+  )
+  inspect(@moonbean.path_dirname("/a"), content="/")
+  inspect(@moonbean.path_join("/", "a.beancount"), content="/a.beancount")
 }
 
 ///|
@@ -52,6 +62,25 @@ test "expand_includes follows nested includes and reports missing" {
     expanded.source.contains("include \"missing.beancount\""),
     content="true",
   )
+}
+
+///|
+test "expand_includes resolves absolute base directories" {
+  let files : Map[String, String] = Map([])
+  files.set("/tmp/docs/a.beancount", "2024-01-01 open Assets:Cash USD\n")
+  files.set("/tmp/docs/includes/b.beancount", "2024-01-01 open Equity:Opening USD\n")
+  let read = fn(path) {
+    match files.get(path) {
+      Some(content) => Some(content)
+      None => None
+    }
+  }
+  let source = "include \"a.beancount\"\n" +
+    "include \"includes/b.beancount\"\n"
+  let expanded = @moonbean.expand_includes(source, "/tmp/docs", read)
+  inspect(expanded.missing.length(), content="0")
+  inspect(expanded.source.contains("Assets:Cash"), content="true")
+  inspect(expanded.source.contains("Equity:Opening"), content="true")
 }
 
 ///|
