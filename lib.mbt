@@ -99,11 +99,13 @@ pub fn path_dirname(path : String) -> String {
 
 ///|
 fn lib_normalize_path(input : String) -> String {
-  let path = input.replace_all(old="\\", new="/")
-  let absolute = match path.get_char(0) {
-    Some(c) => c == '/'
-    None => false
-  }
+  let replaced = input.replace_all(old="\\", new="/")
+  let drive = replaced.get_char(1) == Some(':')
+  let path = if drive { replaced.to_lower() } else { replaced }
+  let slash_root = path.has_prefix("/")
+  let unc = path.has_prefix("//")
+  let absolute = slash_root || drive
+  let root_parts = if unc { 2 } else if drive { 1 } else { 0 }
   let parts : Array[String] = []
   for view in path.split("/") {
     let part = lib_view(view)
@@ -111,7 +113,7 @@ fn lib_normalize_path(input : String) -> String {
       continue
     }
     if part == ".." {
-      if parts.length() > 0 && parts[parts.length() - 1] != ".." {
+      if parts.length() > root_parts && parts[parts.length() - 1] != ".." {
         parts.pop() |> ignore
       } else if !absolute {
         parts.push(part)
@@ -121,8 +123,8 @@ fn lib_normalize_path(input : String) -> String {
     parts.push(part)
   }
   let sb = StringBuilder()
-  if absolute {
-    sb.write_string("/")
+  if slash_root {
+    sb.write_string(if unc { "//" } else { "/" })
   }
   for i in 0..<parts.length() {
     if i > 0 {
@@ -136,6 +138,9 @@ fn lib_normalize_path(input : String) -> String {
 ///|
 /// Resolve a relative include path against its containing directory.
 pub fn path_join(base : String, relative : String) -> String {
+  if relative.get_char(1) == Some(':') {
+    return lib_normalize_path(relative)
+  }
   if relative.length() > 0 &&
     lib_is_separator(
       match relative.get_char(0) {
@@ -148,7 +153,11 @@ pub fn path_join(base : String, relative : String) -> String {
   if base == "" {
     lib_normalize_path(relative)
   } else {
-    lib_normalize_path(base + "/" + relative)
+    lib_normalize_path(
+      base +
+      (if base.has_suffix("/") || base.has_suffix("\\") { "" } else { "/" }) +
+      relative,
+    )
   }
 }
 
@@ -189,7 +198,11 @@ pub fn IncludeExpander::new(
   {
     frames: [
       {
-        file: path_join("", file),
+        file: if path_dirname(file) == "" {
+          path_join(base_dir, file)
+        } else {
+          path_join("", file)
+        },
         base: base_dir,
         lines: source.split("\n").map(lib_view).to_array(),
         index: 0,

@@ -172,3 +172,22 @@ test "include stack permits deep acyclic loads and repeated siblings" {
   inspect(result.source.split("Assets:Cash").count(), content="3")
   inspect(@moonbean.path_join("/", "../../a"), content="/a")
 }
+
+///|
+test "include paths handle drive roots and relative root filenames" {
+  inspect(
+    @moonbean.path_join("C:\\Docs", "C:\\Docs\\sub\\..\\a"),
+    content="c:/docs/a",
+  )
+  inspect(@moonbean.path_join("C:/", "../../a"), content="c:/a")
+  inspect(
+    @moonbean.path_join("//server/share", "../a"),
+    content="//server/share/a",
+  )
+  let result = @moonbean.check_expanded("main", "/docs", "include \"main\"", fn(
+    _,
+  ) {
+    abort("cycle must be detected before reading")
+  })
+  inspect(result.errors[0].code, content="include.cycle")
+}
