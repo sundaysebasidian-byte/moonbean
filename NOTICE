@@ -1,0 +1,29 @@
+moonbean — NOTICE
+=================
+
+moonbean is a clean-room implementation of a Beancount-compatible plain-text
+double-entry accounting engine, written from scratch in MoonBit and licensed
+under Apache-2.0.
+
+Referenced upstream projects
+----------------------------
+
+1. Beancount (https://github.com/beancount/beancount)
+   - License: GPL-2.0-only
+   - Usage: black-box oracle ONLY. The public language documentation
+     (https://beancount.github.io/docs/) — Language Syntax, How Inventories
+     Work, Beancount Query Language, Precision & Tolerances — is used as the
+     specification for observable syntax and semantics.
+   - No Beancount source code, comments, or test data has been copied into
+     this repository. No Beancount code is linked, embedded, or distributed
+     with moonbean. scripts/oracle.sh installs pinned versions of
+     `beancount` and `beanquery` into a throwaway virtual environment at
+     conformance-test time and only compares program outputs.
+
+2. beanquery (https://github.com/beancount/beanquery)
+   - License: GPL-2.0-only
+   - Usage: black-box oracle ONLY, for BQL query output comparison. Same
+     restrictions as above.
+
+All test ledgers under tests/ledgers/ and examples/ were written by the
+moonbean authors and are original work.

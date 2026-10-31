@@ -1,0 +1,10 @@
+.DS_Store
+_build/
+target/
+target
+.mooncakes/
+.moonagent/
+.oracle-venv/
+.oracle-cache/
+__pycache__/
+*.pyc
