@@ -1,0 +1,52 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "sundaysebasidian-byte/moonbean/decimal"
+
+import {
+  "moonbitlang/core/bigint",
+}
+
+// Values
+pub let decimal_precision : Int32
+
+// Errors
+
+// Types and methods
+pub(all) struct Decimal {
+  mantissa : @bigint.BigInt
+  scale : Int32
+}
+pub fn Decimal::abs(Self) -> Self
+pub fn Decimal::add(Self, Self) -> Self
+pub fn Decimal::compare(Self, Self) -> Int32
+pub fn Decimal::div(Self, Self) -> Self?
+pub fn Decimal::equal(Self, Self) -> Bool
+pub fn Decimal::from_int(Int32) -> Self
+pub fn Decimal::from_int64(Int64) -> Self
+pub fn Decimal::has_fractional_digits(Self) -> Bool
+pub fn Decimal::is_negative(Self) -> Bool
+pub fn Decimal::is_positive(Self) -> Bool
+pub fn Decimal::is_zero(Self) -> Bool
+pub fn Decimal::last_digit_place(Self) -> Self
+pub fn Decimal::less_equal(Self, Self) -> Bool
+pub fn Decimal::less_than(Self, Self) -> Bool
+pub fn Decimal::mantissa(Self) -> @bigint.BigInt
+pub fn Decimal::mul(Self, Self) -> Self
+pub fn Decimal::neg(Self) -> Self
+pub fn Decimal::new(@bigint.BigInt, Int32) -> Self
+pub fn Decimal::one() -> Self
+pub fn Decimal::parse(String) -> Self?
+pub fn Decimal::quantize(Self, Int32) -> Self
+pub fn Decimal::round_to_integer(Self) -> Self
+pub fn Decimal::round_to_significant(Self, Int32) -> Self
+pub fn Decimal::scale(Self) -> Int32
+pub fn Decimal::shift_scale(Self, Int32) -> Self
+pub fn Decimal::signum(Self) -> Int32
+pub fn Decimal::sub(Self, Self) -> Self
+pub fn Decimal::to_display(Self, min_scale? : Int32) -> String
+pub fn Decimal::to_string(Self) -> String
+pub fn Decimal::zero() -> Self
+pub fn Decimal::zero_scaled(Int32) -> Self
+
+// Type aliases
+
+// Traits
