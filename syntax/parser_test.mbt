@@ -96,6 +96,29 @@ test "parse transaction postings, cost specs and prices" {
 }
 
 ///|
+test "parse arithmetic amount expressions" {
+  let ledger = parse_ok(
+    "2024-01-01 open Assets:Cash USD\n2024-01-01 open Equity:Opening USD\n2024-01-02 * \"expr\"\n  Assets:Cash  (10 + 5) * 2 / 3 USD\n  Equity:Opening  -10 USD\n2024-01-03 * \"precedence\"\n  Assets:Cash  2 * 3 + 4 - 5 USD\n  Equity:Opening  -5 USD\n2024-01-03 balance Assets:Cash 10.00 ~ 0.01 USD\n",
+  )
+  match ledger.entries[2].directive {
+    @ast.DTransaction(txn) =>
+      match txn.postings[0].units {
+        Some(units) => inspect(units.to_string(), content="10 USD")
+        None => abort("expected units")
+      }
+    _ => abort("expected transaction")
+  }
+  match ledger.entries[3].directive {
+    @ast.DTransaction(txn) =>
+      match txn.postings[0].units {
+        Some(units) => inspect(units.to_string(), content="5 USD")
+        None => abort("expected units")
+      }
+    _ => abort("expected transaction")
+  }
+}
+
+///|
 test "parse balance tolerance and other directives" {
   let ledger = parse_ok(
     "2024-01-01 commodity USD\n2024-01-02 balance Assets:Cash 100.00 ~ 0.01 USD\n2024-01-03 price USD 7.20 CNY\n2024-01-04 event \"location\" \"Beijing\"\n2024-01-05 query \"q\" \"SELECT 1\"\n2024-01-06 note Assets:Cash \"hello\"\n2024-01-07 document Assets:Cash \"receipt.pdf\" #doc\n2024-01-08 custom \"budget\" \"food\" 10 USD TRUE 2024-01-01\n2024-01-09 pad Assets:Cash Equity:Opening\n2024-01-10 close Assets:Cash\n",

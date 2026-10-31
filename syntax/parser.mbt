@@ -334,24 +334,196 @@ fn parse_meta_line(tokens : Array[Token]) -> (String, @ast.MetaValue)? {
 }
 
 ///|
-fn parse_amount(cursor : Cursor, parser : Parser, line : Int32) -> @ast.Amount? {
-  let number = match cursor.take_word() {
-    Some(w) =>
-      match @decimal.Decimal::parse(w) {
-        Some(n) => n
-        None => {
-          parser.error(line, "parse.number", "invalid number `" + w + "`")
-          return None
+fn parse_expr_primary(
+  cursor : Cursor,
+  parser : Parser,
+  line : Int32,
+) -> @decimal.Decimal? {
+  match cursor.kind() {
+    Word(word) =>
+      if word == "(" {
+        cursor.advance() |> ignore
+        match parse_expr_sum(cursor, parser, line) {
+          None => None
+          Some(value) =>
+            match cursor.kind() {
+              Word(close) =>
+                if close == ")" {
+                  cursor.advance() |> ignore
+                  Some(value)
+                } else {
+                  parser.error(line, "parse.number", "expected `)` in amount")
+                  None
+                }
+              _ => {
+                parser.error(line, "parse.number", "expected `)` in amount")
+                None
+              }
+            }
+        }
+      } else if word == "+" {
+        cursor.advance() |> ignore
+        parse_expr_primary(cursor, parser, line)
+      } else if word == "-" {
+        cursor.advance() |> ignore
+        match parse_expr_primary(cursor, parser, line) {
+          Some(value) => Some(value.neg())
+          None => None
+        }
+      } else {
+        match @decimal.Decimal::parse(word) {
+          Some(number) => {
+            cursor.advance() |> ignore
+            Some(number)
+          }
+          None => {
+            parser.error(line, "parse.number", "invalid number `" + word + "`")
+            None
+          }
         }
       }
-    None => {
+    _ => {
       parser.error(
         line,
         "parse.number",
-        "expected an amount number, found " + cursor.kind().describe_token(),
+        "expected a number, found " + cursor.kind().describe_token(),
       )
-      return None
+      None
     }
+  }
+}
+
+///|
+fn parse_expr_product(
+  cursor : Cursor,
+  parser : Parser,
+  line : Int32,
+) -> @decimal.Decimal? {
+  match parse_expr_primary(cursor, parser, line) {
+    None => None
+    Some(first) => {
+      let mut value = first
+      let mut failed = false
+      let mut running = true
+      while running {
+        match cursor.kind() {
+          Star => {
+            cursor.advance() |> ignore
+            match parse_expr_primary(cursor, parser, line) {
+              Some(right) => value = value.mul(right)
+              None => {
+                failed = true
+                running = false
+              }
+            }
+          }
+          Word(op) =>
+            if op == "/" {
+              cursor.advance() |> ignore
+              match parse_expr_primary(cursor, parser, line) {
+                Some(right) =>
+                  match value.div(right) {
+                    Some(result) => value = result
+                    None => {
+                      parser.error(line, "parse.number", "division by zero")
+                      failed = true
+                      running = false
+                    }
+                  }
+                None => {
+                  failed = true
+                  running = false
+                }
+              }
+            } else {
+              running = false
+            }
+          _ => running = false
+        }
+      }
+      if failed {
+        None
+      } else {
+        Some(value)
+      }
+    }
+  }
+}
+
+///|
+fn parse_expr_sum(
+  cursor : Cursor,
+  parser : Parser,
+  line : Int32,
+) -> @decimal.Decimal? {
+  match parse_expr_product(cursor, parser, line) {
+    None => None
+    Some(first) => {
+      let mut value = first
+      let mut failed = false
+      let mut running = true
+      while running {
+        match cursor.kind() {
+          Word(op) =>
+            if op == "+" || op == "-" {
+              cursor.advance() |> ignore
+              match parse_expr_product(cursor, parser, line) {
+                Some(right) =>
+                  if op == "+" {
+                    value = value.add(right)
+                  } else {
+                    value = value.sub(right)
+                  }
+                None => {
+                  failed = true
+                  running = false
+                }
+              }
+            } else {
+              running = false
+            }
+          _ => running = false
+        }
+      }
+      if failed {
+        None
+      } else {
+        Some(value)
+      }
+    }
+  }
+}
+
+///|
+fn is_expression_start(word : String) -> Bool {
+  word == "(" || word == "+" || word == "-"
+}
+
+///|
+fn looks_like_number(word : String) -> Bool {
+  if is_expression_start(word) {
+    return true
+  }
+  match @decimal.Decimal::parse(word) {
+    Some(_) => true
+    None => false
+  }
+}
+
+///|
+fn parse_number_expression(
+  cursor : Cursor,
+  parser : Parser,
+  line : Int32,
+) -> @decimal.Decimal? {
+  parse_expr_sum(cursor, parser, line)
+}
+
+///|
+fn parse_amount(cursor : Cursor, parser : Parser, line : Int32) -> @ast.Amount? {
+  let number = match parse_number_expression(cursor, parser, line) {
+    Some(n) => n
+    None => return None
   }
   let currency = match cursor.take_word() {
     Some(w) =>
@@ -445,38 +617,40 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
         cursor.advance() |> ignore
       }
       Word(w) =>
-        match @decimal.Decimal::parse(w) {
-          Some(n) => {
-            number = Some(n)
-            cursor.advance() |> ignore
-            match cursor.kind() {
-              Word(c) =>
-                if is_valid_currency(c) {
-                  currency = Some(c)
-                  cursor.advance() |> ignore
-                }
-              _ => ()
+        if looks_like_number(w) {
+          match parse_number_expression(cursor, parser, line) {
+            Some(n) => {
+              number = Some(n)
+              match cursor.kind() {
+                Word(c) =>
+                  if is_valid_currency(c) {
+                    currency = Some(c)
+                    cursor.advance() |> ignore
+                  }
+                _ => ()
+              }
             }
+            None => ()
           }
-          None =>
-            match @ast.Date::parse(w) {
-              Some(d) => {
-                date = Some(d)
+        } else {
+          match @ast.Date::parse(w) {
+            Some(d) => {
+              date = Some(d)
+              cursor.advance() |> ignore
+            }
+            None =>
+              if is_valid_currency(w) {
+                currency = Some(w)
+                cursor.advance() |> ignore
+              } else {
+                parser.error(
+                  line,
+                  "parse.cost",
+                  "unexpected `" + w + "` in cost specification",
+                )
                 cursor.advance() |> ignore
               }
-              None =>
-                if is_valid_currency(w) {
-                  currency = Some(w)
-                  cursor.advance() |> ignore
-                } else {
-                  parser.error(
-                    line,
-                    "parse.cost",
-                    "unexpected `" + w + "` in cost specification",
-                  )
-                  cursor.advance() |> ignore
-                }
-            }
+          }
         }
       _ => {
         parser.error(
@@ -588,42 +762,38 @@ fn parse_posting(
   posting.flag = flag
   match cursor.kind() {
     Word(w) =>
-      match @decimal.Decimal::parse(w) {
-        Some(number) => {
-          cursor.advance() |> ignore
-          let currency = match cursor.take_word() {
-            Some(c) =>
-              if is_valid_currency(c) {
-                c
-              } else {
+      if looks_like_number(w) {
+        match parse_number_expression(cursor, parser, line) {
+          Some(number) => {
+            let currency = match cursor.take_word() {
+              Some(c) =>
+                if is_valid_currency(c) {
+                  c
+                } else {
+                  parser.error(
+                    line,
+                    "parse.currency",
+                    "invalid currency `" + c + "` in posting",
+                  )
+                  return None
+                }
+              None => {
                 parser.error(
-                  line,
-                  "parse.currency",
-                  "invalid currency `" + c + "` in posting",
+                  line, "parse.currency", "posting amount is missing a currency",
                 )
                 return None
               }
-            None => {
-              parser.error(
-                line, "parse.currency", "posting amount is missing a currency",
-              )
-              return None
             }
+            posting.units = Some(@ast.Amount::new(number, currency))
           }
-          posting.units = Some(@ast.Amount::new(number, currency))
+          None => return None
         }
-        None =>
-          if is_valid_currency(w) {
-            cursor.advance() |> ignore
-            posting.units_currency = Some(w)
-          } else {
-            parser.error(
-              line,
-              "parse.posting",
-              "unexpected `" + w + "` in posting",
-            )
-            return None
-          }
+      } else if is_valid_currency(w) {
+        cursor.advance() |> ignore
+        posting.units_currency = Some(w)
+      } else {
+        parser.error(line, "parse.posting", "unexpected `" + w + "` in posting")
+        return None
       }
     _ => ()
   }
@@ -1008,20 +1178,20 @@ fn parse_balance(
     )
     return None
   }
-  let number = match cursor.take_word() {
-    Some(w) =>
-      match @decimal.Decimal::parse(w) {
-        Some(n) => n
-        None => {
-          parser.error(
-            line,
-            "parse.balance",
-            "invalid balance amount `" + w + "`",
-          )
-          return None
+  let number = match cursor.kind() {
+    Word(w) =>
+      if looks_like_number(w) {
+        match parse_number_expression(cursor, parser, line) {
+          Some(n) => n
+          None => return None
         }
+      } else {
+        parser.error(
+          line, "parse.balance", "balance directive is missing an amount",
+        )
+        return None
       }
-    None => {
+    _ => {
       parser.error(
         line, "parse.balance", "balance directive is missing an amount",
       )
@@ -1031,17 +1201,8 @@ fn parse_balance(
   let mut tolerance : @decimal.Decimal? = None
   if cursor.kind() is Tilde {
     cursor.advance() |> ignore
-    match cursor.take_word() {
-      Some(w) =>
-        match @decimal.Decimal::parse(w) {
-          Some(n) => tolerance = Some(n)
-          None =>
-            parser.error(
-              line,
-              "parse.balance",
-              "invalid balance tolerance `" + w + "`",
-            )
-        }
+    match parse_number_expression(cursor, parser, line) {
+      Some(n) => tolerance = Some(n)
       None => parser.error(line, "parse.balance", "expected a number after `~`")
     }
   }

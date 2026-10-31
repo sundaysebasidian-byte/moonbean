@@ -216,6 +216,9 @@ pub fn tokenize(text : String) -> Array[Token] {
         }
         break
       }
+      if d == '+' || d == '/' || d == '(' || d == ')' {
+        break
+      }
       if is_delimiter(d) {
         break
       }
