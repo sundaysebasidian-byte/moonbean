@@ -31,6 +31,7 @@ priv enum Cond {
   CCmp(Expr, String, Expr)
   CIsNull(Expr, Bool)
   CTruthy(Expr)
+  CRegex(Expr, @string.Regex)
 }
 
 ///|
@@ -229,8 +230,14 @@ fn parse_primary(parser : QueryParser) -> Expr? {
           }
         }
         match lower {
-          "year" | "month" | "root" | "parent" | "leaf" | "sum" | "count" =>
-            Some(ECall(lower, args))
+          "year"
+          | "month"
+          | "root"
+          | "parent"
+          | "leaf"
+          | "sum"
+          | "count"
+          | "meta" => Some(ECall(lower, args))
           _ => {
             parser.fail("unknown function `" + word + "`")
             None
@@ -335,7 +342,23 @@ fn parse_cond_atom(parser : QueryParser) -> Cond? {
   } else {
     match parse_expr(parser) {
       Some(left) =>
-        if parser.match_keyword("is") {
+        if parser.match_sym("~") {
+          match parser.advance() {
+            BStr(pattern) => {
+              let regex = @string.Regex("(?i:" + pattern + ")") catch {
+                _ => {
+                  parser.fail("invalid or unsupported regular expression")
+                  return None
+                }
+              }
+              Some(CRegex(left, regex))
+            }
+            _ => {
+              parser.fail("regex requires a literal pattern")
+              None
+            }
+          }
+        } else if parser.match_keyword("is") {
           let negated = parser.match_keyword("not")
           if parser.expect_keyword("null") {
             Some(CIsNull(left, negated))

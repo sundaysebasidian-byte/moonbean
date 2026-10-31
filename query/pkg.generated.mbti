@@ -25,6 +25,7 @@ pub fn QueryResult::to_text(Self) -> String
 
 pub(all) enum QueryValue {
   QText(String)
+  QSet(Array[String])
   QNumber(@decimal.Decimal)
   QDate(@ast.Date)
   QAmount(@ast.Amount)

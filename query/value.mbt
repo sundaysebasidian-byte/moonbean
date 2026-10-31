@@ -3,6 +3,7 @@
 ///|
 pub(all) enum QueryValue {
   QText(String)
+  QSet(Array[String])
   QNumber(@decimal.Decimal)
   QDate(@ast.Date)
   QAmount(@ast.Amount)
@@ -46,6 +47,7 @@ fn query_json_escape(text : String) -> String {
 ///|
 pub fn QueryValue::to_text(self : QueryValue) -> String {
   match self {
+    QSet(values) => values.join(",")
     QText(text) => text
     QNumber(number) => number.to_string()
     QDate(date) => date.to_string()
@@ -101,6 +103,10 @@ fn query_position_json(position : @booking.Position) -> String {
 ///|
 pub fn QueryValue::to_json(self : QueryValue) -> String {
   match self {
+    QSet(values) =>
+      "[" +
+      values.map(fn(s) { "\"" + query_json_escape(s) + "\"" }).join(",") +
+      "]"
     QText(text) => "\"" + query_json_escape(text) + "\""
     QNumber(number) => number.to_string()
     QDate(date) => "\"" + date.to_string() + "\""

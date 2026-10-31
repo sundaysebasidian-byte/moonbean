@@ -8,6 +8,9 @@ priv struct BqlRow {
   flag : String
   payee : String
   narration : String
+  tags : Array[String]
+  links : Array[String]
+  meta : @ast.Meta
   account : String
   units : @ast.Amount
   cost : @ast.Cost?
@@ -101,6 +104,9 @@ fn posting_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
                   None => ""
                 },
                 narration: txn.narration,
+                tags: txn.tags,
+                links: txn.links,
+                meta: posting.meta,
                 account: posting.account,
                 units,
                 cost,
@@ -135,6 +141,9 @@ fn balance_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
         flag: "",
         payee: "",
         narration: "",
+        tags: [],
+        links: [],
+        meta: @ast.Meta::new(),
         account,
         units: position.units,
         cost: position.cost,
@@ -166,6 +175,8 @@ fn eval_column(row : BqlRow, name : String) -> QueryValue {
     "flag" => QText(row.flag)
     "payee" => if row.payee == "" { QNull } else { QText(row.payee) }
     "narration" => QText(row.narration)
+    "tags" => QSet(row.tags)
+    "links" => QSet(row.links)
     "account" => QText(row.account)
     "root" => QText(@ast.account_root(row.account))
     "parent" => QText(@ast.account_parent(row.account))
@@ -206,6 +217,18 @@ fn eval_expr(expr : Expr, row : BqlRow) -> QueryValue {
       }
     ECall(name, args) =>
       match (name, args) {
+        ("meta", [EStr(key)]) =>
+          match row.meta.get(key) {
+            Some(@ast.MString(s))
+            | Some(@ast.MAccount(s))
+            | Some(@ast.MCurrency(s))
+            | Some(@ast.MTag(s)) => QText(s)
+            Some(@ast.MNumber(n)) => QNumber(n)
+            Some(@ast.MDate(d)) => QDate(d)
+            Some(@ast.MBool(b)) =>
+              QNumber(@decimal.Decimal::from_int(if b { 1 } else { 0 }))
+            None => QNull
+          }
         ("year", [arg]) =>
           match eval_expr(arg, row) {
             QDate(date) => QNumber(@decimal.Decimal::from_int(date.year))
@@ -239,6 +262,11 @@ fn eval_expr(expr : Expr, row : BqlRow) -> QueryValue {
 ///|
 fn cond_holds(cond : Cond, row : BqlRow) -> Bool {
   match cond {
+    CRegex(e, regex) =>
+      match eval_expr(e, row) {
+        QText(s) => regex.execute(s) is Some(_)
+        _ => false
+      }
     CTrue => true
     CNot(inner) => !cond_holds(inner, row)
     CAnd(left, right) => cond_holds(left, row) && cond_holds(right, row)
@@ -253,6 +281,7 @@ fn cond_holds(cond : Cond, row : BqlRow) -> Bool {
     }
     CTruthy(expr) =>
       match eval_expr(expr, row) {
+        QSet(values) => values.length() > 0
         QNull => false
         QText(text) => text != ""
         QNumber(number) => !number.is_zero()
@@ -605,6 +634,9 @@ fn journal_row(entry : @ast.Entry, posting : @ast.Posting) -> BqlRow? {
         flag: "",
         payee: "",
         narration: "",
+        tags: [],
+        links: [],
+        meta: @ast.Meta::new(),
         account: posting.account,
         units,
         cost,
@@ -696,6 +728,11 @@ fn arithmetic(a : QueryValue, op : String, b : QueryValue) -> QueryValue {
 ///|
 fn grouped_cond(cond : Cond, rows : Array[BqlRow]) -> Bool {
   match cond {
+    CRegex(e, regex) =>
+      match eval_grouped(e, rows) {
+        QText(s) => regex.execute(s) is Some(_)
+        _ => false
+      }
     CTrue => true
     CNot(c) => !grouped_cond(c, rows)
     CAnd(a, b) => grouped_cond(a, rows) && grouped_cond(b, rows)

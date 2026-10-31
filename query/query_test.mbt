@@ -212,3 +212,24 @@ test "arithmetic precedence unary operators and aggregate HAVING" {
   inspect(a.rows[0][2].to_text(), content="3")
   inspect(a.rows[0][3].to_text(), content="1.5")
 }
+
+///|
+test "regex is case insensitive and rejects invalid patterns" {
+  let r = queried(ledger_source(), "SELECT account WHERE account ~ '^assets:'")
+  inspect(r.rows.length(), content="2")
+  inspect(
+    queried(ledger_source(), "SELECT account WHERE account ~ '['").is_ok(),
+    content="false",
+  )
+}
+
+///|
+test "tags links and posting metadata retain structured values" {
+  let source = "2024-01-01 open Assets:Cash USD\n2024-01-01 open Equity:Opening USD\n2024-01-02 * \"opening\" #shop ^receipt\n  Assets:Cash 1 USD\n    receipt: \"abc\"\n  Equity:Opening -1 USD\n"
+  let r = queried(
+    source, "SELECT tags, links, meta('receipt') WHERE account = 'Assets:Cash'",
+  )
+  inspect(r.rows[0][0].to_json(), content="[\"shop\"]")
+  inspect(r.rows[0][1].to_json(), content="[\"receipt\"]")
+  inspect(r.rows[0][2].to_text(), content="abc")
+}
