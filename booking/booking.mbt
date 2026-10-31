@@ -494,6 +494,9 @@ fn book_augmentation(
 ) -> Array[@ast.Amount] {
   let inv = state.inventory_for(account)
   inv.add({ units, cost: Some(cost), })
+  if state.method_for(account, "") == "AVERAGE" {
+    inv.merge_average(units.currency)
+  }
   let weights = []
   add_weights(weights, cost_weight(units.number, cost))
   let _ = price
@@ -610,7 +613,14 @@ pub fn book_posting(
             }
         }
       } else {
-        let booking = state.method_for(account, default_method)
+        let booking = if spec.merge {
+          // `{*}` merges every costed lot into one held at average cost and
+          // then reduces that single averaged position.
+          inv.merge_average(units.currency)
+          "AVERAGE"
+        } else {
+          state.method_for(account, default_method)
+        }
         if booking == "NONE" {
           let resolved = resolve_cost(spec, units, txn_date)
           match resolved {

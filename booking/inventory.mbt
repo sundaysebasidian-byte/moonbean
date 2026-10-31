@@ -181,6 +181,46 @@ pub fn Inventory::average_cost(
 }
 
 ///|
+/// Collapses every costed position in `currency` into a single lot held at the
+/// weighted average cost.  Positions without a cost are left untouched.
+pub fn Inventory::merge_average(self : Inventory, currency : String) -> Unit {
+  let average = match self.average_cost(currency) {
+    Some(cost) => cost
+    None => return
+  }
+  let mut total = @decimal.Decimal::zero()
+  let mut compatible = true
+  for position in self.positions {
+    if position.units.currency == currency {
+      match position.cost {
+        Some(cost) => {
+          if cost.currency != average.currency {
+            compatible = false
+          }
+          total = total.add(position.units.number)
+        }
+        None => ()
+      }
+    }
+  }
+  if !compatible || total.is_zero() {
+    return
+  }
+  let mut i = self.positions.length() - 1
+  while i >= 0 {
+    let position = self.positions[i]
+    if position.units.currency == currency && position.cost is Some(_) {
+      self.positions.remove(i) |> ignore
+    }
+    i = i - 1
+  }
+  self.positions.push({
+    units: @ast.Amount::new(total, currency),
+    cost: Some(average),
+  })
+}
+
+///|
 pub(all) struct AccountInventory {
   inventory : Inventory
   booking : String?

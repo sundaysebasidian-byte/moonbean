@@ -294,6 +294,16 @@ test "average booking uses weighted average cost" {
   )
   inspect(outcome.issue is None, content="true")
   inspect(outcome.weights[0].to_string(), content="-550 USD")
+  let inventory = state.inventory_for("Assets:Stock")
+  inspect(inventory.positions.length(), content="1")
+  inspect(inventory.positions[0].units.to_string(), content="15 HOOL")
+  inspect(
+    match inventory.positions[0].cost {
+      Some(cost) => cost.number.to_string()
+      None => abort("average lot must have a cost")
+    },
+    content="110",
+  )
 }
 
 ///|
