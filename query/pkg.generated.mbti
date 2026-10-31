@@ -14,11 +14,17 @@ pub fn run_query(@realization.RealizedLedger, String) -> QueryResult
 // Errors
 
 // Types and methods
+pub(all) enum QueryError {
+  Syntax(String)
+  Unsupported(String)
+}
+
 pub(all) struct QueryResult {
   columns : Array[String]
   rows : Array[Array[QueryValue]]
   error : String?
 }
+pub fn QueryResult::failure(Self) -> QueryError?
 pub fn QueryResult::is_ok(Self) -> Bool
 pub fn QueryResult::to_json(Self) -> String
 pub fn QueryResult::to_text(Self) -> String

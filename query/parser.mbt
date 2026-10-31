@@ -252,7 +252,28 @@ fn parse_primary(parser : QueryParser) -> Expr? {
       } else if lower == "false" {
         Some(EBool(false))
       } else {
-        Some(ECol(lower))
+        match lower {
+          "date"
+          | "flag"
+          | "payee"
+          | "narration"
+          | "account"
+          | "root"
+          | "parent"
+          | "leaf"
+          | "units"
+          | "currency"
+          | "cost"
+          | "value"
+          | "position"
+          | "tags"
+          | "links"
+          | "weight" => Some(ECol(lower))
+          _ => {
+            parser.fail("unsupported column `" + word + "`")
+            None
+          }
+        }
       }
     }
     BStr(value) => {

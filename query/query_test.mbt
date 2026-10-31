@@ -247,3 +247,46 @@ test "CLOSE ON is exclusive and BALANCES AT supports unit and cost views" {
   inspect(c.is_ok(), content="true")
   inspect(c.rows[0][1].to_text(), content="20 USD")
 }
+
+///|
+test "unsupported columns fail instead of returning null" {
+  inspect(
+    queried(ledger_source(), "SELECT misspelled").is_ok(),
+    content="false",
+  )
+}
+
+///|
+test "OPEN ON carries assets and clears earlier earnings" {
+  let r = queried(
+    ledger_source(),
+    "BALANCES AT units FROM OPEN ON 2024-03-01 CLOSE ON 2024-03-06",
+  )
+  inspect(r.is_ok(), content="true")
+  let mut found = false
+  for row in r.rows {
+    if row[0].to_text() == "Equity:Earnings:Previous" {
+      inspect(row[1].to_text(), content="-1000 USD")
+      found = true
+    }
+  }
+  inspect(found, content="true")
+  inspect(
+    queried(ledger_source(), "BALANCES FROM OPEN ON 0001-01-01").is_ok(),
+    content="false",
+  )
+}
+
+///|
+test "hosts can match query failure categories" {
+  let result = queried(ledger_source(), "SELECT unknown_column")
+  inspect(result.failure() is Some(@query.Unsupported(_)), content="true")
+  inspect(
+    queried(ledger_source(), "SELECT").failure() is Some(@query.Syntax(_)),
+    content="true",
+  )
+  inspect(
+    queried(ledger_source(), "SELECT account").failure() is None,
+    content="true",
+  )
+}

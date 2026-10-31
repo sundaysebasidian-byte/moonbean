@@ -273,3 +273,28 @@ pub fn QueryResult::to_json(self : QueryResult) -> String {
   sb.write_string("]}")
   sb.to_string()
 }
+
+///|
+/// Matchable query failure; the original message remains available in each case.
+pub(all) enum QueryError {
+  Syntax(String)
+  Unsupported(String)
+}
+
+///|
+/// Classifies parser failures without requiring hosts to match message text.
+/// The legacy `error` field retains its original text for existing callers.
+pub fn QueryResult::failure(self : QueryResult) -> QueryError? {
+  match self.error {
+    None => None
+    Some(message) =>
+      if message.has_prefix("unsupported ") ||
+        message.has_prefix("unknown function ") ||
+        message.has_prefix("unknown FROM source ") ||
+        message.has_prefix("BALANCES AT supports ") {
+        Some(Unsupported(message))
+      } else {
+        Some(Syntax(message))
+      }
+  }
+}
