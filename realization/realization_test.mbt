@@ -433,3 +433,33 @@ test "cost merge extension retains its booked inventory during replay" {
   inspect(inv.positions[0].units.to_string(), content="10 HOOL")
   inspect(inv.positions[0].cost.unwrap().number.to_string(), content="15")
 }
+
+///|
+test "inverse FX conversion rounding remains visible and exactly balanced" {
+  let r = realized(
+    "2024-01-01 open Assets:A USD\n2024-01-01 open Assets:B USD\n2024-01-01 open Equity:Opening USD\n2024-01-02 * \"opening\"\n  Assets:A 1 USD\n  Assets:B 3 USD\n  Equity:Opening -4 USD\n2024-01-03 price CHF 3 USD\n",
+  )
+  let report = @realization.balance_sheet(r, convert=Some("CHF"))
+  inspect(report.diagnostics.length(), content="0")
+  // This assertion uses the exact stored strings, without display rounding.
+  let mut sum = @decimal.Decimal::zero_scaled(28)
+  for row in report.rows {
+    let scale = 28
+    sum = @decimal.Decimal::new(
+      sum
+      .shift_scale(scale - sum.scale())
+      .mantissa()
+      .add(
+        row.amount.number
+        .shift_scale(scale - row.amount.number.scale())
+        .mantissa(),
+      ),
+      scale,
+    )
+  }
+  inspect(sum.is_zero(), content="true")
+  inspect(
+    report.rows.any(fn(row) { row.label == "Equity:Conversions:Current" }),
+    content="true",
+  )
+}

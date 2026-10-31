@@ -213,6 +213,19 @@ pub fn Report::to_json(self : Report) -> String {
 }
 
 ///|
+// Report aggregation does not introduce another 28-digit rounding step.
+fn report_add(a : @decimal.Decimal, b : @decimal.Decimal) -> @decimal.Decimal {
+  let scale = if a.scale() > b.scale() { a.scale() } else { b.scale() }
+  @decimal.Decimal::new(
+    a
+    .shift_scale(scale - a.scale())
+    .mantissa()
+    .add(b.shift_scale(scale - b.scale()).mantissa()),
+    scale,
+  )
+}
+
+///|
 fn add_amount(target : Array[@ast.Amount], amount : @ast.Amount) -> Unit {
   if amount.number.is_zero() {
     return
@@ -220,7 +233,7 @@ fn add_amount(target : Array[@ast.Amount], amount : @ast.Amount) -> Unit {
   for i in 0..<target.length() {
     if target[i].currency == amount.currency {
       target[i] = @ast.Amount::new(
-        target[i].number.add(amount.number),
+        report_add(target[i].number, amount.number),
         amount.currency,
       )
       return
@@ -500,7 +513,7 @@ fn make_report(
         combined[i] = {
           ..row,
           amount: @ast.Amount::new(
-            combined[i].amount.number.add(row.amount.number),
+            report_add(combined[i].amount.number, row.amount.number),
             row.amount.currency,
           ),
         }
@@ -623,6 +636,17 @@ pub fn balance_sheet(
       }
     }
   }
+  // Keep conversion rounding visible in equity instead of leaving a broken identity.
+  for residual in grouped_amounts(rows) {
+    if !residual.number.is_zero() {
+      rows.push({
+        label: realized.options.equity_account(
+          "account_current_conversions", "Conversions:Current",
+        ),
+        amount: @ast.Amount::new(residual.number.neg(), residual.currency),
+      })
+    }
+  }
   let totals : Array[ReportRow] = []
   for root in roots {
     totals.append(total_row("Total " + root, rows_with_root(rows, root)))
@@ -661,7 +685,7 @@ fn income_rows(
                       rows[i] = {
                         label: posting.account,
                         amount: @ast.Amount::new(
-                          rows[i].amount.number.add(amount.number),
+                          report_add(rows[i].amount.number, amount.number),
                           amount.currency,
                         ),
                       }
