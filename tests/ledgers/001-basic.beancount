@@ -1,0 +1,13 @@
+option "title" "MoonBean conformance 001"
+
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Equity:Opening USD
+2024-01-01 open Expenses:Food USD
+
+2024-01-02 * "Opening balance"
+  Assets:Cash     1000.00 USD
+  Equity:Opening -1000.00 USD
+
+2024-01-03 * "Cafe" "Coffee"
+  Assets:Cash    -12.50 USD
+  Expenses:Food   12.50 USD

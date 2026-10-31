@@ -1,0 +1,6 @@
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Expenses:Food USD
+
+2024-01-02 * "Off by one"
+  Assets:Cash    -10.00 USD
+  Expenses:Food    9.00 USD

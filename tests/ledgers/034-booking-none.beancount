@@ -1,0 +1,10 @@
+2024-01-01 open Assets:Stock HOOL "NONE"
+2024-01-01 open Assets:Cash USD
+
+2024-01-02 * "Buy shares"
+  Assets:Stock    10 HOOL {10.00 USD}
+  Assets:Cash  -100.00 USD
+
+2024-01-03 * "Sell without matching a lot"
+  Assets:Stock    -4 HOOL @ 10.00 USD
+  Assets:Cash     40.00 USD

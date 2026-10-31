@@ -1,0 +1,21 @@
+option "title" "Prices and positions"
+
+2024-01-01 commodity HOOL
+2024-01-01 commodity USD
+
+2024-01-01 open Assets:Stock HOOL "FIFO"
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Income:Gains USD
+
+2024-01-02 price HOOL 100.00 USD
+
+2024-01-03 * "Buy shares"
+  Assets:Stock    20 HOOL {100.00 USD}
+  Assets:Cash  -2000.00 USD
+
+2024-01-04 price HOOL 110.00 USD
+
+2024-01-05 * "Sell with a total price"
+  Assets:Stock    -5 HOOL {100.00 USD} @@ 600.00 USD
+  Assets:Cash    600.00 USD
+  Income:Gains  -100.00 USD

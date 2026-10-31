@@ -1,0 +1,8 @@
+2024-01-01 open Assets:Cash USD,CNY
+2024-01-01 open Equity:Opening USD,CNY
+
+2024-01-02 * "Opening balances in two currencies"
+  Assets:Cash       100.00 USD
+  Assets:Cash       700.00 CNY
+  Equity:Opening   -100.00 USD
+  Equity:Opening   -700.00 CNY

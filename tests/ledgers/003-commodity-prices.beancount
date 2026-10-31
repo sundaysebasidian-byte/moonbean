@@ -1,0 +1,13 @@
+2024-01-01 commodity USD
+2024-01-01 commodity CNY
+2024-01-01 commodity HOOL
+
+2024-01-01 open Assets:Stock HOOL
+2024-01-01 open Assets:Cash USD
+
+2024-01-02 * "Buy shares"
+  Assets:Stock    10 HOOL {100.00 USD}
+  Assets:Cash  -1000.00 USD
+
+2024-01-03 price HOOL 110.00 USD
+2024-01-04 price USD 7.20 CNY
