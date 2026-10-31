@@ -1,11 +1,66 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "sundaysebasidian-byte/moonbean/booking"
 
+import {
+  "sundaysebasidian-byte/moonbean/ast",
+  "sundaysebasidian-byte/moonbean/decimal",
+}
+
 // Values
+pub fn book_augmentation_with_cost(BookingState, String, @ast.Amount, @ast.Cost, @ast.PriceAnno?) -> Array[@ast.Amount]
+
+pub fn book_posting(BookingState, String, @ast.Posting, @ast.Date, String) -> BookingOutcome
 
 // Errors
 
 // Types and methods
+pub(all) struct AccountInventory {
+  inventory : Inventory
+  booking : String?
+}
+
+pub(all) struct BookingIssue {
+  code : String
+  message : String
+}
+pub fn BookingIssue::new(String, String) -> Self
+
+pub(all) struct BookingOutcome {
+  weights : Array[@ast.Amount]
+  issue : BookingIssue?
+  needs_inference : Bool
+}
+
+pub(all) struct BookingState {
+  accounts : Map[String, AccountInventory]
+}
+pub fn BookingState::accounts_list(Self) -> Array[String]
+pub fn BookingState::inventory(Self, String) -> Inventory?
+pub fn BookingState::inventory_for(Self, String) -> Inventory
+pub fn BookingState::method_for(Self, String, String) -> String
+pub fn BookingState::new() -> Self
+pub fn BookingState::set_booking(Self, String, String) -> Unit
+
+pub(all) struct Inventory {
+  positions : Array[Position]
+}
+pub fn Inventory::add(Self, Position) -> Unit
+pub fn Inventory::add_amount(Self, @ast.Amount) -> Unit
+pub fn Inventory::average_cost(Self, String) -> @ast.Cost?
+pub fn Inventory::copy(Self) -> Self
+pub fn Inventory::currencies(Self) -> Array[String]
+pub fn Inventory::is_empty(Self) -> Bool
+pub fn Inventory::new() -> Self
+pub fn Inventory::quantity(Self, String) -> @decimal.Decimal
+pub fn Inventory::remove_at(Self, Int32) -> Unit
+pub fn Inventory::to_string(Self) -> String
+
+pub(all) struct Position {
+  units : @ast.Amount
+  cost : @ast.Cost?
+}
+pub fn Position::new(@ast.Amount, @ast.Cost?) -> Self
+pub fn Position::to_string(Self) -> String
 
 // Type aliases
 
