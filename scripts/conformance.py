@@ -143,7 +143,12 @@ def oracle_diagnostics(oracle_dir, path):
 def ours_diagnostics(exe, path):
     proc = run([exe, "check", path])
     found = set()
-    for line in proc.stdout.splitlines():
+    output = proc.stdout + "\n" + proc.stderr
+    for line in output.splitlines():
+        # Validator warnings are advisory and do not correspond to bean-check
+        # errors, so they are not part of the diagnostic comparison.
+        if line.startswith("warning: "):
+            continue
         match = re.match(r"^(.+?):(\d+): ([a-z_.]+): (.*)$", line)
         if not match:
             continue

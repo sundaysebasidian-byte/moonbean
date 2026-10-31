@@ -11,7 +11,7 @@ fn cli_view(view : StringView) -> String {
 
 ///|
 fn fail(message : String) -> Unit {
-  println("moonbean: " + message)
+  eprintln("moonbean: " + message)
   exit(1)
 }
 
@@ -71,7 +71,7 @@ async fn load_ledger(file : String) -> String? {
       expand_into(source, @moonbean.path_dirname(file), missing, lines)
       if missing.length() > 0 {
         for path in missing {
-          println("moonbean: cannot read include: " + path)
+          eprintln("moonbean: cannot read include: " + path)
         }
         return None
       }
@@ -90,14 +90,14 @@ async fn load_ledger(file : String) -> String? {
 ///|
 fn print_diagnostics(diagnostics : Array[@ast.Diagnostic]) -> Unit {
   for diagnostic in diagnostics {
-    println(@moonbean.diagnostic_text(diagnostic))
+    eprintln(@moonbean.diagnostic_text(diagnostic))
   }
 }
 
 ///|
 fn print_warnings(ledger : @validation.ValidatedLedger) -> Unit {
   for diagnostic in ledger.warnings {
-    println("warning: " + @moonbean.diagnostic_text(diagnostic))
+    eprintln("warning: " + @moonbean.diagnostic_text(diagnostic))
   }
 }
 
@@ -322,7 +322,7 @@ async fn main {
     "export" => cmd_export(rest)
     "help" | "--help" | "-h" => usage()
     other => {
-      println("moonbean: unknown command: " + other)
+      eprintln("moonbean: unknown command: " + other)
       usage()
       exit(1)
     }
