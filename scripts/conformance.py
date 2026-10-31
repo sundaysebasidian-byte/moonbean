@@ -73,7 +73,7 @@ QUERIES = [
 
 
 def run(cmd):
-    return subprocess.run(cmd, capture_output=True, text=True)
+    return subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 
 
 def classify_oracle(message):
@@ -167,6 +167,12 @@ def ours_query(exe, path, query):
 
 
 def oracle_query(oracle_dir, path, query):
+    # Inventory CSV rendering rounds to display precision. str() preserves
+    # exact quantities before the CSV renderer sees the result.
+    if query == "BALANCES":
+        query = "SELECT account, str(sum(position)) GROUP BY account ORDER BY account"
+    else:
+        query = query.replace("sum(position)", "str(sum(position))")
     proc = run([os.path.join(oracle_dir, "bean-query"), "-f", "csv", path, query])
     if proc.returncode != 0:
         return None
@@ -194,13 +200,15 @@ def split_top_level(cell):
 def parse_oracle_cell(cell):
     units = defaultdict(Decimal)
     lots = defaultdict(Decimal)
+    if cell.startswith("(") and cell.endswith(")"):
+        cell = cell[1:-1]
     for fragment in split_top_level(cell):
         lot = re.match(rf"^({NUMBER})\s+(\S+)\s*\{{(.*)\}}$", fragment)
         if lot:
             number = Decimal(lot.group(1))
             currency = lot.group(2)
             inner = re.search(rf"({NUMBER})\s+(\S+)", lot.group(3))
-            cost = (Decimal(inner.group(1)), inner.group(2)) if inner else (None, None)
+            cost = (Decimal(inner.group(1)), inner.group(2).rstrip(",")) if inner else (None, None)
             units[currency] += number
             lots[(currency, cost[0], cost[1])] += number
             continue
@@ -314,7 +322,7 @@ def compare_scalar_query(ours_rows, oracle_csv):
         return False, "oracle query failed"
     body = oracle_csv[1:]
     expected = [tuple(row) for row in body]
-    actual = [tuple(str(cell) for cell in row) for row in ours_rows.get("rows", [])]
+    actual = [tuple(",".join(cell) if isinstance(cell, list) else "" if cell is None else str(cell) for cell in row) for row in ours_rows.get("rows", [])]
     if expected != actual:
         return False, f"expected {expected} got {actual}"
     return True, ""
