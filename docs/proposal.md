@@ -15,4 +15,3 @@
 
 - **测试与文档计划**：四个后端各 108 个测试；58 份自编账本对 beancount 3.2.3 + beanquery 0.2.0 比较，56 份可比较全部通过，另 2 份是扩展；两个 seed 各 1000 份随机账本都是 858 份一致、142 份仅因 AVERAGE 扩展不同，非 AVERAGE 差异为 0；22 份报表和 lot 回归账本 144 项检查通过；Playground 有 29 项 node 检查和 5 项无头浏览器检查；CI 覆盖三个系统、oracle 和 playground。文档含 README（中文，附英文简介）、覆盖矩阵、design、conformance、performance、CHANGELOG；10 万笔交易 `check` 约 0.59 s。
 - **GitHub 仓库链接**：https://github.com/sundaysebasidian-byte/moonbean
-- **Gitlink 链接**：TODO(用户填写)
