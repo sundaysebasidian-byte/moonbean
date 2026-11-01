@@ -192,7 +192,7 @@ Still outside the engine: subqueries, JOIN, PIVOT, plugins, and BQL `CLOSE ON`
 conversion entries (the report layer closes and carries earnings instead).
 
 Backend checks run on native, js and wasm-gc (108 tests each, plus wasm); the
-browser bundle has 29 node checks and 5 headless-Chrome checks (`web/smoke.mjs`,
+browser bundle has 29 node checks and 8 headless-Chrome checks (`web/smoke.mjs`,
 `web/dom-smoke.mjs`). Oracle comparison of the 58 original ledgers is unchanged
 at 56 of 56, with two extensions.
 

@@ -13,6 +13,6 @@
 | `option`、`document`、`note/event/query/custom` | 部分，边界见 README |
 | **明确不支持**：插件执行（只记录并警告）、BQL 子查询/JOIN/PIVOT/SQL `LIKE`、`FROM transactions`、`document` 检查文件存在 | 不支持。执行 Python 插件要嵌入解释器，与纯函数、可在浏览器运行的目标冲突；其余没有按交易的行源或不在常见账本查询范围内，会明确报错而不是给出错误结果 |
 
-- **测试与文档计划**：四个后端各 108 个测试；58 份自编账本对 beancount 3.2.3 + beanquery 0.2.0 比较，56 份可比较全部通过，另 2 份是扩展；两个 seed 各 1000 份随机账本都是 858 份一致、142 份仅因 AVERAGE 扩展不同，非 AVERAGE 差异为 0；22 份报表和 lot 回归账本 144 项检查通过；Playground 有 29 项 node 检查和 5 项无头浏览器检查；CI 覆盖三个系统、oracle 和 playground。文档含 README（中文，附英文简介）、覆盖矩阵、design、conformance、performance、CHANGELOG；10 万笔交易 `check` 约 0.59 s。
+- **测试与文档计划**：四个后端各 108 个测试；58 份自编账本对 beancount 3.2.3 + beanquery 0.2.0 比较，56 份可比较全部通过，另 2 份是扩展；两个 seed 各 1000 份随机账本都是 858 份一致、142 份仅因 AVERAGE 扩展不同，非 AVERAGE 差异为 0；22 份报表和 lot 回归账本 144 项检查通过；Playground 有 29 项 node 检查和 8 项无头浏览器检查；CI 覆盖三个系统、oracle 和 playground。文档含 README（中文，附英文简介）、覆盖矩阵、design、conformance、performance、CHANGELOG；10 万笔交易 `check` 约 0.59 s。
 - **基础与本期工作**：2026-10-31 新建仓库从零开发，此前没有代码基础；仓库全部提交均为本期工作。技术路线：行级词法 → 指令解析 → booking 与校验 → 报表与 BQL，全部为纯函数，文件读取由宿主回调提供。
 - **GitHub 仓库链接**：https://github.com/sundaysebasidian-byte/moonbean
