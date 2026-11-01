@@ -51,7 +51,7 @@ node web/dom-smoke.mjs                # 无头 Chrome：账本里的恶意字符
 moon add sundaysebasidian-byte/moonbean
 ```
 
-目前仓库还没有发布，克隆后在仓库根目录就能开发和运行：
+也可以克隆仓库，在根目录开发和运行：
 
 ```sh
 moon version --all
