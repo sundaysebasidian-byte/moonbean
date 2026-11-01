@@ -35,6 +35,7 @@
   </section>
 
   <section class="card" id="result-card">
+    <div class="summary" id="summary"></div>
     <div class="tabs" role="tablist" id="tabs">
       <button type="button" role="tab" data-tab="diagnostics">诊断<span class="badge" id="badge" hidden></span></button>
       <button type="button" role="tab" data-tab="reports">报表</button>
@@ -43,12 +44,11 @@
       <button type="button" role="tab" data-tab="format">格式化</button>
     </div>
 
-    <div class="panel" id="panel-diagnostics" role="tabpanel">
-      <div class="summary" id="summary"></div>
+    <div class="panel" id="panel-diagnostics" role="tabpanel" hidden>
       <ul class="issues" id="issues"></ul>
     </div>
 
-    <div class="panel" id="panel-reports" role="tabpanel" hidden>
+    <div class="panel" id="panel-reports" role="tabpanel">
       <div class="bar">
         <div class="seg small" id="report-kind">
           <button type="button" data-kind="balance_sheet">资产负债表</button>

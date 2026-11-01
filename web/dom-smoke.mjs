@@ -65,6 +65,68 @@ const audit = () =>
 await browser.open("");
 const baseline = (await audit()).scripts;
 
+const firstScreen = (b) =>
+  b.evaluate(`(() => {
+    const box = (sel) => document.querySelector(sel)?.getBoundingClientRect();
+    const totals = box("#report .totals");
+    return {
+      tab: document.querySelector("#tabs [aria-selected=true]")?.dataset.tab,
+      summary: document.querySelector("#summary").textContent,
+      totals: document.querySelector("#report .totals")?.textContent ?? "",
+      totalsBottom: totals?.bottom ?? Infinity,
+      innerWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      bodyWidth: document.body.scrollWidth,
+      innerHeight,
+    };
+  })()`);
+
+await test("the first screen shows the verdict, counts and report totals", async () => {
+  const seen = await firstScreen(browser);
+  assert.equal(seen.tab, "reports");
+  assert.match(seen.summary, /通过/);
+  assert.match(seen.summary, /\d+条目/);
+  assert.match(seen.summary, /\d+账户/);
+  assert.match(seen.totals, /Total Assets/);
+  assert.match(seen.totals, /Total Liabilities/);
+  assert.match(seen.totals, /Total Equity/);
+  assert.ok(seen.totalsBottom < seen.innerHeight, `totals end at ${seen.totalsBottom}`);
+});
+
+await test("a broken ledger keeps its error path on the default report tab", async () => {
+  await setLedger(brokenBooking);
+  const seen = await browser.evaluate(`({
+    summary: document.querySelector("#summary").textContent,
+    report: document.querySelector("#report").textContent,
+  })`);
+  assert.match(seen.summary, /1 个错误/);
+  assert.match(seen.report, /1 个错误/);
+  await browser.evaluate('document.querySelector("#report .error button").click()');
+  await sleep(100);
+  assert.equal(await browser.evaluate('document.querySelector("#tabs [aria-selected=true]").dataset.tab'), "diagnostics");
+  assert.match(await browser.evaluate('document.querySelector("#issues").textContent'), /<img src=x/);
+  await browser.open("");
+});
+
+await test("no horizontal overflow at 390px", async () => {
+  const phone = await launch({ width: 390, height: 844, scale: 1 });
+  try {
+    await phone.open("");
+    const seen = await firstScreen(phone);
+    assert.equal(seen.scrollWidth, seen.innerWidth);
+    assert.equal(seen.bodyWidth, seen.innerWidth);
+    assert.ok(seen.totalsBottom < seen.innerHeight, `totals end at ${seen.totalsBottom}`);
+    for (const name of ["diagnostics", "register", "query", "format"]) {
+      await phone.evaluate(`document.querySelector('#tabs [data-tab="${name}"]').click()`);
+      await sleep(200);
+      const width = await phone.evaluate("document.documentElement.scrollWidth");
+      assert.equal(width, seen.innerWidth, name);
+    }
+  } finally {
+    await phone.close();
+  }
+});
+
 await test("engine messages that echo ledger text stay text in the diagnostics list", async () => {
   await setLedger(brokenBooking);
   await tab("diagnostics");

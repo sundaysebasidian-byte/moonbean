@@ -51,7 +51,7 @@ function option(value, label) {
 
 const state = {
   fileName: example.name,
-  tab: "diagnostics",
+  tab: "reports",
   kind: "balance_sheet",
   convert: null,
   at: "",
@@ -309,10 +309,6 @@ function renderReport() {
     tag.hidden = false;
     tag.title = report.diagnostics.map((d) => `${d.account}  ${d.currency} → ${d.target}`).join("\n");
   }
-  // Rows are the engine's leaf amounts; the tree only groups them for folding.
-  const tree = el("div", "tree");
-  for (const root of buildTree(report.rows)) tree.append(renderNode(root, 0));
-  host.append(tree);
   // Totals are the engine's own, already grouped by currency when needed.
   const totals = el("div", "totals");
   for (const total of report.totals) {
@@ -322,6 +318,10 @@ function renderReport() {
     totals.append(el("div", `balance ${data.balanced ? "ok" : "no"}`, data.balanced ? "平衡" : "不平衡"));
   }
   if (totals.children.length) host.append(totals);
+  // Rows are the engine's leaf amounts; the tree only groups them for folding.
+  const tree = el("div", "tree");
+  for (const root of buildTree(report.rows)) tree.append(renderNode(root, 0));
+  host.append(tree);
 }
 
 function errorBlock(data) {
@@ -620,7 +620,7 @@ $("theme").addEventListener("click", () => {
 syncKind();
 setSource(example.source, example.name);
 const initial = location.hash.slice(1);
-selectTab(["diagnostics", "reports", "register", "query", "format"].includes(initial) ? initial : "diagnostics");
+selectTab(["diagnostics", "reports", "register", "query", "format"].includes(initial) ? initial : "reports");
 
 window.addEventListener("hashchange", () => {
   const tab = location.hash.slice(1);
