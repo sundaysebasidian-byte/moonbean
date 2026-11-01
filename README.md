@@ -20,7 +20,7 @@
 
 ## Playground
 
-`playground/` 包把引擎编译成一个 JavaScript 模块，`web/` 是纯静态页面（原生 HTML/CSS/JS，没有框架和 CDN）。页面左边是账本编辑器，右边是诊断（点击跳转到对应行）、资产负债表和损益表（账户树可折叠，支持多币种和 `operating_currency` 折算）、流水、BQL 查询和格式化预览。资产负债表包含 `Equity:Earnings:*` 结转账户，并标出是否平衡；某个币种找不到折算路径时，报表会标出“折算不完整”和对应账户，合计按币种分开显示。内置示例是 `examples/` 下的全年账本。
+`playground/` 包把引擎编译成一个 JavaScript 模块，`web/` 是纯静态页面（原生 HTML/CSS/JS，没有框架和 CDN）。页面左边是账本编辑器，右边顶部是校验结论和条目、账户计数，下方默认打开资产负债表，其余标签依次是诊断（点击跳转到对应行）、损益表（账户树可折叠，支持多币种和 `operating_currency` 折算）、流水、BQL 查询和格式化预览。资产负债表包含 `Equity:Earnings:*` 结转账户，并标出是否平衡；某个币种找不到折算路径时，报表会标出“折算不完整”和对应账户，合计按币种分开显示。内置示例是 `examples/` 下的全年账本。
 
 本地构建需要 MoonBit 工具链和 node：
 
@@ -42,6 +42,30 @@ node web/dom-smoke.mjs                # 无头 Chrome：账本里的恶意字符
 | `format` | `source` | 对齐后的文本和是否有变化 |
 
 账本有错误时报表、流水和查询返回 `ledger_invalid`，和命令行的行为一致。浏览器里没有文件系统，所以 `include` 不会被加载，会在对应行给出警告。Playground 包只依赖纯函数包，生成的 JS 里没有 `node:` 导入；压缩前约 1.0 MB，gzip 后约 133 KB。
+
+## 版本对应
+
+| 面 | 对应 | 说明 |
+| --- | --- | --- |
+| 源码 | tag `v0.1.0`（提交 `c0ea41b`） | mooncakes 0.1.0 的打包内容与该提交一致 |
+| mooncakes | `sundaysebasidian-byte/moonbean@0.1.0` | 包内容固定，不随 main 变化 |
+| Pages | 最近一次推送到 main 的构建 | [`pages.yml`](.github/workflows/pages.yml) 每次 push 到 main 都会重新构建，可能领先于 0.1.0 |
+
+定位发布提交：`git rev-list -n 1 v0.1.0`。tag 尚未推送时，直接用上表中的提交。下面三条命令分别复现三个面：
+
+```sh
+# 源码测试
+git checkout v0.1.0
+moon test --target all
+
+# 安装包调用：在仓库外新建模块，复制 examples/library_demo 的 main.mbt 和 moon.pkg 到 cmd/main
+moon new consumer && cd consumer
+moon add sundaysebasidian-byte/moonbean@0.1.0
+moon run cmd/main
+
+# 线上引擎：打开 Pages；对应的构建见 Actions 中 Pages 工作流的运行记录
+gh run list --workflow pages.yml --limit 1
+```
 
 ## 安装
 
