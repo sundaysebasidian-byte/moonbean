@@ -20,9 +20,9 @@
   "measurements": {
     "check": {
       "command": [
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/_build/native/release/build/cmd/main/main.exe",
+        "./_build/native/release/build/cmd/main/main.exe",
         "check",
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount"
+        "./docs/evidence/performance/ledger.beancount"
       ],
       "seconds": [
         0.5682445420097793,
@@ -39,9 +39,9 @@
     },
     "realize": {
       "command": [
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/_build/native/release/build/cmd/main/main.exe",
+        "./_build/native/release/build/cmd/main/main.exe",
         "bal",
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount"
+        "./docs/evidence/performance/ledger.beancount"
       ],
       "seconds": [
         0.6103728339949157,
@@ -58,9 +58,9 @@
     },
     "query": {
       "command": [
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/_build/native/release/build/cmd/main/main.exe",
+        "./_build/native/release/build/cmd/main/main.exe",
         "query",
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount",
+        "./docs/evidence/performance/ledger.beancount",
         "SELECT account, sum(units) GROUP BY account ORDER BY account"
       ],
       "seconds": [
@@ -78,9 +78,9 @@
     },
     "fmt": {
       "command": [
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/_build/native/release/build/cmd/main/main.exe",
+        "./_build/native/release/build/cmd/main/main.exe",
         "fmt",
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount"
+        "./docs/evidence/performance/ledger.beancount"
       ],
       "seconds": [
         0.23707012498925906,
@@ -97,9 +97,9 @@
     },
     "query_old_decimal": {
       "command": [
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/.oracle-cache/performance-baseline-csl7evno/_build/native/release/build/cmd/main/main.exe",
+        "./.oracle-cache/performance-baseline-csl7evno/_build/native/release/build/cmd/main/main.exe",
         "query",
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount",
+        "./docs/evidence/performance/ledger.beancount",
         "SELECT account, sum(units) GROUP BY account ORDER BY account"
       ],
       "seconds": [

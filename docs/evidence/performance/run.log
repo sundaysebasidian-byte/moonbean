@@ -1,11 +1,11 @@
 Finished. moon: no work to do
 Artifacts:
-  sundaysebasidian-byte/moonbean/cmd/main               native  /Users/sebasidian/.t3/projects/moonbit-nov/moonbean/_build/native/release/build/cmd/main/main.exe
-  sundaysebasidian-byte/moonbean/examples/library_demo  native  /Users/sebasidian/.t3/projects/moonbit-nov/moonbean/_build/native/release/build/examples/library_demo/library_demo.exe
+  sundaysebasidian-byte/moonbean/cmd/main               native  ./_build/native/release/build/cmd/main/main.exe
+  sundaysebasidian-byte/moonbean/examples/library_demo  native  ./_build/native/release/build/examples/library_demo/library_demo.exe
 Finished. moon: ran 41 tasks, now up to date
 Artifacts:
-  sundaysebasidian-byte/moonbean/cmd/main               native  /Users/sebasidian/.t3/projects/moonbit-nov/moonbean/.oracle-cache/performance-baseline-csl7evno/_build/native/release/build/cmd/main/main.exe
-  sundaysebasidian-byte/moonbean/examples/library_demo  native  /Users/sebasidian/.t3/projects/moonbit-nov/moonbean/.oracle-cache/performance-baseline-csl7evno/_build/native/release/build/examples/library_demo/library_demo.exe
+  sundaysebasidian-byte/moonbean/cmd/main               native  ./.oracle-cache/performance-baseline-csl7evno/_build/native/release/build/cmd/main/main.exe
+  sundaysebasidian-byte/moonbean/examples/library_demo  native  ./.oracle-cache/performance-baseline-csl7evno/_build/native/release/build/examples/library_demo/library_demo.exe
 {
   "timestamp": "2026-11-01T06:09:29.209579+00:00",
   "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
@@ -28,9 +28,9 @@ Artifacts:
   "measurements": {
     "check": {
       "command": [
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/_build/native/release/build/cmd/main/main.exe",
+        "./_build/native/release/build/cmd/main/main.exe",
         "check",
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount"
+        "./docs/evidence/performance/ledger.beancount"
       ],
       "seconds": [
         0.5682445420097793,
@@ -47,9 +47,9 @@ Artifacts:
     },
     "realize": {
       "command": [
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/_build/native/release/build/cmd/main/main.exe",
+        "./_build/native/release/build/cmd/main/main.exe",
         "bal",
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount"
+        "./docs/evidence/performance/ledger.beancount"
       ],
       "seconds": [
         0.6103728339949157,
@@ -66,9 +66,9 @@ Artifacts:
     },
     "query": {
       "command": [
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/_build/native/release/build/cmd/main/main.exe",
+        "./_build/native/release/build/cmd/main/main.exe",
         "query",
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount",
+        "./docs/evidence/performance/ledger.beancount",
         "SELECT account, sum(units) GROUP BY account ORDER BY account"
       ],
       "seconds": [
@@ -86,9 +86,9 @@ Artifacts:
     },
     "fmt": {
       "command": [
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/_build/native/release/build/cmd/main/main.exe",
+        "./_build/native/release/build/cmd/main/main.exe",
         "fmt",
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount"
+        "./docs/evidence/performance/ledger.beancount"
       ],
       "seconds": [
         0.23707012498925906,
@@ -105,9 +105,9 @@ Artifacts:
     },
     "query_old_decimal": {
       "command": [
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/.oracle-cache/performance-baseline-csl7evno/_build/native/release/build/cmd/main/main.exe",
+        "./.oracle-cache/performance-baseline-csl7evno/_build/native/release/build/cmd/main/main.exe",
         "query",
-        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount",
+        "./docs/evidence/performance/ledger.beancount",
         "SELECT account, sum(units) GROUP BY account ORDER BY account"
       ],
       "seconds": [
