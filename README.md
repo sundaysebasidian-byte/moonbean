@@ -74,22 +74,20 @@ node web/dom-smoke.mjs                # 无头 Chrome：账本里的恶意字符
 
 | 面 | 对应 | 说明 |
 | --- | --- | --- |
-| 发布源码 | tag `v0.1.0`（提交 `c0ea41b`） | mooncakes 0.1.0 的打包内容与该提交一致 |
-| mooncakes | `sundaysebasidian-byte/moonbean@0.1.0` | 包内容固定，不随 main 变化 |
-| Pages | 最近一次推送到 main 的构建 | [`pages.yml`](.github/workflows/pages.yml) 每次 push 到 main 都会重新构建，可能领先于 0.1.0 |
+| 发布源码 | tag `v0.1.1` | mooncakes 0.1.1 的打包内容与该 tag 指向的提交一致 |
+| mooncakes | `sundaysebasidian-byte/moonbean@0.1.1` | 包内容固定，不随 main 变化 |
+| Pages | 最近一次推送到 main 的构建 | [`pages.yml`](.github/workflows/pages.yml) 每次 push 到 main 都会重新构建，可能领先于 0.1.1 |
 
-当前工作树准备 0.1.1，仅本地提交，尚未发布；上表的 mooncakes 0.1.0 与线上 Pages 不包含0.1.1 变更。
-
-定位发布提交：`git rev-list -n 1 v0.1.0`。下面三条命令分别复现三个面：
+定位发布提交：`git rev-list -n 1 v0.1.1`。下面三条命令分别复现三个面：
 
 ```sh
 # 源码测试
-git checkout v0.1.0
+git checkout v0.1.1
 moon test --target all
 
 # 安装包调用：在仓库外新建模块，复制 examples/library_demo 的 main.mbt 和 moon.pkg 到 cmd/main
 moon new consumer && cd consumer
-moon add sundaysebasidian-byte/moonbean@0.1.0
+moon add sundaysebasidian-byte/moonbean@0.1.1
 moon run cmd/main
 
 # 线上引擎：打开 Pages；对应的构建见 Actions 中 Pages 工作流的运行记录
