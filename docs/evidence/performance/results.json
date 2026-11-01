@@ -1,0 +1,119 @@
+{
+  "timestamp": "2026-11-01T06:09:29.209579+00:00",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "cpu": "Apple M4",
+  "moon": "moon 0.1.20261028 (e1e1f15 2026-10-28) ~/.moon/bin/moon\nmoonc v0.10.18+6c83a7f62 (2026-10-28) ~/.moon/bin/moonc\nmoonrun 0.1.20261028 (e1e1f15 2026-10-28) ~/.moon/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg\n",
+  "python": "3.14.6",
+  "count": 100000,
+  "seed": 20261101,
+  "runs": 7,
+  "warmups": 1,
+  "ledger_sha256": "0bdf3c5087e09f0cde21889ecd26b3c350b6d5155e501cc151bbdb492a7a5ab0",
+  "ledger_bytes": 8069150,
+  "executable_sha256": "693bca20878adf6ad44acbf264cd77c490f6049ce3275329ae922610a3af2683",
+  "comparison": {
+    "base_head": "b716b37491b41147a1314c3c0f5bf25fc34bf95a",
+    "decimal_ref": "e7c98b1:decimal/decimal.mbt",
+    "decimal_sha256": "8d3eb163d7f16efa594792b4c21188e0c458c394246359aea5d5eee9fc6f2f79",
+    "note": "HEAD plus tracked working edits; only historical decimal parser substituted; precision constant kept private"
+  },
+  "measurements": {
+    "check": {
+      "command": [
+        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/_build/native/release/build/cmd/main/main.exe",
+        "check",
+        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount"
+      ],
+      "seconds": [
+        0.5682445420097793,
+        0.5590677500003949,
+        0.558459457999561,
+        0.5870871670049382,
+        0.5635239590046695,
+        0.5595941659994423,
+        0.5655525410111295
+      ],
+      "median": 0.5635239590046695,
+      "min": 0.558459457999561,
+      "max": 0.5870871670049382
+    },
+    "realize": {
+      "command": [
+        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/_build/native/release/build/cmd/main/main.exe",
+        "bal",
+        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount"
+      ],
+      "seconds": [
+        0.6103728339949157,
+        0.6027200420066947,
+        0.6023231660074089,
+        0.6024408340017544,
+        0.6019137910043355,
+        0.6083527080045315,
+        0.6169427919958252
+      ],
+      "median": 0.6027200420066947,
+      "min": 0.6019137910043355,
+      "max": 0.6169427919958252
+    },
+    "query": {
+      "command": [
+        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/_build/native/release/build/cmd/main/main.exe",
+        "query",
+        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount",
+        "SELECT account, sum(units) GROUP BY account ORDER BY account"
+      ],
+      "seconds": [
+        0.6653215420083143,
+        0.6601161250000587,
+        0.6906962920038495,
+        0.6607638330024201,
+        0.6525358749931911,
+        0.6802267909952207,
+        0.6673191250010859
+      ],
+      "median": 0.6653215420083143,
+      "min": 0.6525358749931911,
+      "max": 0.6906962920038495
+    },
+    "fmt": {
+      "command": [
+        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/_build/native/release/build/cmd/main/main.exe",
+        "fmt",
+        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount"
+      ],
+      "seconds": [
+        0.23707012498925906,
+        0.23006208401056938,
+        0.22999229100241791,
+        0.23492387500300538,
+        0.23353391700948123,
+        0.23453687499568332,
+        0.23532458399131428
+      ],
+      "median": 0.23453687499568332,
+      "min": 0.22999229100241791,
+      "max": 0.23707012498925906
+    },
+    "query_old_decimal": {
+      "command": [
+        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/.oracle-cache/performance-baseline-csl7evno/_build/native/release/build/cmd/main/main.exe",
+        "query",
+        "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean/docs/evidence/performance/ledger.beancount",
+        "SELECT account, sum(units) GROUP BY account ORDER BY account"
+      ],
+      "seconds": [
+        0.674798957988969,
+        0.6977322500024457,
+        0.6711310419923393,
+        0.6718744579993654,
+        0.6875534160062671,
+        0.7058667499950388,
+        0.6832175410090713
+      ],
+      "median": 0.6832175410090713,
+      "min": 0.6711310419923393,
+      "max": 0.7058667499950388
+    }
+  }
+}

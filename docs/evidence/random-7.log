@@ -1,0 +1,11 @@
+compared 100; mismatches 14
+compared 200; mismatches 28
+compared 300; mismatches 42
+compared 400; mismatches 57
+compared 500; mismatches 71
+compared 600; mismatches 85
+compared 700; mismatches 100
+compared 800; mismatches 114
+compared 900; mismatches 128
+compared 1000; mismatches 142
+{"seed": 7, "count": 1000, "mismatches": 142, "clean_queries": 468, "non_average_mismatches": 0}

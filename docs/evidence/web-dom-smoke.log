@@ -1,0 +1,8 @@
+ok   the first screen shows the verdict, counts and report totals
+ok   a broken ledger keeps its error path on the default report tab
+ok   no horizontal overflow at 390px
+ok   engine messages that echo ledger text stay text in the diagnostics list
+ok   hostile operating_currency is only an option value
+ok   register shows hostile payee and narration as text
+ok   query cells and the format preview stay text
+ok   the page raised no exceptions

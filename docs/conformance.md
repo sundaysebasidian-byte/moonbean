@@ -9,12 +9,12 @@ virtual environment only by the reproduction script. All ledgers under
 
 | Item | Value |
 | --- | --- |
-| Date | 2026-10-31 |
+| Date | 2026-11-01 |
 | Platform | macOS (arm64) |
 | MoonBit | 0.1.20261028 |
 | Oracle | beancount 3.2.3 |
 | Oracle query tool | beanquery 0.2.0 |
-| MoonBean | main @ local commit |
+| MoonBean | local 0.1.1 preparation; not published |
 
 ## What is compared
 
@@ -130,7 +130,8 @@ runtime.
   does not flag duplicate transactions either, so no diagnostic mismatch exists.
 - The `document` directive is parsed and its account is validated. MoonBean does
   not stat the referenced file, so a missing receipt produces no diagnostic,
-  unlike the oracle. Linking a document is treated as metadata-only.
+  unlike the oracle. Linking a document is treated as metadata-only and now emits a
+  `validation.document_unchecked` warning at the directive location.
 - The aggregate BALANCES check ignores cost date and label. A separate posting-level check compares them through `str(position)`, together with duplicate row counts.
 
 ## Seeded differential
@@ -191,7 +192,7 @@ three price-path scenarios: 25 scenario records and 144 checks, all passing.
 Still outside the engine: subqueries, JOIN, PIVOT, plugins, and BQL `CLOSE ON`
 conversion entries (the report layer closes and carries earnings instead).
 
-Backend checks run on native, js and wasm-gc (108 tests each, plus wasm); the
+Backend checks run on native, js, wasm-gc and wasm (110 tests each); the
 browser bundle has 29 node checks and 8 headless-Chrome checks (`web/smoke.mjs`,
 `web/dom-smoke.mjs`). Oracle comparison of the 58 original ledgers is unchanged
 at 56 of 56, with two extensions.
@@ -238,3 +239,31 @@ USERPROFILE instead of a hard-coded runner username. Oracle bootstrap pins
 pip 25.2, Beancount 3.2.3 and beanquery 0.2.0 with Python 3.12 in CI. The
 workflow runs random differential and extended BQL checks and uploads evidence.
 The [GitHub CI run](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096814) passed on Ubuntu, macOS and Windows, including the playground, pinned oracle and both 1000-ledger differential seeds. [Pages deployment](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096811) also passed. Online assets match the local build by SHA-256; the downloaded engine passed all 29 smoke checks. Verified 2026-11-01.
+
+## 0.1.1 local reproduction evidence
+
+The original 58-ledger oracle was rerun: 56/56 compared passed, 0 failed,
+2 extensions. Both 1000-ledger seeds were rerun with the pinned external oracle;
+see [seed 7](evidence/random-7.log) and [seed 20261101](evidence/random-20261101.log).
+These remain black-box comparisons; no upstream source or fixtures were copied.
+
+[Migration fixtures](../examples/migration/) exercise plugin warnings,
+metadata-only documents, successful relative includes followed by a missing
+include, normalized include cycles, and explicit execution of stored subquery,
+JOIN and PIVOT query texts. The BQL boundary errors have codes
+`query.unsupported.subquery`, `query.unsupported.join`, `query.unsupported.pivot`
+and a query-relative `BQL:line:column` location in the existing error text;
+`failure()` classifies them as `Unsupported`. Ledger `query` directives are
+stored, not executed by check. [Raw migration output](evidence/migration.json)
+is checked by `scripts/migration_smoke.py`, alongside four-backend unit tests.
+See the README migration section for exact lines, exit statuses and host duties.
+Include failures preserve the including directive location; ordinary validation
+after expansion currently uses the root filename and expanded-text line, not a
+child-file source map. The migration include fixture makes this limit explicit.
+Document warnings do not imply file verification; plugin warnings do not imply
+execution. The conformance harness compares errors, not advisory warnings.
+
+Updated 100k performance measurements, historical arrays, query profiles and
+limitations are in [performance.md](performance.md). Local acceptance command
+logs are retained in [evidence/](evidence/); this is not a new CI/deployment or
+mooncakes publication claim.

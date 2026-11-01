@@ -74,9 +74,11 @@ node web/dom-smoke.mjs                # 无头 Chrome：账本里的恶意字符
 
 | 面 | 对应 | 说明 |
 | --- | --- | --- |
-| 源码 | tag `v0.1.0`（提交 `c0ea41b`） | mooncakes 0.1.0 的打包内容与该提交一致 |
+| 发布源码 | tag `v0.1.0`（提交 `c0ea41b`） | mooncakes 0.1.0 的打包内容与该提交一致 |
 | mooncakes | `sundaysebasidian-byte/moonbean@0.1.0` | 包内容固定，不随 main 变化 |
 | Pages | 最近一次推送到 main 的构建 | [`pages.yml`](.github/workflows/pages.yml) 每次 push 到 main 都会重新构建，可能领先于 0.1.0 |
+
+当前工作树准备 0.1.1，仅本地提交，尚未发布；上表的 mooncakes 0.1.0 与线上 Pages 不包含本轮变更。
 
 定位发布提交：`git rev-list -n 1 v0.1.0`。下面三条命令分别复现三个面：
 
@@ -298,20 +300,21 @@ python3 scripts/bql_differential.py
 python3 scripts/cli_smoke.py
 ```
 
-oracle 脚本只在临时 virtualenv 里安装 GPL 的 beancount 和 beanquery，不链接、不嵌入、不分发。GitHub [CI](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096814) 已通过，包括 Ubuntu、macOS、Windows、Playground 和 oracle；[Pages](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096811) 已部署。线上资源与本地构建 SHA-256 一致，下载后的引擎 29/29 冒烟检查通过。
+oracle 脚本只在临时 virtualenv 里安装 GPL 的 beancount 和 beanquery，不链接、不嵌入、不分发。GitHub [CI](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096814) 已通过，包括 Ubuntu、macOS、Windows、Playground 和 oracle；[Pages](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096811) 已部署。本轮改动前曾核验线上资源与当时本地构建 SHA-256 一致，下载后的引擎 29/29 冒烟检查通过；本轮 0.1.1 仅本地验证，尚未部署。
 
 ## 性能
 
-native release，100,000 笔交易，5 次取中位数（复现方法和优化前后对比见 [docs/performance.md](docs/performance.md)）：
+Apple M4 / macOS 27.2，native release，固定种子 20261101 的 100,000 笔交易，warmup 1 次后测量 7 次取中位数（复现方法和优化前后对比见 [docs/performance.md](docs/performance.md)）：
 
 | 操作 | 耗时 |
 | --- | --- |
-| `check`（解析 + 校验 + booking） | 0.589 s |
-| `bal`（realization + 试算平衡） | 0.637 s |
-| BQL 聚合查询 | 0.973 s |
+| `check`（解析 + 校验 + booking） | 0.564 s |
+| `bal`（realization + 试算平衡） | 0.603 s |
+| BQL 聚合查询 | 0.665 s |
+| `fmt` | 0.235 s |
 
 ```sh
-./scripts/bench.sh
+python3 scripts/performance.py --compare-decimal --sample
 ```
 
 这些数字来自单机测量，只能看量级；BQL 查询的耗时在不同次测量之间有波动，细节见 `docs/performance.md`。
@@ -358,4 +361,4 @@ moon info && git diff --exit-code
 ./scripts/build-web.sh && node web/smoke.mjs && node web/dom-smoke.mjs
 ```
 
-`moon test --target all` 覆盖 wasm、wasm-gc、js、native 四个后端，每个后端 108 个测试。`web/dom-smoke.mjs` 需要本机装有 Chrome（可用环境变量 `CHROME` 指定路径）。CI 在 ubuntu、macOS、Windows 上运行同一组命令，另有 playground 和 oracle 两个 job。
+`moon test --target all` 覆盖 wasm、wasm-gc、js、native 四个后端，每个后端 110 个测试。`web/dom-smoke.mjs` 需要本机装有 Chrome（可用环境变量 `CHROME` 指定路径）。CI 在 ubuntu、macOS、Windows 上运行同一组命令，另有 playground 和 oracle 两个 job。

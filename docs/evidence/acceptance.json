@@ -1,0 +1,107 @@
+[
+  {
+    "command": [
+      "moon",
+      "check",
+      "--deny-warn",
+      "--target",
+      "all"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "moon",
+      "test",
+      "--target",
+      "all"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "moon",
+      "fmt",
+      "--check"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "moon",
+      "info"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--exit-code",
+      "--",
+      "*.mbti"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "scripts/oracle.sh"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "scripts/migration_smoke.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "scripts/build-web.sh"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "web/smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "node",
+      "web/dom-smoke.mjs"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "scripts/random_differential.py",
+      "--seed",
+      "7",
+      "--count",
+      "1000",
+      "--out",
+      ".oracle-cache/differential/seed-7-011",
+      "--allow-known-extensions"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "scripts/random_differential.py",
+      "--seed",
+      "20261101",
+      "--count",
+      "1000",
+      "--out",
+      ".oracle-cache/differential/seed-20261101-011",
+      "--allow-known-extensions"
+    ],
+    "exit_code": 0
+  }
+]
