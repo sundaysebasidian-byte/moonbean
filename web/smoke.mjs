@@ -52,7 +52,9 @@ test("check: the example ledger is valid", () => {
   assert.equal(res.ok, true);
   assert.equal(res.valid, true);
   assert.deepEqual(res.errors, []);
-  assert.deepEqual(res.warnings, []);
+  assert.deepEqual(res.warnings.map(({ code, line }) => ({ code, line })), [
+    { code: "validation.document_unchecked", line: 520 },
+  ]);
   assert.equal(res.title, "MoonBean household ledger 2024");
   assert.deepEqual(res.operating_currencies, ["CNY"]);
   assert.equal(res.entries, 165);

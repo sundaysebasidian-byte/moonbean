@@ -401,3 +401,15 @@ test "finds exact duplicate transactions on request" {
     content="false",
   )
 }
+
+///|
+test "migration document warns that receipt storage is unchecked" {
+  let v = validated(
+    "2024-01-01 open Assets:Cash USD\n" +
+    "2024-01-02 document Assets:Cash \"missing-receipt.pdf\"\n",
+  )
+  assert_eq(v.errors.length(), 0)
+  assert_eq(v.warnings.length(), 1)
+  assert_eq(v.warnings[0].code, "validation.document_unchecked")
+  assert_eq(v.warnings[0].loc.line, 2)
+}

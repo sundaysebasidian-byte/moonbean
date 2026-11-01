@@ -312,3 +312,30 @@ test "FIFO reduction preserves separate booked posting costs" {
   let journal = queried(source, "JOURNAL Assets:Stock")
   inspect(journal.rows.length(), content="4")
 }
+
+///|
+test "migration BQL boundaries carry codes and query locations" {
+  for
+    (text, expected) in [
+      (
+        "SELECT account FROM (SELECT account)", "unsupported query.unsupported.subquery at BQL:1:22",
+      ),
+      (
+        "SELECT account FROM postings JOIN postings", "unsupported query.unsupported.join at BQL:1:30",
+      ),
+      (
+        "SELECT account PIVOT currency", "unsupported query.unsupported.pivot at BQL:1:16",
+      ),
+      (
+        "SELECT account\nPIVOT currency", "unsupported query.unsupported.pivot at BQL:2:1",
+      ),
+    ] {
+    let result = queried(ledger_source(), text)
+    assert_eq(result.error, Some(expected))
+    assert_true(result.failure() is Some(@query.Unsupported(_)))
+  }
+  assert_true(queried(ledger_source(), "SELECT 'JOIN SELECT PIVOT'").is_ok())
+  assert_true(
+    queried(ledger_source(), "SELECT 'SELECT' WHERE narration = 'JOIN'").is_ok(),
+  )
+}

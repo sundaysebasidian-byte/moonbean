@@ -160,7 +160,8 @@ fn bql_number_token(raw : String) -> BTok {
 }
 
 ///|
-fn lex_bql(text : String) -> Array[BTok] {
+fn lex_bql(text : String, unsupported~ : Array[String] = []) -> Array[BTok] {
+  let mut selects = 0
   let tokens : Array[BTok] = []
   let mut i = 0
   let len = text.length()
@@ -186,6 +187,7 @@ fn lex_bql(text : String) -> Array[BTok] {
       continue
     }
     if bql_is_word_start(c) {
+      let start = i
       let sb = StringBuilder()
       while i < len {
         let ch = match bql_char(text, i) {
@@ -199,7 +201,41 @@ fn lex_bql(text : String) -> Array[BTok] {
           break
         }
       }
-      tokens.push(BWord(sb.to_string()))
+      let word = sb.to_string()
+      let kind = match word.to_lower() {
+        "select" => {
+          selects = selects + 1
+          if selects > 1 {
+            "subquery"
+          } else {
+            ""
+          }
+        }
+        "join" => "join"
+        "pivot" => "pivot"
+        _ => ""
+      }
+      if kind != "" {
+        let mut line = 1
+        let mut column = 1
+        for offset in 0..<start {
+          if bql_char(text, offset) == Some('\n') {
+            line = line + 1
+            column = 1
+          } else {
+            column = column + 1
+          }
+        }
+        unsupported.push(
+          "unsupported query.unsupported." +
+          kind +
+          " at BQL:" +
+          line.to_string() +
+          ":" +
+          column.to_string(),
+        )
+      }
+      tokens.push(BWord(word))
       continue
     }
     let next = if i + 1 < len { bql_char(text, i + 1) } else { None }

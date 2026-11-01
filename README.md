@@ -13,10 +13,37 @@
 
 ## 适合谁用
 
-- 用 Beancount 或 Fava 记账的个人和小企业：同一份账本，MoonBean 和 `bean-check` 报出的错误类别、行号和最终余额一致（见[一致性测试](#一致性测试)）。
+- 用 Beancount 或 Fava 记账的个人和小企业：在已验证范围内比较错误类别、行号和最终余额（见[一致性测试](#一致性测试)和下方迁移边界）。
 - 想在应用里内嵌账本能力的 MoonBit 开发者：不需要文件系统和外部进程，`include` 由宿主通过回调提供。
 - 需要离线运行的场景：浏览器、wasm 宿主、没有 Python 环境的机器。
 - 想读代码学习的人：parser、decimal、booking、BQL 按包拆开，可以单独复用。
+
+## 从 Beancount 迁移
+
+可直接使用的范围是无需 Python 插件生成条目、账户已显式声明、仅依赖已实现指令和 booking 方法的纯文本账本，以及本文和 [conformance](docs/conformance.md) 列出的 BQL 子集。58 份自编账本的对比不是对任意 Beancount/Fava 账本的保证；Fava 的界面、扩展、上传附件和 Python 插件运行环境不在本引擎内。迁移前运行 `moonbean check FILE`，并审阅警告和报表。
+
+[迁移示例](examples/migration/) 均为本项目独立编写，确定行为如下：
+
+| 示例 | 行为、位置与原因 |
+| --- | --- |
+| `plugin.beancount` | 第 1 行 `validation.plugin` 警告；插件只记录、不执行，check 退出 0。依赖自动开户、自动生成条目等插件效果的账本须先显式写出这些数据，否则还会有账户/余额错误。 |
+| `document.beancount` | 第 2 行 `validation.document_unchecked` 警告；保留附件路径并校验账户，但不检查文件是否存在、内容和访问权限。缺失收据不导致 check 失败；这与 Beancount 文件检查有差异。 |
+| `include.beancount` | 第 1 行正常加载同目录的 `document.beancount`（附件警告显示为展开文本的 `include.beancount:2`）；第 2 行找不到文件，`include.missing`，退出 1。native CLI 解析相对路径；库须用 `check_expanded` 提供读取回调，浏览器不会自动读取磁盘。 |
+| `cycle.beancount` | 第 1 行 `include.cycle`，退出 1；规范化后的循环路径不会重复加载。 |
+| `queries.beancount` | 第 6–8 行分别保存子查询、JOIN、PIVOT。query 指令作为命名文本保留，check 不执行它；显式运行下列查询时均退出 1。 |
+
+```sh
+moonbean query examples/migration/queries.beancount 'SELECT account FROM (SELECT account)'
+# unsupported query.unsupported.subquery at BQL:1:22
+moonbean query examples/migration/queries.beancount 'SELECT account FROM postings JOIN postings'
+# unsupported query.unsupported.join at BQL:1:30
+moonbean query examples/migration/queries.beancount 'SELECT account PIVOT currency'
+# unsupported query.unsupported.pivot at BQL:1:16
+```
+
+include 失败的位置指向原始 include 指令；展开后普通校验诊断目前使用根文件名与展开文本行号，不能据此定位到子文件，这是迁移时需要注意的限制。
+
+BQL 位置相对于查询文本（从 1 开始的行与 UTF-16 列），不是保存它的账本行号；库的 `QueryResult.error` 保留上述错误码和位置，`failure()` 返回 `Unsupported`。不支持项须改写为已支持的单一 postings 查询，或继续在外部 beanquery/Fava 执行；不会近似执行子查询、JOIN 或 PIVOT。以上示例由 `python3 scripts/migration_smoke.py` 实测，原始输出见 [迁移证据](docs/evidence/migration.json)。
 
 ## Playground
 

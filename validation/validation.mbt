@@ -1172,9 +1172,16 @@ pub fn validate_ledger(ledger : @ast.Ledger) -> ValidatedLedger {
       DTransaction(txn) => process_transaction(ctx, entry, txn)
       DNote(note) =>
         check_account(ctx, note.account, entry.date, entry.loc, false) |> ignore
-      DDocument(document) =>
+      DDocument(document) => {
         check_account(ctx, document.account, entry.date, entry.loc, false)
         |> ignore
+        warning(
+          ctx,
+          "validation.document_unchecked",
+          "Document is metadata only; file existence and contents are not checked",
+          entry.loc,
+        )
+      }
       DCommodity(_) | DPrice(_) | DEvent(_) | DQuery(_) | DCustom(_) => ()
     }
     ctx.entries.push(entry)

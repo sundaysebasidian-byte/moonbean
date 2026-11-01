@@ -1,0 +1,48 @@
+[
+  {
+    "file": "plugin.beancount",
+    "status": 0,
+    "diagnostics": "warning: examples/migration/plugin.beancount:1: validation.plugin: Plugin 'beancount.plugins.auto_accounts' is not supported and will be ignored\n"
+  },
+  {
+    "file": "document.beancount",
+    "status": 0,
+    "diagnostics": "warning: examples/migration/document.beancount:2: validation.document_unchecked: Document is metadata only; file existence and contents are not checked\n"
+  },
+  {
+    "file": "include.beancount",
+    "status": 1,
+    "diagnostics": "warning: examples/migration/include.beancount:2: validation.document_unchecked: Document is metadata only; file existence and contents are not checked\nexamples/migration/include.beancount:2: include.missing: Cannot read include: examples/migration/not-present.beancount\n"
+  },
+  {
+    "file": "cycle.beancount",
+    "status": 1,
+    "diagnostics": "examples/migration/cycle.beancount:1: include.cycle: Include cycle: examples/migration/cycle.beancount -> examples/migration/cycle.beancount\n"
+  },
+  {
+    "file": "queries.beancount",
+    "status": 0,
+    "diagnostics": ""
+  },
+  {
+    "file": "queries.beancount",
+    "directive_line": 6,
+    "query": "SELECT account FROM (SELECT account)",
+    "status": 1,
+    "error": "ERROR: unsupported query.unsupported.subquery at BQL:1:22\n\n"
+  },
+  {
+    "file": "queries.beancount",
+    "directive_line": 7,
+    "query": "SELECT account FROM postings JOIN postings",
+    "status": 1,
+    "error": "ERROR: unsupported query.unsupported.join at BQL:1:30\n\n"
+  },
+  {
+    "file": "queries.beancount",
+    "directive_line": 8,
+    "query": "SELECT account PIVOT currency",
+    "status": 1,
+    "error": "ERROR: unsupported query.unsupported.pivot at BQL:1:16\n\n"
+  }
+]

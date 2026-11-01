@@ -1,0 +1,2 @@
+plugin "beancount.plugins.auto_accounts"
+2024-01-01 open Assets:Cash USD

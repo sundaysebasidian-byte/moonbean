@@ -703,7 +703,12 @@ fn parse_journal(parser : QueryParser) -> ParsedQuery {
 
 ///|
 fn parse_query(text : String) -> ParsedQuery {
-  let parser = QueryParser::new(lex_bql(text))
+  let unsupported : Array[String] = []
+  let tokens = lex_bql(text, unsupported~)
+  if unsupported.length() > 0 {
+    return PqError(unsupported[0])
+  }
+  let parser = QueryParser::new(tokens)
   if parser.at_end() {
     return PqError("empty query")
   }
