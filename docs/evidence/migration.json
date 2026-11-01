@@ -1,8 +1,8 @@
 [
   {
     "file": "plugin.beancount",
-    "status": 0,
-    "diagnostics": "warning: examples/migration/plugin.beancount:1: validation.plugin: Plugin 'beancount.plugins.auto_accounts' is not supported and will be ignored\n"
+    "status": 1,
+    "diagnostics": "warning: examples/migration/plugin.beancount:1: validation.plugin: Plugin 'beancount.plugins.auto_accounts' is not supported and will be ignored\nexamples/migration/plugin.beancount:2: validation.unknown_account: Invalid reference to unknown account 'Assets:Cash'\nexamples/migration/plugin.beancount:2: validation.unknown_account: Invalid reference to unknown account 'Expenses:Food'\n"
   },
   {
     "file": "document.beancount",
@@ -12,7 +12,7 @@
   {
     "file": "include.beancount",
     "status": 1,
-    "diagnostics": "warning: examples/migration/include.beancount:2: validation.document_unchecked: Document is metadata only; file existence and contents are not checked\nexamples/migration/include.beancount:2: include.missing: Cannot read include: examples/migration/not-present.beancount\n"
+    "diagnostics": "warning: examples/migration/document.beancount:2: validation.document_unchecked: Document is metadata only; file existence and contents are not checked\nexamples/migration/include.beancount:2: include.missing: Cannot read include: examples/migration/not-present.beancount\n"
   },
   {
     "file": "cycle.beancount",
@@ -44,5 +44,29 @@
     "query": "SELECT account PIVOT currency",
     "status": 1,
     "error": "ERROR: unsupported query.unsupported.pivot at BQL:1:16\n\n"
+  },
+  {
+    "file": "queries.beancount",
+    "query": "SELECT '\ud83d\ude00'",
+    "status": 0,
+    "output": "\"\ud83d\ude00\"\n----\n\ud83d\ude00  \n\ud83d\ude00  \n\n"
+  },
+  {
+    "file": "queries.beancount",
+    "query": "SELECT '\ud83d\ude00' JOIN x",
+    "status": 1,
+    "output": "ERROR: unsupported query.unsupported.join at BQL:1:13\n\n"
+  },
+  {
+    "file": "queries.beancount",
+    "query": "SELECT '\u4f60' JOIN x",
+    "status": 1,
+    "output": "ERROR: unsupported query.unsupported.join at BQL:1:12\n\n"
+  },
+  {
+    "file": "queries.beancount",
+    "query": "SELECT 1 \ud83d\ude00 JOIN x",
+    "status": 1,
+    "output": "ERROR: lexical query.invalid_character at BQL:1:10\n\n"
   }
 ]

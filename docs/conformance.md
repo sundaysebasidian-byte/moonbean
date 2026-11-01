@@ -192,7 +192,7 @@ three price-path scenarios: 25 scenario records and 144 checks, all passing.
 Still outside the engine: subqueries, JOIN, PIVOT, plugins, and BQL `CLOSE ON`
 conversion entries (the report layer closes and carries earnings instead).
 
-Backend checks run on native, js, wasm-gc and wasm (110 tests each); the
+Backend checks run on native, js, wasm-gc and wasm (112 tests each); the
 browser bundle has 29 node checks and 8 headless-Chrome checks (`web/smoke.mjs`,
 `web/dom-smoke.mjs`). Oracle comparison of the 58 original ledgers is unchanged
 at 56 of 56, with two extensions.

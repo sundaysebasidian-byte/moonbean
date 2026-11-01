@@ -2,6 +2,11 @@
 
 ## 0.1.1
 
+- Preserve per-line include origins in `ExpandedSource.source_map`; `check_source` and `syntax.parse_source` accept an optional source map. Library diagnostics, CLI text and JSON retain original file/line locations.
+- Preserve non-BMP BQL string characters and reject non-BMP characters outside strings with positioned lexical errors; trailing unsupported clauses cannot be silently discarded.
+- Make the plugin migration example require automatic account creation and fail explicitly without plugin execution.
+- Resolve performance output paths from the repository root and retain relative command paths in evidence.
+
 - Retain seeded 100k timings, environment/input fingerprints, historical arrays and query CPU profiles; compare the historical decimal parser in an isolated source snapshot.
 - Add independently authored migration examples and CLI checks for plugins, documents, includes and unsupported BQL.
 - Report subquery/JOIN/PIVOT failures with stable codes and query-relative locations; warn explicitly that document files are unchecked.
@@ -11,7 +16,7 @@
 - CLI bs/is/register/dups, single operating currency and report display precision.
 - Single-buffer decimal parsing; host API docs and typed query failure categories.
 - Windows CI path/shell correction, pinned oracle bootstrap and differential jobs.
-- 110 tests on native, js, wasm-gc and wasm; remaining boundaries in conformance/performance reports.
+- 112 tests on native, js, wasm-gc and wasm; remaining boundaries in conformance/performance reports.
 - Browser playground (`playground/` JS exports, static page in `web/`) with a Pages workflow, a node smoke test and a headless-Chrome check that ledger text never becomes markup.
 - Playground shows the engine's own totals, marks incomplete currency conversion and reports whether the balance sheet balances.
 - Booked lot postings are kept whole across BQL, `JOURNAL`, register and JSON export; a reduction spanning lots is several rows.

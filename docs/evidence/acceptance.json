@@ -52,7 +52,42 @@
   {
     "command": [
       "python3",
+      "scripts/report_differential.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "scripts/bql_differential.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "scripts/include_smoke.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
       "scripts/migration_smoke.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
+      "scripts/cli_smoke.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      ".oracle-venv/bin/bean-check",
+      "examples/migration/plugin.beancount"
     ],
     "exit_code": 0
   },
@@ -79,14 +114,28 @@
   {
     "command": [
       "python3",
+      "scripts/performance.py",
+      "--count",
+      "100",
+      "--runs",
+      "5",
+      "--out",
+      ".oracle-cache/source-locations/performance",
+      "--compare-decimal"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "python3",
       "scripts/random_differential.py",
       "--seed",
       "7",
       "--count",
       "1000",
+      "--allow-known-extensions",
       "--out",
-      ".oracle-cache/differential/seed-7-011",
-      "--allow-known-extensions"
+      ".oracle-cache/source-locations/random-7"
     ],
     "exit_code": 0
   },
@@ -98,9 +147,9 @@
       "20261101",
       "--count",
       "1000",
+      "--allow-known-extensions",
       "--out",
-      ".oracle-cache/differential/seed-20261101-011",
-      "--allow-known-extensions"
+      ".oracle-cache/source-locations/random-20261101"
     ],
     "exit_code": 0
   }

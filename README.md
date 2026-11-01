@@ -26,9 +26,9 @@
 
 | 示例 | 行为、位置与原因 |
 | --- | --- |
-| `plugin.beancount` | 第 1 行 `validation.plugin` 警告；插件只记录、不执行，check 退出 0。依赖自动开户、自动生成条目等插件效果的账本须先显式写出这些数据，否则还会有账户/余额错误。 |
+| `plugin.beancount` | 第 1 行 `validation.plugin` 警告；插件只记录、不执行；第 2 行交易的两个未声明账户各报 `validation.unknown_account`，check 退出 1。依赖自动开户、自动生成条目等插件效果的账本须先显式写出这些数据，否则还会有账户/余额错误。 |
 | `document.beancount` | 第 2 行 `validation.document_unchecked` 警告；保留附件路径并校验账户，但不检查文件是否存在、内容和访问权限。缺失收据不导致 check 失败；这与 Beancount 文件检查有差异。 |
-| `include.beancount` | 第 1 行正常加载同目录的 `document.beancount`（附件警告显示为展开文本的 `include.beancount:2`）；第 2 行找不到文件，`include.missing`，退出 1。native CLI 解析相对路径；库须用 `check_expanded` 提供读取回调，浏览器不会自动读取磁盘。 |
+| `include.beancount` | 第 1 行正常加载同目录的 `document.beancount`（附件警告指向 `document.beancount:2`）；第 2 行找不到文件，`include.missing`，退出 1。native CLI 解析相对路径；库须用 `check_expanded` 提供读取回调，浏览器不会自动读取磁盘。 |
 | `cycle.beancount` | 第 1 行 `include.cycle`，退出 1；规范化后的循环路径不会重复加载。 |
 | `queries.beancount` | 第 6–8 行分别保存子查询、JOIN、PIVOT。query 指令作为命名文本保留，check 不执行它；显式运行下列查询时均退出 1。 |
 
@@ -41,7 +41,7 @@ moonbean query examples/migration/queries.beancount 'SELECT account PIVOT curren
 # unsupported query.unsupported.pivot at BQL:1:16
 ```
 
-include 失败的位置指向原始 include 指令；展开后普通校验诊断目前使用根文件名与展开文本行号，不能据此定位到子文件，这是迁移时需要注意的限制。
+include 展开保留每行的源文件和行号；诊断指向原始语句，包括多级 include 中的语句。
 
 BQL 位置相对于查询文本（从 1 开始的行与 UTF-16 列），不是保存它的账本行号；库的 `QueryResult.error` 保留上述错误码和位置，`failure()` 返回 `Unsupported`。不支持项须改写为已支持的单一 postings 查询，或继续在外部 beanquery/Fava 执行；不会近似执行子查询、JOIN 或 PIVOT。以上示例由 `python3 scripts/migration_smoke.py` 实测，原始输出见 [迁移证据](docs/evidence/migration.json)。
 
@@ -78,7 +78,7 @@ node web/dom-smoke.mjs                # 无头 Chrome：账本里的恶意字符
 | mooncakes | `sundaysebasidian-byte/moonbean@0.1.0` | 包内容固定，不随 main 变化 |
 | Pages | 最近一次推送到 main 的构建 | [`pages.yml`](.github/workflows/pages.yml) 每次 push 到 main 都会重新构建，可能领先于 0.1.0 |
 
-当前工作树准备 0.1.1，仅本地提交，尚未发布；上表的 mooncakes 0.1.0 与线上 Pages 不包含本轮变更。
+当前工作树准备 0.1.1，仅本地提交，尚未发布；上表的 mooncakes 0.1.0 与线上 Pages 不包含0.1.1 变更。
 
 定位发布提交：`git rev-list -n 1 v0.1.0`。下面三条命令分别复现三个面：
 
@@ -300,7 +300,7 @@ python3 scripts/bql_differential.py
 python3 scripts/cli_smoke.py
 ```
 
-oracle 脚本只在临时 virtualenv 里安装 GPL 的 beancount 和 beanquery，不链接、不嵌入、不分发。GitHub [CI](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096814) 已通过，包括 Ubuntu、macOS、Windows、Playground 和 oracle；[Pages](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096811) 已部署。本轮改动前曾核验线上资源与当时本地构建 SHA-256 一致，下载后的引擎 29/29 冒烟检查通过；本轮 0.1.1 仅本地验证，尚未部署。
+oracle 脚本只在临时 virtualenv 里安装 GPL 的 beancount 和 beanquery，不链接、不嵌入、不分发。GitHub [CI](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096814) 已通过，包括 Ubuntu、macOS、Windows、Playground 和 oracle；[Pages](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096811) 已部署。链接所示 Pages 构建的线上资源曾与对应本地构建 SHA-256 核验一致，下载后的引擎 29/29 冒烟检查通过；0.1.1 仅本地验证，尚未部署。
 
 ## 性能
 
@@ -361,4 +361,4 @@ moon info && git diff --exit-code
 ./scripts/build-web.sh && node web/smoke.mjs && node web/dom-smoke.mjs
 ```
 
-`moon test --target all` 覆盖 wasm、wasm-gc、js、native 四个后端，每个后端 110 个测试。`web/dom-smoke.mjs` 需要本机装有 Chrome（可用环境变量 `CHROME` 指定路径）。CI 在 ubuntu、macOS、Windows 上运行同一组命令，另有 playground 和 oracle 两个 job。
+`moon test --target all` 覆盖 wasm、wasm-gc、js、native 四个后端，每个后端 112 个测试。`web/dom-smoke.mjs` 需要本机装有 Chrome（可用环境变量 `CHROME` 指定路径）。CI 在 ubuntu、macOS、Windows 上运行同一组命令，另有 playground 和 oracle 两个 job。

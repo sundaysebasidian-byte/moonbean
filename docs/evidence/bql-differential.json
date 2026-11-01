@@ -1,0 +1,62 @@
+[
+  {
+    "query": "BALANCES AT units FROM CLOSE ON 2024-03-01",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "BALANCES AT units FROM OPEN ON 2024-02-01 CLOSE ON 2024-06-01",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "BALANCES AT cost FROM CLOSE ON 2024-03-01",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "BALANCES AT cost FROM OPEN ON 2024-02-01 CLOSE ON 2024-06-01",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account, count(*) GROUP BY account HAVING count(*) > 1 ORDER BY account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account, count(*) * 2 + 1 GROUP BY account HAVING count(*) >= 1 ORDER BY account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account WHERE account ~ '^assets:' ORDER BY account LIMIT 3",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account WHERE account ~ '(Income|Expenses):' ORDER BY account LIMIT 3",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT tags, links WHERE date = 2024-01-03 ORDER BY account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta('receipt'), meta('note') WHERE date = 2024-01-03 ORDER BY account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT 1+2*3, (1+2)*3, -2+5, 6/4 LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(date)-2000, month(date)*2 ORDER BY date, account LIMIT 4",
+    "ok": true,
+    "detail": ""
+  }
+]

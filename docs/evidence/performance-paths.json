@@ -1,0 +1,208 @@
+{
+  "command": [
+    "python3",
+    "scripts/performance.py",
+    "--count",
+    "100",
+    "--runs",
+    "5",
+    "--out",
+    ".oracle-cache/source-locations/performance",
+    "--compare-decimal"
+  ],
+  "result": {
+    "timestamp": "2026-11-01T06:34:10.590191+00:00",
+    "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+    "cpu": "Apple M4",
+    "moon": "moon 0.1.20261028 (e1e1f15 2026-10-28) ~/.moon/bin/moon\nmoonc v0.10.18+6c83a7f62 (2026-10-28) ~/.moon/bin/moonc\nmoonrun 0.1.20261028 (e1e1f15 2026-10-28) ~/.moon/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg\n",
+    "python": "3.14.6",
+    "count": 100,
+    "seed": 20261101,
+    "runs": 5,
+    "warmups": 1,
+    "ledger_sha256": "0e041174b64d67792498cf024280623a00a49df8d166dcbe7e2648e665eb057f",
+    "ledger_bytes": 7830,
+    "executable_sha256": "892a9c4e1d566157441134a490cfb42ba4ec8645a543e797bb4a7b8295c3ec99",
+    "comparison": {
+      "base_head": "f5178d94a91251b10788e76d9abb55d9b44dd9fa",
+      "decimal_ref": "e7c98b1:decimal/decimal.mbt",
+      "decimal_sha256": "8d3eb163d7f16efa594792b4c21188e0c458c394246359aea5d5eee9fc6f2f79",
+      "note": "HEAD plus tracked working edits; only historical decimal parser substituted; precision constant kept private"
+    },
+    "measurements": {
+      "check": {
+        "command": [
+          "_build/native/release/build/cmd/main/main.exe",
+          "check",
+          ".oracle-cache/source-locations/performance/ledger.beancount"
+        ],
+        "seconds": [
+          0.008638208004413173,
+          0.008255333988927305,
+          0.008462625002721325,
+          0.007164916998590343,
+          0.008404959007748403
+        ],
+        "median": 0.008404959007748403,
+        "min": 0.007164916998590343,
+        "max": 0.008638208004413173
+      },
+      "realize": {
+        "command": [
+          "_build/native/release/build/cmd/main/main.exe",
+          "bal",
+          ".oracle-cache/source-locations/performance/ledger.beancount"
+        ],
+        "seconds": [
+          0.008858415996655822,
+          0.007578582997666672,
+          0.012079541993443854,
+          0.010196999995969236,
+          0.008940458996221423
+        ],
+        "median": 0.008940458996221423,
+        "min": 0.007578582997666672,
+        "max": 0.012079541993443854
+      },
+      "query": {
+        "command": [
+          "_build/native/release/build/cmd/main/main.exe",
+          "query",
+          ".oracle-cache/source-locations/performance/ledger.beancount",
+          "SELECT account, sum(units) GROUP BY account ORDER BY account"
+        ],
+        "seconds": [
+          0.008818624992272817,
+          0.007179832988185808,
+          0.006752040993887931,
+          0.0072288329974981025,
+          0.008744582999497652
+        ],
+        "median": 0.0072288329974981025,
+        "min": 0.006752040993887931,
+        "max": 0.008818624992272817
+      },
+      "fmt": {
+        "command": [
+          "_build/native/release/build/cmd/main/main.exe",
+          "fmt",
+          ".oracle-cache/source-locations/performance/ledger.beancount"
+        ],
+        "seconds": [
+          0.007852334005292505,
+          0.006563083996297792,
+          0.006324082991341129,
+          0.009279417005018331,
+          0.008100749997538514
+        ],
+        "median": 0.007852334005292505,
+        "min": 0.006324082991341129,
+        "max": 0.009279417005018331
+      },
+      "query_old_decimal": {
+        "command": [
+          ".oracle-cache/performance-baseline-8f1fz36y/_build/native/release/build/cmd/main/main.exe",
+          "query",
+          ".oracle-cache/source-locations/performance/ledger.beancount",
+          "SELECT account, sum(units) GROUP BY account ORDER BY account"
+        ],
+        "seconds": [
+          0.008887208998203278,
+          0.008748790991376154,
+          0.008875375002389774,
+          0.008946458998252638,
+          0.008034791986574419
+        ],
+        "median": 0.008875375002389774,
+        "min": 0.008034791986574419,
+        "max": 0.008946458998252638
+      }
+    }
+  },
+  "outside_root_result": {
+    "timestamp": "2026-11-01T06:33:16.193799+00:00",
+    "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+    "cpu": "Apple M4",
+    "moon": "moon 0.1.20261028 (e1e1f15 2026-10-28) ~/.moon/bin/moon\nmoonc v0.10.18+6c83a7f62 (2026-10-28) ~/.moon/bin/moonc\nmoonrun 0.1.20261028 (e1e1f15 2026-10-28) ~/.moon/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg\n",
+    "python": "3.14.6",
+    "count": 10,
+    "seed": 20261101,
+    "runs": 5,
+    "warmups": 1,
+    "ledger_sha256": "1683bc2fd9f9694e360efa48ef5d5924751db0679cdb69c70751fa16525b39e0",
+    "ledger_bytes": 830,
+    "executable_sha256": "892a9c4e1d566157441134a490cfb42ba4ec8645a543e797bb4a7b8295c3ec99",
+    "comparison": null,
+    "measurements": {
+      "check": {
+        "command": [
+          "_build/native/release/build/cmd/main/main.exe",
+          "check",
+          ".oracle-cache/source-locations/performance-cwd/ledger.beancount"
+        ],
+        "seconds": [
+          0.00692124999477528,
+          0.007415250001940876,
+          0.006739375006873161,
+          0.008877083004335873,
+          0.0065270420018350706
+        ],
+        "median": 0.00692124999477528,
+        "min": 0.0065270420018350706,
+        "max": 0.008877083004335873
+      },
+      "realize": {
+        "command": [
+          "_build/native/release/build/cmd/main/main.exe",
+          "bal",
+          ".oracle-cache/source-locations/performance-cwd/ledger.beancount"
+        ],
+        "seconds": [
+          0.007068000006256625,
+          0.006588584001292475,
+          0.00728070898912847,
+          0.008823790994938463,
+          0.007264707994181663
+        ],
+        "median": 0.007264707994181663,
+        "min": 0.006588584001292475,
+        "max": 0.008823790994938463
+      },
+      "query": {
+        "command": [
+          "_build/native/release/build/cmd/main/main.exe",
+          "query",
+          ".oracle-cache/source-locations/performance-cwd/ledger.beancount",
+          "SELECT account, sum(units) GROUP BY account ORDER BY account"
+        ],
+        "seconds": [
+          0.007952415995532647,
+          0.0063744159997440875,
+          0.007308290994842537,
+          0.006974208998144604,
+          0.007773042001645081
+        ],
+        "median": 0.007308290994842537,
+        "min": 0.0063744159997440875,
+        "max": 0.007952415995532647
+      },
+      "fmt": {
+        "command": [
+          "_build/native/release/build/cmd/main/main.exe",
+          "fmt",
+          ".oracle-cache/source-locations/performance-cwd/ledger.beancount"
+        ],
+        "seconds": [
+          0.010543875003349967,
+          0.008120290993247181,
+          0.005697790998965502,
+          0.006305584000074305,
+          0.0072768329991959035
+        ],
+        "median": 0.0072768329991959035,
+        "min": 0.005697790998965502,
+        "max": 0.010543875003349967
+      }
+    }
+  }
+}

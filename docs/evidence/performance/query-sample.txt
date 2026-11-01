@@ -1,6 +1,6 @@
 Analysis of sampling main.exe (pid 87517) every 1 millisecond
 Process:         main.exe [87517]
-Path:            /Users/USER/*/main.exe
+Path:            <host-path>
 Load Address:    0x100568000
 Identifier:      main.exe
 Version:         0
@@ -860,7 +860,7 @@ Sort by top of stack, same collapsed (when >= 5):
         moonbit_unsafe_val_array_blit  (in main.exe)        5
 
 Binary Images:
-       0x100568000 -        0x10065270b +main.exe (0) <E80CE2BC-72B7-3F8E-8521-40CB57C46B13> /Users/*/main.exe
+       0x100568000 -        0x10065270b +main.exe (0) <E80CE2BC-72B7-3F8E-8521-40CB57C46B13> <host-path>
        0x19f3d4000 -        0x19f423657  libobjc.A.dylib (973.1) <1FF743DE-675D-30F9-82EC-A3B6801513D7> /usr/lib/libobjc.A.dylib
        0x19f424000 -        0x19f42e23f  libsharedcache.dylib (0) <F3B27777-C26C-3C75-9BEA-64D0386BDCD8> /usr/lib/libsharedcache.dylib
        0x19f42f000 -        0x19f456d23  libdyld.dylib (27104) <7ADDD814-2C61-3D07-B047-E6FDD97BA360> /usr/lib/system/libdyld.dylib

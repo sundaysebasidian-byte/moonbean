@@ -6,13 +6,15 @@
   all samples, toolchain/CPU/OS/Python and input/executable SHA-256.
   `historical-*.json` preserve the recovered older arrays;
   `exploratory.json` preserves the first, less strictly controlled run.
-  Profiles and sampling status are separate from timings.
+  Profiles and sampling status are separate from timings. These performance
+  records and `source.json` describe source commit `c80306a`, before the include
+  source mapping and Unicode lexer fixes; they are retained historical measurements.
 - `oracle.log`: original 58 ledgers, 56 compared/passed, 2 extensions.
 - `random-*.log`: two 1000-ledger seeded runs, accepting only the exact
   known AVERAGE extension diagnostic delta. Full generated inputs/results
-  remain locally under `.oracle-cache/differential/seed-*-011/`.
-- `migration.json`: real native CLI diagnostics/statuses on five new ledgers
-  and three explicitly executed unsupported queries.
+  remain locally under `.oracle-cache/source-locations/random-*/`.
+- `migration.json`: real native CLI diagnostics/statuses on five migration ledgers,
+  three unsupported queries and four Unicode queries.
 - `web-build.log`, `web-smoke.log`, `web-dom-smoke.log`: build plus 29 Node
   checks and 8 headless Chrome checks. The first Node run exposed the newly
   intentional document warning; its expected warning was updated and rerun.

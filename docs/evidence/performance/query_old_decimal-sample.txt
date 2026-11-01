@@ -1,6 +1,6 @@
 Analysis of sampling main.exe (pid 87530) every 1 millisecond
 Process:         main.exe [87530]
-Path:            /Users/USER/*/main.exe
+Path:            <host-path>
 Load Address:    0x102b50000
 Identifier:      main.exe
 Version:         0
@@ -1046,7 +1046,7 @@ Sort by top of stack, same collapsed (when >= 5):
         _M0FP323sundaysebasidian_2dbyte8moonbean6syntax18parse__transaction  (in main.exe)        5
 
 Binary Images:
-       0x102b50000 -        0x102c3a84b +main.exe (0) <11C49C8E-50DB-3A2C-A1F4-7ED1B33DEDA8> /Users/*/main.exe
+       0x102b50000 -        0x102c3a84b +main.exe (0) <11C49C8E-50DB-3A2C-A1F4-7ED1B33DEDA8> <host-path>
        0x19f3d4000 -        0x19f423657  libobjc.A.dylib (973.1) <1FF743DE-675D-30F9-82EC-A3B6801513D7> /usr/lib/libobjc.A.dylib
        0x19f424000 -        0x19f42e23f  libsharedcache.dylib (0) <F3B27777-C26C-3C75-9BEA-64D0386BDCD8> /usr/lib/libsharedcache.dylib
        0x19f42f000 -        0x19f456d23  libdyld.dylib (27104) <7ADDD814-2C61-3D07-B047-E6FDD97BA360> /usr/lib/system/libdyld.dylib
