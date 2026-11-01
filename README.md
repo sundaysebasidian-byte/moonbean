@@ -45,7 +45,7 @@ node web/dom-smoke.mjs                # 无头 Chrome：账本里的恶意字符
 
 ## 安装
 
-发布到 mooncakes 后，在其他模块里添加依赖：
+在其他 MoonBit 模块里添加依赖：
 
 ```sh
 moon add sundaysebasidian-byte/moonbean
@@ -247,7 +247,7 @@ python3 scripts/bql_differential.py
 python3 scripts/cli_smoke.py
 ```
 
-oracle 脚本只在临时 virtualenv 里安装 GPL 的 beancount 和 beanquery，不链接、不嵌入、不分发。CI 配置了 oracle job，但还没有在 GitHub 上跑过。
+oracle 脚本只在临时 virtualenv 里安装 GPL 的 beancount 和 beanquery，不链接、不嵌入、不分发。GitHub [CI](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096814) 已通过，包括 Ubuntu、macOS、Windows、Playground 和 oracle；[Pages](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096811) 已部署。线上资源与本地构建 SHA-256 一致，下载后的引擎 29/29 冒烟检查通过。
 
 ## 性能
 

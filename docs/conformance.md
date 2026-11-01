@@ -237,4 +237,4 @@ https://www.moonbitlang.com/download . Windows explicitly uses pwsh and
 USERPROFILE instead of a hard-coded runner username. Oracle bootstrap pins
 pip 25.2, Beancount 3.2.3 and beanquery 0.2.0 with Python 3.12 in CI. The
 workflow runs random differential and extended BQL checks and uploads evidence.
-The workflows have not been executed on GitHub yet.
+The [GitHub CI run](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096814) passed on Ubuntu, macOS and Windows, including the playground, pinned oracle and both 1000-ledger differential seeds. [Pages deployment](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096811) also passed. Online assets match the local build by SHA-256; the downloaded engine passed all 29 smoke checks. Verified 2026-11-01.
