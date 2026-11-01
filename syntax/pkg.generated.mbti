@@ -10,7 +10,7 @@ pub fn is_valid_account(String) -> Bool
 
 pub fn is_valid_currency(String) -> Bool
 
-pub fn parse_source(String, String) -> @ast.Ledger
+pub fn parse_source(String, String, source_map? : Array[@ast.Loc]) -> @ast.Ledger
 
 pub fn tokenize(String) -> Array[Token]
 

@@ -339,3 +339,28 @@ test "migration BQL boundaries carry codes and query locations" {
     queried(ledger_source(), "SELECT 'SELECT' WHERE narration = 'JOIN'").is_ok(),
   )
 }
+
+///|
+test "non BMP strings survive and cannot hide trailing syntax" {
+  let result = queried(ledger_source(), "SELECT '😀x😀', 'a\\😀b'")
+  assert_true(result.is_ok())
+  assert_eq(result.rows[0][0].to_text(), "😀x😀")
+  assert_eq(result.rows[0][1].to_text(), "a😀b")
+  assert_eq(
+    queried(ledger_source(), "SELECT '😀' JOIN x").error,
+    Some("unsupported query.unsupported.join at BQL:1:13"),
+  )
+  for
+    (text, position) in [
+      ("SELECT 1 😀", "1:10"),
+      ("SELECT 1\n😀 JOIN x", "2:1"),
+      ("SELECT 😀 JOIN x", "1:8"),
+    ] {
+    let result = queried(ledger_source(), text)
+    assert_eq(
+      result.error,
+      Some("lexical query.invalid_character at BQL:" + position),
+    )
+    assert_true(result.failure() is Some(@query.Syntax(_)))
+  }
+}

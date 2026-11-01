@@ -11,7 +11,7 @@ import {
 // Values
 pub fn check_expanded(String, String, String, (String) -> String?) -> @validation.ValidatedLedger
 
-pub fn check_source(String, String) -> @validation.ValidatedLedger
+pub fn check_source(String, String, source_map? : Array[@ast.Loc]) -> @validation.ValidatedLedger
 
 pub fn diagnostic_text(@ast.Diagnostic) -> String
 
@@ -36,6 +36,7 @@ pub fn run_query(@validation.ValidatedLedger, String, at? : @ast.Date?) -> @quer
 // Types and methods
 pub(all) struct ExpandedSource {
   source : String
+  source_map : Array[@ast.Loc]
   missing : Array[String]
   errors : Array[@ast.Diagnostic]
 }
@@ -43,6 +44,7 @@ pub(all) struct ExpandedSource {
 pub struct IncludeExpander {
   frames : Array[IncludeFrame]
   output : Array[String]
+  source_map : Array[@ast.Loc]
   missing : Array[String]
   errors : Array[@ast.Diagnostic]
   mut pending : (String, String, @ast.Loc)?

@@ -155,7 +155,11 @@ async fn check_file(file : String) -> @validation.ValidatedLedger? {
         walker.provide(read_text(path))
       }
       let expanded = walker.finish()
-      let ledger = @moonbean.check_source(file, expanded.source)
+      let ledger = @moonbean.check_source(
+        file,
+        expanded.source,
+        source_map=expanded.source_map,
+      )
       ledger.errors.append(expanded.errors)
       Some(ledger)
     }

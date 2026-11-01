@@ -165,6 +165,7 @@ pub fn path_join(base : String, relative : String) -> String {
 /// Expanded text plus deterministic include failures. Repeated non-ancestor includes are allowed.
 pub(all) struct ExpandedSource {
   source : String
+  source_map : Array[@ast.Loc]
   missing : Array[String]
   errors : Array[@ast.Diagnostic]
 }
@@ -183,6 +184,7 @@ struct IncludeFrame {
 pub struct IncludeExpander {
   frames : Array[IncludeFrame]
   output : Array[String]
+  source_map : Array[@ast.Loc]
   missing : Array[String]
   errors : Array[@ast.Diagnostic]
   mut pending : (String, String, @ast.Loc)?
@@ -209,6 +211,7 @@ pub fn IncludeExpander::new(
       },
     ],
     output: [],
+    source_map: [],
     missing: [],
     errors: [],
     pending: None,
@@ -230,7 +233,10 @@ pub fn IncludeExpander::next(self : IncludeExpander) -> String? {
     let line = frame.lines[frame.index]
     frame.index += 1
     match include_target(line) {
-      None => self.output.push(line)
+      None => {
+        self.output.push(line)
+        self.source_map.push(@ast.Loc::new(frame.file, frame.index))
+      }
       Some(relative) => {
         let path = path_join(frame.base, relative)
         let loc = @ast.Loc::new(frame.file, frame.index)
@@ -280,6 +286,7 @@ pub fn IncludeExpander::provide(
       None => {
         self.missing.push(path)
         self.output.push(line)
+        self.source_map.push(loc)
         self.errors.push(
           @ast.Diagnostic::new(
             "include.missing",
@@ -297,6 +304,7 @@ pub fn IncludeExpander::provide(
 pub fn IncludeExpander::finish(self : IncludeExpander) -> ExpandedSource {
   {
     source: self.output.join("\n"),
+    source_map: self.source_map,
     missing: self.missing,
     errors: self.errors,
   }
@@ -322,8 +330,9 @@ pub fn expand_includes(
 pub fn check_source(
   file : String,
   source : String,
+  source_map~ : Array[@ast.Loc] = [],
 ) -> @validation.ValidatedLedger {
-  @validation.validate_ledger(@syntax.parse_source(file, source))
+  @validation.validate_ledger(@syntax.parse_source(file, source, source_map~))
 }
 
 ///|
@@ -335,7 +344,11 @@ pub fn check_expanded(
   read : (String) -> String?,
 ) -> @validation.ValidatedLedger {
   let expanded = expand_includes(source, base_dir, read, file~)
-  let ledger = check_source(file, expanded.source)
+  let ledger = check_source(
+    file,
+    expanded.source,
+    source_map=expanded.source_map,
+  )
   ledger.errors.append(expanded.errors)
   ledger
 }

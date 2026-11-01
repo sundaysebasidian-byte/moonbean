@@ -66,11 +66,11 @@ fn bql_read_string(text : String, start : Int32) -> (String, Int32) {
         other => other
       }
       sb.write_char(decoded)
-      i = i + 2
+      i = i + 1 + (if escaped.to_int() > 0xFFFF { 2 } else { 1 })
       continue
     }
     sb.write_char(c)
-    i = i + 1
+    i = i + (if c.to_int() > 0xFFFF { 2 } else { 1 })
   }
   (sb.to_string(), i)
 }
@@ -168,7 +168,15 @@ fn lex_bql(text : String, unsupported~ : Array[String] = []) -> Array[BTok] {
   while i < len {
     let c = match bql_char(text, i) {
       Some(c) => c
-      None => break
+      None => {
+        unsupported.push(bql_lex_error(text, i))
+        break
+      }
+    }
+    if c.to_int() > 0xFFFF {
+      unsupported.push(bql_lex_error(text, i))
+      i = i + 2
+      continue
     }
     if c.is_ascii_whitespace() {
       i = i + 1
@@ -260,4 +268,22 @@ fn lex_bql(text : String, unsupported~ : Array[String] = []) -> Array[BTok] {
   }
   tokens.push(BEof)
   tokens
+}
+
+///|
+fn bql_lex_error(text : String, index : Int32) -> String {
+  let mut line = 1
+  let mut column = 1
+  for offset in 0..<index {
+    if bql_char(text, offset) == Some('\n') {
+      line += 1
+      column = 1
+    } else {
+      column += 1
+    }
+  }
+  "lexical query.invalid_character at BQL:" +
+  line.to_string() +
+  ":" +
+  column.to_string()
 }

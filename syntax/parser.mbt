@@ -226,6 +226,7 @@ fn Cursor::take_string(self : Cursor) -> String? {
 ///|
 priv struct Parser {
   file : String
+  source_map : Array[@ast.Loc]
   lines : Array[String]
   mut index : Int32
   ledger : @ast.Ledger
@@ -234,18 +235,32 @@ priv struct Parser {
 }
 
 ///|
-fn Parser::new(file : String, source : String) -> Parser {
+fn Parser::new(
+  file : String,
+  source : String,
+  source_map : Array[@ast.Loc],
+) -> Parser {
   let lines = []
   for line in source.split("\n") {
     lines.push(view_to_string(line))
   }
   {
     file,
+    source_map,
     lines,
     index: 0,
     ledger: @ast.Ledger::new(),
     meta_stack: @ast.Meta::new(),
     tag_stack: [],
+  }
+}
+
+///|
+fn Parser::loc(self : Parser, line : Int32) -> @ast.Loc {
+  if line > 0 && line <= self.source_map.length() {
+    self.source_map[line - 1]
+  } else {
+    @ast.Loc::new(self.file, line)
   }
 }
 
@@ -256,9 +271,7 @@ fn Parser::error(
   code : String,
   message : String,
 ) -> Unit {
-  self.ledger.add_error(
-    @ast.Diagnostic::new(code, message, @ast.Loc::new(self.file, line)),
-  )
+  self.ledger.add_error(@ast.Diagnostic::new(code, message, self.loc(line)))
 }
 
 ///|
@@ -760,7 +773,7 @@ fn parse_posting(
   }
   let posting = @ast.Posting::new(account)
   posting.flag = flag
-  posting.loc = @ast.Loc::new(parser.file, line)
+  posting.loc = parser.loc(line)
   match cursor.kind() {
     Word(w) =>
       if looks_like_number(w) {
@@ -937,7 +950,7 @@ fn parse_transaction(
   }
   let entry = @ast.Entry::new(
     date,
-    @ast.Loc::new(parser.file, line),
+    parser.loc(line),
     @ast.Directive::DTransaction(txn),
   )
   entry.meta = merge_meta(parser.meta_stack, own_meta)
@@ -1008,7 +1021,7 @@ fn parse_open(
   let open : @ast.Open = { account, currencies, booking, }
   let entry = @ast.Entry::new(
     date,
-    @ast.Loc::new(parser.file, line),
+    parser.loc(line),
     @ast.Directive::DOpen(open),
   )
   entry.meta = parser.meta_stack.copy()
@@ -1052,7 +1065,7 @@ fn parse_close(
   let close : @ast.Close = { account, }
   let entry = @ast.Entry::new(
     date,
-    @ast.Loc::new(parser.file, line),
+    parser.loc(line),
     @ast.Directive::DClose(close),
   )
   entry.meta = parser.meta_stack.copy()
@@ -1094,7 +1107,7 @@ fn parse_commodity(
   let commodity : @ast.Commodity = { currency, }
   let entry = @ast.Entry::new(
     date,
-    @ast.Loc::new(parser.file, line),
+    parser.loc(line),
     @ast.Directive::DCommodity(commodity),
   )
   entry.meta = parser.meta_stack.copy()
@@ -1142,7 +1155,7 @@ fn parse_pad(
   }
   let entry = @ast.Entry::new(
     date,
-    @ast.Loc::new(parser.file, line),
+    parser.loc(line),
     @ast.Directive::DPad({ account, source_account: source, }),
   )
   entry.meta = parser.meta_stack.copy()
@@ -1230,7 +1243,7 @@ fn parse_balance(
   }
   let entry = @ast.Entry::new(
     date,
-    @ast.Loc::new(parser.file, line),
+    parser.loc(line),
     @ast.Directive::DBalance({
       account,
       amount: @ast.Amount::new(number, currency),
@@ -1279,7 +1292,7 @@ fn parse_price(
   }
   let entry = @ast.Entry::new(
     date,
-    @ast.Loc::new(parser.file, line),
+    parser.loc(line),
     @ast.Directive::DPrice({ currency, amount, }),
   )
   entry.meta = parser.meta_stack.copy()
@@ -1344,7 +1357,7 @@ fn parse_event(
     Some((event_type, description)) => {
       let entry = @ast.Entry::new(
         date,
-        @ast.Loc::new(parser.file, line),
+        parser.loc(line),
         @ast.Directive::DEvent({ event_type, description, }),
       )
       entry.meta = parser.meta_stack.copy()
@@ -1366,7 +1379,7 @@ fn parse_query(
     Some((name, query)) => {
       let entry = @ast.Entry::new(
         date,
-        @ast.Loc::new(parser.file, line),
+        parser.loc(line),
         @ast.Directive::DQuery({ name, query, }),
       )
       entry.meta = parser.meta_stack.copy()
@@ -1421,7 +1434,7 @@ fn parse_note(
   }
   let entry = @ast.Entry::new(
     date,
-    @ast.Loc::new(parser.file, line),
+    parser.loc(line),
     @ast.Directive::DNote({ account, comment, }),
   )
   entry.meta = parser.meta_stack.copy()
@@ -1469,7 +1482,7 @@ fn parse_document(
   parse_tags_and_links(cursor, tags, links)
   let entry = @ast.Entry::new(
     date,
-    @ast.Loc::new(parser.file, line),
+    parser.loc(line),
     @ast.Directive::DDocument({ account, filename, tags, links, }),
   )
   entry.meta = parser.meta_stack.copy()
@@ -1569,7 +1582,7 @@ fn parse_custom(
   }
   let entry = @ast.Entry::new(
     date,
-    @ast.Loc::new(parser.file, line),
+    parser.loc(line),
     @ast.Directive::DCustom({ custom_type, values, }),
   )
   entry.meta = parser.meta_stack.copy()
@@ -1726,11 +1739,7 @@ fn parse_plugin(parser : Parser, tokens : Array[Token], line : Int32) -> Unit {
       " at end of plugin directive",
     )
   }
-  parser.ledger.plugins.push({
-    name,
-    config,
-    loc: @ast.Loc::new(parser.file, line),
-  })
+  parser.ledger.plugins.push({ name, config, loc: parser.loc(line), })
 }
 
 ///|
@@ -1755,7 +1764,7 @@ fn parse_include(parser : Parser, tokens : Array[Token], line : Int32) -> Unit {
       " at end of include directive",
     )
   }
-  parser.ledger.includes.push((path, @ast.Loc::new(parser.file, line)))
+  parser.ledger.includes.push((path, parser.loc(line)))
 }
 
 ///|
@@ -1988,8 +1997,12 @@ fn parse_toplevel(parser : Parser, tokens : Array[Token], line : Int32) -> Unit 
 }
 
 ///|
-pub fn parse_source(file : String, source : String) -> @ast.Ledger {
-  let parser = Parser::new(file, source)
+pub fn parse_source(
+  file : String,
+  source : String,
+  source_map~ : Array[@ast.Loc] = [],
+) -> @ast.Ledger {
+  let parser = Parser::new(file, source, source_map)
   while parser.index < parser.lines.length() {
     let line = parser.lines[parser.index]
     let line_no = parser.index + 1

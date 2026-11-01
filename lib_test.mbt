@@ -191,3 +191,46 @@ test "include paths handle drive roots and relative root filenames" {
   })
   inspect(result.errors[0].code, content="include.cycle")
 }
+
+///|
+test "expanded diagnostics retain nested source locations and probe lines" {
+  let child = "2024-01-01 open Assets:Cash USD\n2024-01-02 note Assets:Cash \"kept\"\n2024-01-03 note Assets:Cash \"still\"\n2024-01-04 note Assets:Cash \"here\"\n2024-01-05 document Assets:Cash \"missing-receipt.pdf\"\n2024-01-06 balance Assets:Cash 1 USD"
+  for nested in [false, true] {
+    let files = { "docs/child": child, "docs/middle": "include \"child\"" }
+    let root = "2024-01-01 open Equity:Opening USD\ninclude \"" +
+      (if nested { "middle" } else { "child" }) +
+      "\"\ninclude \"not-present\""
+    let expanded = @moonbean.expand_includes(
+      root,
+      "docs",
+      fn(path) { files.get(path) },
+      file="docs/root",
+    )
+    assert_eq(expanded.source_map.length(), expanded.source.split("\n").count())
+    let plain = @moonbean.check_source("docs/root", expanded.source)
+    let ledger = @moonbean.check_expanded("docs/root", "docs", root, fn(path) {
+      files.get(path)
+    })
+    assert_eq(ledger.warnings.length(), plain.warnings.length())
+    assert_eq(ledger.errors.length(), plain.errors.length() + 1)
+    assert_eq(ledger.warnings[0].loc.file, "docs/child")
+    assert_eq(ledger.warnings[0].loc.line, 5)
+    assert_eq(ledger.errors[0].code, "validation.balance")
+    assert_eq(ledger.errors[0].loc.file, "docs/child")
+    assert_eq(ledger.errors[0].loc.line, 6)
+    assert_eq(ledger.errors[1].code, "include.missing")
+    assert_eq(ledger.errors[1].loc.file, "docs/root")
+    assert_eq(ledger.errors[1].loc.line, 3)
+    let json = @moonbean.export_json("docs/root", ledger)
+    assert_true(
+      json.contains(
+        "\"file\":\"docs/child\",\"line\":6,\"code\":\"validation.balance\"",
+      ),
+    )
+    assert_true(
+      json.contains(
+        "\"file\":\"docs/child\",\"line\":5,\"code\":\"validation.document_unchecked\"",
+      ),
+    )
+  }
+}
