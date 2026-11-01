@@ -3,7 +3,6 @@ _build/
 target/
 target
 .mooncakes/
-.moonagent/
 .oracle-venv/
 .oracle-cache/
 __pycache__/

@@ -52,7 +52,7 @@ commands['query'].append(query)
 comparison = None
 if a.compare_decimal:
     Path('.oracle-cache').mkdir(exist_ok=True)
-    baseline = Path(tempfile.mkdtemp(prefix='performance-baseline-', dir='.oracle-cache'))
+    baseline = Path(os.path.relpath(tempfile.mkdtemp(prefix='performance-baseline-', dir='.oracle-cache'), root))
     archive = subprocess.check_output(['git', 'archive', 'HEAD'])
     with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
         tar.extractall(baseline, filter='data')
