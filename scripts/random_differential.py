@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 import random
 import conformance as c
-import report_differential as review
+import report_differential as report_diff
 
 METHODS = ['STRICT', 'STRICT_WITH_SIZE', 'FIFO', 'LIFO', 'HIFO', 'NONE', 'AVERAGE']
 
@@ -94,12 +94,12 @@ def main():
         result = c.compare_ledger(str(Path(a.ours).resolve()), str(Path(a.oracle).resolve()), path, False)
         result.update(method=method, kind=kind, sha256=digest)
         if result['diagnostics'][0] and result['queries'] and result['queries'][0][0] != 'skip':
-            result['queries'].append(('posting-details',*review.compare_postings(str(Path(a.ours).resolve()),str(Path(a.oracle).resolve()),path)))
-            result['queries'].extend(review.compare_reports(str(Path(a.ours).resolve()),str(Path(a.oracle).resolve()),path))
+            result['queries'].append(('posting-details',*report_diff.compare_postings(str(Path(a.ours).resolve()),str(Path(a.oracle).resolve()),path)))
+            result['queries'].extend(report_diff.compare_reports(str(Path(a.ours).resolve()),str(Path(a.oracle).resolve()),path))
             # The explicit quote bridge makes the oracle's conversion route observable.
             source=Path(path).read_text()
             bridge=source.split('open Assets:Cash ')[1].splitlines()[0]
-            result['queries'].append(('price-path',*review.compare_market(str(Path(a.ours).resolve()),str(Path(a.oracle).resolve()),path,bridge,'JPY')))
+            result['queries'].append(('price-path',*report_diff.compare_market(str(Path(a.ours).resolve()),str(Path(a.oracle).resolve()),path,bridge,'JPY')))
         result['ok'] = c.format_result(result)[2]
         return result
     with ThreadPoolExecutor(max_workers=a.workers) as pool:

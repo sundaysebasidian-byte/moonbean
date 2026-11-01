@@ -9,7 +9,7 @@ exe = '_build/native/debug/build/cmd/main/main.exe'
 root = Path('examples/migration')
 records = []
 for file, status, diagnostics in [
-    ('plugin.beancount', 0, [('validation.plugin', 1)]),
+    ('plugin.beancount', 1, [('validation.plugin', 1), ('validation.unknown_account', 2), ('validation.unknown_account', 2)]),
     ('document.beancount', 0, [('validation.document_unchecked', 2)]),
     ('include.beancount', 1, [('include.missing', 2), ('validation.document_unchecked', 2)]),
     ('cycle.beancount', 1, [('include.cycle', 1)]),
@@ -18,7 +18,9 @@ for file, status, diagnostics in [
     proc = subprocess.run([exe, 'check', str(root / file)], text=True, capture_output=True)
     assert proc.returncode == status, (file, proc)
     for code, line in diagnostics:
-        assert f'{root / file}:{line}: {code}:' in proc.stderr, (file, proc.stderr)
+        diagnostic_file = 'document.beancount' if code == 'validation.document_unchecked' else file
+        assert f'{root / diagnostic_file}:{line}: {code}:' in proc.stderr, (file, proc.stderr)
+    assert proc.stderr.count('validation.unknown_account:') == (2 if file == 'plugin.beancount' else 0), proc.stderr
     records.append(dict(file=file, status=proc.returncode, diagnostics=proc.stderr))
 for line_number, line in enumerate((root / 'queries.beancount').read_text().splitlines(), 1):
     words = shlex.split(line)
@@ -30,5 +32,14 @@ for line_number, line in enumerate((root / 'queries.beancount').read_text().spli
         assert f'query.unsupported.{name} at BQL:1:{column}' in proc.stdout, proc.stdout
         records.append(dict(file='queries.beancount', directive_line=line_number, query=text,
                             status=proc.returncode, error=proc.stdout))
+for text, status, expected in [
+    ("SELECT '😀'", 0, '😀'),
+    ("SELECT '😀' JOIN x", 1, 'query.unsupported.join at BQL:1:13'),
+    ("SELECT '你' JOIN x", 1, 'query.unsupported.join at BQL:1:12'),
+    ("SELECT 1 😀 JOIN x", 1, 'query.invalid_character at BQL:1:10'),
+]:
+    proc = subprocess.run([exe, 'query', str(root / 'queries.beancount'), text], text=True, capture_output=True)
+    assert proc.returncode == status and expected in proc.stdout, proc
+    records.append(dict(file='queries.beancount', query=text, status=proc.returncode, output=proc.stdout))
 Path('docs/evidence/migration.json').write_text(json.dumps(records, indent=2) + '\n')
-print('Migration fixtures: 5 ledger checks, 3 unsupported queries PASS')
+print('Migration fixtures: 5 ledger checks, 3 unsupported queries, 4 Unicode queries PASS')

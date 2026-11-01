@@ -10,6 +10,8 @@ import hashlib
 import io
 import json
 import platform
+import os
+import re
 from pathlib import Path
 import random
 import shutil
@@ -29,7 +31,9 @@ p.add_argument('--sample', action='store_true')
 a = p.parse_args()
 if a.count < 1 or a.runs < 5:
     p.error('count must be positive; at least five measured runs required')
-out = Path(a.out).resolve()
+root = Path(__file__).resolve().parents[1]
+os.chdir(root)
+out = Path(os.path.relpath(a.out, root))
 out.mkdir(parents=True, exist_ok=True)
 ledger = out / 'ledger.beancount'
 rng = random.Random(a.seed)
@@ -39,7 +43,7 @@ with ledger.open('w') as f:
         cents = rng.randint(1, 10000)
         amount = f'{cents // 100}.{cents % 100:02d}'
         f.write(f'2024-01-02 * "Purchase {i}"\n  Assets:Cash -{amount} USD\n  Expenses:Food {amount} USD\n')
-exe = Path('_build/native/release/build/cmd/main/main.exe').resolve()
+exe = Path('_build/native/release/build/cmd/main/main.exe')
 subprocess.run(['moon', 'build', '--target', 'native', '--release'], check=True)
 query = 'SELECT account, sum(units) GROUP BY account ORDER BY account'
 commands = {name: [str(exe), command, str(ledger)] for name, command in
@@ -48,7 +52,7 @@ commands['query'].append(query)
 comparison = None
 if a.compare_decimal:
     Path('.oracle-cache').mkdir(exist_ok=True)
-    baseline = Path(tempfile.mkdtemp(prefix='performance-baseline-', dir='.oracle-cache')).resolve()
+    baseline = Path(tempfile.mkdtemp(prefix='performance-baseline-', dir='.oracle-cache'))
     archive = subprocess.check_output(['git', 'archive', 'HEAD'])
     with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
         tar.extractall(baseline, filter='data')
@@ -92,7 +96,12 @@ if a.sample:
         proc = subprocess.Popen(commands[name], stdout=subprocess.DEVNULL)
         sampled = subprocess.run(['/usr/bin/sample', str(proc.pid), '1', '1', '-file',
                                   str(out / f'{name}-sample.txt')], capture_output=True, text=True)
-        (out / f'{name}-sample-status.txt').write_text(sampled.stdout + sampled.stderr)
+        profile = out / f'{name}-sample.txt'
+        for destination, content in [(profile, profile.read_text() if profile.exists() else ''),
+                                     (out / f'{name}-sample-status.txt', sampled.stdout + sampled.stderr)]:
+            content = content.replace(str(root) + '/', '')
+            content = re.sub(r'/(?:Users|var/folders|private/tmp)/[^\s)]+', '<host-path>', content)
+            destination.write_text(content)
         if proc.wait() != 0 or sampled.returncode != 0:
             raise RuntimeError(f'{name} profile failed')
 result = dict(timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(),
