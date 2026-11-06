@@ -632,3 +632,82 @@ test "zero total price on zero units emits zero implicit price" {
     _ => fail("expected price")
   }
 }
+
+///|
+test "padding costed inventory reports exact errors only when a difference is needed" {
+  let header = "2024-01-01 open Assets:Stock\n2024-01-01 open Assets:Cash\n2024-01-01 open Equity:Opening\n2024-01-01 pad Assets:Stock Equity:Opening\n"
+  for
+    (units, cash, expected, target) in [
+      ("-1", "10", "-1 HOOL {10 USD, 2024-01-15}", "0"),
+      ("2", "-20", "2 HOOL {10 USD, 2024-01-15}", "5"),
+    ] {
+    let v = validated(
+      header +
+      "2024-01-15 * \"trade\"\n  Assets:Stock " +
+      units +
+      " HOOL {10 USD}\n  Assets:Cash " +
+      cash +
+      " USD\n2024-12-31 balance Assets:Stock " +
+      target +
+      " HOOL\n",
+    )
+    assert_eq(v.errors.length(), 1)
+    assert_eq(v.errors[0].code, "validation.pad")
+    assert_eq(
+      v.errors[0].message,
+      "Attempt to pad an entry with cost for balance: (" + expected + ")",
+    )
+    assert_eq(v.errors[0].loc.line, 8)
+    assert_eq(v.inventory("Assets:Stock").quantity("HOOL").to_string(), target)
+  }
+  let unused = validated(
+    header +
+    "2024-01-15 * \"buy\"\n  Assets:Stock 2 HOOL {10 USD}\n  Assets:Cash -20 USD\n2024-12-31 balance Assets:Stock 2 HOOL\n",
+  )
+  assert_eq(unused.errors.length(), 1)
+  assert_eq(unused.errors[0].message, "Unused Pad entry")
+  let plain = validated(
+    header +
+    "2024-01-15 * \"plain\"\n  Assets:Stock 2 USD\n  Assets:Cash -2 USD\n2024-12-31 balance Assets:Stock 5 USD\n",
+  )
+  assert_eq(plain.errors.length(), 0)
+}
+
+///|
+test "empty cost short openings infer the residual under every booking method" {
+  for
+    booking_method in [
+      "STRICT", "FIFO", "LIFO", "HIFO", "STRICT_WITH_SIZE", "AVERAGE", "NONE",
+    ] {
+    for spec in ["{}", "{USD}"] {
+      let v = validated(
+        "option \"booking_method\" \"" +
+        booking_method +
+        "\"\n2024-01-01 open Assets:Stock HOOL\n2024-01-01 open Assets:Cash USD\n2024-01-02 * \"sell\"\n  Assets:Stock -2 HOOL " +
+        spec +
+        "\n  Assets:Cash 200 USD\n",
+      )
+      assert_eq(v.errors.length(), 0)
+      assert_eq(
+        v.inventory("Assets:Stock").to_string(),
+        "-2 HOOL {100 USD, 2024-01-02}",
+      )
+    }
+  }
+}
+
+///|
+test "zero automatic residual postings are omitted in either round trip order" {
+  for
+    legs in [
+      "  Assets:Stock 2 HOOL {100 USD}\n  Assets:Stock -2 HOOL {100 USD}\n", "  Assets:Stock -2 HOOL {100 USD}\n  Assets:Stock 2 HOOL {100 USD}\n",
+    ] {
+    let v = validated(
+      "option \"booking_method\" \"FIFO\"\n2024-01-01 open Assets:Stock HOOL\n2024-01-01 open Assets:Cash USD\n2024-01-02 * \"round\"\n" +
+      legs +
+      "  Assets:Cash\n",
+    )
+    assert_eq(v.errors.length(), 0)
+    assert_eq(find_transaction(v, "round").unwrap().postings.length(), 2)
+  }
+}

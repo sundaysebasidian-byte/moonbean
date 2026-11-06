@@ -92,7 +92,7 @@ def classify_oracle(message):
         return "balance_currency"
     if "invalid currency" in text:
         return "currency"
-    if "unused pad" in text:
+    if "unused pad" in text or "attempt to pad an entry with cost" in text:
         return "pad"
     if "duplicate open" in text:
         return "duplicate_open"

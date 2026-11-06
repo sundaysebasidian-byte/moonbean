@@ -1,0 +1,47 @@
+{
+  "version": "0.2.0",
+  "check_all": "pass (--deny-warn)",
+  "fmt_check": "pass",
+  "moon_info": "pass; no .mbti differences",
+  "tests": {
+    "wasm": {
+      "total": 125,
+      "passed": 125,
+      "failed": 0
+    },
+    "wasm-gc": {
+      "total": 125,
+      "passed": 125,
+      "failed": 0
+    },
+    "js": {
+      "total": 125,
+      "passed": 125,
+      "failed": 0
+    },
+    "native": {
+      "total": 125,
+      "passed": 125,
+      "failed": 0
+    }
+  },
+  "ledgers": {
+    "total": 113,
+    "compared": 111,
+    "passed": 111,
+    "failed": 0,
+    "extensions": 2
+  },
+  "web": {
+    "build": "pass",
+    "node_checks": 29,
+    "dom_checks": 8
+  },
+  "baseline_new_regressions": {
+    "total": 14,
+    "failed_before": 12,
+    "failed_after": 0,
+    "controls": 2
+  },
+  "oracle": "beancount 3.2.3 / beanquery 0.2.0, external black-box only"
+}

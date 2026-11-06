@@ -1,0 +1,35 @@
+[
+  {
+    "ledger": "100-pad-costed-sale.beancount",
+    "oracle": {
+      "exit": 1,
+      "message": "Attempt to pad an entry with cost for balance: (-1 HOOL {10 USD, 2024-01-15})"
+    },
+    "moonbean": {
+      "exit": 1,
+      "message": "Attempt to pad an entry with cost for balance: (-1 HOOL {10 USD, 2024-01-15})"
+    }
+  },
+  {
+    "ledger": "101-pad-costed-buy.beancount",
+    "oracle": {
+      "exit": 1,
+      "message": "Attempt to pad an entry with cost for balance: (2 HOOL {10 USD, 2024-01-15})"
+    },
+    "moonbean": {
+      "exit": 1,
+      "message": "Attempt to pad an entry with cost for balance: (2 HOOL {10 USD, 2024-01-15})"
+    }
+  },
+  {
+    "ledger": "103-pad-costed-unused.beancount",
+    "oracle": {
+      "exit": 1,
+      "message": "Unused Pad entry"
+    },
+    "moonbean": {
+      "exit": 1,
+      "message": "Unused Pad entry"
+    }
+  }
+]

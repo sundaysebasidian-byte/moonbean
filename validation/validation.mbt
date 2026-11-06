@@ -588,6 +588,23 @@ fn process_balance(
         // A pad is only consumed when it actually inserts a padding entry.
         return
       }
+      for name in ctx.state.accounts.keys().to_array() {
+        if is_subaccount(name, balance.account) {
+          for position in ctx.state.inventory_for(name).positions {
+            if position.units.currency == balance.amount.currency &&
+              position.cost is Some(_) {
+              error(
+                ctx,
+                "validation.pad",
+                "Attempt to pad an entry with cost for balance: (" +
+                position.to_string() +
+                ")",
+                entry.loc,
+              )
+            }
+          }
+        }
+      }
       pad.consumed = true
       ctx.pads[index] = pad
       insert_padding(ctx, pad, balance.amount, difference)
@@ -1064,9 +1081,16 @@ fn process_transaction(
     match posting.units {
       Some(units) =>
         match posting.cost {
-          Some(_) =>
+          Some(spec) =>
             if units.number.is_negative() {
-              if !book_explicit(ctx, entry, i, posting, weights, booked) {
+              let opening = !spec.merge &&
+                !ctx.state.inventory_for(posting.account).positions.any(fn(p) {
+                  p.units.currency == units.currency &&
+                  p.units.number.is_positive()
+                })
+              if opening && needs_cost_inference(spec) {
+                deferred.push(i)
+              } else if !book_explicit(ctx, entry, i, posting, weights, booked) {
                 booking_failed = true
               }
             }
@@ -1131,7 +1155,13 @@ fn process_transaction(
     for i in 0..<postings.length() {
       match booked.get(i) {
         Some(parts) => detailed.append(parts)
-        None => detailed.push(postings[i])
+        None =>
+          if !missing.contains(i) ||
+            !postings[i].units
+            .map(fn(u) { u.number.is_zero() })
+            .unwrap_or(false) {
+            detailed.push(postings[i])
+          }
       }
     }
     postings.clear()

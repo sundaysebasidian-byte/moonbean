@@ -43,11 +43,11 @@ MoonBean's own expectations and excluded from the oracle comparison count.
 ## Result
 
 ```
-ledgers: 99, compared: 97, passed: 97, failed: 0, extensions: 2
+ledgers: 113, compared: 111, passed: 111, failed: 0, extensions: 2
 ```
 
-Raw pass rate over compared ledgers: **97 / 97 = 100%**.
-The 97 compared ledgers pass diagnostics; the two extensions are checked only against MoonBean expectations.
+Raw pass rate over compared ledgers: **111 / 111 = 100%**.
+The 111 compared ledgers pass diagnostics; the two extensions are checked only against MoonBean expectations.
 
 | Ledger | Diagnostics | BQL | Result | Notes |
 | --- | --- | --- | --- | --- |
@@ -150,6 +150,21 @@ The 97 compared ledgers pass diagnostics; the two extensions are checked only ag
 | `097-short-strict_with_size.beancount` | pass | pass | PASS |  |
 | `098-short-average.beancount` | pass | pass | PASS |  |
 | `099-implicit-zero.beancount` | pass | pass | PASS |  |
+| `100-pad-costed-sale.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `101-pad-costed-buy.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `102-pad-uncosted.beancount` | pass | pass | PASS |  |
+| `103-pad-costed-unused.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `104-short-inferred-strict-0.beancount` | pass | pass | PASS |  |
+| `105-short-inferred-strict-1.beancount` | pass | pass | PASS |  |
+| `106-short-inferred-fifo-0.beancount` | pass | pass | PASS |  |
+| `107-short-inferred-fifo-1.beancount` | pass | pass | PASS |  |
+| `108-short-inferred-average-0.beancount` | pass | pass | PASS |  |
+| `109-short-inferred-average-1.beancount` | pass | pass | PASS |  |
+| `110-short-inferred-none-0.beancount` | pass | pass | PASS |  |
+| `111-short-inferred-none-1.beancount` | pass | pass | PASS |  |
+| `112-round-zero.beancount` | pass | pass | PASS |  |
+| `113-round-zero.beancount` | pass | pass | PASS |  |
+
 
 ## Reproduce
 
@@ -236,9 +251,9 @@ three price-path scenarios: 25 scenario records and 144 checks, all passing.
 Still outside the engine: subqueries, JOIN, PIVOT, arbitrary Python plugins, and BQL `CLOSE ON`
 conversion entries (the report layer closes and carries earnings instead).
 
-Backend checks run on native, js, wasm-gc and wasm (122 tests each); the
+Backend checks run on native, js, wasm-gc and wasm (125 tests each); the
 browser bundle has 29 node checks and 8 headless-Chrome checks (`web/smoke.mjs`,
-`web/dom-smoke.mjs`). Oracle comparison covers 99 ledgers: 97 of 97 compared pass, with two extensions (the original 80 retain 78/78).
+`web/dom-smoke.mjs`). Oracle comparison covers 113 ledgers: 111 of 111 compared pass, with two extensions (the original 80 retain 78/78).
 
 ## Extended query matrix
 
@@ -356,13 +371,13 @@ original file and line independently. Generated price locations match the
 originating transaction. These are diagnostic provenance differences, not omitted
 validation or transformation behavior.
 
-Independently authored ledgers 059–099 cover plugin cases plus interpolated
+Independently authored ledgers 059–113 cover plugin cases plus interpolated
 inventories with/without pad, commodity exemption propagation, leaf directive
 references, zero total prices and costed short opening. Empty-inventory costed
 short openings now pass STRICT, FIFO, LIFO, HIFO, STRICT_WITH_SIZE, AVERAGE and
 NONE; implicit_prices quotes their cost. This does not remove the existing
 AVERAGE reduction extension or claim complete short-position lifecycle coverage.
-The 19 new fixtures retain all original 80 results (78 compared, two extensions).
+The 33 new fixtures retain all original 80 results (78 compared, two extensions).
 Raw price entries (including duplicates) are compared even on invalid ledgers;
 clean ledgers also compare balances, lots and fixed queries. The existing random
 generator does not declare plugins; its two 1000-ledger runs cover regressions in
@@ -373,9 +388,32 @@ Both seeds `7` and `20261101` completed 1000 inputs each: 858 matched,
 142 AVERAGE differences, 0 non-AVERAGE differences; each included 468 clean
 ledgers with balance/query/report checks. Results are retained in
 [evidence/plugins-random-summary.json](evidence/plugins-random-summary.json).
-`moon check --deny-warn --target all`, `moon test --target all` (122 tests per
+`moon check --deny-warn --target all`, `moon test --target all` (125 tests per
 target), `moon fmt --check` and `moon info` pass; `.mbti` files are unchanged.
 The web build, 29 Node smoke checks and 8 DOM checks pass.
 
-The complete 99-ledger run passed 97/97 comparisons with 2 existing extensions;
-the original 80 fixtures retained their results. See [raw output](evidence/plugins-oracle.log).
+The complete 113-ledger run passed 111/111 comparisons with 2 existing extensions;
+the original 80 fixtures retained their results. See [raw output](evidence/r6-oracle.log).
+
+## Pad and short-opening boundaries (R6)
+
+When a balance needs padding, a cost-bearing position in the asserted currency
+(including subaccounts) produces `Attempt to pad an entry with cost for balance: (...)`
+at the balance line, and `check` exits 1. The padding transaction is still inserted,
+matching oracle balances. With no difference outside tolerance, no padding is
+inserted and an unused pad still reports `Unused Pad entry`. Uncosted postings
+between pad and balance remain supported. Ledgers 100–103 cover these cases.
+
+Empty-cost `{}` and `{USD}` negative postings without positive inventory use
+transaction residuals to infer opening cost. Ledgers 104–111 compare STRICT,
+FIFO, AVERAGE and NONE; this does not claim a complete short-position lifecycle.
+Ledgers 112–113 compare both orders of a same-transaction round trip: a zero
+automatic cash posting is omitted; explicit zero postings remain intact.
+
+The review baseline fails 12 of the 14 new ledgers (two pad errors, eight
+inferred-cost openings, two round-trip query row sets); the two pad controls
+already pass. See [baseline output](evidence/r6-baseline.log),
+[exact pad messages and exit codes](evidence/r6-pad.json) and
+[posting-level comparisons](evidence/r6-postings.json).
+
+R6 re-runs retain the same two seeded results: see [random summary](evidence/r6-random-summary.json) and [validation summary](evidence/r6-validation.json).

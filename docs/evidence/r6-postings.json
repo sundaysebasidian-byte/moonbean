@@ -1,0 +1,22 @@
+[
+  {
+    "ledger": "100-pad-costed-sale.beancount",
+    "export_postings_and_lots_match": true,
+    "postings": 4
+  },
+  {
+    "ledger": "101-pad-costed-buy.beancount",
+    "export_postings_and_lots_match": true,
+    "postings": 4
+  },
+  {
+    "ledger": "112-round-zero.beancount",
+    "export_postings_and_lots_match": true,
+    "postings": 2
+  },
+  {
+    "ledger": "113-round-zero.beancount",
+    "export_postings_and_lots_match": true,
+    "postings": 2
+  }
+]

@@ -2,11 +2,14 @@
 
 ## 0.2.0
 
+- Match cost-bearing pad errors while preserving padding balances; a zero difference leaves the pad unused.
+- Infer empty-cost short openings without positive inventory; omit zero automatic residual postings in same-transaction round trips.
+
 - Record interpolated posting amounts in booking inventories before balance assertions and padding.
 - Propagate account commodity exemptions to price-only uses; extend leafonly to note, document, close, pad and custom account references.
 - Warn by plugin name and skip unsupported configuration strings on the four no-configuration native plugins.
 - Accept costed short openings without positive inventory under all seven booking methods; generate implicit zero prices for zero total prices on zero units.
-- Add 19 regression ledgers (99 total, 97 comparable) and six tests (122 per backend).
+- Add 33 regression ledgers (113 total, 111 comparable) and nine tests (125 per backend).
 
 - Execute five built-in plugins natively in declaration order: auto_accounts, implicit_prices, check_commodity, unique_prices and leafonly. Preserve original source locations and explicitly warn for unimplemented plugins/configuration modes.
 - Validate account references after plugin transformations; keep booking and default padding before user plugins.

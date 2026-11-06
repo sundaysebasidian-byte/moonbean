@@ -20,7 +20,7 @@
 
 ## 从 Beancount 迁移
 
-可直接使用的范围是仅依赖已实现指令、booking 方法和下列原生插件（其余账户须显式声明）的纯文本账本，以及本文和 [conformance](docs/conformance.md) 列出的 BQL 子集。99 份自编账本的对比不是对任意 Beancount/Fava 账本的保证；Fava 的界面、扩展、上传附件和 Python 插件运行环境不在本引擎内。迁移前运行 `moonbean check FILE`，并审阅警告和报表。
+可直接使用的范围是仅依赖已实现指令、booking 方法和下列原生插件（其余账户须显式声明）的纯文本账本，以及本文和 [conformance](docs/conformance.md) 列出的 BQL 子集。113 份自编账本的对比不是对任意 Beancount/Fava 账本的保证；Fava 的界面、扩展、上传附件和 Python 插件运行环境不在本引擎内。迁移前运行 `moonbean check FILE`，并审阅警告和报表。
 
 [迁移示例](examples/migration/) 均为本项目独立编写，确定行为如下：
 
@@ -211,7 +211,7 @@ fn analyze(source : String) -> Unit {
 | `close` | 支持 | 关闭后的交易检查、未开户就关闭、重复 close |
 | `commodity` | 支持 | 解析并记录 |
 | `balance` | 支持 | 支持 `~` 显式容差，否则按末位推断；同日断言先于同日交易 |
-| `pad` | 支持 | 自动补记；没有被用到的 pad 会报错 |
+| `pad` | 支持 | 自动补记；需要补差额且余额含带成本持仓时报错；无差额时仍报 Unused Pad |
 | transaction | 支持 | flag、payee/narration、标签、链接、交易和 posting 元数据、posting flag |
 | posting 金额表达式 | 支持 | `+ - * /`、括号、一元正负号 |
 | cost `{}` / `{{}}` | 支持 | 单价、总价、日期、label；FIFO/LIFO/HIFO/STRICT/STRICT_WITH_SIZE/NONE/AVERAGE |
@@ -262,13 +262,13 @@ fn analyze(source : String) -> Unit {
 
 没有任何 Beancount 代码被复制。测试时把 beancount `3.2.3` 和 beanquery `0.2.0` 当作外部黑盒，对同一份账本比较输出。
 
-**自编账本。** 在 macOS (arm64)、MoonBit `0.1.20261028` 上，对自己写的 99 份账本逐份比较：
+**自编账本。** 在 macOS (arm64)、MoonBit `0.1.20261028` 上，对自己写的 113 份账本逐份比较：
 
 ```
-ledgers: 99, compared: 97, passed: 97, failed: 0, extensions: 2
+ledgers: 113, compared: 111, passed: 111, failed: 0, extensions: 2
 ```
 
-- 97 份可比较的账本全部通过：诊断集合、最终余额、原始 price 条目和固定 BQL 查询一致；插件合成位置的比较规则见 conformance。
+- 111 份可比较的账本全部通过：诊断集合、最终余额、原始 price 条目和固定 BQL 查询一致；插件合成位置的比较规则见 conformance。
 - 另外 2 份用到 AVERAGE 和 `{*}`，beancount 3.2.3 不支持，只用本项目自己的测试验证。
 - 逐份结果、比较口径和已知差异见 [docs/conformance.md](docs/conformance.md)。
 
@@ -359,4 +359,4 @@ moon info && git diff --exit-code
 ./scripts/build-web.sh && node web/smoke.mjs && node web/dom-smoke.mjs
 ```
 
-`moon test --target all` 覆盖 wasm、wasm-gc、js、native 四个后端，每个后端 122 个测试。`web/dom-smoke.mjs` 需要本机装有 Chrome（可用环境变量 `CHROME` 指定路径）。CI 在 ubuntu、macOS、Windows 上运行同一组命令，另有 playground 和 oracle 两个 job。
+`moon test --target all` 覆盖 wasm、wasm-gc、js、native 四个后端，每个后端 125 个测试。`web/dom-smoke.mjs` 需要本机装有 Chrome（可用环境变量 `CHROME` 指定路径）。CI 在 ubuntu、macOS、Windows 上运行同一组命令，另有 playground 和 oracle 两个 job。
