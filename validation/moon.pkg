@@ -1,4 +1,5 @@
 import {
+  "moonbitlang/core/string",
   "sundaysebasidian-byte/moonbean/ast",
   "sundaysebasidian-byte/moonbean/booking",
   "sundaysebasidian-byte/moonbean/decimal",

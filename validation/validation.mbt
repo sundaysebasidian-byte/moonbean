@@ -1144,14 +1144,6 @@ pub fn validate_ledger(ledger : @ast.Ledger) -> ValidatedLedger {
   for diagnostic in ledger.errors {
     ctx.errors.push(diagnostic)
   }
-  for plugin in ledger.plugins {
-    warning(
-      ctx,
-      "validation.plugin",
-      "Plugin '" + plugin.name + "' is not supported and will be ignored",
-      plugin.loc,
-    )
-  }
   for pair in ledger.options.raw {
     if pair.0 == "inferred_tolerance_multiplier" {
       warning(
@@ -1191,14 +1183,77 @@ pub fn validate_ledger(ledger : @ast.Ledger) -> ValidatedLedger {
       error(ctx, "validation.pad", "Unused Pad entry", pad.loc)
     }
   }
-  let entries = sorted_entries(ctx.entries)
-  let accounts : Map[String, AccountInfo] = Map([])
-  for name in ctx.accounts.keys().to_array() {
-    match ctx.accounts.get(name) {
-      Some(info) => accounts.set(name, info)
-      None => ()
+  let transformed = run_plugins(
+    { ..ledger, entries: sorted_entries(ctx.entries), },
+    ctx.errors,
+    ctx.warnings,
+  )
+  let entries = sorted_entries(transformed.entries)
+  // Booking and default padding run before user plugins. Recheck account
+  // references against the final entries, including synthesized opens.
+  let account_codes = [
+    "validation.unknown_account", "validation.inactive_account", "validation.currency",
+    "validation.balance_currency", "validation.duplicate_open", "validation.duplicate_close",
+    "validation.close_unopened", "validation.booking_method",
+  ]
+  let retained = ctx.errors.filter(fn(e) { !account_codes.contains(e.code) })
+  ctx.errors.clear()
+  ctx.errors.append(retained)
+  let final_ctx = Context::new(transformed)
+  for entry in entries {
+    match entry.directive {
+      DOpen(x) => process_open(final_ctx, entry, x)
+      DClose(x) => process_close(final_ctx, entry, x)
+      DTransaction(txn) =>
+        for p in txn.postings {
+          let info = check_account(
+            final_ctx,
+            p.account,
+            entry.date,
+            entry.loc,
+            true,
+          )
+          if p.units is Some(a) {
+            check_currency(final_ctx, info, a.currency, entry.loc)
+          }
+        }
+      DBalance(x) => {
+        let info = check_account(
+          final_ctx,
+          x.account,
+          entry.date,
+          entry.loc,
+          false,
+        )
+        if info is Some(info) {
+          if info.currencies.length() > 0 &&
+            !info.currencies.contains(x.amount.currency) {
+            error(
+              final_ctx,
+              "validation.balance_currency",
+              "Invalid currency for Balance directive",
+              entry.loc,
+            )
+          }
+        }
+      }
+      DPad(x) => {
+        check_account(final_ctx, x.account, entry.date, entry.loc, true)
+        |> ignore
+        check_account(final_ctx, x.source_account, entry.date, entry.loc, true)
+        |> ignore
+      }
+      DNote(x) =>
+        check_account(final_ctx, x.account, entry.date, entry.loc, false)
+        |> ignore
+      DDocument(x) =>
+        check_account(final_ctx, x.account, entry.date, entry.loc, false)
+        |> ignore
+      _ => ()
     }
   }
+  ctx.errors.append(final_ctx.errors)
+  let accounts = final_ctx.accounts
   {
     entries,
     errors: ctx.errors,

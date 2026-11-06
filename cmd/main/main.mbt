@@ -324,11 +324,11 @@ async fn cmd_export(args : Array[String]) -> Unit {
     None => exit(1)
     Some(ledger) => {
       print_warnings(ledger)
+      println(@moonbean.export_json(options.file, ledger))
       if ledger.errors.length() > 0 {
         print_diagnostics(ledger.errors)
         exit(1)
       }
-      println(@moonbean.export_json(options.file, ledger))
     }
   }
 }
