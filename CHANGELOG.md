@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0
+
+- Execute five built-in plugins natively in declaration order: auto_accounts, implicit_prices, check_commodity, unique_prices and leafonly. Preserve original source locations and explicitly warn for unimplemented plugins/configuration modes.
+- Validate account references after plugin transformations; keep booking and default padding before user plugins.
+- Export entries and diagnostics as JSON even when validation fails (exit status remains 1).
+- Add 22 independently authored plugin ledgers, raw price comparisons and portable plugin tests; update migration behavior and compatibility boundaries.
+- No public API signature changes are expected from `moon info`; generated `.mbti` files remain unchanged.
+- Prepare version 0.2.0 locally; no push, package publication or tag.
+
 ## 0.1.1
 
 - Preserve per-line include origins in `ExpandedSource.source_map`; `check_source` and `syntax.parse_source` accept an optional source map. Library diagnostics, CLI text and JSON retain original file/line locations.

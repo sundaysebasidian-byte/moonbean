@@ -1,8 +1,8 @@
 [
   {
     "file": "plugin.beancount",
-    "status": 1,
-    "diagnostics": "warning: examples/migration/plugin.beancount:1: validation.plugin: Plugin 'beancount.plugins.auto_accounts' is not supported and will be ignored\nexamples/migration/plugin.beancount:2: validation.unknown_account: Invalid reference to unknown account 'Assets:Cash'\nexamples/migration/plugin.beancount:2: validation.unknown_account: Invalid reference to unknown account 'Expenses:Food'\n"
+    "status": 0,
+    "diagnostics": ""
   },
   {
     "file": "document.beancount",

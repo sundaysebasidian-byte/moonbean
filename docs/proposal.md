@@ -20,7 +20,7 @@ Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运
 | BQL：SELECT / WHERE / GROUP BY / HAVING / ORDER BY / LIMIT，FROM postings / balances，BALANCES，JOURNAL | 部分支持 | 函数只有 year / month / root / parent / leaf / sum / count；WHERE 支持比较、逻辑、`~` 正则，无 LIKE |
 | `document` / `note` / `event` / `query` / `custom` | 部分支持 | 解析、校验账户并保留；`document` 不检查文件是否存在，`query` 不会自动执行 |
 | `option` | 部分支持 | 影响语义的 5 个选项已实现，`account_rounding`、`render_commas` 只解析 |
-| `plugin` | 明确不支持执行 | 记录名称并在所在行给出 `validation.plugin` 警告。影响：依赖插件生成条目或校验的账本，结果会与 Beancount 不同，警告会指出具体位置。执行 Python 插件要嵌入解释器，与纯函数、可在浏览器运行的目标冲突，本期不实现 |
+| `plugin` | 内置 5 个插件已支持，其余只记录并警告 | 原生按声明顺序执行 `beancount.plugins.auto_accounts`、`implicit_prices`、`check_commodity`、`unique_prices`、`leafonly`，生成条目和错误保留来源。其他插件不执行 Python，`validation.plugin` 明确报告未实现名称；依赖这些插件生成条目或校验的账本仍可能与 Beancount 不同。配置正则边界见 conformance |
 | BQL 子查询 / JOIN / PIVOT / SQL `LIKE` / `FROM transactions` | 明确不支持 | 影响：用到它们的查询返回 `query.unsupported.*` 错误和位置，可改写为单一 postings 查询，或继续用 beanquery；本期不实现，不会近似执行 |
 
 ## 一致性证据

@@ -20,13 +20,13 @@
 
 ## 从 Beancount 迁移
 
-可直接使用的范围是无需 Python 插件生成条目、账户已显式声明、仅依赖已实现指令和 booking 方法的纯文本账本，以及本文和 [conformance](docs/conformance.md) 列出的 BQL 子集。58 份自编账本的对比不是对任意 Beancount/Fava 账本的保证；Fava 的界面、扩展、上传附件和 Python 插件运行环境不在本引擎内。迁移前运行 `moonbean check FILE`，并审阅警告和报表。
+可直接使用的范围是仅依赖已实现指令、booking 方法和下列原生插件（其余账户须显式声明）的纯文本账本，以及本文和 [conformance](docs/conformance.md) 列出的 BQL 子集。80 份自编账本的对比不是对任意 Beancount/Fava 账本的保证；Fava 的界面、扩展、上传附件和 Python 插件运行环境不在本引擎内。迁移前运行 `moonbean check FILE`，并审阅警告和报表。
 
 [迁移示例](examples/migration/) 均为本项目独立编写，确定行为如下：
 
 | 示例 | 行为、位置与原因 |
 | --- | --- |
-| `plugin.beancount` | 第 1 行 `validation.plugin` 警告；插件只记录、不执行；第 2 行交易的两个未声明账户各报 `validation.unknown_account`，check 退出 1。依赖自动开户、自动生成条目等插件效果的账本须先显式写出这些数据，否则还会有账户/余额错误。 |
+| `plugin.beancount` | `auto_accounts` 自动补齐两个账户的 open，来源指向第 2 行交易；check 退出 0，无插件警告。其他未实现插件仍产生含名称的 `validation.plugin` 警告；依赖它们的生成或校验结果可能不同。 |
 | `document.beancount` | 第 2 行 `validation.document_unchecked` 警告；保留附件路径并校验账户，但不检查文件是否存在、内容和访问权限。缺失收据不导致 check 失败；这与 Beancount 文件检查有差异。 |
 | `include.beancount` | 第 1 行正常加载同目录的 `document.beancount`（附件警告指向 `document.beancount:2`）；第 2 行找不到文件，`include.missing`，退出 1。native CLI 解析相对路径；库须用 `check_expanded` 提供读取回调，浏览器不会自动读取磁盘。 |
 | `cycle.beancount` | 第 1 行 `include.cycle`，退出 1；规范化后的循环路径不会重复加载。 |
@@ -204,7 +204,7 @@ fn analyze(source : String) -> Unit {
 | 能力 | 状态 | 边界 |
 | --- | --- | --- |
 | `option` | 部分 | 解析并保留。`title`、`booking_method`、`tolerance_multiplier`、`inferred_tolerance_default`、`infer_tolerance_from_cost` 会影响语义；`account_rounding`、`render_commas` 只解析。只有一个 `operating_currency` 时作为 bal/bs/is 的默认折算币种。报表文本的小数位由 `display_precision` 指定，没有指定时按每个币种最常见的账面小数位推断（并列取较大值）；JSON 保留原精度 |
-| `plugin` | 部分 | 记录名称和配置，并在指令所在行给出 `validation.plugin` 警告，不执行插件 |
+| `plugin` | 部分 | 按声明顺序原生执行 `auto_accounts`、`implicit_prices`、`check_commodity`、`unique_prices`、`leafonly`（名称前缀 `beancount.plugins.`）；其余只记录并警告，依赖其生成或校验的账本可能不同；配置边界见 [conformance](docs/conformance.md#native-plugins-020) |
 | `include` | 支持 | 库和命令行共用同一个展开器：循环 include 报 `include.cycle`，缺失的文件报 `include.missing` 并保留原行，最大嵌套 1024 层 |
 | `pushtag` / `poptag` / `pushmeta` / `popmeta` | 支持 | 作用域内的交易继承标签和元数据 |
 | `open` | 支持 | 多币种约束、booking method、重复 open 检查 |
@@ -262,13 +262,13 @@ fn analyze(source : String) -> Unit {
 
 没有任何 Beancount 代码被复制。测试时把 beancount `3.2.3` 和 beanquery `0.2.0` 当作外部黑盒，对同一份账本比较输出。
 
-**自编账本。** 在 macOS (arm64)、MoonBit `0.1.20261028` 上，对自己写的 58 份账本逐份比较：
+**自编账本。** 在 macOS (arm64)、MoonBit `0.1.20261028` 上，对自己写的 80 份账本逐份比较：
 
 ```
-ledgers: 58, compared: 56, passed: 56, failed: 0, extensions: 2
+ledgers: 80, compared: 78, passed: 78, failed: 0, extensions: 2
 ```
 
-- 56 份可比较的账本全部通过：诊断类别和行号、最终余额、固定 BQL 查询都一致。
+- 78 份可比较的账本全部通过：诊断集合、最终余额、原始 price 条目和固定 BQL 查询一致；插件合成位置的比较规则见 conformance。
 - 另外 2 份用到 AVERAGE 和 `{*}`，beancount 3.2.3 不支持，只用本项目自己的测试验证。
 - 逐份结果、比较口径和已知差异见 [docs/conformance.md](docs/conformance.md)。
 
@@ -325,7 +325,7 @@ mooncakes 上目前没有 Beancount 实现。MoonBean 不是现有账本库的�
 
 限制：
 
-- 插件只记录并给出警告，不执行 Python 插件。
+- 上述 5 个内置插件原生执行；其他插件只记录并给出警告，不运行 Python。
 - `document` 不检查文件是否存在；未实现的 option 不会改变行为。
 - BQL 是子集，不支持子查询、JOIN、PIVOT、SQL LIKE 和通用字符串函数；数值算术只支持 Decimal，不含 Amount/Inventory 运算。正则用 MoonBit core 的 Regex 子集，非法或不支持的模式会明确报错。
 - Playground 一次只处理一段文本，不加载 `include`。

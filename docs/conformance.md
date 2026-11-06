@@ -9,12 +9,12 @@ virtual environment only by the reproduction script. All ledgers under
 
 | Item | Value |
 | --- | --- |
-| Date | 2026-11-01 |
+| Date | 2026-11-06 |
 | Platform | macOS (arm64) |
 | MoonBit | 0.1.20261028 |
 | Oracle | beancount 3.2.3 |
 | Oracle query tool | beanquery 0.2.0 |
-| MoonBean | local 0.1.1 preparation; not published |
+| MoonBean | local 0.2.0; not published |
 
 ## What is compared
 
@@ -23,10 +23,13 @@ For every ledger in `tests/ledgers/`:
 1. **Diagnostics** — the set of `(file, category, line)` tuples produced by
    `bean-check` and by `moonbean check`, after mapping both to shared categories
    (balance, booking, close, currency, duplicate, open, pad, syntax, etc.).
-   Messages, severity ordering and file paths are intentionally not compared.
+   Messages, severity ordering and directory paths are intentionally not compared.
+   Commodity and leaf diagnostics normalize synthetic oracle locations as described below.
 2. **Final balances** — per-account totals from `BALANCES` (units plus lots,
    ignoring cost date and label).
-3. **Fixed BQL queries** — `sum(position)` totals, `GROUP BY date`, `year()`
+3. **Raw price entries** — date, base, number and quote, preserving duplicates,
+   including error ledgers.
+4. **Fixed BQL queries** — `sum(position)` totals, `GROUP BY date`, `year()`
    filter, `root()` grouping, and `ORDER BY ... LIMIT`, compared row by row after
    normalising lot formatting.
 
@@ -40,11 +43,11 @@ MoonBean's own expectations and excluded from the oracle comparison count.
 ## Result
 
 ```
-ledgers: 58, compared: 56, passed: 56, failed: 0, extensions: 2
+ledgers: 80, compared: 78, passed: 78, failed: 0, extensions: 2
 ```
 
-Raw pass rate over compared ledgers: **56 / 56 = 100%**.
-The 56 compared ledgers pass diagnostics; the two extensions are checked only against MoonBean expectations.
+Raw pass rate over compared ledgers: **78 / 78 = 100%**.
+The 78 compared ledgers pass diagnostics; the two extensions are checked only against MoonBean expectations.
 
 | Ledger | Diagnostics | BQL | Result | Notes |
 | --- | --- | --- | --- | --- |
@@ -106,6 +109,28 @@ The 56 compared ledgers pass diagnostics; the two extensions are checked only ag
 | `056-custom-values.beancount` | pass | pass | PASS |  |
 | `057-bql-prices.beancount` | pass | pass | PASS |  |
 | `058-cost-merge.beancount` | pass | skip | PASS | beancount 3.2.3 reports 'Cost merging is not supported yet' |
+| `059-plugin-auto-basic.beancount` | pass | pass | PASS |  |
+| `060-plugin-auto-existing.beancount` | pass | pass | PASS |  |
+| `061-plugin-auto-late-open.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `062-plugin-auto-directives.beancount` | pass | pass | PASS |  |
+| `063-plugin-implicit-cost.beancount` | pass | pass | PASS |  |
+| `064-plugin-implicit-total.beancount` | pass | pass | PASS |  |
+| `065-plugin-implicit-priority.beancount` | pass | pass | PASS |  |
+| `066-plugin-implicit-duplicates.beancount` | pass | pass | PASS |  |
+| `067-plugin-commodity-valid.beancount` | pass | pass | PASS |  |
+| `068-plugin-commodity-missing.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `069-plugin-commodity-price.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `070-plugin-unique-valid.beancount` | pass | pass | PASS |  |
+| `071-plugin-unique-conflict.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `072-plugin-leaf-valid.beancount` | pass | pass | PASS |  |
+| `073-plugin-leaf-invalid.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `074-plugin-order-prices-first.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `075-plugin-order-unique-first.beancount` | pass | pass | PASS |  |
+| `076-plugin-combined-all.beancount` | pass | pass | PASS |  |
+| `077-plugin-order-leaf-first.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `078-plugin-order-auto-first.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `079-plugin-commodity-exemptions.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `080-plugin-implicit-short.beancount` | pass | pass | PASS |  |
 
 ## Reproduce
 
@@ -189,7 +214,7 @@ three price-path scenarios: 25 scenario records and 144 checks, all passing.
 | Includes | One iterative stack shared by the library and the CLI. Self, mutual, absolute and normalized cycles report `include.cycle`; missing files report `include.missing`; maximum depth 1024. Cycles are covered by `scripts/include_smoke.py` instead of the oracle, because beancount reports a duplicate-filename error at `<load>:0` while MoonBean reports the including file and line. |
 | Display precision | Text reports use one scale per currency (the most common booked scale, ties to the larger; an explicit `display_precision` wins). JSON keeps exact amounts and adds `display_precision`. |
 
-Still outside the engine: subqueries, JOIN, PIVOT, plugins, and BQL `CLOSE ON`
+Still outside the engine: subqueries, JOIN, PIVOT, arbitrary Python plugins, and BQL `CLOSE ON`
 conversion entries (the report layer closes and carries earnings instead).
 
 Backend checks run on native, js, wasm-gc and wasm (112 tests each); the
@@ -247,7 +272,7 @@ The original 58-ledger oracle was rerun: 56/56 compared passed, 0 failed,
 see [seed 7](evidence/random-7.log) and [seed 20261101](evidence/random-20261101.log).
 These remain black-box comparisons; no upstream source or fixtures were copied.
 
-[Migration fixtures](../examples/migration/) exercise plugin warnings,
+[Migration fixtures](../examples/migration/) exercise native automatic account creation,
 metadata-only documents, successful relative includes followed by a missing
 include, normalized include cycles, and explicit execution of stored subquery,
 JOIN and PIVOT query texts. The BQL boundary errors have codes
@@ -267,3 +292,69 @@ Updated 100k performance measurements, historical arrays, query profiles and
 limitations are in [performance.md](performance.md). Local acceptance command
 logs are retained in [evidence/](evidence/); this is not a new CI/deployment or
 mooncakes publication claim.
+
+
+## Native plugins (0.2.0)
+
+| Plugin (`beancount.plugins.` prefix) | Supported behavior |
+| --- | --- |
+| `auto_accounts` | Create missing opens at the first account reference; an existing later open is not moved. |
+| `implicit_prices` | Generate deduplicated daily prices from explicit posting prices (including total prices) or costs on lot augmentations; price overrides cost, reductions alone do not quote costs. Explicit price entries are retained. |
+| `check_commodity` | Require declarations for open currencies, balances, posting units/costs/prices and price pairs; one error per missing currency. Optional account/currency regex dictionary exemptions apply to accounts, not price directives. |
+| `unique_prices` | One error per date/base/quote group with unequal numbers; equivalent decimal scales do not conflict. |
+| `leafonly` | One error per posted account with descendants, including declared but unused children. |
+
+Enabled plugins run in declaration order after booking/default padding and before
+final account validation. Unknown names, including third-party Python plugins,
+are retained with `validation.plugin` warnings naming the unimplemented plugin;
+their transformations and checks do not run, so dependent balances or errors may
+differ. No Python interpreter is embedded. Native, wasm-gc and JS share the same
+implementation. Library diagnostics, CLI text and exported JSON retain sources;
+`export --json` also emits diagnostics and entries on invalid input (exit 1).
+
+The specification basis is the official [Scripting & Plugins: Load Pipeline and
+Plugin Configuration](https://beancount.github.io/docs/beancount_scripting_plugins/)
+and [V3: Built-in Plugins](https://beancount.github.io/docs/beancount_v3/).
+The latter lists these five native candidates; detailed edge behavior was
+established with independently authored black-box inputs against Beancount 3.2.3,
+without reading upstream plugin source, comments or fixtures.
+
+Configuration boundary: `check_commodity` accepts a dictionary of quoted regex
+strings using MoonBit's regex engine. Python-specific regex constructs or Python
+literal forms outside that grammar are not implemented and are excluded from
+supported configuration modes; they produce a named `validation.plugin` warning
+rather than silently applying a different exemption. The five no-configuration
+plugin declarations above are supported.
+
+Source-position differences are intentional: Beancount uses synthetic
+`<auto_accounts>` locations for generated opens, `<check_commodity>:0` for missing
+commodities and sometimes `<leafonly>:0`. MoonBean uses original ledger locations.
+The harness normalizes commodity errors by currency and leaf errors by account;
+other error locations are compared directly. Include-origin tests verify the
+original file and line independently. Generated price locations match the
+originating transaction. These are diagnostic provenance differences, not omitted
+validation or transformation behavior.
+
+New independently authored ledgers 059–080 cover positive/negative cases,
+combinations, declaration order, regex exemptions and short-position costs with
+explicit dates under NONE booking. A separate black-box probe exposed an existing
+booking limitation: opening a costed short position under default STRICT reports
+`validation.booking` (no matching position), while Beancount 3.2.3 accepts it.
+This occurs before user plugins; the verified short fixture uses NONE booking.
+Default STRICT short opening is not claimed as compatible.
+Raw price entries (including duplicates) are compared even on invalid ledgers;
+clean ledgers also compare balances, lots and fixed queries. The existing random
+generator does not declare plugins; its two 1000-ledger runs cover regressions in
+booking, diagnostics, balances and reporting, not randomized plugin behavior.
+
+
+Both seeds `7` and `20261101` completed 1000 inputs each: 858 matched,
+142 AVERAGE differences, 0 non-AVERAGE differences; each included 468 clean
+ledgers with balance/query/report checks. Results are retained in
+[evidence/plugins-random-summary.json](evidence/plugins-random-summary.json).
+`moon check --deny-warn --target all`, `moon test --target all` (116 tests per
+target), `moon fmt --check` and `moon info` pass; `.mbti` files are unchanged.
+The web build, 29 Node smoke checks and 8 DOM checks pass.
+
+The complete 80-ledger run passed 78/78 comparisons with 2 existing extensions;
+the original 58 fixtures retained their results. See [raw output](evidence/plugins-oracle.log).
