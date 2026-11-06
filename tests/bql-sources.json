@@ -69,6 +69,30 @@
           "2"
         ]
       ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM postings",
+      "oracle": [
+        [
+          "count(*)"
+        ],
+        [
+          "2"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM transactions",
+      "oracle": [
+        [
+          "count(*)"
+        ],
+        [
+          "1"
+        ]
+      ]
     }
   ],
   "boundaries": [
@@ -488,6 +512,54 @@
       "ledger": "tests/bql-sources/empty.beancount",
       "query": "SELECT count(*) FROM #\npostings",
       "kind": "syntax",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT sum(*) FROM postings",
+      "kind": "star",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT year(*) FROM postings",
+      "kind": "star",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT meta(*) FROM postings",
+      "kind": "star",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT root(*) FROM postings",
+      "kind": "star",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT sum(*) FROM transactions",
+      "kind": "star",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT year(*) FROM transactions",
+      "kind": "star",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT meta(*) FROM transactions",
+      "kind": "star",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT root(*) FROM transactions",
+      "kind": "star",
       "oracle": null
     }
   ]

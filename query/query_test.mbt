@@ -465,3 +465,32 @@ test "set text is sorted without mutating JSON order" {
   assert_eq(@query.QSet(["zulu", "alpha"]).to_text(), "alpha,zulu")
   assert_eq(v.to_json(), "[\"shop\",\"cafe\"]")
 }
+
+///|
+test "only count accepts a star argument on either source" {
+  for source in ["postings", "transactions"] {
+    for
+      expr in [
+        "*", "sum(*)", "year(*)", "meta(*)", "root(*)", "unknown(*)", "sum(year(*))",
+      ] {
+      let r = queried(ledger_source(), "SELECT " + expr + " FROM " + source)
+      assert_true(r.failure() is Some(@query.Unsupported(_)))
+      assert_true(r.error.unwrap().contains("query.unsupported.star"))
+      assert_true(r.error.unwrap().contains("BQL:1:"))
+    }
+    let r = queried(ledger_source(), "SELECT count(*) FROM " + source)
+    assert_true(r.is_ok())
+    assert_eq(
+      r.rows[0][0].to_text(),
+      if source == "postings" {
+        "4"
+      } else {
+        "2"
+      },
+    )
+  }
+  assert_eq(
+    queried(ledger_source(), "SELECT\n  sum(*) FROM postings").error,
+    Some("unsupported query.unsupported.star at BQL:2:7"),
+  )
+}

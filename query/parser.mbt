@@ -216,6 +216,10 @@ fn parse_primary(parser : QueryParser) -> Expr? {
           let mut done = false
           while !done {
             if parser.match_sym("*") {
+              if lower != "count" {
+                parser.fail("unsupported query.unsupported.star")
+                return None
+              }
               args.push(EStar)
             } else {
               match parse_expr(parser) {
