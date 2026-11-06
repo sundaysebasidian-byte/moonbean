@@ -93,9 +93,13 @@ fn implicit_prices(entries : Array[@ast.Entry]) -> Array[@ast.Entry] {
           }
           let amount = match posting.price {
             Some(Total(a)) =>
-              match a.number.div(units.number.abs()) {
-                Some(n) => Some(@ast.Amount::new(n, a.currency))
-                None => None
+              if units.number.is_zero() && a.number.is_zero() {
+                Some(@ast.Amount::new(@decimal.Decimal::zero(), a.currency))
+              } else {
+                match a.number.div(units.number.abs()) {
+                  Some(n) => Some(@ast.Amount::new(n, a.currency))
+                  None => None
+                }
               }
             _ => amount
           }
@@ -134,6 +138,7 @@ fn check_commodity(
 ) -> Unit {
   let declared : Map[String, Bool] = Map([])
   let used : Map[String, (@ast.Loc, String)] = Map([])
+  let exempted : Map[String, Bool] = Map([])
   for entry in entries {
     if entry.directive is DCommodity(c) {
       declared.set(c.currency, true)
@@ -145,10 +150,7 @@ fn check_commodity(
           currencies.push((c, x.account))
         }
       DBalance(x) => currencies.push((x.amount.currency, x.account))
-      DPrice(x) => {
-        currencies.push((x.currency, "Price Directive Context"))
-        currencies.push((x.amount.currency, "Price Directive Context"))
-      }
+      DPrice(_) => ()
       DTransaction(txn) =>
         for p in txn.postings {
           if p.units is Some(a) {
@@ -166,14 +168,25 @@ fn check_commodity(
       _ => ()
     }
     for (currency, account) in currencies {
-      if currency != "" &&
-        !used.contains(currency) &&
-        !(account != "Price Directive Context" &&
-        exemptions.any(fn(pair) {
-          pair.0.execute(account) is Some(_) &&
-          pair.1.execute(currency) is Some(_)
-        })) {
-        used.set(currency, (entry.loc, account))
+      if currency != "" {
+        if exemptions.any(fn(pair) {
+            pair.0.execute(account) is Some(_) &&
+            pair.1.execute(currency) is Some(_)
+          }) {
+          exempted.set(currency, true)
+        } else if !used.contains(currency) {
+          used.set(currency, (entry.loc, account))
+        }
+      }
+    }
+  }
+  // Account exemptions suppress price-only uses regardless of directive order.
+  for entry in entries {
+    if entry.directive is DPrice(p) {
+      for currency in [p.currency, p.amount.currency] {
+        if !used.contains(currency) && !exempted.contains(currency) {
+          used.set(currency, (entry.loc, "Price Directive Context"))
+        }
       }
     }
   }
@@ -234,11 +247,21 @@ fn leafonly(
     for name in plugin_accounts(entry) {
       accounts.set(name, entry.loc)
     }
-    if entry.directive is DTransaction(t) {
-      for p in t.postings {
-        if !posted.contains(p.account) {
-          posted.set(p.account, entry.loc)
-        }
+    let references = match entry.directive {
+      DOpen(_) | DBalance(_) => []
+      DCustom(x) =>
+        x.values.fold(init=[], fn(accounts, value) {
+          if value is CAccount(account) {
+            accounts.push(account)
+          }
+          accounts
+        })
+      _ => plugin_accounts(entry)
+    }
+    for account in references {
+      accounts.set(account, entry.loc)
+      if !posted.contains(account) {
+        posted.set(account, entry.loc)
       }
     }
   }
@@ -274,6 +297,20 @@ fn run_plugins(
 ) -> @ast.Ledger {
   let mut entries = sorted_entries(ledger.entries)
   for plugin in ledger.plugins {
+    if plugin.config is Some(_) &&
+      [
+        "beancount.plugins.auto_accounts", "beancount.plugins.implicit_prices", "beancount.plugins.unique_prices",
+        "beancount.plugins.leafonly",
+      ].contains(plugin.name) {
+      warnings.push(
+        @ast.Diagnostic::new(
+          "validation.plugin",
+          "未实现的插件配置 '" + plugin.name + "'；不执行",
+          plugin.loc,
+        ),
+      )
+      continue
+    }
     match plugin.name {
       "beancount.plugins.auto_accounts" => entries = auto_accounts(entries)
       "beancount.plugins.implicit_prices" => entries = implicit_prices(entries)

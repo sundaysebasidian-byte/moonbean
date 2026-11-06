@@ -832,6 +832,9 @@ fn interpolate_missing(
         None => weight_sum(weights, currency).neg()
       }
       posting.units = Some(@ast.Amount::new(amount, currency))
+      ctx.state
+      .inventory_for(posting.account)
+      .add_amount(posting.units.unwrap())
       match posting.price {
         Some(price) =>
           match price {

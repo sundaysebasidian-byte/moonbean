@@ -1,0 +1,1 @@
+Independent document fixture for leaf account validation.

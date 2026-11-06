@@ -1,0 +1,4 @@
+plugin "beancount.plugins.check_commodity" "{'Assets:.*': 'USD'}"
+2024-01-01 open Liabilities:Cash USD
+2024-01-02 open Assets:Cash USD
+2024-01-03 price USD 7 EUR

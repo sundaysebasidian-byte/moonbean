@@ -494,3 +494,141 @@ test "implicit prices distinguish short augmentation from reduction" {
   assert_eq(prices.length(), 1)
   assert_eq(prices[0].loc.line, 4)
 }
+
+///|
+test "interpolated postings update inventories before padding and balances" {
+  let opens = "2024-01-01 open Assets:Cash USD\n2024-01-01 open Equity:Opening USD\n2024-01-01 open Expenses:Food USD\n"
+  let spend = "2024-01-15 * \"spend\"\n  Expenses:Food 3.00 USD\n  Assets:Cash\n"
+  let plain = validated(
+    opens + spend + "2024-01-31 balance Assets:Cash -3.00 USD\n",
+  )
+  assert_eq(plain.errors.length(), 0)
+  assert_eq(plain.inventory("Assets:Cash").quantity("USD").to_string(), "-3.00")
+  for prefix in [opens, "plugin \"beancount.plugins.auto_accounts\"\n"] {
+    let padded = validated(
+      prefix +
+      "2024-01-01 pad Assets:Cash Equity:Opening\n" +
+      spend +
+      "2024-01-31 balance Assets:Cash 100.00 USD\n",
+    )
+    assert_eq(padded.errors.length(), 0)
+    assert_eq(
+      padded.inventory("Assets:Cash").quantity("USD").to_string(),
+      "100.00",
+    )
+    assert_eq(
+      padded.inventory("Equity:Opening").quantity("USD").to_string(),
+      "-103.00",
+    )
+  }
+}
+
+///|
+test "configured no-configuration plugins warn by name and do not execute" {
+  let body = "2024-01-01 open Assets:Parent\n2024-01-01 open Assets:Parent:Child\n2024-01-01 open Equity:Opening\n2024-01-02 note Assets:Parent \"parent\"\n2024-01-02 price XYZ 1 USD\n2024-01-02 price XYZ 2 USD\n2024-01-03 * \"unopened priced posting\"\n  Assets:Missing 1 XYZ @ 3 USD\n  Equity:Opening -3 USD\n"
+  for name in ["auto_accounts", "implicit_prices", "unique_prices", "leafonly"] {
+    for config in ["ignored", ""] {
+      let full = "beancount.plugins." + name
+      let v = validated("plugin \"" + full + "\" \"" + config + "\"\n" + body)
+      assert_eq(v.warnings.length(), 1)
+      assert_eq(v.warnings[0].code, "validation.plugin")
+      assert_true(v.warnings[0].message.contains(full))
+      assert_eq(v.warnings[0].loc.line, 1)
+      assert_true(has_error(v, "validation.unknown_account"))
+      assert_true(!has_error(v, "validation.leafonly"))
+      assert_true(!has_error(v, "validation.unique_prices"))
+      assert_eq(
+        v.entries.filter(fn(e) { e.directive is DPrice(_) }).length(),
+        2,
+      )
+    }
+  }
+}
+
+///|
+test "account exemptions suppress price uses but preserve other account errors" {
+  for
+    suffix in [
+      "2024-01-01 open Assets:Cash USD\n2024-01-02 price USD 7 EUR\n", "2024-01-01 price USD 7 EUR\n2024-01-02 open Assets:Cash USD\n",
+    ] {
+    let v = validated(
+      "plugin \"beancount.plugins.check_commodity\" \"{'Assets:.*': 'USD'}\"\n" +
+      suffix,
+    )
+    assert_eq(v.errors.length(), 1)
+    assert_true(v.errors[0].message.contains("'EUR'"))
+  }
+}
+
+///|
+test "leafonly checks account directives and custom account values" {
+  let base = "plugin \"beancount.plugins.leafonly\"\n2024-01-01 open Assets:Parent\n2024-01-01 open Assets:Parent:Child\n2024-01-01 open Equity:Opening\n"
+  for
+    directive in [
+      "note Assets:Parent \"memo\"", "document Assets:Parent \"memo.txt\"", "close Assets:Parent",
+      "pad Assets:Parent Equity:Opening", "pad Equity:Opening Assets:Parent", "custom \"x\" Assets:Parent",
+    ] {
+    assert_true(
+      has_error(
+        validated(base + "2024-01-02 " + directive + "\n"),
+        "validation.leafonly",
+      ),
+    )
+  }
+  assert_true(
+    has_error(
+      validated(
+        "plugin \"beancount.plugins.leafonly\"\n2024-01-01 open Assets:Parent\n2024-01-02 note Assets:Parent \"memo\"\n2024-01-03 custom \"x\" Assets:Parent:Child\n",
+      ),
+      "validation.leafonly",
+    ),
+  )
+  assert_true(
+    !has_error(
+      validated(base + "2024-01-02 balance Assets:Parent 0 USD\n"),
+      "validation.leafonly",
+    ),
+  )
+}
+
+///|
+test "costed shorts open under every booking method and emit implicit prices" {
+  for
+    booking_method in [
+      "STRICT", "FIFO", "LIFO", "HIFO", "STRICT_WITH_SIZE", "AVERAGE", "NONE",
+    ] {
+    for
+      setting in [
+        "option \"booking_method\" \"" +
+        booking_method +
+        "\"\n2024-01-01 open Assets:Stock HOOL\n",
+        "2024-01-01 open Assets:Stock HOOL \"" + booking_method + "\"\n",
+      ] {
+      let v = validated(
+        "plugin \"beancount.plugins.implicit_prices\"\n" +
+        setting +
+        "2024-01-01 open Assets:Cash USD\n2024-01-02 * \"short\"\n  Assets:Stock -2 HOOL {100 USD}\n  Assets:Cash 200 USD\n",
+      )
+      assert_eq(v.errors.length(), 0)
+      assert_eq(v.inventory("Assets:Stock").quantity("HOOL").to_string(), "-2")
+      assert_eq(
+        v.entries.filter(fn(e) { e.directive is DPrice(_) }).length(),
+        1,
+      )
+    }
+  }
+}
+
+///|
+test "zero total price on zero units emits zero implicit price" {
+  let v = validated(
+    "plugin \"beancount.plugins.implicit_prices\"\n2024-01-01 open Assets:Stock\n2024-01-01 open Assets:Cash\n2024-01-02 * \"zero\"\n  Assets:Stock 0 XYZ @@ 0 USD\n  Assets:Cash 0 USD\n",
+  )
+  assert_eq(v.errors.length(), 0)
+  let prices = v.entries.filter(fn(e) { e.directive is DPrice(_) })
+  assert_eq(prices.length(), 1)
+  match prices[0].directive {
+    DPrice(p) => assert_true(p.amount.number.is_zero())
+    _ => fail("expected price")
+  }
+}

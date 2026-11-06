@@ -602,7 +602,14 @@ pub fn book_posting(
       outcome_ok(weights)
     }
     Some(spec) =>
-      if units.number.signum() >= 0 {
+      if units.number.signum() >= 0 ||
+        (
+          !spec.merge &&
+          !inv.positions.any(fn(p) {
+            p.units.currency == units.currency && p.units.number.is_positive()
+          }) &&
+          resolve_cost(spec, units, txn_date) is Some(_)
+        ) {
         let cost = resolve_cost(spec, units, txn_date)
         match cost {
           Some(cost) =>
