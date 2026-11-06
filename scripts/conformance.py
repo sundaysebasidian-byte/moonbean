@@ -337,7 +337,7 @@ def compare_scalar_query(ours_rows, oracle_csv):
         return False, "oracle query failed"
     body = oracle_csv[1:]
     expected = [tuple(row) for row in body]
-    actual = [tuple(",".join(cell) if isinstance(cell, list) else "" if cell is None else str(cell) for cell in row) for row in ours_rows.get("rows", [])]
+    actual = [tuple(",".join(sorted(cell)) if isinstance(cell, list) else "" if cell is None else str(cell) for cell in row) for row in ours_rows.get("rows", [])]
     if expected != actual:
         return False, f"expected {expected} got {actual}"
     return True, ""

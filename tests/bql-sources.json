@@ -1,0 +1,494 @@
+{
+  "cases": [
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT tags, links FROM transactions",
+      "oracle": [
+        [
+          "tags",
+          "links"
+        ],
+        [
+          "cafe,shop",
+          "alpha,zulu"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT tags, links FROM #transactions",
+      "oracle": [
+        [
+          "tags",
+          "links"
+        ],
+        [
+          "cafe,shop",
+          "alpha,zulu"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT tags, links FROM #postings ORDER BY account",
+      "oracle": [
+        [
+          "tags",
+          "links"
+        ],
+        [
+          "cafe,shop",
+          "alpha,zulu"
+        ],
+        [
+          "cafe,shop",
+          "alpha,zulu"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #transactions",
+      "oracle": [
+        [
+          "count(*)"
+        ],
+        [
+          "1"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #postings",
+      "oracle": [
+        [
+          "count(*)"
+        ],
+        [
+          "2"
+        ]
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT date, account FROM #balances",
+      "kind": "source",
+      "oracle": [
+        [
+          "date",
+          "account"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT * FROM transactions",
+      "kind": "star",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "tags",
+          "links",
+          "accounts"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "cafe,shop",
+          "alpha,zulu",
+          "Assets:Cash,Equity:Opening"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT * FROM #transactions",
+      "kind": "star",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "tags",
+          "links",
+          "accounts"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "cafe,shop",
+          "alpha,zulu",
+          "Assets:Cash,Equity:Opening"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT * FROM postings",
+      "kind": "star",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "position"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          " 10 USD"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "-10 USD"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT * FROM #postings",
+      "kind": "star",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "position"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          " 10 USD"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "-10 USD"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT *",
+      "kind": "star",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "position"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          " 10 USD"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "-10 USD"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/assertion.beancount",
+      "query": "SELECT date, account FROM #balances",
+      "kind": "source",
+      "oracle": [
+        [
+          "date",
+          "account"
+        ],
+        [
+          "2024-01-31",
+          "Assets:Cash"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/assertion.beancount",
+      "query": "SELECT * FROM transactions",
+      "kind": "star",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "tags",
+          "links",
+          "accounts"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "cafe,shop",
+          "alpha,zulu",
+          "Assets:Cash,Equity:Opening"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/assertion.beancount",
+      "query": "SELECT * FROM #transactions",
+      "kind": "star",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "tags",
+          "links",
+          "accounts"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "cafe,shop",
+          "alpha,zulu",
+          "Assets:Cash,Equity:Opening"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/assertion.beancount",
+      "query": "SELECT * FROM postings",
+      "kind": "star",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "position"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          " 10 USD"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "-10 USD"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/assertion.beancount",
+      "query": "SELECT * FROM #postings",
+      "kind": "star",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "position"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          " 10 USD"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "-10 USD"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/assertion.beancount",
+      "query": "SELECT *",
+      "kind": "star",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "position"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          " 10 USD"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "-10 USD"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #entries",
+      "kind": "source",
+      "oracle": [
+        [
+          "count(*)"
+        ],
+        [
+          "3"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #accounts",
+      "kind": "source",
+      "oracle": [
+        [
+          "count(*)"
+        ],
+        [
+          "2"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #commodities",
+      "kind": "source",
+      "oracle": [
+        [
+          "count(*)"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #prices",
+      "kind": "source",
+      "oracle": [
+        [
+          "count(*)"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #documents",
+      "kind": "source",
+      "oracle": [
+        [
+          "count(*)"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #events",
+      "kind": "source",
+      "oracle": [
+        [
+          "count(*)"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #notes",
+      "kind": "source",
+      "oracle": [
+        [
+          "count(*)"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #customs",
+      "kind": "source",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #open",
+      "kind": "source",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #close",
+      "kind": "source",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #unknown",
+      "kind": "source",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #Transactions",
+      "kind": "source",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #POSTINGS",
+      "kind": "source",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM # transactions",
+      "kind": "syntax",
+      "oracle": null
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT count(*) FROM #\npostings",
+      "kind": "syntax",
+      "oracle": null
+    }
+  ]
+}

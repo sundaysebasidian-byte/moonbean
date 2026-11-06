@@ -324,7 +324,8 @@ fn parse_primary(parser : QueryParser) -> Expr? {
         }
       } else if symbol == "*" {
         parser.advance() |> ignore
-        Some(EStar)
+        parser.fail("unsupported query.unsupported.star")
+        None
       } else {
         parser.fail("expected an expression")
         None
@@ -538,9 +539,13 @@ fn parse_source(parser : QueryParser) -> QuerySource? {
       }
     }
   }
-  parser.match_sym("#") |> ignore
+  let hashed = parser.match_sym("#")
   match parser.take_word() {
-    Some(word) =>
+    Some(word) => {
+      if hashed && word != "postings" && word != "transactions" {
+        parser.fail("unsupported query.unsupported.source `#" + word + "`")
+        return None
+      }
       match word.to_lower() {
         "postings" => Some(SrcPostings)
         "transactions" => Some(SrcTransactions)
@@ -550,6 +555,7 @@ fn parse_source(parser : QueryParser) -> QuerySource? {
           None
         }
       }
+    }
     None => {
       parser.fail("expected a FROM source")
       None
@@ -736,6 +742,17 @@ fn parse_query(text : String) -> ParsedQuery {
   let tokens = lex_bql(text, unsupported~, positions~)
   if unsupported.length() > 0 {
     return PqError(unsupported[0])
+  }
+  for i in 0..<(tokens.length() - 1) {
+    if tokens[i] is BSym("#") && positions[i + 1] != positions[i] + 1 {
+      return PqError(
+        "syntax query.invalid_source" +
+        bql_lex_error(text, positions[i]).replace(
+          old="lexical query.invalid_character",
+          new="",
+        ),
+      )
+    }
   }
   let parser = QueryParser::new(tokens)
   if parser.at_end() {

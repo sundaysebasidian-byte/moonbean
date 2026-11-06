@@ -243,9 +243,10 @@ fn analyze(source : String) -> Unit {
 | 试算平衡 / 资产负债表 / 损益表 / register | 支持 | 资产负债表把当期和往期收益结转到 `Equity:Earnings:*`，恒等式按币种精确成立；不折算时按成本，指定折算币种时按市值，市值相对成本的变化列在 `Equity:Earnings:Unrealized`。命令行有 `bal`、`bs`、`is`、`register FILE ACCOUNT`（可加 `--json`）和 `dups FILE` |
 | `SELECT ... FROM postings/balances` | 支持 | 列：`date`、`year`、`month`、`flag`、`payee`、`narration`、`account`、`root`、`parent`、`leaf`、`units`、`currency`、`cost`、`value`、`position` |
 | `FROM transactions` / `FROM #transactions` | 部分 | 每笔交易一行；支持 date / flag / payee / narration / tags / links，过滤、分组、排序、计数；posting 列与交易元数据函数返回带位置的错误 |
+| `#` 表与星号 | 部分 | 仅支持紧邻且小写的 `#transactions` / `#postings`；`#balances` 是 oracle 的断言表，本引擎以 `query.unsupported.source` 拒绝，其它 `#` 表亦拒绝。裸 `FROM balances` 仍为库存源。`SELECT *` 在所有源上以 `query.unsupported.star` 拒绝；`count(*)` 保持支持 |
 | `WHERE` | 部分 | 比较、`is [not] null`、`and/or/not`，支持 `~` 正则字面量；没有 `LIKE` 和子查询 |
 | `HAVING` / 数值算术 | 支持 | `HAVING` 支持聚合条件；Decimal 支持 `+ - * /` 和括号，不含 Amount/Inventory 运算 |
-| tags / links / 元数据 | 支持 | `tags`、`links` 在 JSON 里是数组；`meta('key')` 读取 posting 元数据 |
+| tags / links / 元数据 | 支持 | `tags`、`links` 的文本按集合字典序排序；JSON 数组保留账本书写顺序（oracle 返回 frozenset，转 JSON 数组的顺序随 hash seed 变化，无稳定顺序契约）；`meta('key')` 读取 posting 元数据 |
 | `GROUP BY` / `ORDER BY` / `LIMIT` | 支持 | 多键分组和排序，`ASC` / `DESC` |
 | 函数 | 部分 | `year`、`month`、`root`、`parent`、`leaf`、`sum`、`count`、`length`、`substr`；length 按 Unicode 码点计数，substr(s,start,end) 为零起点、右端不含的切片，支持负索引、越界截断及 NULL 传播；仅接受字符串表达式与整数字面量索引 |
 | `BALANCES` / `JOURNAL` | 支持 | `BALANCES AT units|cost FROM OPEN ON date CLOSE ON date`；`JOURNAL <account> [LIMIT n]`；时间点由 `run_query` 的 `at~` 或命令行的 `--at` 控制 |
@@ -288,7 +289,7 @@ ledgers: 114, compared: 112, passed: 112, failed: 0, extensions: 2
 
 这 142 份不是错误，而是 MoonBean 的扩展：把 oracle 的 `average_unsupported` 诊断去掉后，两边的诊断集合完全相同。CI 用 `--allow-known-extensions` 校验这一点，出现任何其他差异都会失败。每个 seed 的统计和 AVERAGE 账本编号在 [docs/random-differential.json](docs/random-differential.json)。
 
-`tests/regression/` 还有 22 份专门针对报表、跨 lot 减记和价格路径写的账本，`scripts/report_differential.py` 对它们做逐项检查（25 组场景、144 项，全部通过）。另有 34 条扩展 BQL 对比与 16 条能力/拒绝边界检查（HAVING、算术、正则、tags/links/元数据、期间余额）全部通过。这是基于模板的随机测试，不是穷尽的语法 fuzz。
+`tests/regression/` 还有 22 份专门针对报表、跨 lot 减记和价格路径写的账本，`scripts/report_differential.py` 对它们做逐项检查（25 组场景、144 项，全部通过）。另有 39 条扩展 BQL 对比与 43 条能力/拒绝边界检查（HAVING、算术、正则、tags/links/元数据、期间余额）全部通过。这是基于模板的随机测试，不是穷尽的语法 fuzz。
 
 ```sh
 python3 scripts/random_differential.py --seed 7 --out .oracle-cache/differential/seed-7 --allow-known-extensions
@@ -360,4 +361,4 @@ moon info && git diff --exit-code
 ./scripts/build-web.sh && node web/smoke.mjs && node web/dom-smoke.mjs
 ```
 
-`moon test --target all` 覆盖 wasm、wasm-gc、js、native 四个后端，每个后端 129 个测试。`web/dom-smoke.mjs` 需要本机装有 Chrome（可用环境变量 `CHROME` 指定路径）。CI 在 ubuntu、macOS、Windows 上运行同一组命令，另有 playground 和 oracle 两个 job。
+`moon test --target all` 覆盖 wasm、wasm-gc、js、native 四个后端，每个后端 131 个测试。`web/dom-smoke.mjs` 需要本机装有 Chrome（可用环境变量 `CHROME` 指定路径）。CI 在 ubuntu、macOS、Windows 上运行同一组命令，另有 playground 和 oracle 两个 job。

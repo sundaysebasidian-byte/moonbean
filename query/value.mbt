@@ -47,7 +47,11 @@ fn query_json_escape(text : String) -> String {
 ///|
 pub fn QueryValue::to_text(self : QueryValue) -> String {
   match self {
-    QSet(values) => values.join(",")
+    QSet(values) => {
+      let sorted = values.copy()
+      sorted.sort_by(fn(a, b) { a.lexical_compare(b) })
+      sorted.join(",")
+    }
     QText(text) => text
     QNumber(number) => number.to_string()
     QDate(date) => date.to_string()

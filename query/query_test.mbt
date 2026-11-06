@@ -431,3 +431,37 @@ test "new unsupported boundaries preserve positions" {
     ),
   )
 }
+
+///|
+test "hash sources and star reject ambiguous results" {
+  for
+    q in [
+      "SELECT date FROM #balances", "SELECT count(*) FROM #entries", "SELECT count(*) FROM #Transactions",
+      "SELECT * FROM transactions", "SELECT * FROM #transactions", "SELECT * FROM postings",
+      "SELECT *",
+    ] {
+    let r = queried(ledger_source(), q)
+    assert_true(r.failure() is Some(@query.Unsupported(_)))
+    assert_true(r.error.unwrap().contains("BQL:1:"))
+  }
+  for
+    q in [
+      "SELECT count(*) FROM # transactions", "SELECT count(*) FROM #\npostings",
+    ] {
+    assert_true(queried(ledger_source(), q).failure() is Some(@query.Syntax(_)))
+  }
+  for
+    q in [
+      "SELECT count(*) FROM #transactions", "SELECT count(*) FROM #postings", "SELECT account FROM balances",
+    ] {
+    assert_true(queried(ledger_source(), q).is_ok())
+  }
+}
+
+///|
+test "set text is sorted without mutating JSON order" {
+  let v = @query.QSet(["shop", "cafe"])
+  assert_eq(v.to_text(), "cafe,shop")
+  assert_eq(@query.QSet(["zulu", "alpha"]).to_text(), "alpha,zulu")
+  assert_eq(v.to_json(), "[\"shop\",\"cafe\"]")
+}
