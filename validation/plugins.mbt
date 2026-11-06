@@ -168,10 +168,11 @@ fn check_commodity(
     for (currency, account) in currencies {
       if currency != "" &&
         !used.contains(currency) &&
-        !exemptions.any(fn(pair) {
+        !(account != "Price Directive Context" &&
+        exemptions.any(fn(pair) {
           pair.0.execute(account) is Some(_) &&
           pair.1.execute(currency) is Some(_)
-        }) {
+        })) {
         used.set(currency, (entry.loc, account))
       }
     }

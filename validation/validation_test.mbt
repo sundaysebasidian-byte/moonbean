@@ -474,6 +474,10 @@ test "commodity exemptions use anchored account and currency patterns" {
   )
   assert_eq(v.errors.length(), 0)
   assert_eq(v.warnings.length(), 0)
+  let price = validated(
+    "plugin \"beancount.plugins.check_commodity\" \"{'Price Directive Context': '.*'}\"\n2024-01-02 price XYZ 2 USD\n",
+  )
+  assert_eq(price.errors.length(), 2)
   let bad = validated(
     "plugin \"beancount.plugins.check_commodity\" \"{'Cash': 'USD'}\"\n2024-01-01 open Assets:Cash USD\n",
   )
