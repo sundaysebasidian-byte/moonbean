@@ -1,0 +1,4 @@
+plugin "beancount.plugins.check_commodity" "{'Assets:.*': 'US.*', 'Price Directive Context': 'X.*'}"
+2024-01-01 commodity EUR
+2024-01-01 open Assets:Cash USD,EUR
+2024-01-02 price XYZ 2 EUR

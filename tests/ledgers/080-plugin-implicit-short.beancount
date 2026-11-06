@@ -1,0 +1,9 @@
+plugin "beancount.plugins.implicit_prices"
+2024-01-01 open Assets:Stock "NONE"
+2024-01-01 open Assets:Cash
+2024-01-02 * "independent short position"
+  Assets:Stock -2 XYZ {3 USD, 2024-01-02}
+  Assets:Cash 6 USD
+2024-01-03 * "independent short reduction"
+  Assets:Stock 1 XYZ {3 USD, 2024-01-02}
+  Assets:Cash -3 USD

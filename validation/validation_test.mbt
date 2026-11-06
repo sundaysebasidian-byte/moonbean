@@ -361,7 +361,7 @@ test "applies account currency constraints" {
 ///|
 test "warns about unsupported plugins" {
   let v = validated(
-    "plugin \"beancount.plugins.auto_accounts\"\n" +
+    "plugin \"beancount.plugins.unsupported\"\n" +
     "2024-01-01 open Assets:Cash USD\n",
   )
   inspect(v.warnings.length(), content="1")
@@ -412,4 +412,81 @@ test "migration document warns that receipt storage is unchecked" {
   assert_eq(v.warnings.length(), 1)
   assert_eq(v.warnings[0].code, "validation.document_unchecked")
   assert_eq(v.warnings[0].loc.line, 2)
+}
+
+///|
+test "native plugins preserve included origins and declaration order" {
+  let source = "plugin \"beancount.plugins.implicit_prices\"\n" +
+    "plugin \"beancount.plugins.unique_prices\"\n" +
+    "plugin \"beancount.plugins.auto_accounts\"\n" +
+    "2024-01-02 * \"exchange\"\n" +
+    "  Assets:Foreign 2 EUR @ 3 USD\n" +
+    "  Assets:Cash -6 USD\n" +
+    "2024-01-02 price EUR 4 USD\n"
+  let mapping = Array::make(7, @ast.Loc::new("included.bean", 42))
+  let v = @validation.validate_ledger(
+    @syntax.parse_source("root.bean", source, source_map=mapping),
+  )
+  assert_eq(v.warnings.length(), 0)
+  assert_eq(v.errors.length(), 1)
+  assert_eq(v.errors[0].code, "validation.unique_prices")
+  assert_eq(v.errors[0].loc.file, "included.bean")
+  assert_eq(v.errors[0].loc.line, 42)
+  for e in v.entries {
+    if e.directive is DPrice(_) || e.directive is DOpen(_) {
+      assert_eq(e.loc.file, "included.bean")
+      assert_eq(e.loc.line, 42)
+    }
+  }
+  let reversed = source.replace_all(
+    old="plugin \"beancount.plugins.implicit_prices\"\nplugin \"beancount.plugins.unique_prices\"",
+    new="plugin \"beancount.plugins.unique_prices\"\nplugin \"beancount.plugins.implicit_prices\"",
+  )
+  assert_eq(validated(reversed).errors.length(), 0)
+}
+
+///|
+test "commodity and leaf diagnostics and unsupported names remain distinct" {
+  let v = validated(
+    "plugin \"beancount.plugins.auto_accounts\"\n" +
+    "plugin \"beancount.plugins.check_commodity\"\n" +
+    "plugin \"beancount.plugins.leafonly\"\n" +
+    "plugin \"example.python\"\n" +
+    "2024-01-02 * \"hierarchy\"\n" +
+    "  Assets:Wallet 3 USD\n" +
+    "  Assets:Wallet:Cash -3 USD\n",
+  )
+  assert_true(has_error(v, "validation.check_commodity"))
+  assert_true(has_error(v, "validation.leafonly"))
+  assert_eq(v.warnings.length(), 1)
+  assert_true(v.warnings[0].message.contains("未实现的插件"))
+  assert_true(v.warnings[0].message.contains("example.python"))
+  for e in v.errors {
+    assert_eq(e.loc.line, 5)
+  }
+}
+
+///|
+test "commodity exemptions use anchored account and currency patterns" {
+  let v = validated(
+    "plugin \"beancount.plugins.check_commodity\" \"{'Assets:.*': 'US.*'}\"\n" +
+    "2024-01-01 commodity EUR\n2024-01-01 open Assets:Cash USD,EUR\n",
+  )
+  assert_eq(v.errors.length(), 0)
+  assert_eq(v.warnings.length(), 0)
+  let bad = validated(
+    "plugin \"beancount.plugins.check_commodity\" \"{'Cash': 'USD'}\"\n2024-01-01 open Assets:Cash USD\n",
+  )
+  assert_true(has_error(bad, "validation.check_commodity"))
+}
+
+///|
+test "implicit prices distinguish short augmentation from reduction" {
+  let v = validated(
+    "plugin \"beancount.plugins.implicit_prices\"\n2024-01-01 open Assets:Stock \"NONE\"\n2024-01-01 open Assets:Cash\n2024-01-02 * \"independent short position\"\n  Assets:Stock -2 XYZ {3 USD, 2024-01-02}\n  Assets:Cash 6 USD\n2024-01-03 * \"independent short reduction\"\n  Assets:Stock 1 XYZ {3 USD, 2024-01-02}\n  Assets:Cash -3 USD\n",
+  )
+  assert_eq(v.errors.length(), 0)
+  let prices = v.entries.filter(fn(e) { e.directive is DPrice(_) })
+  assert_eq(prices.length(), 1)
+  assert_eq(prices[0].loc.line, 4)
 }

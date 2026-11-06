@@ -78,6 +78,12 @@ def run(cmd):
 
 def classify_oracle(message):
     text = message.lower()
+    if "missing commodity directive" in text:
+        return "check_commodity:" + re.search(r"for '([^']+)'", message).group(1)
+    if "disagreeing price entries" in text:
+        return "unique_prices"
+    if "non-leaf account" in text:
+        return "leafonly:" + re.search(r"account '([^']+)'", message).group(1)
     if "transaction does not balance" in text:
         return "unbalanced"
     if "balance failed" in text:
@@ -136,7 +142,8 @@ def oracle_diagnostics(oracle_dir, path):
         match = re.match(r"^(.+?):(\d+): (.*)$", line)
         if not match:
             continue
-        found.add((os.path.basename(match.group(1)), classify_oracle(match.group(3)), int(match.group(2))))
+        category = classify_oracle(match.group(3))
+        found.add(("<check_commodity>", category, 0) if category.startswith("check_commodity:") else ("<leafonly>", category, 0) if category.startswith("leafonly:") else (os.path.basename(match.group(1)), category, int(match.group(2))))
     return found
 
 
@@ -152,7 +159,15 @@ def ours_diagnostics(exe, path):
         match = re.match(r"^(.+?):(\d+): ([a-z_.]+): (.*)$", line)
         if not match:
             continue
-        found.add((os.path.basename(match.group(1)), classify_ours(match.group(3)), int(match.group(2))))
+        category = classify_ours(match.group(3))
+        if category == "check_commodity":
+            currency = re.search(r"for '([^']+)'", match.group(4)).group(1)
+            found.add(("<check_commodity>", category + ":" + currency, 0))
+        elif category == "leafonly":
+            account = re.search(r"account '([^']+)'", match.group(4)).group(1)
+            found.add(("<leafonly>", category + ":" + account, 0))
+        else:
+            found.add((os.path.basename(match.group(1)), category, int(match.group(2))))
     return found
 
 
@@ -346,9 +361,17 @@ def compare_ledger(exe, oracle_dir, path, skip_oracle):
     )
     if not ok:
         return result
+    # Compare raw Price directives, including duplicates, even for error ledgers.
+    exported = run([exe, "export", path, "--json"])
+    actual_entries = json.loads(exported.stdout)["entries"]
+    actual_prices = sorted((e["date"], e["currency"], Decimal(e["amount"]["number"]), e["amount"]["currency"])
+                           for e in actual_entries if e["type"] == "price")
+    oracle_output = run([os.path.join(oracle_dir, "python"), os.path.join(os.path.dirname(__file__), "oracle_entries.py"), path])
+    expected_prices = sorted((d, c, Decimal(n), q) for d, c, n, q in json.loads(oracle_output.stdout))
+    result["queries"].append(("prices", actual_prices == expected_prices, f"expected {expected_prices} got {actual_prices}" if actual_prices != expected_prices else ""))
     if ours_errors:
         # Error ledgers have no meaningful balance comparison.
-        result["queries"] = [("skip", True, "error ledger")]
+        result["queries"].insert(0, ("skip", True, "error ledger"))
         return result
     for label, our_query, oracle_query_text, mode in QUERIES:
         ours_rows = ours_query(exe, path, our_query)

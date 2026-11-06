@@ -9,7 +9,7 @@ exe = '_build/native/debug/build/cmd/main/main.exe'
 root = Path('examples/migration')
 records = []
 for file, status, diagnostics in [
-    ('plugin.beancount', 1, [('validation.plugin', 1), ('validation.unknown_account', 2), ('validation.unknown_account', 2)]),
+    ('plugin.beancount', 0, []),
     ('document.beancount', 0, [('validation.document_unchecked', 2)]),
     ('include.beancount', 1, [('include.missing', 2), ('validation.document_unchecked', 2)]),
     ('cycle.beancount', 1, [('include.cycle', 1)]),
@@ -20,7 +20,7 @@ for file, status, diagnostics in [
     for code, line in diagnostics:
         diagnostic_file = 'document.beancount' if code == 'validation.document_unchecked' else file
         assert f'{root / diagnostic_file}:{line}: {code}:' in proc.stderr, (file, proc.stderr)
-    assert proc.stderr.count('validation.unknown_account:') == (2 if file == 'plugin.beancount' else 0), proc.stderr
+    assert proc.stderr.count('validation.unknown_account:') == 0, proc.stderr
     records.append(dict(file=file, status=proc.returncode, diagnostics=proc.stderr))
 for line_number, line in enumerate((root / 'queries.beancount').read_text().splitlines(), 1):
     words = shlex.split(line)

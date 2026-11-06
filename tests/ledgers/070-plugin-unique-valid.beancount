@@ -1,0 +1,4 @@
+plugin "beancount.plugins.unique_prices"
+2024-01-02 price XYZ 2 USD
+2024-01-02 price XYZ 2.00 USD
+2024-01-03 price XYZ 3 USD
