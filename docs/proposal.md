@@ -30,7 +30,7 @@ Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运
 - 两个 seed 各 1000 份随机账本：858 份完全一致，142 份仅因 AVERAGE 扩展不同，其余差异为 0。
 - 22 份报表和 lot 回归账本共 144 项检查通过；5 份迁移边界账本逐一给出确定的诊断。
 - 四个后端各 132 个测试；Playground 有 29 项 node 检查和 8 项无头浏览器检查；CI 覆盖三个系统、oracle 和 Playground。
-- 10 万笔交易 `check` 约 0.56 s（固定种子，原始采样已存档）。
+- 固定种子、100 万 source posting 的 native release 库阶段中位数：解析 1.931 s、FIFO booking 0.505 s、校验含 pad 1.017 s、BQL GROUP BY 0.812 s（Apple M4 / 16 GiB / MoonBit 0.1.20261104；2 次预热、21 次测量）。[原始数组、阶段 profile 与本地趋势检查](performance.md)均可复现；阶段并非互斥，不可相加。未分组 ORDER BY 在小规模呈二次方增长，10 万/100 万该场景未完成；wasm-gc 的 100 万 FIFO 综合场景因默认 moonrun 堆耗尽未完成；未作性能优化。
 
 ## 基础与本期工作
 

@@ -1,0 +1,374 @@
+{
+  "schema": 1,
+  "timestamp": "2026-11-06T19:13:58.413813+00:00",
+  "environment": {
+    "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "cores": 10,
+    "python": "3.14.6",
+    "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+    "node": "v24.18.0",
+    "commit": "2cd1a2047511d51c59db3d4902a68423def64d3c",
+    "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+    "runner_sha256": "1cf213e24ea8165374d249e94ec24f9a47ef4e452719164b1bcffbff65bdac22",
+    "model": "Mac16,12",
+    "cpu": "Apple M4",
+    "memory_bytes": 17179869184
+  },
+  "target": "wasm-gc",
+  "postings": 1000000,
+  "generated_pad_postings": 2,
+  "method": "STRICT",
+  "seed": 20261101,
+  "runs": 21,
+  "warmups": 2,
+  "min_batch_ms": 20,
+  "command": [
+    "moonrun",
+    "_build/wasm-gc/release/build/bench/bench.wasm"
+  ],
+  "artifact_sha256": "7d5373351c63bc2946bcd017a02c34f724b018fe629d1bd3a8d613f2c642628b",
+  "stages": {
+    "booking_STRICT": {
+      "samples": [
+        {
+          "stage": "booking_STRICT",
+          "warmup": true,
+          "seconds": 0.345,
+          "batch": 1,
+          "sink": 500000
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": true,
+          "seconds": 0.334,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.33,
+          "batch": 1,
+          "sink": 500000
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.326,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.323,
+          "batch": 1,
+          "sink": 500000
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.332,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.331,
+          "batch": 1,
+          "sink": 500000
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.331,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.336,
+          "batch": 1,
+          "sink": 500000
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.337,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.333,
+          "batch": 1,
+          "sink": 500000
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.338,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.339,
+          "batch": 1,
+          "sink": 500000
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.338,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.339,
+          "batch": 1,
+          "sink": 500000
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.338,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.334,
+          "batch": 1,
+          "sink": 500000
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.336,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.336,
+          "batch": 1,
+          "sink": 500000
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.339,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.341,
+          "batch": 1,
+          "sink": 500000
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.334,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.333,
+          "batch": 1,
+          "sink": 500000
+        }
+      ],
+      "p50": 0.336,
+      "p95": 0.339,
+      "p99": 0.341,
+      "postings_per_second": 2976190.476190476
+    },
+    "validate_pad_STRICT": {
+      "samples": [
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": true,
+          "seconds": 0.847,
+          "batch": 1,
+          "sink": 500006
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": true,
+          "seconds": 0.686,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.64,
+          "batch": 1,
+          "sink": 500006
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.819,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.687,
+          "batch": 1,
+          "sink": 500006
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.641,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.812,
+          "batch": 1,
+          "sink": 500006
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.695,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.646,
+          "batch": 1,
+          "sink": 500006
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.782,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.726,
+          "batch": 1,
+          "sink": 500006
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.724,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.863,
+          "batch": 1,
+          "sink": 500006
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.753,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.693,
+          "batch": 1,
+          "sink": 500006
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.822,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.742,
+          "batch": 1,
+          "sink": 500006
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.701,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.831,
+          "batch": 1,
+          "sink": 500006
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.745,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.748,
+          "batch": 1,
+          "sink": 500006
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.852,
+          "batch": 1,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.784,
+          "batch": 1,
+          "sink": 500006
+        }
+      ],
+      "p50": 0.745,
+      "p95": 0.852,
+      "p99": 0.863,
+      "postings_per_second": 1342281.8791946308
+    }
+  },
+  "skipped_stages": {},
+  "status": "complete",
+  "peak_rss_bytes": 1251295232
+}

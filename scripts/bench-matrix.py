@@ -23,12 +23,28 @@ def digest(path):
 def percentile(values, q):
     return sorted(values)[max(0, math.ceil(len(values) * q) - 1)]
 
+def failure_evidence(stdout, stderr, root=ROOT):
+    result = dict(partial_samples=[], stdout=stdout.replace(str(root), '<repo>'),
+                  stderr=stderr.replace(str(root), '<repo>'), invalid_sample_lines=[])
+    for line in stdout.splitlines():
+        if line.startswith('{'):
+            try:
+                result['partial_samples'].append(json.loads(line))
+            except json.JSONDecodeError:
+                result['invalid_sample_lines'].append(line.replace(str(root), '<repo>'))
+    rss = re.search(r'(\d+)\s+maximum resident set size', stderr)
+    if rss:
+        result['peak_rss_bytes'] = int(rss[1])
+    return result
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--out', default='.oracle-cache/performance-new')
     p.add_argument('--runs', type=int, default=21)
     p.add_argument('--sizes', type=int, nargs='+', default=[1000, 10000, 100000, 1000000])
     p.add_argument('--targets', nargs='+', choices=['native', 'js', 'wasm-gc'], default=['native', 'js', 'wasm-gc'])
+    p.add_argument('--methods', nargs='+', choices=['FIFO', 'AVERAGE', 'STRICT'], default=['FIFO', 'AVERAGE', 'STRICT'])
     p.add_argument('--timeout', type=int, default=600)
     a = p.parse_args()
     if a.runs < 15 or any(n < 4 or n % 8 for n in a.sizes):
@@ -49,18 +65,19 @@ def main():
         artifact = Path(f'_build/{target}/release/build/bench/bench.' + {'native':'exe', 'js':'js', 'wasm-gc':'wasm'}[target])
         cmd = {'native':[], 'js':['node'], 'wasm-gc':['moonrun']}[target] + [str(artifact)]
         for count in a.sizes:
-            for method in ['FIFO', 'AVERAGE', 'STRICT']:
+            for method in a.methods:
                 record = dict(schema=1, timestamp=datetime.datetime.now(datetime.timezone.utc).isoformat(), environment=env,
                               target=target, postings=count, generated_pad_postings=2, method=method, seed=20261101,
                               runs=a.runs, warmups=2, min_batch_ms=20, command=cmd, artifact_sha256=digest(artifact), stages={})
                 record['skipped_stages'] = {'order': 'Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort.'} if count >= 100000 and method == 'FIFO' else {}
+                stdout, stderr = '', ''
                 try:
                     proc = subprocess.Popen(['/usr/bin/time', '-l', *cmd], env=dict(os.environ, BENCH_COUNT=str(count), BENCH_METHOD=method, BENCH_RUNS=str(a.runs)), stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, start_new_session=True)
                     try:
                         stdout, stderr = proc.communicate(timeout=a.timeout)
                     except subprocess.TimeoutExpired:
                         os.killpg(proc.pid, signal.SIGKILL)
-                        proc.communicate()
+                        stdout, stderr = proc.communicate()
                         raise
                     proc.stdout, proc.stderr = stdout, stderr
                     if proc.returncode:
@@ -78,7 +95,8 @@ def main():
                         raise RuntimeError('RSS missing')
                     record.update(status='complete', peak_rss_bytes=int(match[1]))
                 except (subprocess.TimeoutExpired, RuntimeError) as error:
-                    record.update(status='incomplete', reason=str(error).replace(str(ROOT), '<repo>'))
+                    record.update(status='incomplete', reason=str(error).replace(str(ROOT), '<repo>'),
+                                  **failure_evidence(stdout, stderr))
                 path = out / f'{target}-{count}-{method}.json'
                 path.write_text(json.dumps(record, indent=2)+'\n')
                 print(path.name, record['status'], flush=True)

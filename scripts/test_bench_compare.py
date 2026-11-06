@@ -12,7 +12,29 @@ module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 
 
+matrix_spec = importlib.util.spec_from_file_location('matrix', Path(__file__).with_name('bench-matrix.py'))
+bench_matrix = importlib.util.module_from_spec(matrix_spec)
+matrix_spec.loader.exec_module(bench_matrix)
+
+
 class CompareTest(unittest.TestCase):
+    def test_failure_evidence(self):
+        sample = dict(stage='parse', warmup=True, seconds=0.2, batch=1, sink=5)
+        stderr = 'fatal error at /repo/bench\n' + 'trace\n' * 400 + '1234 maximum resident set size\n'
+        evidence = bench_matrix.failure_evidence(json.dumps(sample)+'\n', stderr, Path('/repo'))
+        self.assertEqual(evidence['partial_samples'], [sample])
+        self.assertTrue(evidence['stderr'].startswith('fatal error at <repo>/bench'))
+        self.assertEqual(evidence['peak_rss_bytes'], 1234)
+        self.assertEqual(evidence['stderr'].count('trace'), 400)
+
+    def test_truncated_failure_output(self):
+        sample = dict(stage='parse', warmup=False, seconds=0.2, batch=1, sink=5)
+        stdout = json.dumps(sample) + '\n{"stage":'
+        result = bench_matrix.failure_evidence(stdout, 'timeout')
+        self.assertEqual(result['partial_samples'], [sample])
+        self.assertEqual(result['invalid_sample_lines'], ['{"stage":'])
+        self.assertEqual(result['stdout'], stdout)
+
     def test_comparison(self):
         with tempfile.TemporaryDirectory() as directory:
             base, new = Path(directory)/'base', Path(directory)/'new'

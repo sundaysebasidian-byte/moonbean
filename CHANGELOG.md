@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2
+
+- Add offline seeded, multi-scale library-stage performance measurements for native, JS and wasm-gc, including cost booking and representative BQL queries.
+- Retain warmup/sample arrays, percentiles, throughput, process peak RSS and stage profiles; preserve partial samples/full diagnostics on backend failure and add a local baseline regression checker.
+
 ## 0.2.1
 
 - Add Unicode code-point `length` and zero-origin, end-exclusive `substr` with negative/clipped integer literal indices and typed NULL propagation.

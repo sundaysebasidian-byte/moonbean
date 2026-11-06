@@ -1,0 +1,1601 @@
+{
+  "note": "Independent stage timings, not additive CPU stack shares; validation includes booking and pad. RSS is process-wide, includes generation/setup and runtime. API results are consumed without text/JSON rendering.",
+  "cases": [
+    {
+      "target": "js",
+      "postings": 1000,
+      "method": "AVERAGE",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 116162560,
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.000625,
+          "p95": 0.0006896551724137932,
+          "p99": 0.0006896551724137932,
+          "postings_per_second": 1600000.0,
+          "max_over_p50": 1.103448275862069
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.0009523809523809524,
+          "p95": 0.001,
+          "p99": 0.0011111111111111111,
+          "postings_per_second": 1050000.0,
+          "max_over_p50": 1.1666666666666667
+        }
+      }
+    },
+    {
+      "target": "js",
+      "postings": 1000,
+      "method": "FIFO",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 217563136,
+      "stages": {
+        "parse": {
+          "p50": 0.0023333333333333335,
+          "p95": 0.002857142857142857,
+          "p99": 0.002857142857142857,
+          "postings_per_second": 428571.4285714285,
+          "max_over_p50": 1.2244897959183672
+        },
+        "booking_FIFO": {
+          "p50": 0.0004347826086956522,
+          "p95": 0.00046511627906976747,
+          "p99": 0.0005263157894736842,
+          "postings_per_second": 2300000.0,
+          "max_over_p50": 1.2105263157894737
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.0008333333333333334,
+          "p95": 0.0009090909090909091,
+          "p99": 0.0009090909090909091,
+          "postings_per_second": 1200000.0,
+          "max_over_p50": 1.0909090909090908
+        },
+        "realize": {
+          "p50": 0.00012578616352201257,
+          "p95": 0.0001342281879194631,
+          "p99": 0.0001342281879194631,
+          "postings_per_second": 7950000.0,
+          "max_over_p50": 1.0671140939597317
+        },
+        "format": {
+          "p50": 0.0016153846153846155,
+          "p95": 0.0016666666666666668,
+          "p99": 0.0019090909090909091,
+          "postings_per_second": 619047.6190476189,
+          "max_over_p50": 1.1818181818181817
+        },
+        "aggregate": {
+          "p50": 0.00021505376344086021,
+          "p95": 0.0002173913043478261,
+          "p99": 0.00022222222222222223,
+          "postings_per_second": 4650000.0,
+          "max_over_p50": 1.0333333333333334
+        },
+        "group": {
+          "p50": 0.00045454545454545455,
+          "p95": 0.0005,
+          "p99": 0.0005555555555555556,
+          "postings_per_second": 2200000.0,
+          "max_over_p50": 1.2222222222222223
+        },
+        "order": {
+          "p50": 0.008333333333333333,
+          "p95": 0.009,
+          "p99": 0.009333333333333334,
+          "postings_per_second": 120000.0,
+          "max_over_p50": 1.12
+        },
+        "regex": {
+          "p50": 0.00031746031746031746,
+          "p95": 0.0003333333333333333,
+          "p99": 0.0003333333333333333,
+          "postings_per_second": 3150000.0,
+          "max_over_p50": 1.05
+        },
+        "transactions": {
+          "p50": 0.0001550387596899225,
+          "p95": 0.00016528925619834712,
+          "p99": 0.00016528925619834712,
+          "postings_per_second": 6450000.0,
+          "max_over_p50": 1.0661157024793388
+        },
+        "length": {
+          "p50": 0.00024096385542168676,
+          "p95": 0.00029411764705882356,
+          "p99": 0.00029411764705882356,
+          "postings_per_second": 4149999.9999999995,
+          "max_over_p50": 1.2205882352941178
+        },
+        "substr": {
+          "p50": 0.0004761904761904762,
+          "p95": 0.0005128205128205128,
+          "p99": 0.0005128205128205128,
+          "postings_per_second": 2100000.0,
+          "max_over_p50": 1.0769230769230769
+        }
+      }
+    },
+    {
+      "target": "js",
+      "postings": 1000,
+      "method": "STRICT",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 107708416,
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.0004,
+          "p95": 0.00045454545454545455,
+          "p99": 0.00046511627906976747,
+          "postings_per_second": 2500000.0,
+          "max_over_p50": 1.1627906976744187
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.0007692307692307692,
+          "p95": 0.0008695652173913044,
+          "p99": 0.0008695652173913044,
+          "postings_per_second": 1300000.0,
+          "max_over_p50": 1.1304347826086958
+        }
+      }
+    },
+    {
+      "target": "js",
+      "postings": 10000,
+      "method": "AVERAGE",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 222035968,
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.007,
+          "p95": 0.007333333333333333,
+          "p99": 0.008,
+          "postings_per_second": 1428571.4285714286,
+          "max_over_p50": 1.1428571428571428
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.01,
+          "p95": 0.011,
+          "p99": 0.0115,
+          "postings_per_second": 1000000.0,
+          "max_over_p50": 1.15
+        }
+      }
+    },
+    {
+      "target": "js",
+      "postings": 10000,
+      "method": "FIFO",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 385384448,
+      "stages": {
+        "parse": {
+          "p50": 0.027,
+          "p95": 0.031,
+          "p99": 0.033,
+          "postings_per_second": 370370.3703703704,
+          "max_over_p50": 1.2222222222222223
+        },
+        "booking_FIFO": {
+          "p50": 0.0046,
+          "p95": 0.005,
+          "p99": 0.005,
+          "postings_per_second": 2173913.0434782607,
+          "max_over_p50": 1.0869565217391304
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.008666666666666666,
+          "p95": 0.009,
+          "p99": 0.009,
+          "postings_per_second": 1153846.153846154,
+          "max_over_p50": 1.0384615384615383
+        },
+        "realize": {
+          "p50": 0.00125,
+          "p95": 0.0013333333333333333,
+          "p99": 0.0013333333333333333,
+          "postings_per_second": 8000000.0,
+          "max_over_p50": 1.0666666666666667
+        },
+        "format": {
+          "p50": 0.0185,
+          "p95": 0.02,
+          "p99": 0.022,
+          "postings_per_second": 540540.5405405406,
+          "max_over_p50": 1.1891891891891893
+        },
+        "aggregate": {
+          "p50": 0.0022222222222222222,
+          "p95": 0.0023333333333333335,
+          "p99": 0.0023333333333333335,
+          "postings_per_second": 4500000.0,
+          "max_over_p50": 1.05
+        },
+        "group": {
+          "p50": 0.0055,
+          "p95": 0.00575,
+          "p99": 0.00575,
+          "postings_per_second": 1818181.8181818184,
+          "max_over_p50": 1.0454545454545454
+        },
+        "order": {
+          "p50": 0.884,
+          "p95": 0.91,
+          "p99": 0.917,
+          "postings_per_second": 11312.217194570136,
+          "max_over_p50": 1.0373303167420815
+        },
+        "regex": {
+          "p50": 0.0031428571428571426,
+          "p95": 0.0035,
+          "p99": 0.0035,
+          "postings_per_second": 3181818.181818182,
+          "max_over_p50": 1.1136363636363638
+        },
+        "transactions": {
+          "p50": 0.0014285714285714286,
+          "p95": 0.0015384615384615385,
+          "p99": 0.0016666666666666668,
+          "postings_per_second": 7000000.0,
+          "max_over_p50": 1.1666666666666667
+        },
+        "length": {
+          "p50": 0.00275,
+          "p95": 0.002875,
+          "p99": 0.0031428571428571426,
+          "postings_per_second": 3636363.6363636367,
+          "max_over_p50": 1.1428571428571428
+        },
+        "substr": {
+          "p50": 0.0055,
+          "p95": 0.006,
+          "p99": 0.00625,
+          "postings_per_second": 1818181.8181818184,
+          "max_over_p50": 1.1363636363636365
+        }
+      }
+    },
+    {
+      "target": "js",
+      "postings": 10000,
+      "method": "STRICT",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 227295232,
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.004200000000000001,
+          "p95": 0.0046,
+          "p99": 0.0048000000000000004,
+          "postings_per_second": 2380952.3809523806,
+          "max_over_p50": 1.1428571428571428
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.008333333333333333,
+          "p95": 0.009,
+          "p99": 0.009333333333333334,
+          "postings_per_second": 1200000.0,
+          "max_over_p50": 1.12
+        }
+      }
+    },
+    {
+      "target": "js",
+      "postings": 100000,
+      "method": "AVERAGE",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 504512512,
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.066,
+          "p95": 0.072,
+          "p99": 0.073,
+          "postings_per_second": 1515151.5151515151,
+          "max_over_p50": 1.106060606060606
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.104,
+          "p95": 0.111,
+          "p99": 0.12,
+          "postings_per_second": 961538.4615384616,
+          "max_over_p50": 1.153846153846154
+        }
+      }
+    },
+    {
+      "target": "js",
+      "postings": 100000,
+      "method": "FIFO",
+      "status": "complete",
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "peak_rss_bytes": 1050689536,
+      "stages": {
+        "parse": {
+          "p50": 0.329,
+          "p95": 0.381,
+          "p99": 0.396,
+          "postings_per_second": 303951.367781155,
+          "max_over_p50": 1.203647416413374
+        },
+        "booking_FIFO": {
+          "p50": 0.045,
+          "p95": 0.047,
+          "p99": 0.047,
+          "postings_per_second": 2222222.2222222225,
+          "max_over_p50": 1.0444444444444445
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.085,
+          "p95": 0.088,
+          "p99": 0.088,
+          "postings_per_second": 1176470.588235294,
+          "max_over_p50": 1.0352941176470587
+        },
+        "realize": {
+          "p50": 0.0135,
+          "p95": 0.014,
+          "p99": 0.0145,
+          "postings_per_second": 7407407.407407408,
+          "max_over_p50": 1.0740740740740742
+        },
+        "format": {
+          "p50": 0.252,
+          "p95": 0.291,
+          "p99": 0.309,
+          "postings_per_second": 396825.3968253968,
+          "max_over_p50": 1.2261904761904763
+        },
+        "aggregate": {
+          "p50": 0.025,
+          "p95": 0.03,
+          "p99": 0.042,
+          "postings_per_second": 4000000.0,
+          "max_over_p50": 1.68
+        },
+        "group": {
+          "p50": 0.067,
+          "p95": 0.072,
+          "p99": 0.086,
+          "postings_per_second": 1492537.3134328357,
+          "max_over_p50": 1.2835820895522387
+        },
+        "regex": {
+          "p50": 0.037,
+          "p95": 0.041,
+          "p99": 0.05,
+          "postings_per_second": 2702702.702702703,
+          "max_over_p50": 1.3513513513513515
+        },
+        "transactions": {
+          "p50": 0.0165,
+          "p95": 0.018,
+          "p99": 0.018,
+          "postings_per_second": 6060606.060606061,
+          "max_over_p50": 1.0909090909090908
+        },
+        "length": {
+          "p50": 0.032,
+          "p95": 0.035,
+          "p99": 0.051,
+          "postings_per_second": 3125000.0,
+          "max_over_p50": 1.5937499999999998
+        },
+        "substr": {
+          "p50": 0.06,
+          "p95": 0.074,
+          "p99": 0.076,
+          "postings_per_second": 1666666.6666666667,
+          "max_over_p50": 1.2666666666666666
+        }
+      }
+    },
+    {
+      "target": "js",
+      "postings": 100000,
+      "method": "STRICT",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 521617408,
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.043,
+          "p95": 0.047,
+          "p99": 0.047,
+          "postings_per_second": 2325581.3953488376,
+          "max_over_p50": 1.0930232558139537
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.085,
+          "p95": 0.089,
+          "p99": 0.096,
+          "postings_per_second": 1176470.588235294,
+          "max_over_p50": 1.1294117647058823
+        }
+      }
+    },
+    {
+      "target": "js",
+      "postings": 1000000,
+      "method": "AVERAGE",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 2857467904,
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.681,
+          "p95": 0.703,
+          "p99": 0.708,
+          "postings_per_second": 1468428.7812041114,
+          "max_over_p50": 1.0396475770925109
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 1.086,
+          "p95": 1.243,
+          "p99": 1.251,
+          "postings_per_second": 920810.3130755064,
+          "max_over_p50": 1.1519337016574585
+        }
+      }
+    },
+    {
+      "target": "js",
+      "postings": 1000000,
+      "method": "FIFO",
+      "status": "complete",
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "peak_rss_bytes": 3420340224,
+      "stages": {
+        "parse": {
+          "p50": 3.444,
+          "p95": 3.749,
+          "p99": 3.782,
+          "postings_per_second": 290360.0464576074,
+          "max_over_p50": 1.0981416957026713
+        },
+        "booking_FIFO": {
+          "p50": 0.472,
+          "p95": 0.486,
+          "p99": 0.5,
+          "postings_per_second": 2118644.0677966103,
+          "max_over_p50": 1.0593220338983051
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.88,
+          "p95": 1.042,
+          "p99": 1.059,
+          "postings_per_second": 1136363.6363636365,
+          "max_over_p50": 1.2034090909090909
+        },
+        "realize": {
+          "p50": 0.141,
+          "p95": 0.146,
+          "p99": 0.147,
+          "postings_per_second": 7092198.581560285,
+          "max_over_p50": 1.0425531914893618
+        },
+        "format": {
+          "p50": 2.771,
+          "p95": 2.988,
+          "p99": 2.989,
+          "postings_per_second": 360880.5485384338,
+          "max_over_p50": 1.0786719595813785
+        },
+        "aggregate": {
+          "p50": 0.321,
+          "p95": 0.473,
+          "p99": 0.475,
+          "postings_per_second": 3115264.797507788,
+          "max_over_p50": 1.4797507788161992
+        },
+        "group": {
+          "p50": 0.692,
+          "p95": 0.882,
+          "p99": 1.153,
+          "postings_per_second": 1445086.7052023122,
+          "max_over_p50": 1.6661849710982661
+        },
+        "regex": {
+          "p50": 0.413,
+          "p95": 0.554,
+          "p99": 0.57,
+          "postings_per_second": 2421307.506053269,
+          "max_over_p50": 1.3801452784503632
+        },
+        "transactions": {
+          "p50": 0.214,
+          "p95": 0.233,
+          "p99": 0.286,
+          "postings_per_second": 4672897.196261683,
+          "max_over_p50": 1.336448598130841
+        },
+        "length": {
+          "p50": 0.374,
+          "p95": 0.561,
+          "p99": 0.563,
+          "postings_per_second": 2673796.7914438504,
+          "max_over_p50": 1.5053475935828875
+        },
+        "substr": {
+          "p50": 0.64,
+          "p95": 0.801,
+          "p99": 0.938,
+          "postings_per_second": 1562500.0,
+          "max_over_p50": 1.465625
+        }
+      }
+    },
+    {
+      "target": "js",
+      "postings": 1000000,
+      "method": "STRICT",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 2852290560,
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.45,
+          "p95": 0.456,
+          "p99": 0.457,
+          "postings_per_second": 2222222.222222222,
+          "max_over_p50": 1.0155555555555555
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.888,
+          "p95": 0.966,
+          "p99": 1.102,
+          "postings_per_second": 1126126.1261261262,
+          "max_over_p50": 1.240990990990991
+        }
+      }
+    },
+    {
+      "target": "native",
+      "postings": 1000,
+      "method": "AVERAGE",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 3768320,
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.000625,
+          "p95": 0.0006451612903225806,
+          "p99": 0.0006451612903225806,
+          "postings_per_second": 1600000.0,
+          "max_over_p50": 1.032258064516129
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.0008695652173913044,
+          "p95": 0.0009090909090909091,
+          "p99": 0.0009090909090909091,
+          "postings_per_second": 1150000.0,
+          "max_over_p50": 1.0454545454545454
+        }
+      }
+    },
+    {
+      "target": "native",
+      "postings": 1000,
+      "method": "FIFO",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 5341184,
+      "stages": {
+        "parse": {
+          "p50": 0.0018181818181818182,
+          "p95": 0.0019090909090909091,
+          "p99": 0.0019090909090909091,
+          "postings_per_second": 550000.0,
+          "max_over_p50": 1.05
+        },
+        "booking_FIFO": {
+          "p50": 0.00044444444444444447,
+          "p95": 0.00045454545454545455,
+          "p99": 0.00045454545454545455,
+          "postings_per_second": 2250000.0,
+          "max_over_p50": 1.0227272727272727
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.0006896551724137932,
+          "p95": 0.0007407407407407407,
+          "p99": 0.0007407407407407407,
+          "postings_per_second": 1449999.9999999998,
+          "max_over_p50": 1.074074074074074
+        },
+        "realize": {
+          "p50": 0.00014285714285714287,
+          "p95": 0.00014814814814814815,
+          "p99": 0.00015037593984962405,
+          "postings_per_second": 6999999.999999999,
+          "max_over_p50": 1.0526315789473684
+        },
+        "format": {
+          "p50": 0.001,
+          "p95": 0.001,
+          "p99": 0.001,
+          "postings_per_second": 1000000.0,
+          "max_over_p50": 1.0
+        },
+        "aggregate": {
+          "p50": 0.00024390243902439024,
+          "p95": 0.0002469135802469136,
+          "p99": 0.0002469135802469136,
+          "postings_per_second": 4100000.0,
+          "max_over_p50": 1.0123456790123457
+        },
+        "group": {
+          "p50": 0.0005128205128205128,
+          "p95": 0.0005555555555555556,
+          "p99": 0.0005555555555555556,
+          "postings_per_second": 1950000.0,
+          "max_over_p50": 1.0833333333333333
+        },
+        "order": {
+          "p50": 0.007,
+          "p95": 0.007333333333333333,
+          "p99": 0.008333333333333333,
+          "postings_per_second": 142857.14285714284,
+          "max_over_p50": 1.1904761904761905
+        },
+        "regex": {
+          "p50": 0.0002898550724637681,
+          "p95": 0.00029411764705882356,
+          "p99": 0.00029850746268656717,
+          "postings_per_second": 3450000.0,
+          "max_over_p50": 1.0298507462686568
+        },
+        "transactions": {
+          "p50": 0.00016949152542372882,
+          "p95": 0.0001834862385321101,
+          "p99": 0.00018518518518518518,
+          "postings_per_second": 5900000.0,
+          "max_over_p50": 1.0925925925925926
+        },
+        "length": {
+          "p50": 0.00022727272727272727,
+          "p95": 0.00023529411764705883,
+          "p99": 0.00023529411764705883,
+          "postings_per_second": 4400000.0,
+          "max_over_p50": 1.035294117647059
+        },
+        "substr": {
+          "p50": 0.00044444444444444447,
+          "p95": 0.0004761904761904762,
+          "p99": 0.0004878048780487805,
+          "postings_per_second": 2250000.0,
+          "max_over_p50": 1.097560975609756
+        }
+      }
+    },
+    {
+      "target": "native",
+      "postings": 1000,
+      "method": "STRICT",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 3784704,
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.00044444444444444447,
+          "p95": 0.00045454545454545455,
+          "p99": 0.00045454545454545455,
+          "postings_per_second": 2250000.0,
+          "max_over_p50": 1.0227272727272727
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.0006451612903225806,
+          "p95": 0.0006666666666666666,
+          "p99": 0.0006666666666666666,
+          "postings_per_second": 1550000.0,
+          "max_over_p50": 1.0333333333333332
+        }
+      }
+    },
+    {
+      "target": "native",
+      "postings": 10000,
+      "method": "AVERAGE",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 11452416,
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.00625,
+          "p95": 0.006666666666666667,
+          "p99": 0.006666666666666667,
+          "postings_per_second": 1600000.0,
+          "max_over_p50": 1.0666666666666667
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.009,
+          "p95": 0.01,
+          "p99": 0.011,
+          "postings_per_second": 1111111.1111111112,
+          "max_over_p50": 1.2222222222222223
+        }
+      }
+    },
+    {
+      "target": "native",
+      "postings": 10000,
+      "method": "FIFO",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 17399808,
+      "stages": {
+        "parse": {
+          "p50": 0.0185,
+          "p95": 0.019,
+          "p99": 0.019,
+          "postings_per_second": 540540.5405405406,
+          "max_over_p50": 1.027027027027027
+        },
+        "booking_FIFO": {
+          "p50": 0.005,
+          "p95": 0.00525,
+          "p99": 0.00525,
+          "postings_per_second": 2000000.0,
+          "max_over_p50": 1.05
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.008,
+          "p95": 0.008666666666666666,
+          "p99": 0.008666666666666666,
+          "postings_per_second": 1250000.0,
+          "max_over_p50": 1.0833333333333333
+        },
+        "realize": {
+          "p50": 0.0014285714285714286,
+          "p95": 0.0015384615384615385,
+          "p99": 0.0016153846153846155,
+          "postings_per_second": 7000000.0,
+          "max_over_p50": 1.130769230769231
+        },
+        "format": {
+          "p50": 0.01,
+          "p95": 0.01,
+          "p99": 0.01,
+          "postings_per_second": 1000000.0,
+          "max_over_p50": 1.0
+        },
+        "aggregate": {
+          "p50": 0.0025,
+          "p95": 0.0025,
+          "p99": 0.0025,
+          "postings_per_second": 4000000.0,
+          "max_over_p50": 1.0
+        },
+        "group": {
+          "p50": 0.00525,
+          "p95": 0.0055,
+          "p99": 0.0055,
+          "postings_per_second": 1904761.9047619046,
+          "max_over_p50": 1.0476190476190474
+        },
+        "order": {
+          "p50": 0.762,
+          "p95": 0.778,
+          "p99": 0.781,
+          "postings_per_second": 13123.359580052493,
+          "max_over_p50": 1.0249343832020998
+        },
+        "regex": {
+          "p50": 0.002857142857142857,
+          "p95": 0.003,
+          "p99": 0.003,
+          "postings_per_second": 3500000.0,
+          "max_over_p50": 1.05
+        },
+        "transactions": {
+          "p50": 0.0016666666666666668,
+          "p95": 0.00175,
+          "p99": 0.00175,
+          "postings_per_second": 6000000.0,
+          "max_over_p50": 1.05
+        },
+        "length": {
+          "p50": 0.0023333333333333335,
+          "p95": 0.0025,
+          "p99": 0.0025,
+          "postings_per_second": 4285714.285714285,
+          "max_over_p50": 1.0714285714285714
+        },
+        "substr": {
+          "p50": 0.0046,
+          "p95": 0.0048000000000000004,
+          "p99": 0.005,
+          "postings_per_second": 2173913.0434782607,
+          "max_over_p50": 1.0869565217391304
+        }
+      }
+    },
+    {
+      "target": "native",
+      "postings": 10000,
+      "method": "STRICT",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 11681792,
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.0046,
+          "p95": 0.0048000000000000004,
+          "p99": 0.0048000000000000004,
+          "postings_per_second": 2173913.0434782607,
+          "max_over_p50": 1.0434782608695654
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.007,
+          "p95": 0.007666666666666666,
+          "p99": 0.008,
+          "postings_per_second": 1428571.4285714286,
+          "max_over_p50": 1.1428571428571428
+        }
+      }
+    },
+    {
+      "target": "native",
+      "postings": 100000,
+      "method": "AVERAGE",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 83165184,
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.067,
+          "p95": 0.071,
+          "p99": 0.071,
+          "postings_per_second": 1492537.3134328357,
+          "max_over_p50": 1.0597014925373134
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.098,
+          "p95": 0.101,
+          "p99": 0.102,
+          "postings_per_second": 1020408.163265306,
+          "max_over_p50": 1.040816326530612
+        }
+      }
+    },
+    {
+      "target": "native",
+      "postings": 100000,
+      "method": "FIFO",
+      "status": "complete",
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "peak_rss_bytes": 145752064,
+      "stages": {
+        "parse": {
+          "p50": 0.19,
+          "p95": 0.192,
+          "p99": 0.197,
+          "postings_per_second": 526315.7894736842,
+          "max_over_p50": 1.036842105263158
+        },
+        "booking_FIFO": {
+          "p50": 0.05,
+          "p95": 0.052,
+          "p99": 0.053,
+          "postings_per_second": 2000000.0,
+          "max_over_p50": 1.0599999999999998
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.096,
+          "p95": 0.098,
+          "p99": 0.099,
+          "postings_per_second": 1041666.6666666666,
+          "max_over_p50": 1.03125
+        },
+        "realize": {
+          "p50": 0.02,
+          "p95": 0.021,
+          "p99": 0.022,
+          "postings_per_second": 5000000.0,
+          "max_over_p50": 1.0999999999999999
+        },
+        "format": {
+          "p50": 0.104,
+          "p95": 0.108,
+          "p99": 0.111,
+          "postings_per_second": 961538.4615384616,
+          "max_over_p50": 1.0673076923076923
+        },
+        "aggregate": {
+          "p50": 0.039,
+          "p95": 0.042,
+          "p99": 0.043,
+          "postings_per_second": 2564102.564102564,
+          "max_over_p50": 1.1025641025641024
+        },
+        "group": {
+          "p50": 0.072,
+          "p95": 0.075,
+          "p99": 0.076,
+          "postings_per_second": 1388888.888888889,
+          "max_over_p50": 1.0555555555555556
+        },
+        "regex": {
+          "p50": 0.046,
+          "p95": 0.049,
+          "p99": 0.051,
+          "postings_per_second": 2173913.0434782607,
+          "max_over_p50": 1.108695652173913
+        },
+        "transactions": {
+          "p50": 0.026,
+          "p95": 0.028,
+          "p99": 0.028,
+          "postings_per_second": 3846153.8461538465,
+          "max_over_p50": 1.076923076923077
+        },
+        "length": {
+          "p50": 0.035,
+          "p95": 0.036,
+          "p99": 0.036,
+          "postings_per_second": 2857142.857142857,
+          "max_over_p50": 1.0285714285714285
+        },
+        "substr": {
+          "p50": 0.059,
+          "p95": 0.06,
+          "p99": 0.061,
+          "postings_per_second": 1694915.2542372881,
+          "max_over_p50": 1.033898305084746
+        }
+      }
+    },
+    {
+      "target": "native",
+      "postings": 100000,
+      "method": "STRICT",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 85966848,
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.048,
+          "p95": 0.05,
+          "p99": 0.051,
+          "postings_per_second": 2083333.3333333333,
+          "max_over_p50": 1.0625
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.084,
+          "p95": 0.085,
+          "p99": 0.086,
+          "postings_per_second": 1190476.1904761903,
+          "max_over_p50": 1.0238095238095237
+        }
+      }
+    },
+    {
+      "target": "native",
+      "postings": 1000000,
+      "method": "AVERAGE",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 831602688,
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.678,
+          "p95": 0.69,
+          "p99": 0.691,
+          "postings_per_second": 1474926.2536873156,
+          "max_over_p50": 1.0191740412979349
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 1.05,
+          "p95": 1.071,
+          "p99": 1.071,
+          "postings_per_second": 952380.9523809523,
+          "max_over_p50": 1.02
+        }
+      }
+    },
+    {
+      "target": "native",
+      "postings": 1000000,
+      "method": "FIFO",
+      "status": "complete",
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "peak_rss_bytes": 1661747200,
+      "stages": {
+        "parse": {
+          "p50": 1.931,
+          "p95": 1.939,
+          "p99": 1.953,
+          "postings_per_second": 517866.3904712584,
+          "max_over_p50": 1.0113930605903676
+        },
+        "booking_FIFO": {
+          "p50": 0.505,
+          "p95": 0.516,
+          "p99": 0.521,
+          "postings_per_second": 1980198.0198019801,
+          "max_over_p50": 1.0316831683168317
+        },
+        "validate_pad_FIFO": {
+          "p50": 1.017,
+          "p95": 1.058,
+          "p99": 1.06,
+          "postings_per_second": 983284.1691248772,
+          "max_over_p50": 1.0422812192723698
+        },
+        "realize": {
+          "p50": 0.221,
+          "p95": 0.227,
+          "p99": 0.23,
+          "postings_per_second": 4524886.877828054,
+          "max_over_p50": 1.0407239819004526
+        },
+        "format": {
+          "p50": 1.032,
+          "p95": 1.051,
+          "p99": 1.062,
+          "postings_per_second": 968992.2480620155,
+          "max_over_p50": 1.0290697674418605
+        },
+        "aggregate": {
+          "p50": 0.442,
+          "p95": 0.45,
+          "p99": 0.453,
+          "postings_per_second": 2262443.438914027,
+          "max_over_p50": 1.0248868778280542
+        },
+        "group": {
+          "p50": 0.812,
+          "p95": 0.839,
+          "p99": 0.843,
+          "postings_per_second": 1231527.0935960591,
+          "max_over_p50": 1.0381773399014778
+        },
+        "regex": {
+          "p50": 0.529,
+          "p95": 0.538,
+          "p99": 0.539,
+          "postings_per_second": 1890359.1682419658,
+          "max_over_p50": 1.0189035916824196
+        },
+        "transactions": {
+          "p50": 0.283,
+          "p95": 0.289,
+          "p99": 0.29,
+          "postings_per_second": 3533568.90459364,
+          "max_over_p50": 1.0247349823321554
+        },
+        "length": {
+          "p50": 0.377,
+          "p95": 0.383,
+          "p99": 0.385,
+          "postings_per_second": 2652519.893899204,
+          "max_over_p50": 1.0212201591511936
+        },
+        "substr": {
+          "p50": 0.601,
+          "p95": 0.626,
+          "p99": 0.653,
+          "postings_per_second": 1663893.510815308,
+          "max_over_p50": 1.0865224625623962
+        }
+      }
+    },
+    {
+      "target": "native",
+      "postings": 1000000,
+      "method": "STRICT",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 836829184,
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.51,
+          "p95": 0.522,
+          "p99": 0.527,
+          "postings_per_second": 1960784.3137254901,
+          "max_over_p50": 1.0333333333333334
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.879,
+          "p95": 0.893,
+          "p99": 0.896,
+          "postings_per_second": 1137656.4277588169,
+          "max_over_p50": 1.0193401592718998
+        }
+      }
+    },
+    {
+      "target": "wasm-gc",
+      "postings": 1000,
+      "method": "AVERAGE",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 59310080,
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.000392156862745098,
+          "p95": 0.0004347826086956522,
+          "p99": 0.00046511627906976747,
+          "postings_per_second": 2550000.0,
+          "max_over_p50": 1.186046511627907
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.0006060606060606061,
+          "p95": 0.000625,
+          "p99": 0.0006451612903225806,
+          "postings_per_second": 1650000.0,
+          "max_over_p50": 1.064516129032258
+        }
+      }
+    },
+    {
+      "target": "wasm-gc",
+      "postings": 1000,
+      "method": "FIFO",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 67272704,
+      "stages": {
+        "parse": {
+          "p50": 0.0019090909090909091,
+          "p95": 0.0021000000000000003,
+          "p99": 0.0021000000000000003,
+          "postings_per_second": 523809.5238095238,
+          "max_over_p50": 1.1
+        },
+        "booking_FIFO": {
+          "p50": 0.0003278688524590164,
+          "p95": 0.00033898305084745765,
+          "p99": 0.00033898305084745765,
+          "postings_per_second": 3050000.0,
+          "max_over_p50": 1.033898305084746
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.0005405405405405405,
+          "p95": 0.0005714285714285715,
+          "p99": 0.0005714285714285715,
+          "postings_per_second": 1850000.0,
+          "max_over_p50": 1.0571428571428572
+        },
+        "realize": {
+          "p50": 0.00011627906976744187,
+          "p95": 0.00011904761904761905,
+          "p99": 0.00011904761904761905,
+          "postings_per_second": 8600000.0,
+          "max_over_p50": 1.0238095238095237
+        },
+        "format": {
+          "p50": 0.0011764705882352942,
+          "p95": 0.0011764705882352942,
+          "p99": 0.0012352941176470588,
+          "postings_per_second": 849999.9999999999,
+          "max_over_p50": 1.0499999999999998
+        },
+        "aggregate": {
+          "p50": 0.00017094017094017094,
+          "p95": 0.00017391304347826088,
+          "p99": 0.00017543859649122808,
+          "postings_per_second": 5850000.0,
+          "max_over_p50": 1.0263157894736843
+        },
+        "group": {
+          "p50": 0.000425531914893617,
+          "p95": 0.00044444444444444447,
+          "p99": 0.00044444444444444447,
+          "postings_per_second": 2350000.0,
+          "max_over_p50": 1.0444444444444445
+        },
+        "order": {
+          "p50": 0.007666666666666666,
+          "p95": 0.008666666666666666,
+          "p99": 0.008666666666666666,
+          "postings_per_second": 130434.78260869566,
+          "max_over_p50": 1.1304347826086956
+        },
+        "regex": {
+          "p50": 0.0002631578947368421,
+          "p95": 0.00028169014084507044,
+          "p99": 0.00029411764705882356,
+          "postings_per_second": 3800000.0,
+          "max_over_p50": 1.1176470588235294
+        },
+        "transactions": {
+          "p50": 0.00013333333333333334,
+          "p95": 0.00013986013986013986,
+          "p99": 0.00014084507042253522,
+          "postings_per_second": 7500000.0,
+          "max_over_p50": 1.056338028169014
+        },
+        "length": {
+          "p50": 0.00017857142857142857,
+          "p95": 0.00025,
+          "p99": 0.0005263157894736842,
+          "postings_per_second": 5600000.0,
+          "max_over_p50": 2.9473684210526314
+        },
+        "substr": {
+          "p50": 0.00036363636363636367,
+          "p95": 0.0003846153846153846,
+          "p99": 0.000392156862745098,
+          "postings_per_second": 2749999.9999999995,
+          "max_over_p50": 1.0784313725490196
+        }
+      }
+    },
+    {
+      "target": "wasm-gc",
+      "postings": 1000,
+      "method": "STRICT",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 59359232,
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.0003125,
+          "p95": 0.0003333333333333333,
+          "p99": 0.0003333333333333333,
+          "postings_per_second": 3200000.0,
+          "max_over_p50": 1.0666666666666667
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.0005263157894736842,
+          "p95": 0.0005405405405405405,
+          "p99": 0.0005555555555555556,
+          "postings_per_second": 1900000.0,
+          "max_over_p50": 1.0555555555555556
+        }
+      }
+    },
+    {
+      "target": "wasm-gc",
+      "postings": 10000,
+      "method": "AVERAGE",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 95977472,
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.003833333333333333,
+          "p95": 0.004,
+          "p99": 0.004,
+          "postings_per_second": 2608695.652173913,
+          "max_over_p50": 1.0434782608695652
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.006666666666666667,
+          "p95": 0.007,
+          "p99": 0.007333333333333333,
+          "postings_per_second": 1500000.0,
+          "max_over_p50": 1.0999999999999999
+        }
+      }
+    },
+    {
+      "target": "wasm-gc",
+      "postings": 10000,
+      "method": "FIFO",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 119111680,
+      "stages": {
+        "parse": {
+          "p50": 0.024,
+          "p95": 0.026,
+          "p99": 0.027,
+          "postings_per_second": 416666.6666666667,
+          "max_over_p50": 1.125
+        },
+        "booking_FIFO": {
+          "p50": 0.0033333333333333335,
+          "p95": 0.0035,
+          "p99": 0.0036666666666666666,
+          "postings_per_second": 3000000.0,
+          "max_over_p50": 1.0999999999999999
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.00575,
+          "p95": 0.006666666666666667,
+          "p99": 0.006666666666666667,
+          "postings_per_second": 1739130.4347826086,
+          "max_over_p50": 1.1594202898550725
+        },
+        "realize": {
+          "p50": 0.0011764705882352942,
+          "p95": 0.0011764705882352942,
+          "p99": 0.0011764705882352942,
+          "postings_per_second": 8500000.0,
+          "max_over_p50": 1.0
+        },
+        "format": {
+          "p50": 0.0125,
+          "p95": 0.014,
+          "p99": 0.0145,
+          "postings_per_second": 800000.0,
+          "max_over_p50": 1.16
+        },
+        "aggregate": {
+          "p50": 0.00175,
+          "p95": 0.0019090909090909091,
+          "p99": 0.0021000000000000003,
+          "postings_per_second": 5714285.714285715,
+          "max_over_p50": 1.2000000000000002
+        },
+        "group": {
+          "p50": 0.005,
+          "p95": 0.0055,
+          "p99": 0.0055,
+          "postings_per_second": 2000000.0,
+          "max_over_p50": 1.0999999999999999
+        },
+        "order": {
+          "p50": 0.757,
+          "p95": 0.775,
+          "p99": 0.787,
+          "postings_per_second": 13210.03963011889,
+          "max_over_p50": 1.0396301188903567
+        },
+        "regex": {
+          "p50": 0.003,
+          "p95": 0.0033333333333333335,
+          "p99": 0.0033333333333333335,
+          "postings_per_second": 3333333.3333333335,
+          "max_over_p50": 1.1111111111111112
+        },
+        "transactions": {
+          "p50": 0.00125,
+          "p95": 0.0013333333333333333,
+          "p99": 0.0013333333333333333,
+          "postings_per_second": 8000000.0,
+          "max_over_p50": 1.0666666666666667
+        },
+        "length": {
+          "p50": 0.0019090909090909091,
+          "p95": 0.002,
+          "p99": 0.002,
+          "postings_per_second": 5238095.238095238,
+          "max_over_p50": 1.0476190476190477
+        },
+        "substr": {
+          "p50": 0.004,
+          "p95": 0.004200000000000001,
+          "p99": 0.004200000000000001,
+          "postings_per_second": 2500000.0,
+          "max_over_p50": 1.05
+        }
+      }
+    },
+    {
+      "target": "wasm-gc",
+      "postings": 10000,
+      "method": "STRICT",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 94814208,
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.0032857142857142855,
+          "p95": 0.0033333333333333335,
+          "p99": 0.0033333333333333335,
+          "postings_per_second": 3043478.2608695654,
+          "max_over_p50": 1.0144927536231885
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.006,
+          "p95": 0.0065,
+          "p99": 0.006666666666666667,
+          "postings_per_second": 1666666.6666666667,
+          "max_over_p50": 1.1111111111111112
+        }
+      }
+    },
+    {
+      "target": "wasm-gc",
+      "postings": 100000,
+      "method": "AVERAGE",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 227590144,
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.044,
+          "p95": 0.045,
+          "p99": 0.045,
+          "postings_per_second": 2272727.272727273,
+          "max_over_p50": 1.0227272727272727
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.07,
+          "p95": 0.083,
+          "p99": 0.083,
+          "postings_per_second": 1428571.4285714284,
+          "max_over_p50": 1.1857142857142857
+        }
+      }
+    },
+    {
+      "target": "wasm-gc",
+      "postings": 100000,
+      "method": "FIFO",
+      "status": "complete",
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "peak_rss_bytes": 426196992,
+      "stages": {
+        "parse": {
+          "p50": 0.267,
+          "p95": 0.293,
+          "p99": 0.333,
+          "postings_per_second": 374531.8352059925,
+          "max_over_p50": 1.247191011235955
+        },
+        "booking_FIFO": {
+          "p50": 0.034,
+          "p95": 0.035,
+          "p99": 0.035,
+          "postings_per_second": 2941176.470588235,
+          "max_over_p50": 1.0294117647058825
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.061,
+          "p95": 0.077,
+          "p99": 0.087,
+          "postings_per_second": 1639344.262295082,
+          "max_over_p50": 1.4262295081967213
+        },
+        "realize": {
+          "p50": 0.0125,
+          "p95": 0.0135,
+          "p99": 0.0135,
+          "postings_per_second": 8000000.0,
+          "max_over_p50": 1.0799999999999998
+        },
+        "format": {
+          "p50": 0.134,
+          "p95": 0.156,
+          "p99": 0.159,
+          "postings_per_second": 746268.6567164179,
+          "max_over_p50": 1.1865671641791045
+        },
+        "aggregate": {
+          "p50": 0.034,
+          "p95": 0.05,
+          "p99": 0.063,
+          "postings_per_second": 2941176.470588235,
+          "max_over_p50": 1.852941176470588
+        },
+        "group": {
+          "p50": 0.066,
+          "p95": 0.084,
+          "p99": 0.084,
+          "postings_per_second": 1515151.5151515151,
+          "max_over_p50": 1.2727272727272727
+        },
+        "regex": {
+          "p50": 0.04,
+          "p95": 0.053,
+          "p99": 0.059,
+          "postings_per_second": 2500000.0,
+          "max_over_p50": 1.4749999999999999
+        },
+        "transactions": {
+          "p50": 0.019,
+          "p95": 0.032,
+          "p99": 0.032,
+          "postings_per_second": 5263157.894736842,
+          "max_over_p50": 1.6842105263157896
+        },
+        "length": {
+          "p50": 0.036,
+          "p95": 0.051,
+          "p99": 0.054,
+          "postings_per_second": 2777777.777777778,
+          "max_over_p50": 1.5
+        },
+        "substr": {
+          "p50": 0.051,
+          "p95": 0.072,
+          "p99": 0.072,
+          "postings_per_second": 1960784.3137254904,
+          "max_over_p50": 1.411764705882353
+        }
+      }
+    },
+    {
+      "target": "wasm-gc",
+      "postings": 100000,
+      "method": "STRICT",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 224673792,
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.032,
+          "p95": 0.034,
+          "p99": 0.034,
+          "postings_per_second": 3125000.0,
+          "max_over_p50": 1.0625
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.061,
+          "p95": 0.077,
+          "p99": 0.078,
+          "postings_per_second": 1639344.262295082,
+          "max_over_p50": 1.278688524590164
+        }
+      }
+    },
+    {
+      "target": "wasm-gc",
+      "postings": 1000000,
+      "method": "AVERAGE",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 1263976448,
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.432,
+          "p95": 0.492,
+          "p99": 0.536,
+          "postings_per_second": 2314814.814814815,
+          "max_over_p50": 1.240740740740741
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.751,
+          "p95": 0.891,
+          "p99": 0.903,
+          "postings_per_second": 1331557.9227696406,
+          "max_over_p50": 1.2023968042609854
+        }
+      }
+    },
+    {
+      "target": "wasm-gc",
+      "postings": 1000000,
+      "method": "FIFO",
+      "status": "incomplete",
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "reason": "exit -5:                 0x0000000102b0a398 moonrun + 2761624\n    30  moonrun                             0x00000001029293ec moonrun + 791532\n    31  moonrun                             0x00000001028f06e8 moonrun + 558824\n    32  moonrun                             0x00000001028ed19c moonrun + 545180\n    33  moonrun                             0x00000001029a6ac4 moonrun + 1305284\n    34  moonrun                             0x000000010286eaa0 moonrun + 27296\n    35  moonrun                             0x000000010286c060 moonrun + 16480\n    36  moonrun                             0x00000001028719b4 moonrun + 39348\n    37  dyld                                0x000000018b55cd7c start + 6652\ntime: command terminated abnormally\n        9.46 real        22.30 user         2.22 sys\n          1551728640  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              129264  page reclaims\n                   3  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   2  voluntary context switches\n              254078  involuntary context switches\n        283821246331  instructions retired\n         72222641240  cycles elapsed\n          1622001776  peak memory footprint\n",
+      "failed_process_peak_rss_bytes": 1551728640
+    },
+    {
+      "target": "wasm-gc",
+      "postings": 1000000,
+      "method": "STRICT",
+      "status": "complete",
+      "skipped_stages": {},
+      "peak_rss_bytes": 1251295232,
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.336,
+          "p95": 0.339,
+          "p99": 0.341,
+          "postings_per_second": 2976190.476190476,
+          "max_over_p50": 1.0148809523809523
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.745,
+          "p95": 0.852,
+          "p99": 0.863,
+          "postings_per_second": 1342281.8791946308,
+          "max_over_p50": 1.1583892617449665
+        }
+      }
+    }
+  ]
+}

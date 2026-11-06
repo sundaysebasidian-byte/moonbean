@@ -1,0 +1,76 @@
+{
+  "timestamp": "2026-11-06T19:40:03.477528+00:00",
+  "engine_commit": "2cd1a2047511d51c59db3d4902a68423def64d3c",
+  "version": "0.2.2",
+  "command_exit_codes": {
+    "check": 0,
+    "fmt": 0,
+    "info": 0,
+    "mbti": 0,
+    "test": 0,
+    "compare-tests": 0,
+    "oracle": 0,
+    "bql": 0,
+    "seed-7": 0,
+    "seed-20261101": 0,
+    "web-build": 0,
+    "web-smoke": 0,
+    "web-dom": 0
+  },
+  "tests": {
+    "wasm": {
+      "total": 132,
+      "passed": 132,
+      "failed": 0
+    },
+    "wasm-gc": {
+      "total": 132,
+      "passed": 132,
+      "failed": 0
+    },
+    "js": {
+      "total": 132,
+      "passed": 132,
+      "failed": 0
+    },
+    "native": {
+      "total": 132,
+      "passed": 132,
+      "failed": 0
+    }
+  },
+  "conformance": "ledgers: 114, compared: 112, passed: 112, failed: 0, extensions: 2",
+  "bql": {
+    "total": 92,
+    "passed": 92
+  },
+  "seeds": [
+    {
+      "seed": 7,
+      "count": 1000,
+      "mismatches": 142,
+      "clean_queries": 468,
+      "non_average_mismatches": 0
+    },
+    {
+      "seed": 20261101,
+      "count": 1000,
+      "mismatches": 142,
+      "clean_queries": 468,
+      "non_average_mismatches": 0
+    }
+  ],
+  "web": {
+    "node_checks": 29,
+    "dom_checks": 8
+  },
+  "existing_mbti_unchanged": true,
+  "new_empty_benchmark_interface": "bench/pkg.generated.mbti",
+  "python_regression_tests": 3,
+  "benchmark_comparison_exit_code": 0,
+  "benchmark_comparison": [
+    "NOT GATED (incomplete baseline): wasm-gc-1000000-FIFO.json",
+    "PASS: all baseline stage medians and RSS within tolerance"
+  ],
+  "note": "Local validation only. Full local command logs remain in .oracle-cache/performance-validation. No push, publication, deployment or new CI run."
+}

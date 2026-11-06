@@ -1,0 +1,374 @@
+{
+  "schema": 1,
+  "timestamp": "2026-11-06T19:05:46.624277+00:00",
+  "environment": {
+    "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "cores": 10,
+    "python": "3.14.6",
+    "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+    "node": "v24.18.0",
+    "commit": "2cd1a2047511d51c59db3d4902a68423def64d3c",
+    "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+    "runner_sha256": "1cf213e24ea8165374d249e94ec24f9a47ef4e452719164b1bcffbff65bdac22",
+    "model": "Mac16,12",
+    "cpu": "Apple M4",
+    "memory_bytes": 17179869184
+  },
+  "target": "js",
+  "postings": 1000,
+  "generated_pad_postings": 2,
+  "method": "STRICT",
+  "seed": 20261101,
+  "runs": 21,
+  "warmups": 2,
+  "min_batch_ms": 20,
+  "command": [
+    "node",
+    "_build/js/release/build/bench/bench.js"
+  ],
+  "artifact_sha256": "106819db53fb37b3c549cdd865e022c1e7f3cf6240552098b318a0880de93a0e",
+  "stages": {
+    "booking_STRICT": {
+      "samples": [
+        {
+          "stage": "booking_STRICT",
+          "warmup": true,
+          "seconds": 0.0005128205128205128,
+          "batch": 39,
+          "sink": 500
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": true,
+          "seconds": 0.00046511627906976747,
+          "batch": 43,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.0004347826086956522,
+          "batch": 46,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.0004,
+          "batch": 50,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.0004347826086956522,
+          "batch": 46,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.00044444444444444447,
+          "batch": 45,
+          "sink": 500
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.000392156862745098,
+          "batch": 51,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.0003846153846153846,
+          "batch": 52,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.0004,
+          "batch": 50,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.0003846153846153846,
+          "batch": 52,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.000425531914893617,
+          "batch": 47,
+          "sink": 500
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.00044444444444444447,
+          "batch": 45,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.00044444444444444447,
+          "batch": 45,
+          "sink": 500
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.00046511627906976747,
+          "batch": 43,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.00045454545454545455,
+          "batch": 44,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.0004166666666666667,
+          "batch": 48,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.0004,
+          "batch": 50,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.00044444444444444447,
+          "batch": 45,
+          "sink": 500
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.0004,
+          "batch": 50,
+          "sink": 500
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.000392156862745098,
+          "batch": 51,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.0003846153846153846,
+          "batch": 52,
+          "sink": 0
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.000392156862745098,
+          "batch": 51,
+          "sink": 500
+        },
+        {
+          "stage": "booking_STRICT",
+          "warmup": false,
+          "seconds": 0.000392156862745098,
+          "batch": 51,
+          "sink": 0
+        }
+      ],
+      "p50": 0.0004,
+      "p95": 0.00045454545454545455,
+      "p99": 0.00046511627906976747,
+      "postings_per_second": 2500000.0
+    },
+    "validate_pad_STRICT": {
+      "samples": [
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": true,
+          "seconds": 0.0009090909090909091,
+          "batch": 22,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": true,
+          "seconds": 0.0007692307692307692,
+          "batch": 26,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0007407407407407407,
+          "batch": 27,
+          "sink": 506
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0007692307692307692,
+          "batch": 26,
+          "sink": 506
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0008333333333333334,
+          "batch": 24,
+          "sink": 506
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0008695652173913044,
+          "batch": 23,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0007142857142857143,
+          "batch": 28,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0007407407407407407,
+          "batch": 27,
+          "sink": 506
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0007407407407407407,
+          "batch": 27,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0008,
+          "batch": 25,
+          "sink": 506
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0007692307692307692,
+          "batch": 26,
+          "sink": 506
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0007692307692307692,
+          "batch": 26,
+          "sink": 506
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0007692307692307692,
+          "batch": 26,
+          "sink": 506
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0007692307692307692,
+          "batch": 26,
+          "sink": 506
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0008,
+          "batch": 25,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0007407407407407407,
+          "batch": 27,
+          "sink": 506
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0008695652173913044,
+          "batch": 23,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0008333333333333334,
+          "batch": 24,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0008,
+          "batch": 25,
+          "sink": 506
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0008,
+          "batch": 25,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0007692307692307692,
+          "batch": 26,
+          "sink": 0
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0007407407407407407,
+          "batch": 27,
+          "sink": 506
+        },
+        {
+          "stage": "validate_pad_STRICT",
+          "warmup": false,
+          "seconds": 0.0007142857142857143,
+          "batch": 28,
+          "sink": 506
+        }
+      ],
+      "p50": 0.0007692307692307692,
+      "p95": 0.0008695652173913044,
+      "p99": 0.0008695652173913044,
+      "postings_per_second": 1300000.0
+    }
+  },
+  "skipped_stages": {},
+  "status": "complete",
+  "peak_rss_bytes": 107708416
+}

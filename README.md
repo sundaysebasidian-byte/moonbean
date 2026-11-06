@@ -304,20 +304,37 @@ oracle 脚本只在临时 virtualenv 里安装 GPL 的 beancount 和 beanquery�
 
 ## 性能
 
-Apple M4 / macOS 27.2，native release，固定种子 20261101 的 100,000 笔交易，warmup 1 次后测量 7 次取中位数（复现方法和优化前后对比见 [docs/performance.md](docs/performance.md)）：
+Apple M4 / 10 核 / 16 GiB / macOS 27.2，MoonBit 0.1.20261104 release。
+离线固定种子 20261101，1 千／1 万／10 万／100 万 source posting，每项预热 2 次、测量 21 次。
+以下为首轮基线在 100 万 posting 的库阶段中位数（秒）；不含进程启动、文件 I/O 和文本输出，阶段不可相加：
 
-| 操作 | 耗时 |
-| --- | --- |
-| `check`（解析 + 校验 + booking） | 0.564 s |
-| `bal`（realization + 试算平衡） | 0.603 s |
-| BQL 聚合查询 | 0.665 s |
-| `fmt` | 0.235 s |
+| 后端 | 解析 | FIFO booking | 校验含 pad | GROUP BY | 进程峰值 RSS |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| native | 1.931 | 0.505 | 1.017 | 0.812 | 1.55 GiB |
+| js | 3.444 | 0.472 | 0.880 | 0.692 | 3.19 GiB |
+| wasm-gc | 未完成 | 未完成 | 未完成 | 未完成 | moonrun 堆耗尽 |
+
+wasm-gc 的 100 万 FIFO 综合场景两轮失败，单独复现确认为默认 moonrun 堆上限 OOM；独立 AVERAGE／STRICT booking 和校验场景完成，详见原始记录。
+
+未分组 `ORDER BY` 在 1 千到 1 万 posting 出现约 100 倍耗时增长（输入增 10 倍），
+已记录插入排序的最小复现；10 万／100 万的该场景未完成，未作性能优化。
+内存为包含输入生成、运行时和所有阶段的进程峰值。
+全部原始数组、p50/p95/p99、吞吐、内存和阶段 profile，以及第二轮查询趋势见
+[性能证据](docs/performance.md)。历史 CLI 数据与本轮库阶段数据不直接比较。
 
 ```sh
-python3 scripts/performance.py --compare-decimal --sample
+export MOON_HOME=/tmp/moon-new PATH=/tmp/moon-new/bin:$PATH
+python3 scripts/bench-matrix.py --out .oracle-cache/performance-new
+python3 scripts/bench-summary.py .oracle-cache/performance-new
+python3 scripts/bench-compare.py .oracle-cache/performance-new
 ```
 
-这些数字来自单机测量，只能看量级；BQL 查询的耗时在不同次测量之间有波动，细节见 `docs/performance.md`。
+比较器读取已提交的 `docs/evidence/performance/baseline/`，同环境下中位数或进程 RSS
+增长超过 30%、缺测或环境不匹配即非零退出。30% 是容纳本机计时精度及 GC/JIT／系统噪声的粗粒度报警，
+不代表统计显著性；p95/p99 保留观察，不作门禁。CI 不运行此检查。
+更新基线前先在空闲机器完整测量并检查比较结果，审核环境、遗漏场景和原始数组后，
+仅替换已审阅的 case JSON，再运行 `bench-summary.py docs/evidence/performance/baseline`；
+在提交中说明更新原因，保留旧基线的 Git 历史。详细步骤与局限见性能文档。
 
 ## 和 mooncakes 上其他项目的区别
 

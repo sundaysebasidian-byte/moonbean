@@ -1,0 +1,16 @@
+{
+  "note": "Independent stage timings, not additive CPU stack shares; validation includes booking and pad. RSS is process-wide, includes generation/setup and runtime. API results are consumed without text/JSON rendering.",
+  "cases": [
+    {
+      "target": "wasm-gc",
+      "postings": 1000000,
+      "method": "FIFO",
+      "status": "incomplete",
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "reason": "exit -5:                 0x0000000102866398 moonrun + 2761624\n    31  moonrun                             0x00000001026853ec moonrun + 791532\n    32  moonrun                             0x000000010264c6e8 moonrun + 558824\n    33  moonrun                             0x000000010264919c moonrun + 545180\n    34  moonrun                             0x0000000102702ac4 moonrun + 1305284\n    35  moonrun                             0x00000001025caaa0 moonrun + 27296\n    36  moonrun                             0x00000001025c8060 moonrun + 16480\n    37  moonrun                             0x00000001025cd9b4 moonrun + 39348\n    38  dyld                                0x000000018b55cd7c start + 6652\ntime: command terminated abnormally\n        8.92 real        20.97 user         2.40 sys\n          1550270464  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              129081  page reclaims\n                   0  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   1  voluntary context switches\n              284514  involuntary context switches\n        283536427247  instructions retired\n         76536146624  cycles elapsed\n          1640416624  peak memory footprint\n",
+      "failed_process_peak_rss_bytes": 1550270464
+    }
+  ]
+}

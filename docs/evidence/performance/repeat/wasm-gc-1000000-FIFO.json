@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "timestamp": "2026-11-06T19:28:50.593113+00:00",
+  "environment": {
+    "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "cores": 10,
+    "python": "3.14.6",
+    "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+    "node": "v24.18.0",
+    "commit": "2cd1a2047511d51c59db3d4902a68423def64d3c",
+    "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+    "runner_sha256": "1cf213e24ea8165374d249e94ec24f9a47ef4e452719164b1bcffbff65bdac22",
+    "model": "Mac16,12",
+    "cpu": "Apple M4",
+    "memory_bytes": 17179869184
+  },
+  "target": "wasm-gc",
+  "postings": 1000000,
+  "generated_pad_postings": 2,
+  "method": "FIFO",
+  "seed": 20261101,
+  "runs": 21,
+  "warmups": 2,
+  "min_batch_ms": 20,
+  "command": [
+    "moonrun",
+    "_build/wasm-gc/release/build/bench/bench.wasm"
+  ],
+  "artifact_sha256": "7d5373351c63bc2946bcd017a02c34f724b018fe629d1bd3a8d613f2c642628b",
+  "stages": {},
+  "skipped_stages": {
+    "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+  },
+  "status": "incomplete",
+  "reason": "exit -5:                 0x0000000105282398 moonrun + 2761624\n    25  moonrun                             0x00000001050a13ec moonrun + 791532\n    26  moonrun                             0x00000001050686e8 moonrun + 558824\n    27  moonrun                             0x000000010506519c moonrun + 545180\n    28  moonrun                             0x000000010511eac4 moonrun + 1305284\n    29  moonrun                             0x0000000104fe6aa0 moonrun + 27296\n    30  moonrun                             0x0000000104fe4060 moonrun + 16480\n    31  moonrun                             0x0000000104fe99b4 moonrun + 39348\n    32  dyld                                0x000000018b55cd7c start + 6652\ntime: command terminated abnormally\n       10.49 real        21.40 user         1.95 sys\n          1551532032  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              129122  page reclaims\n                   3  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   2  voluntary context switches\n              216148  involuntary context switches\n        282644889166  instructions retired\n         69505076654  cycles elapsed\n          1621247728  peak memory footprint\n"
+}

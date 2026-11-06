@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "timestamp": "2026-11-06T19:39:35.590434+00:00",
+  "environment": {
+    "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "cores": 10,
+    "python": "3.14.6",
+    "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+    "node": "v24.18.0",
+    "commit": "503635d1c1fcedad3760d589b2930b2131497987",
+    "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+    "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+    "model": "Mac16,12",
+    "cpu": "Apple M4",
+    "memory_bytes": 17179869184
+  },
+  "target": "wasm-gc",
+  "postings": 1000000,
+  "generated_pad_postings": 2,
+  "method": "FIFO",
+  "seed": 20261101,
+  "runs": 21,
+  "warmups": 2,
+  "min_batch_ms": 20,
+  "command": [
+    "moonrun",
+    "_build/wasm-gc/release/build/bench/bench.wasm"
+  ],
+  "artifact_sha256": "7d5373351c63bc2946bcd017a02c34f724b018fe629d1bd3a8d613f2c642628b",
+  "stages": {},
+  "skipped_stages": {
+    "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+  },
+  "status": "incomplete",
+  "reason": "exit -5:                 0x0000000102866398 moonrun + 2761624\n    31  moonrun                             0x00000001026853ec moonrun + 791532\n    32  moonrun                             0x000000010264c6e8 moonrun + 558824\n    33  moonrun                             0x000000010264919c moonrun + 545180\n    34  moonrun                             0x0000000102702ac4 moonrun + 1305284\n    35  moonrun                             0x00000001025caaa0 moonrun + 27296\n    36  moonrun                             0x00000001025c8060 moonrun + 16480\n    37  moonrun                             0x00000001025cd9b4 moonrun + 39348\n    38  dyld                                0x000000018b55cd7c start + 6652\ntime: command terminated abnormally\n        8.92 real        20.97 user         2.40 sys\n          1550270464  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              129081  page reclaims\n                   0  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   1  voluntary context switches\n              284514  involuntary context switches\n        283536427247  instructions retired\n         76536146624  cycles elapsed\n          1640416624  peak memory footprint\n",
+  "partial_samples": [],
+  "stdout": "",
+  "stderr": "\n<--- Last few GCs --->\n\n[75002:0x7a3c800000]     8380 ms: Scavenge (interleaved) 1390.2 (1400.5) -> 1387.0 (1408.5) MB, pooled: 0 MB, 3.46 / 0.00 ms  (average mu = 0.199, current mu = 0.173) allocation failure; \n[75002:0x7a3c800000]     8920 ms: Mark-Compact (reduce) 1387.2 (1408.5) -> 1387.1 (1393.8) MB, pooled: 0 MB, 518.75 / 0.00 ms  (+ 0.0 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 520 ms) (average mu = 0.152, c\n\n<--- JS stacktrace --->\n\n\n\n#\n# Fatal JavaScript out of memory: Ineffective mark-compacts near heap limit\n#\n==== C stack trace ===============================\n\n    0   moonrun                             0x00000001028062a8 moonrun + 2368168\n    1   moonrun                             0x000000010280aad8 moonrun + 2386648\n    2   moonrun                             0x00000001027fc820 moonrun + 2328608\n    3   moonrun                             0x000000010285ed88 moonrun + 2731400\n    4   moonrun                             0x0000000102a056d0 moonrun + 4462288\n    5   moonrun                             0x0000000102a17c2c moonrun + 4537388\n    6   moonrun                             0x0000000102a174e8 moonrun + 4535528\n    7   moonrun                             0x000000010323aa74 moonrun + 13068916\n    8   moonrun                             0x0000000102a0384c moonrun + 4454476\n    9   moonrun                             0x000000010298fcb0 moonrun + 3980464\n    10  moonrun                             0x000000010303f604 moonrun + 10991108\n    11  moonrun                             0x0000000103aa3d9c moonrun + 21888412\n    12  ???                                 0x0000342fab2ba2c4 0x0 + 57379339870916\n    13  ???                                 0x0000342fab2ae5e8 0x0 + 57379339822568\n    14  ???                                 0x0000342fab2b1f60 0x0 + 57379339837280\n    15  ???                                 0x0000342fab2b069c 0x0 + 57379339830940\n    16  ???                                 0x0000342fab2b3d90 0x0 + 57379339845008\n    17  ???                                 0x0000342fab2b7758 0x0 + 57379339859800\n    18  ???                                 0x0000342fab2b938c 0x0 + 57379339867020\n    19  ???                                 0x0000342fab2bcdb8 0x0 + 57379339881912\n    20  ???                                 0x0000342fab290ec4 0x0 + 57379339701956\n    21  ???                                 0x0000342fab300b50 0x0 + 57379340159824\n    22  ???                                 0x0000342fab30041c 0x0 + 57379340157980\n    23  ???                                 0x0000342fab2882c8 0x0 + 57379339666120\n    24  moonrun                             0x0000000103a99758 moonrun + 21845848\n    25  moonrun                             0x0000000103b62058 moonrun + 22667352\n    26  moonrun                             0x0000000103a0a50c moonrun + 21259532\n    27  moonrun                             0x0000000103a0a1b0 moonrun + 21258672\n    28  moonrun                             0x00000001029655ec moonrun + 3806700\n    29  moonrun                             0x0000000102964f88 moonrun + 3805064\n    30  moonrun                             0x0000000102866398 moonrun + 2761624\n    31  moonrun                             0x00000001026853ec moonrun + 791532\n    32  moonrun                             0x000000010264c6e8 moonrun + 558824\n    33  moonrun                             0x000000010264919c moonrun + 545180\n    34  moonrun                             0x0000000102702ac4 moonrun + 1305284\n    35  moonrun                             0x00000001025caaa0 moonrun + 27296\n    36  moonrun                             0x00000001025c8060 moonrun + 16480\n    37  moonrun                             0x00000001025cd9b4 moonrun + 39348\n    38  dyld                                0x000000018b55cd7c start + 6652\ntime: command terminated abnormally\n        8.92 real        20.97 user         2.40 sys\n          1550270464  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              129081  page reclaims\n                   0  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   1  voluntary context switches\n              284514  involuntary context switches\n        283536427247  instructions retired\n         76536146624  cycles elapsed\n          1640416624  peak memory footprint\n",
+  "invalid_sample_lines": [],
+  "peak_rss_bytes": 1550270464
+}
