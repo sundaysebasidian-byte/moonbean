@@ -1,0 +1,9 @@
+import {
+  "sundaysebasidian-byte/moonbean",
+  "sundaysebasidian-byte/moonbean/syntax",
+  "sundaysebasidian-byte/moonbean/booking",
+  "sundaysebasidian-byte/moonbean/validation",
+  "moonbitlang/core/env",
+}
+
+pkgtype(kind: "executable")
