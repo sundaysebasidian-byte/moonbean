@@ -1,18 +1,40 @@
-# MoonBean 项目申报
-- **项目名称**：MoonBean — Beancount v3 兼容的纯文本复式记账引擎
-- **项目简介**：用 MoonBit 从零实现账本解析、记账（booking）、校验、报表和 BQL 查询。库只有纯函数，在 native、wasm-gc、JavaScript 上都能跑；另有 native 命令行和浏览器离线 Playground（https://sundaysebasidian-byte.github.io/moonbean/）。
-- **解决什么问题**：Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运行。MoonBean 用同一套账本语法和记账语义，不依赖文件系统和外部进程。
-- **方向与适用场景**：个人和小企业记账；已有 Beancount 账本的用户（不依赖插件的账本可直接校验和查看；用到插件的只记录并警告）；需要离线或嵌入式记账的应用（`include` 由宿主回调提供）。
-- **核心功能**：全部指令与 posting 语法；精确十进制与容差；七种 booking；校验；inventory、价格与多跳折算；试算平衡、资产负债表（结转收益，恒等式精确成立）、损益表、register；BQL 子集；格式化；CLI 与 Playground。
-- **原创/移植/参考**：原创净室实现，非移植。参考 Beancount（https://github.com/beancount/beancount ，GPL-2.0）和 beanquery（https://github.com/beancount/beanquery ，GPL-2.0）的公开文档作为规范，仅把二者当外部黑盒 oracle 比较输出；不复制源码、注释、测试数据、样式或资源，不链接、不嵌入、不分发。本项目 Apache-2.0，见 NOTICE。
+# MoonBean 申报书
 
-| 规范覆盖矩阵摘要 | 状态 |
-| --- | --- |
-| 指令、posting 语法、七种 booking、校验、报表、跨 lot 明细、多跳折算、收益结转 | 支持（AVERAGE 和 `{*}` 是扩展，beancount 3.2.3 不支持） |
-| BQL：SELECT/WHERE/GROUP BY/HAVING/ORDER BY/LIMIT、算术、正则、BALANCES、JOURNAL | 子集；期间余额部分兼容 |
-| `option`、`document`、`note/event/query/custom` | 部分，边界见 README |
-| **明确不支持**：插件执行（只记录并警告）、BQL 子查询/JOIN/PIVOT/SQL `LIKE`、`FROM transactions`、`document` 检查文件存在 | 不支持。执行 Python 插件要嵌入解释器，与纯函数、可在浏览器运行的目标冲突；其余没有按交易的行源或不在常见账本查询范围内，会明确报错而不是给出错误结果 |
+- 项目名称：MoonBean — Beancount v3 兼容的纯文本复式记账引擎
+- 仓库：https://github.com/sundaysebasidian-byte/moonbean
+- 在线体验：https://sundaysebasidian-byte.github.io/moonbean/
 
-- **测试与文档计划**：四个后端各 108 个测试；58 份自编账本对 beancount 3.2.3 + beanquery 0.2.0 比较，56 份可比较全部通过，另 2 份是扩展；两个 seed 各 1000 份随机账本都是 858 份一致、142 份仅因 AVERAGE 扩展不同，非 AVERAGE 差异为 0；22 份报表和 lot 回归账本 144 项检查通过；Playground 有 29 项 node 检查和 8 项无头浏览器检查；CI 覆盖三个系统、oracle 和 playground。文档含 README（中文，附英文简介）、覆盖矩阵、design、conformance、performance、CHANGELOG；10 万笔交易 `check` 约 0.59 s。
-- **基础与本期工作**：2026-10-31 新建仓库从零开发，此前没有代码基础；仓库全部提交均为本期工作。技术路线：行级词法 → 指令解析 → booking 与校验 → 报表与 BQL，全部为纯函数，文件读取由宿主回调提供。
-- **GitHub 仓库链接**：https://github.com/sundaysebasidian-byte/moonbean
+## 解决什么问题，给谁用
+
+Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运行。MoonBean 用同一套账本语法和记账语义，用 MoonBit 从零实现解析、记账（booking）、校验、报表和 BQL 查询。库只有纯函数，在 native、wasm-gc、JavaScript 上都能跑，不依赖文件系统和外部进程；另有 native 命令行和浏览器离线 Playground。面向个人和小企业记账、已有 Beancount 账本的用户，以及需要离线或嵌入式记账的应用（`include` 由宿主回调提供）。
+
+## 规范覆盖矩阵
+
+兼容目标：Beancount v3 的语法与记账语义，以 beancount 3.2.3 与 beanquery 0.2.0 作外部黑盒对照。状态只有三种：已支持、部分支持（逐项写明边界）、明确不支持。
+
+| 范围 | 状态 | 说明 |
+| --- | --- | --- |
+| 指令：open / close / commodity / balance / pad / price / transaction，posting 语法（cost、price、金额表达式、省略金额），include，pushtag / pushmeta | 已支持 | 精确十进制与容差推断；错误带类别、文件和行号 |
+| 七种 booking：STRICT / STRICT_WITH_SIZE / FIFO / LIFO / HIFO / AVERAGE / NONE | 已支持 | AVERAGE 与 `{*}` 是扩展，beancount 3.2.3 不支持 |
+| 报表：库存、价格库与多跳折算、试算平衡、资产负债表、损益表、register | 已支持 | 文本与 JSON 输出，资产负债表恒等式按币种精确成立 |
+| BQL：SELECT / WHERE / GROUP BY / HAVING / ORDER BY / LIMIT，FROM postings / balances，BALANCES，JOURNAL | 部分支持 | 函数只有 year / month / root / parent / leaf / sum / count；WHERE 支持比较、逻辑、`~` 正则，无 LIKE |
+| `document` / `note` / `event` / `query` / `custom` | 部分支持 | 解析、校验账户并保留；`document` 不检查文件是否存在，`query` 不会自动执行 |
+| `option` | 部分支持 | 影响语义的 5 个选项已实现，`account_rounding`、`render_commas` 只解析 |
+| `plugin` | 明确不支持执行 | 记录名称并在所在行给出 `validation.plugin` 警告。影响：依赖插件生成条目或校验的账本，结果会与 Beancount 不同，警告会指出具体位置。执行 Python 插件要嵌入解释器，与纯函数、可在浏览器运行的目标冲突，本期不实现 |
+| BQL 子查询 / JOIN / PIVOT / SQL `LIKE` / `FROM transactions` | 明确不支持 | 影响：用到它们的查询返回 `query.unsupported.*` 错误和位置，可改写为单一 postings 查询，或继续用 beanquery；本期不实现，不会近似执行 |
+
+## 一致性证据
+
+- 58 份自编账本对 beancount 3.2.3 与 beanquery 0.2.0：56 份可比较全部通过，另 2 份用到扩展，只用本项目测试验证。
+- 两个 seed 各 1000 份随机账本：858 份完全一致，142 份仅因 AVERAGE 扩展不同，其余差异为 0。
+- 22 份报表和 lot 回归账本共 144 项检查通过；5 份迁移边界账本逐一给出确定的诊断。
+- 四个后端各 112 个测试；Playground 有 29 项 node 检查和 8 项无头浏览器检查；CI 覆盖三个系统、oracle 和 Playground。
+- 10 万笔交易 `check` 约 0.56 s（固定种子，原始采样已存档）。
+
+## 基础与本期工作
+
+2026-10-31 新建仓库，此前没有代码基础；仓库全部提交均为本期工作。技术路线：行级词法 → 指令解析 → booking 与校验 → 报表与 BQL，全部为纯函数，文件读取由宿主回调提供。
+
+## 原创与参考
+
+原创净室实现，非移植。参考 Beancount（https://github.com/beancount/beancount ，GPL-2.0）和 beanquery（https://github.com/beancount/beanquery ，GPL-2.0）的公开文档作为规范，仅把二者当外部黑盒 oracle 比较输出；不复制源码、注释、测试数据、样式或资源，不链接、不嵌入、不分发。本项目 Apache-2.0，见 NOTICE。
