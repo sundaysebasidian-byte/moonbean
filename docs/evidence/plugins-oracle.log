@@ -1,85 +1,105 @@
 Oracle: beancount 3.2.3 / beanquery 0.2.0
-PASS 001-basic.beancount
-PASS 002-multi-currency.beancount
-PASS 003-commodity-prices.beancount
-PASS 004-balance.beancount
-PASS 005-balance-fail.beancount
-PASS 006-pad.beancount
-PASS 007-unused-pad.beancount
-PASS 008-directives.beancount
-PASS 009-open-constraints.beancount
-PASS 010-close.beancount
-PASS 011-close-unopened.beancount
-PASS 012-inactive-account.beancount
-PASS 013-duplicate-open.beancount
-PASS 014-duplicate-close.beancount
-PASS 015-tags-links.beancount
-PASS 016-push-tags.beancount
-PASS 017-pushmeta.beancount
-PASS 018-entry-metadata.beancount
-PASS 019-posting-metadata.beancount
-PASS 020-posting-flags.beancount
-PASS 021-arithmetic.beancount
-PASS 022-interpolate-missing.beancount
-PASS 023-multiple-missing.beancount
-PASS 024-cost-per.beancount
-PASS 025-cost-total.beancount
-PASS 026-cost-date-label.beancount
-PASS 027-price-per.beancount
-PASS 028-price-total.beancount
-PASS 029-booking-fifo.beancount
-PASS 030-booking-lifo.beancount
-PASS 031-booking-hifo.beancount
-PASS 032-booking-strict.beancount
-PASS 033-booking-strict-size.beancount
-PASS 034-booking-none.beancount
-PASS 035-booking-average.beancount
-    note: beancount 3.2.3 reports 'AVERAGE method is not supported'
-PASS 036-booking-insufficient.beancount
-PASS 037-booking-ambiguous.beancount
-PASS 038-unbalanced.beancount
-PASS 039-currency-constraint.beancount
-PASS 040-unknown-account.beancount
-PASS 041-include.beancount
-PASS 042-plugin.beancount
-PASS 043-options.beancount
-PASS 044-tolerance-options.beancount
-PASS 045-comments.beancount
-PASS 046-string-escapes.beancount
-PASS 047-syntax-error.beancount
-PASS 048-duplicate-balance.beancount
-PASS 049-invalid-booking-method.beancount
-PASS 050-query-balances.beancount
-PASS 051-query-journal.beancount
-PASS 052-query-functions.beancount
-PASS 053-query-group-limit.beancount
-PASS 054-tolerance-inference.beancount
-PASS 055-same-day-order.beancount
-PASS 056-custom-values.beancount
-PASS 057-bql-prices.beancount
-PASS 058-cost-merge.beancount
-    note: beancount 3.2.3 reports 'Cost merging is not supported yet'
-PASS 059-plugin-auto-basic.beancount
-PASS 060-plugin-auto-existing.beancount
-PASS 061-plugin-auto-late-open.beancount
-PASS 062-plugin-auto-directives.beancount
-PASS 063-plugin-implicit-cost.beancount
-PASS 064-plugin-implicit-total.beancount
-PASS 065-plugin-implicit-priority.beancount
-PASS 066-plugin-implicit-duplicates.beancount
-PASS 067-plugin-commodity-valid.beancount
-PASS 068-plugin-commodity-missing.beancount
-PASS 069-plugin-commodity-price.beancount
-PASS 070-plugin-unique-valid.beancount
-PASS 071-plugin-unique-conflict.beancount
-PASS 072-plugin-leaf-valid.beancount
-PASS 073-plugin-leaf-invalid.beancount
-PASS 074-plugin-order-prices-first.beancount
-PASS 075-plugin-order-unique-first.beancount
-PASS 076-plugin-combined-all.beancount
-PASS 077-plugin-order-leaf-first.beancount
-PASS 078-plugin-order-auto-first.beancount
-PASS 079-plugin-commodity-exemptions.beancount
-PASS 080-plugin-implicit-short.beancount
 
-ledgers: 80, compared: 78, passed: 78, failed: 0, extensions: 2
+| Ledger | Diagnostics | BQL | Result | Notes |
+| --- | --- | --- | --- | --- |
+| `001-basic.beancount` | pass | pass | PASS |  |
+| `002-multi-currency.beancount` | pass | pass | PASS |  |
+| `003-commodity-prices.beancount` | pass | pass | PASS |  |
+| `004-balance.beancount` | pass | pass | PASS |  |
+| `005-balance-fail.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `006-pad.beancount` | pass | pass | PASS |  |
+| `007-unused-pad.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `008-directives.beancount` | pass | pass | PASS |  |
+| `009-open-constraints.beancount` | pass | pass | PASS |  |
+| `010-close.beancount` | pass | pass | PASS |  |
+| `011-close-unopened.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `012-inactive-account.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `013-duplicate-open.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `014-duplicate-close.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `015-tags-links.beancount` | pass | pass | PASS |  |
+| `016-push-tags.beancount` | pass | pass | PASS |  |
+| `017-pushmeta.beancount` | pass | pass | PASS |  |
+| `018-entry-metadata.beancount` | pass | pass | PASS |  |
+| `019-posting-metadata.beancount` | pass | pass | PASS |  |
+| `020-posting-flags.beancount` | pass | pass | PASS |  |
+| `021-arithmetic.beancount` | pass | pass | PASS |  |
+| `022-interpolate-missing.beancount` | pass | pass | PASS |  |
+| `023-multiple-missing.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `024-cost-per.beancount` | pass | pass | PASS |  |
+| `025-cost-total.beancount` | pass | pass | PASS |  |
+| `026-cost-date-label.beancount` | pass | pass | PASS |  |
+| `027-price-per.beancount` | pass | pass | PASS |  |
+| `028-price-total.beancount` | pass | pass | PASS |  |
+| `029-booking-fifo.beancount` | pass | pass | PASS |  |
+| `030-booking-lifo.beancount` | pass | pass | PASS |  |
+| `031-booking-hifo.beancount` | pass | pass | PASS |  |
+| `032-booking-strict.beancount` | pass | pass | PASS |  |
+| `033-booking-strict-size.beancount` | pass | pass | PASS |  |
+| `034-booking-none.beancount` | pass | pass | PASS |  |
+| `035-booking-average.beancount` | pass | skip | PASS | beancount 3.2.3 reports 'AVERAGE method is not supported' |
+| `036-booking-insufficient.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `037-booking-ambiguous.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `038-unbalanced.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `039-currency-constraint.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `040-unknown-account.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `041-include.beancount` | pass | pass | PASS |  |
+| `042-plugin.beancount` | pass | pass | PASS |  |
+| `043-options.beancount` | pass | pass | PASS |  |
+| `044-tolerance-options.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `045-comments.beancount` | pass | pass | PASS |  |
+| `046-string-escapes.beancount` | pass | pass | PASS |  |
+| `047-syntax-error.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `048-duplicate-balance.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `049-invalid-booking-method.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `050-query-balances.beancount` | pass | pass | PASS |  |
+| `051-query-journal.beancount` | pass | pass | PASS |  |
+| `052-query-functions.beancount` | pass | pass | PASS |  |
+| `053-query-group-limit.beancount` | pass | pass | PASS |  |
+| `054-tolerance-inference.beancount` | pass | pass | PASS |  |
+| `055-same-day-order.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `056-custom-values.beancount` | pass | pass | PASS |  |
+| `057-bql-prices.beancount` | pass | pass | PASS |  |
+| `058-cost-merge.beancount` | pass | skip | PASS | beancount 3.2.3 reports 'Cost merging is not supported yet' |
+| `059-plugin-auto-basic.beancount` | pass | pass | PASS |  |
+| `060-plugin-auto-existing.beancount` | pass | pass | PASS |  |
+| `061-plugin-auto-late-open.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `062-plugin-auto-directives.beancount` | pass | pass | PASS |  |
+| `063-plugin-implicit-cost.beancount` | pass | pass | PASS |  |
+| `064-plugin-implicit-total.beancount` | pass | pass | PASS |  |
+| `065-plugin-implicit-priority.beancount` | pass | pass | PASS |  |
+| `066-plugin-implicit-duplicates.beancount` | pass | pass | PASS |  |
+| `067-plugin-commodity-valid.beancount` | pass | pass | PASS |  |
+| `068-plugin-commodity-missing.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `069-plugin-commodity-price.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `070-plugin-unique-valid.beancount` | pass | pass | PASS |  |
+| `071-plugin-unique-conflict.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `072-plugin-leaf-valid.beancount` | pass | pass | PASS |  |
+| `073-plugin-leaf-invalid.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `074-plugin-order-prices-first.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `075-plugin-order-unique-first.beancount` | pass | pass | PASS |  |
+| `076-plugin-combined-all.beancount` | pass | pass | PASS |  |
+| `077-plugin-order-leaf-first.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `078-plugin-order-auto-first.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `079-plugin-commodity-exemptions.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `080-plugin-implicit-short.beancount` | pass | pass | PASS |  |
+| `081-pad-interpolated.beancount` | pass | pass | PASS |  |
+| `082-balance-interpolated.beancount` | pass | pass | PASS |  |
+| `083-auto-pad-interpolated.beancount` | pass | pass | PASS |  |
+| `084-exempt-before-price.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `085-exempt-after-price.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `086-exempt-other-account.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `087-leaf-note.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `088-leaf-document.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `089-leaf-close.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `090-leaf-pad.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `091-leaf-pad-source.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `092-leaf-custom.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `093-short-strict.beancount` | pass | pass | PASS |  |
+| `094-short-fifo.beancount` | pass | pass | PASS |  |
+| `095-short-lifo.beancount` | pass | pass | PASS |  |
+| `096-short-hifo.beancount` | pass | pass | PASS |  |
+| `097-short-strict_with_size.beancount` | pass | pass | PASS |  |
+| `098-short-average.beancount` | pass | pass | PASS |  |
+| `099-implicit-zero.beancount` | pass | pass | PASS |  |
+
+ledgers: 99, compared: 97, passed: 97, failed: 0, extensions: 2

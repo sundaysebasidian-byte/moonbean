@@ -43,11 +43,11 @@ MoonBean's own expectations and excluded from the oracle comparison count.
 ## Result
 
 ```
-ledgers: 80, compared: 78, passed: 78, failed: 0, extensions: 2
+ledgers: 99, compared: 97, passed: 97, failed: 0, extensions: 2
 ```
 
-Raw pass rate over compared ledgers: **78 / 78 = 100%**.
-The 78 compared ledgers pass diagnostics; the two extensions are checked only against MoonBean expectations.
+Raw pass rate over compared ledgers: **97 / 97 = 100%**.
+The 97 compared ledgers pass diagnostics; the two extensions are checked only against MoonBean expectations.
 
 | Ledger | Diagnostics | BQL | Result | Notes |
 | --- | --- | --- | --- | --- |
@@ -55,16 +55,16 @@ The 78 compared ledgers pass diagnostics; the two extensions are checked only ag
 | `002-multi-currency.beancount` | pass | pass | PASS |  |
 | `003-commodity-prices.beancount` | pass | pass | PASS |  |
 | `004-balance.beancount` | pass | pass | PASS |  |
-| `005-balance-fail.beancount` | pass | skip | PASS |  |
+| `005-balance-fail.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
 | `006-pad.beancount` | pass | pass | PASS |  |
-| `007-unused-pad.beancount` | pass | skip | PASS |  |
+| `007-unused-pad.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
 | `008-directives.beancount` | pass | pass | PASS |  |
 | `009-open-constraints.beancount` | pass | pass | PASS |  |
 | `010-close.beancount` | pass | pass | PASS |  |
-| `011-close-unopened.beancount` | pass | skip | PASS |  |
-| `012-inactive-account.beancount` | pass | skip | PASS |  |
-| `013-duplicate-open.beancount` | pass | skip | PASS |  |
-| `014-duplicate-close.beancount` | pass | skip | PASS |  |
+| `011-close-unopened.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `012-inactive-account.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `013-duplicate-open.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `014-duplicate-close.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
 | `015-tags-links.beancount` | pass | pass | PASS |  |
 | `016-push-tags.beancount` | pass | pass | PASS |  |
 | `017-pushmeta.beancount` | pass | pass | PASS |  |
@@ -73,7 +73,7 @@ The 78 compared ledgers pass diagnostics; the two extensions are checked only ag
 | `020-posting-flags.beancount` | pass | pass | PASS |  |
 | `021-arithmetic.beancount` | pass | pass | PASS |  |
 | `022-interpolate-missing.beancount` | pass | pass | PASS |  |
-| `023-multiple-missing.beancount` | pass | skip | PASS |  |
+| `023-multiple-missing.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
 | `024-cost-per.beancount` | pass | pass | PASS |  |
 | `025-cost-total.beancount` | pass | pass | PASS |  |
 | `026-cost-date-label.beancount` | pass | pass | PASS |  |
@@ -86,26 +86,26 @@ The 78 compared ledgers pass diagnostics; the two extensions are checked only ag
 | `033-booking-strict-size.beancount` | pass | pass | PASS |  |
 | `034-booking-none.beancount` | pass | pass | PASS |  |
 | `035-booking-average.beancount` | pass | skip | PASS | beancount 3.2.3 reports 'AVERAGE method is not supported' |
-| `036-booking-insufficient.beancount` | pass | skip | PASS |  |
-| `037-booking-ambiguous.beancount` | pass | skip | PASS |  |
-| `038-unbalanced.beancount` | pass | skip | PASS |  |
-| `039-currency-constraint.beancount` | pass | skip | PASS |  |
-| `040-unknown-account.beancount` | pass | skip | PASS |  |
+| `036-booking-insufficient.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `037-booking-ambiguous.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `038-unbalanced.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `039-currency-constraint.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `040-unknown-account.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
 | `041-include.beancount` | pass | pass | PASS |  |
 | `042-plugin.beancount` | pass | pass | PASS |  |
 | `043-options.beancount` | pass | pass | PASS |  |
-| `044-tolerance-options.beancount` | pass | skip | PASS |  |
+| `044-tolerance-options.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
 | `045-comments.beancount` | pass | pass | PASS |  |
 | `046-string-escapes.beancount` | pass | pass | PASS |  |
-| `047-syntax-error.beancount` | pass | skip | PASS |  |
-| `048-duplicate-balance.beancount` | pass | skip | PASS |  |
-| `049-invalid-booking-method.beancount` | pass | skip | PASS |  |
+| `047-syntax-error.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `048-duplicate-balance.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `049-invalid-booking-method.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
 | `050-query-balances.beancount` | pass | pass | PASS |  |
 | `051-query-journal.beancount` | pass | pass | PASS |  |
 | `052-query-functions.beancount` | pass | pass | PASS |  |
 | `053-query-group-limit.beancount` | pass | pass | PASS |  |
 | `054-tolerance-inference.beancount` | pass | pass | PASS |  |
-| `055-same-day-order.beancount` | pass | skip | PASS |  |
+| `055-same-day-order.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
 | `056-custom-values.beancount` | pass | pass | PASS |  |
 | `057-bql-prices.beancount` | pass | pass | PASS |  |
 | `058-cost-merge.beancount` | pass | skip | PASS | beancount 3.2.3 reports 'Cost merging is not supported yet' |
@@ -131,6 +131,25 @@ The 78 compared ledgers pass diagnostics; the two extensions are checked only ag
 | `078-plugin-order-auto-first.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
 | `079-plugin-commodity-exemptions.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
 | `080-plugin-implicit-short.beancount` | pass | pass | PASS |  |
+| `081-pad-interpolated.beancount` | pass | pass | PASS |  |
+| `082-balance-interpolated.beancount` | pass | pass | PASS |  |
+| `083-auto-pad-interpolated.beancount` | pass | pass | PASS |  |
+| `084-exempt-before-price.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `085-exempt-after-price.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `086-exempt-other-account.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `087-leaf-note.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `088-leaf-document.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `089-leaf-close.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `090-leaf-pad.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `091-leaf-pad-source.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `092-leaf-custom.beancount` | pass | prices only | PASS | Error ledger; BQL skipped |
+| `093-short-strict.beancount` | pass | pass | PASS |  |
+| `094-short-fifo.beancount` | pass | pass | PASS |  |
+| `095-short-lifo.beancount` | pass | pass | PASS |  |
+| `096-short-hifo.beancount` | pass | pass | PASS |  |
+| `097-short-strict_with_size.beancount` | pass | pass | PASS |  |
+| `098-short-average.beancount` | pass | pass | PASS |  |
+| `099-implicit-zero.beancount` | pass | pass | PASS |  |
 
 ## Reproduce
 
@@ -217,10 +236,9 @@ three price-path scenarios: 25 scenario records and 144 checks, all passing.
 Still outside the engine: subqueries, JOIN, PIVOT, arbitrary Python plugins, and BQL `CLOSE ON`
 conversion entries (the report layer closes and carries earnings instead).
 
-Backend checks run on native, js, wasm-gc and wasm (112 tests each); the
+Backend checks run on native, js, wasm-gc and wasm (122 tests each); the
 browser bundle has 29 node checks and 8 headless-Chrome checks (`web/smoke.mjs`,
-`web/dom-smoke.mjs`). Oracle comparison of the 58 original ledgers is unchanged
-at 56 of 56, with two extensions.
+`web/dom-smoke.mjs`). Oracle comparison covers 99 ledgers: 97 of 97 compared pass, with two extensions (the original 80 retain 78/78).
 
 ## Extended query matrix
 
@@ -286,7 +304,7 @@ Include failures preserve the including directive location; ordinary validation
 after expansion currently uses the root filename and expanded-text line, not a
 child-file source map. The migration include fixture makes this limit explicit.
 Document warnings do not imply file verification; plugin warnings do not imply
-execution. The conformance harness compares errors, not advisory warnings.
+execution. Here, non-execution refers only to unimplemented plugins; the five native plugins execute in 0.2.0. The conformance harness compares errors, not advisory warnings.
 
 Updated 100k performance measurements, historical arrays, query profiles and
 limitations are in [performance.md](performance.md). Local acceptance command
@@ -300,9 +318,9 @@ mooncakes publication claim.
 | --- | --- |
 | `auto_accounts` | Create missing opens at the first account reference; an existing later open is not moved. |
 | `implicit_prices` | Generate deduplicated daily prices from explicit posting prices (including total prices) or costs on lot augmentations; price overrides cost, reductions alone do not quote costs. Explicit price entries are retained. |
-| `check_commodity` | Require declarations for open currencies, balances, posting units/costs/prices and price pairs; one error per missing currency. Optional account/currency regex dictionary exemptions apply to accounts, not price directives. |
+| `check_commodity` | Require declarations for open currencies, balances, posting units/costs/prices and price pairs; one error per missing currency. Account/currency regex exemptions also suppress price-only uses of the exempted currency, regardless of directive order; other non-exempt accounts still report it. Price-context regex keys do not exempt prices. |
 | `unique_prices` | One error per date/base/quote group with unequal numbers; equivalent decimal scales do not conflict. |
-| `leafonly` | One error per posted account with descendants, including declared but unused children. |
+| `leafonly` | One error per account with descendants referenced by postings, note, document, close, pad (both accounts), or custom account values. Open and balance alone are exempt. |
 
 Enabled plugins run in declaration order after booking/default padding and before
 final account validation. Unknown names, including third-party Python plugins,
@@ -323,8 +341,11 @@ Configuration boundary: `check_commodity` accepts a dictionary of quoted regex
 strings using MoonBit's regex engine. Python-specific regex constructs or Python
 literal forms outside that grammar are not implemented and are excluded from
 supported configuration modes; they produce a named `validation.plugin` warning
-rather than silently applying a different exemption. The five no-configuration
-plugin declarations above are supported.
+and skip that plugin. The other four native plugins accept no configuration:
+any configuration string (including an empty string) emits a named
+`validation.plugin` warning and skips the plugin. Beancount 3.2.3 instead reports
+a plugin call failure (exit 1); MoonBean warnings are advisory (exit 0 unless
+other validation errors occur). No-configuration declarations remain supported.
 
 Source-position differences are intentional: Beancount uses synthetic
 `<auto_accounts>` locations for generated opens, `<check_commodity>:0` for missing
@@ -335,13 +356,13 @@ original file and line independently. Generated price locations match the
 originating transaction. These are diagnostic provenance differences, not omitted
 validation or transformation behavior.
 
-New independently authored ledgers 059–080 cover positive/negative cases,
-combinations, declaration order, regex exemptions and short-position costs with
-explicit dates under NONE booking. A separate black-box probe exposed an existing
-booking limitation: opening a costed short position under default STRICT reports
-`validation.booking` (no matching position), while Beancount 3.2.3 accepts it.
-This occurs before user plugins; the verified short fixture uses NONE booking.
-Default STRICT short opening is not claimed as compatible.
+Independently authored ledgers 059–099 cover plugin cases plus interpolated
+inventories with/without pad, commodity exemption propagation, leaf directive
+references, zero total prices and costed short opening. Empty-inventory costed
+short openings now pass STRICT, FIFO, LIFO, HIFO, STRICT_WITH_SIZE, AVERAGE and
+NONE; implicit_prices quotes their cost. This does not remove the existing
+AVERAGE reduction extension or claim complete short-position lifecycle coverage.
+The 19 new fixtures retain all original 80 results (78 compared, two extensions).
 Raw price entries (including duplicates) are compared even on invalid ledgers;
 clean ledgers also compare balances, lots and fixed queries. The existing random
 generator does not declare plugins; its two 1000-ledger runs cover regressions in
@@ -352,9 +373,9 @@ Both seeds `7` and `20261101` completed 1000 inputs each: 858 matched,
 142 AVERAGE differences, 0 non-AVERAGE differences; each included 468 clean
 ledgers with balance/query/report checks. Results are retained in
 [evidence/plugins-random-summary.json](evidence/plugins-random-summary.json).
-`moon check --deny-warn --target all`, `moon test --target all` (116 tests per
+`moon check --deny-warn --target all`, `moon test --target all` (122 tests per
 target), `moon fmt --check` and `moon info` pass; `.mbti` files are unchanged.
 The web build, 29 Node smoke checks and 8 DOM checks pass.
 
-The complete 80-ledger run passed 78/78 comparisons with 2 existing extensions;
-the original 58 fixtures retained their results. See [raw output](evidence/plugins-oracle.log).
+The complete 99-ledger run passed 97/97 comparisons with 2 existing extensions;
+the original 80 fixtures retained their results. See [raw output](evidence/plugins-oracle.log).
