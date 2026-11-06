@@ -49,25 +49,11 @@ fn bql_read_string(text : String, start : Int32) -> (String, Int32) {
     if c == quote {
       if i + 1 < len && bql_char(text, i + 1) == Some(quote) {
         sb.write_char(quote)
+        sb.write_char(quote)
         i = i + 2
         continue
       }
       return (sb.to_string(), i + 1)
-    }
-    if c == '\\' && i + 1 < len {
-      let escaped = match bql_char(text, i + 1) {
-        Some(c) => c
-        None => '\\'
-      }
-      let decoded = match escaped {
-        'n' => '\n'
-        't' => '\t'
-        'r' => '\r'
-        other => other
-      }
-      sb.write_char(decoded)
-      i = i + 1 + (if escaped.to_int() > 0xFFFF { 2 } else { 1 })
-      continue
     }
     sb.write_char(c)
     i = i + (if c.to_int() > 0xFFFF { 2 } else { 1 })
@@ -150,7 +136,8 @@ fn bql_number_token(raw : String) -> BTok {
   }
   match @decimal.Decimal::parse(raw) {
     Some(number) =>
-      if bql_has_dot(raw) {
+      if bql_has_dot(raw) ||
+        number.compare(@decimal.Decimal::from_int(2147483647)) > 0 {
         BNum(number)
       } else {
         BInt(bql_parse_int(raw))
@@ -160,7 +147,11 @@ fn bql_number_token(raw : String) -> BTok {
 }
 
 ///|
-fn lex_bql(text : String, unsupported~ : Array[String] = []) -> Array[BTok] {
+fn lex_bql(
+  text : String,
+  unsupported~ : Array[String] = [],
+  positions~ : Array[Int32] = [],
+) -> Array[BTok] {
   let mut selects = 0
   let tokens : Array[BTok] = []
   let mut i = 0
@@ -182,6 +173,7 @@ fn lex_bql(text : String, unsupported~ : Array[String] = []) -> Array[BTok] {
       i = i + 1
       continue
     }
+    positions.push(i)
     if c == '"' || c == '\'' {
       let (value, next) = bql_read_string(text, i)
       tokens.push(BStr(value))
@@ -219,6 +211,16 @@ fn lex_bql(text : String, unsupported~ : Array[String] = []) -> Array[BTok] {
             ""
           }
         }
+        "like" => "like"
+        "upper"
+        | "lower"
+        | "startswith"
+        | "endswith"
+        | "findfirst"
+        | "findlast"
+        | "substring"
+        | "trim"
+        | "split" => "function"
         "join" => "join"
         "pivot" => "pivot"
         _ => ""
@@ -266,6 +268,7 @@ fn lex_bql(text : String, unsupported~ : Array[String] = []) -> Array[BTok] {
       i = i + 1
     }
   }
+  positions.push(len)
   tokens.push(BEof)
   tokens
 }

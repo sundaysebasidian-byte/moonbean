@@ -292,11 +292,10 @@ test "hosts can match query failure categories" {
 }
 
 ///|
-test "transaction source is rejected rather than duplicating postings" {
+test "transaction source emits one row per transaction" {
   inspect(
-    queried(ledger_source(), "SELECT date, narration FROM transactions").failure()
-    is Some(@query.Unsupported(_)),
-    content="true",
+    queried(ledger_source(), "SELECT date, narration FROM transactions").rows.length(),
+    content="2",
   )
 }
 
@@ -345,7 +344,7 @@ test "non BMP strings survive and cannot hide trailing syntax" {
   let result = queried(ledger_source(), "SELECT '😀x😀', 'a\\😀b'")
   assert_true(result.is_ok())
   assert_eq(result.rows[0][0].to_text(), "😀x😀")
-  assert_eq(result.rows[0][1].to_text(), "a😀b")
+  assert_eq(result.rows[0][1].to_text(), "a\\😀b")
   assert_eq(
     queried(ledger_source(), "SELECT '😀' JOIN x").error,
     Some("unsupported query.unsupported.join at BQL:1:13"),
@@ -363,4 +362,72 @@ test "non BMP strings survive and cannot hide trailing syntax" {
     )
     assert_true(result.failure() is Some(@query.Syntax(_)))
   }
+}
+
+///|
+test "string length and slicing count Unicode code points" {
+  let r = queried(
+    ledger_source(),
+    "SELECT length('😀中abc'), substr('abcdef',1,3), substr('abcdef',-4,-1), substr('😀中abc',0,2), substr('abc',99,100), substr('abc',2,1) LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "5", "bc", "cde", "😀中", "", "",
+  ])
+}
+
+///|
+test "string functions distinguish null and empty payees" {
+  let source = "2024-01-01 open Assets:Cash USD\n2024-01-01 open Equity:Opening USD\n2024-01-02 * \"\" \"😀中abc\"\n  Assets:Cash 1 USD\n  Equity:Opening -1 USD\n2024-01-03 * \"absent payee\"\n  Assets:Cash 1 USD\n  Equity:Opening -1 USD\n"
+  let r = queried(
+    source, "SELECT payee, length(payee), substr(payee,0,2), narration FROM transactions ORDER BY date",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows.length(), 2)
+  assert_true(r.rows[0][0] is @query.QText(""))
+  assert_eq(r.rows[0][1].to_text(), "0")
+  assert_eq(r.rows[0][3].to_text(), "😀中abc")
+  assert_true(r.rows[1][0] is @query.QNull)
+  assert_true(r.rows[1][1] is @query.QNull)
+  assert_true(r.rows[1][2] is @query.QNull)
+  let grouped = queried(
+    source, "SELECT payee, count(*) FROM transactions GROUP BY payee ORDER BY payee",
+  )
+  assert_eq(grouped.rows.length(), 2)
+  assert_true(grouped.rows[0][0] is @query.QNull)
+  assert_true(grouped.rows[1][0] is @query.QText(""))
+  assert_eq(grouped.rows[0][1].to_text(), "1")
+  assert_eq(grouped.rows[1][1].to_text(), "1")
+}
+
+///|
+test "BQL string backslashes and doubled quotes match oracle literally" {
+  let r = queried(
+    ledger_source(),
+    "SELECT length('a\\tb'), substr('a''b',0,4) LIMIT 1",
+  )
+  assert_eq(r.rows[0][0].to_text(), "4")
+  assert_eq(r.rows[0][1].to_text(), "a''b")
+}
+
+///|
+test "new unsupported boundaries preserve positions" {
+  for
+    (q, code) in [
+      ("SELECT account WHERE account LIKE 'A%'", "like"),
+      ("SELECT upper('a')", "function"),
+      ("SELECT length(NULL)", "signature"),
+      ("SELECT account FROM transactions", "transaction_column"),
+    ] {
+    let r = queried(ledger_source(), q)
+    assert_true(r.failure() is Some(@query.Unsupported(_)))
+    assert_true(r.error.unwrap().contains("query.unsupported." + code))
+    assert_true(r.error.unwrap().contains("BQL:1:"))
+  }
+  assert_eq(
+    queried(ledger_source(), "SELECT narration\nWHERE narration ~ '['").error,
+    Some(
+      "unsupported query.unsupported.regex: invalid or unsupported regular expression at BQL:2:19",
+    ),
+  )
 }

@@ -6,7 +6,7 @@
 priv struct BqlRow {
   date : @ast.Date
   flag : String
-  payee : String
+  payee : String?
   narration : String
   tags : Array[String]
   links : Array[String]
@@ -99,10 +99,7 @@ fn posting_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
               rows.push({
                 date: entry.date,
                 flag: txn.flag,
-                payee: match txn.payee {
-                  Some(payee) => payee
-                  None => ""
-                },
+                payee: txn.payee,
                 narration: txn.narration,
                 tags: txn.tags,
                 links: txn.links,
@@ -139,7 +136,7 @@ fn balance_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
       rows.push({
         date,
         flag: "",
-        payee: "",
+        payee: None,
         narration: "",
         tags: [],
         links: [],
@@ -162,6 +159,7 @@ fn source_rows(
 ) -> Array[BqlRow] {
   match source {
     SrcPostings => posting_rows(realized)
+    SrcTransactions => transaction_rows(realized)
     SrcBalances => balance_rows(realized)
     SrcOpen(start, close) => opening_rows(realized, start, close)
     SrcClose(date) =>
@@ -176,7 +174,11 @@ fn eval_column(row : BqlRow, name : String) -> QueryValue {
     "year" => QNumber(@decimal.Decimal::from_int(row.date.year))
     "month" => QNumber(@decimal.Decimal::from_int(row.date.month))
     "flag" => QText(row.flag)
-    "payee" => if row.payee == "" { QNull } else { QText(row.payee) }
+    "payee" =>
+      match row.payee {
+        Some(s) => QText(s)
+        None => QNull
+      }
     "narration" => QText(row.narration)
     "tags" => QSet(row.tags)
     "links" => QSet(row.links)
@@ -239,6 +241,26 @@ fn eval_expr(expr : Expr, row : BqlRow) -> QueryValue {
             Some(@ast.MBool(b)) =>
               QNumber(@decimal.Decimal::from_int(if b { 1 } else { 0 }))
             None => QNull
+          }
+        ("length", [arg]) =>
+          match eval_expr(arg, row) {
+            QText(s) => QNumber(@decimal.Decimal::from_int(s.iter().count()))
+            _ => QNull
+          }
+        ("substr", [arg, start, end]) =>
+          match eval_expr(arg, row) {
+            QText(s) => {
+              let chars = s.iter().to_array()
+              let size = chars.length()
+              let a = slice_index(start, row, size)
+              let b = slice_index(end, row, size)
+              let sb = StringBuilder()
+              for i in a..<b {
+                sb.write_char(chars[i])
+              }
+              QText(sb.to_string())
+            }
+            _ => QNull
           }
         ("year", [arg]) =>
           match eval_expr(arg, row) {
@@ -493,7 +515,7 @@ priv struct OutputRow {
 fn group_key(exprs : Array[Expr], row : BqlRow) -> String {
   let sb = StringBuilder()
   for expr in exprs {
-    sb.write_string(eval_expr(expr, row).to_text())
+    sb.write_string(eval_expr(expr, row).to_json())
     sb.write_string("\u{1f}")
   }
   sb.to_string()
@@ -571,9 +593,15 @@ fn sort_outputs(outputs : Array[OutputRow], orders : Array[OrderSpec]) -> Unit {
         if !decided {
           let a = eval_grouped(spec.expr, prev.group)
           let b = eval_grouped(spec.expr, current.group)
-          let order = match value_compare(a, b) {
-            Some(value) => value
-            None => 0
+          let order = match (a, b) {
+            (QNull, QNull) => 0
+            (QNull, _) => -1
+            (_, QNull) => 1
+            _ =>
+              match value_compare(a, b) {
+                Some(value) => value
+                None => 0
+              }
           }
           if order != 0 {
             before = if spec.descending { order < 0 } else { order > 0 }
@@ -652,7 +680,7 @@ fn journal_row(entry : @ast.Entry, posting : @ast.Posting) -> BqlRow? {
       Some({
         date: entry.date,
         flag: "",
-        payee: "",
+        payee: None,
         narration: "",
         tags: [],
         links: [],
@@ -836,7 +864,7 @@ fn opening_rows(
       let row : BqlRow = {
         date,
         flag: "S",
-        payee: "",
+        payee: None,
         narration,
         tags: [],
         links: [],
@@ -870,4 +898,56 @@ fn opening_rows(
     }
   }
   summaries + rows
+}
+
+///|
+fn slice_index(expr : Expr, row : BqlRow, size : Int32) -> Int32 {
+  let raw = eval_expr(expr, row).to_text()
+  // Clamp before conversion, avoiding overflow for arbitrarily large indices.
+  let number = @decimal.Decimal::parse(raw).unwrap()
+  let bound = @decimal.Decimal::from_int(size)
+  if number.compare(bound) >= 0 {
+    return size
+  }
+  if number.compare(bound.neg()) <= 0 {
+    return 0
+  }
+  let negative = raw.has_prefix("-")
+  let mut index = 0
+  for c in raw.iter() {
+    if c.is_ascii_digit() {
+      index = index * 10 + c.to_int() - 48
+    }
+  }
+  if negative {
+    size - index
+  } else {
+    index
+  }
+}
+
+///|
+fn transaction_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
+  let rows : Array[BqlRow] = []
+  for entry in realized.entries {
+    if entry.directive is DTransaction(txn) {
+      // Posting-only columns are rejected before evaluation for this source.
+      let units = @ast.Amount::new(@decimal.Decimal::zero(), "")
+      rows.push({
+        date: entry.date,
+        flag: txn.flag,
+        payee: txn.payee,
+        narration: txn.narration,
+        tags: txn.tags,
+        links: txn.links,
+        meta: entry.meta,
+        account: "",
+        units,
+        cost: None,
+        value: None,
+        position: @booking.Position::new(units, None),
+      })
+    }
+  }
+  rows
 }

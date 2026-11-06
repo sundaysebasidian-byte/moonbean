@@ -78,10 +78,10 @@ fn read_string(text : String, start : Int32) -> (String, Int32) {
           sb.write_char(escaped)
         }
       }
-      i = i + 2
+      i = i + 1 + (if escaped.to_int() > 0xFFFF { 2 } else { 1 })
     } else {
       sb.write_char(c)
-      i = i + 1
+      i = i + (if c.to_int() > 0xFFFF { 2 } else { 1 })
     }
   }
   (sb.to_string(), len)

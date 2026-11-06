@@ -43,6 +43,7 @@ priv struct OrderSpec {
 ///|
 priv enum QuerySource {
   SrcPostings
+  SrcTransactions
   SrcBalances
   SrcClose(@ast.Date)
   SrcOpen(@ast.Date, @ast.Date?)
@@ -240,8 +241,22 @@ fn parse_primary(parser : QueryParser) -> Expr? {
           | "sum"
           | "count"
           | "meta" => Some(ECall(lower, args))
+          "length" | "substr" => {
+            let valid = match (lower, args) {
+              ("length", [arg]) => string_expr(arg)
+              ("substr", [arg, start, end]) =>
+                string_expr(arg) && integer_expr(start) && integer_expr(end)
+              _ => false
+            }
+            if valid {
+              Some(ECall(lower, args))
+            } else {
+              parser.fail("unsupported query.unsupported.signature")
+              None
+            }
+          }
           _ => {
-            parser.fail("unknown function `" + word + "`")
+            parser.fail("unsupported query.unsupported.function `" + word + "`")
             None
           }
         }
@@ -370,7 +385,9 @@ fn parse_cond_atom(parser : QueryParser) -> Cond? {
             BStr(pattern) => {
               let regex = @string.Regex("(?i:" + pattern + ")") catch {
                 _ => {
-                  parser.fail("invalid or unsupported regular expression")
+                  parser.fail(
+                    "unsupported query.unsupported.regex: invalid or unsupported regular expression",
+                  )
                   return None
                 }
               }
@@ -521,10 +538,12 @@ fn parse_source(parser : QueryParser) -> QuerySource? {
       }
     }
   }
+  parser.match_sym("#") |> ignore
   match parser.take_word() {
     Some(word) =>
       match word.to_lower() {
         "postings" => Some(SrcPostings)
+        "transactions" => Some(SrcTransactions)
         "balances" => Some(SrcBalances)
         _ => {
           parser.fail("unknown FROM source `" + word + "`")
@@ -661,6 +680,15 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   if !parser.at_end() {
     return PqError("unexpected input after query")
   }
+  if source is SrcTransactions {
+    if !projections.all(transaction_expr) ||
+      !groups.all(transaction_expr) ||
+      !orders.all(fn(o) { transaction_expr(o.expr) }) ||
+      !transaction_cond(filter) ||
+      !transaction_cond(having) {
+      return PqError("unsupported query.unsupported.transaction_column")
+    }
+  }
   PqSelect({ projections, source, filter, having, groups, orders, limit, })
 }
 
@@ -704,7 +732,8 @@ fn parse_journal(parser : QueryParser) -> ParsedQuery {
 ///|
 fn parse_query(text : String) -> ParsedQuery {
   let unsupported : Array[String] = []
-  let tokens = lex_bql(text, unsupported~)
+  let positions : Array[Int32] = []
+  let tokens = lex_bql(text, unsupported~, positions~)
   if unsupported.length() > 0 {
     return PqError(unsupported[0])
   }
@@ -712,7 +741,7 @@ fn parse_query(text : String) -> ParsedQuery {
   if parser.at_end() {
     return PqError("empty query")
   }
-  match parser.take_word() {
+  let result = match parser.take_word() {
     Some(word) =>
       match word.to_lower() {
         "select" => parse_select(parser)
@@ -726,6 +755,17 @@ fn parse_query(text : String) -> ParsedQuery {
         _ => PqError("unknown statement `" + word + "`")
       }
     None => PqError("query must start with SELECT, BALANCES or JOURNAL")
+  }
+  match result {
+    PqError(message) => {
+      let index = (parser.index - 1).max(0).min(positions.length() - 1)
+      let location = bql_lex_error(text, positions[index]).replace(
+        old="lexical query.invalid_character",
+        new="",
+      )
+      PqError(message + location)
+    }
+    _ => result
   }
 }
 
@@ -767,4 +807,55 @@ fn parse_balances(parser : QueryParser) -> ParsedQuery {
     tokens.push(token)
   }
   parse_select(QueryParser::new(tokens))
+}
+
+///|
+fn string_expr(expr : Expr) -> Bool {
+  match expr {
+    EStr(_)
+    | ECol(
+      "payee"
+      | "narration"
+      | "account"
+      | "flag"
+      | "currency"
+      | "root"
+      | "parent"
+      | "leaf"
+    ) => true
+    ECall("substr" | "root" | "parent" | "leaf", _) => true
+    _ => false
+  }
+}
+
+///|
+fn integer_expr(expr : Expr) -> Bool {
+  match expr {
+    ENum(n) => !n.to_string().contains(".")
+    EBinary(ENum(n), "-" | "+", right) => n.is_zero() && integer_expr(right)
+    _ => false
+  }
+}
+
+///|
+fn transaction_expr(expr : Expr) -> Bool {
+  match expr {
+    ECol("date" | "flag" | "payee" | "narration" | "tags" | "links") => true
+    ECol(_) => false
+    ECall("meta" | "sum", _) => false
+    ECall(_, args) => args.all(transaction_expr)
+    EBinary(a, _, b) => transaction_expr(a) && transaction_expr(b)
+    _ => true
+  }
+}
+
+///|
+fn transaction_cond(cond : Cond) -> Bool {
+  match cond {
+    CTrue => true
+    CNot(c) => transaction_cond(c)
+    CAnd(a, b) | COr(a, b) => transaction_cond(a) && transaction_cond(b)
+    CCmp(a, _, b) => transaction_expr(a) && transaction_expr(b)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => transaction_expr(e)
+  }
 }

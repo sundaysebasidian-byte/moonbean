@@ -2,6 +2,8 @@
 """Oracle comparisons for extended BQL, using independently authored inputs."""
 import argparse
 import json
+import subprocess
+from pathlib import Path
 import conformance as c
 
 queries = [
@@ -34,6 +36,25 @@ def main():
         oracle = c.oracle_query(args.oracle, ledger, query)
         ok, detail = c.compare_scalar_query(ours, oracle) if ours else (False, 'moonbean failed')
         results.append(dict(query=query, ok=ok, detail=detail))
+    fixture = json.loads((Path(__file__).resolve().parent.parent / 'tests/bql-strings.json').read_text(encoding='utf-8'))
+    for case in fixture['cases']:
+        query = case['query']
+        oracle = c.oracle_query(args.oracle, fixture['ledger'], query)
+        ours = c.ours_query('_build/native/debug/build/cmd/main/main.exe', fixture['ledger'], query)
+        ok, detail = c.compare_scalar_query(ours, oracle) if ours else (False, 'moonbean failed')
+        if oracle is None or oracle[1:] != case['expected']:
+            ok, detail = False, 'oracle output differs from checked-in expectation'
+        results.append(dict(query=query, ok=ok, detail=detail))
+    for case in fixture['boundaries']:
+        query = case['query']
+        oracle = c.oracle_query(args.oracle, fixture['ledger'], query)
+        proc = subprocess.run(['_build/native/debug/build/cmd/main/main.exe', 'query', fixture['ledger'], query, '--json'], capture_output=True, text=True)
+        output = proc.stdout + proc.stderr
+        ok = (oracle is not None) == case['oracle_supported']
+        if case['oracle_supported']:
+            ok = ok and oracle[1:] == case['oracle_rows']
+        ok = ok and proc.returncode != 0 and ('query.unsupported.' + case['kind']) in output and 'BQL:' in output
+        results.append(dict(query=query, ok=ok, detail='' if ok else 'boundary or oracle capability changed'))
     print(json.dumps(results, indent=2))
     return int(any(not r['ok'] for r in results))
 
