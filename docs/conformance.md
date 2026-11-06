@@ -11,10 +11,10 @@ virtual environment only by the reproduction script. All ledgers under
 | --- | --- |
 | Date | 2026-11-06 |
 | Platform | macOS (arm64) |
-| MoonBit | 0.1.20261028 |
+| MoonBit | 0.1.20261104 |
 | Oracle | beancount 3.2.3 |
 | Oracle query tool | beanquery 0.2.0 |
-| MoonBean | local 0.2.0; not published |
+| MoonBean | local 0.2.1; not pushed or published |
 
 ## What is compared
 
@@ -43,11 +43,11 @@ MoonBean's own expectations and excluded from the oracle comparison count.
 ## Result
 
 ```
-ledgers: 113, compared: 111, passed: 111, failed: 0, extensions: 2
+ledgers: 114, compared: 112, passed: 112, failed: 0, extensions: 2
 ```
 
-Raw pass rate over compared ledgers: **111 / 111 = 100%**.
-The 111 compared ledgers pass diagnostics; the two extensions are checked only against MoonBean expectations.
+Raw pass rate over compared ledgers: **112 / 112 = 100%**.
+The 112 compared ledgers pass diagnostics; the two extensions are checked only against MoonBean expectations.
 
 | Ledger | Diagnostics | BQL | Result | Notes |
 | --- | --- | --- | --- | --- |
@@ -164,6 +164,7 @@ The 111 compared ledgers pass diagnostics; the two extensions are checked only a
 | `111-short-inferred-none-1.beancount` | pass | pass | PASS |  |
 | `112-round-zero.beancount` | pass | pass | PASS |  |
 | `113-round-zero.beancount` | pass | pass | PASS |  |
+| `114-bql-strings.beancount` | pass | pass | PASS | Unicode, NULL and empty strings |
 
 
 ## Reproduce
@@ -244,20 +245,20 @@ three price-path scenarios: 25 scenario records and 144 checks, all passing.
 | Balance sheet | Cost-basis report matches beanquery `FROM OPEN ON ... CLOSE ON ... CLEAR`; the income statement matches the same period before `CLEAR`. Prior and current earnings go to the accounts named by the earnings options. Market-value changes appear as an `Equity:Earnings:Unrealized` reserve and exact FX rounding as a separate adjustment, so Assets + Liabilities + Equity is exactly zero per currency. |
 | Currency conversion | Date-filtered BFS over direct and inverse quotes, lexical tie-break, cycle detection. When a path is missing the report sets `complete: false`, lists `report.conversion_incomplete` diagnostics and splits totals by currency. |
 | Lots | A reduction that spans lots is stored as several booked postings; BQL, `JOURNAL`, register and JSON export show the same rows. |
-| `FROM transactions` | Rejected at parse time as unsupported; there is no transaction row source. |
+| `FROM transactions` | One row per transaction, also accepts `#transactions`; date/flag/payee/narration/tags/links, WHERE/GROUP/HAVING/ORDER/LIMIT/count. Posting columns and transaction meta functions explicitly rejected. |
 | Includes | One iterative stack shared by the library and the CLI. Self, mutual, absolute and normalized cycles report `include.cycle`; missing files report `include.missing`; maximum depth 1024. Cycles are covered by `scripts/include_smoke.py` instead of the oracle, because beancount reports a duplicate-filename error at `<load>:0` while MoonBean reports the including file and line. |
 | Display precision | Text reports use one scale per currency (the most common booked scale, ties to the larger; an explicit `display_precision` wins). JSON keeps exact amounts and adds `display_precision`. |
 
 Still outside the engine: subqueries, JOIN, PIVOT, arbitrary Python plugins, and BQL `CLOSE ON`
 conversion entries (the report layer closes and carries earnings instead).
 
-Backend checks run on native, js, wasm-gc and wasm (125 tests each); the
+Backend checks run on native, js, wasm-gc and wasm (129 tests each); the
 browser bundle has 29 node checks and 8 headless-Chrome checks (`web/smoke.mjs`,
-`web/dom-smoke.mjs`). Oracle comparison covers 113 ledgers: 111 of 111 compared pass, with two extensions (the original 80 retain 78/78).
+`web/dom-smoke.mjs`). Oracle comparison covers 114 ledgers: 112 of 112 compared pass, with two extensions (the original 80 retain 78/78).
 
 ## Extended query matrix
 
-12/12 additional external beanquery comparisons pass on independently written
+34/34 additional external beanquery comparisons pass on independently written
 ledger fixtures: aggregate HAVING, numeric precedence/parentheses/unary/division,
 regex account filtering, populated tags/links and posting metadata, and four
 unit/cost balance views combining OPEN/CLOSE periods.
@@ -273,12 +274,42 @@ unit/cost balance views combining OPEN/CLOSE periods.
 | BALANCES AT / FROM | AT units/cost; FROM postings/balances or OPEN/CLOSE ON dates, optional WHERE |
 | OPEN ON | Summarizes earlier lots, transfers Income/Expenses to Equity:Earnings:Previous; honors account_previous_earnings / account_previous_balances options |
 | CLOSE ON | Exclusive date cutoff; currency-conversion normalization entries are not synthesized; partial compatibility |
-| FROM transaction predicates | Unsupported; this implementation's FROM accepts the sources/period forms above |
-| Subqueries / JOIN / PIVOT | Unsupported; rejected by parser, reserved for later work |
+| FROM transaction predicates | `FROM transactions WHERE ...` supports transaction-column predicates; arbitrary FROM entry predicates remain unsupported |
+| Subqueries / JOIN / PIVOT | MoonBean rejects all with positioned `query.unsupported.*`; oracle 0.2.0 supports FROM subqueries and `PIVOT BY 1,2`, rejects JOIN |
 
 These comparisons cover ordinary default-name period balances. They do not
 prove exact synthetic metadata/ordering, custom summarization account options,
 or conversion normalization. Period support is deliberately marked partial.
+
+## String and transaction coverage (0.2.1)
+
+The 22 new output comparisons in `tests/bql-strings.json` are generated by the
+external pinned oracle on independently authored ledger 114; the existing
+`scripts/bql_differential.py` verifies both checked-in expectations and fresh
+oracle output. Together with the original 12 cases these give 34 output checks.
+Baseline `29f1acb` rejects all 22 new output queries; the final implementation
+passes them. A separately built `git archive` baseline and regression log are
+retained in `.oracle-cache/r7/`. Another 16 live capability/rejection checks cover the boundaries below; unit
+tests assert exact invalid-regex locations, including multiline queries.
+
+| Feature | beanquery 0.2.0 black-box result | MoonBean 0.2.1 |
+| --- | --- | --- |
+| SQL LIKE / JOIN | Syntax rejected | Positioned `query.unsupported.like/join` |
+| `~` | Case-insensitive regex search | Literal patterns, core Regex dialect; invalid patterns carry `query.unsupported.regex` and BQL position; Python-specific constructs remain outside scope |
+| `length(str)` | Unicode code-point count | Compared including emoji, empty strings and nullable payee |
+| `substr(str,int,int)` | Python-style `[start:end]`, zero origin, negative indices, clipping | Compared; indices restricted to signed integer literals, string input to literals/string columns/nested string functions; invalid signatures explicitly rejected |
+| `upper/lower(str)` | Supported, Unicode casing (including multi-character expansions) | Not implemented; `query.unsupported.function`, rather than ASCII approximations |
+| `startswith/endswith/findfirst(str,str)` | No matching function signature | `query.unsupported.function` |
+| `FROM transactions` / `FROM #transactions` | One row per transaction, no account column | Shared transaction columns supported; no posting duplication; absent payee is NULL, explicitly empty payee stays empty; grouping distinguishes both, ASC sorts NULL first |
+| FROM subqueries / `PIVOT BY 1,2` | Supported (tested using valid grouping) | Not implemented; positioned `query.unsupported.subquery/pivot` |
+| `meta('key') FROM transactions` | Supported | Not implemented; positioned `query.unsupported.transaction_column` |
+
+NULL propagation is verified through typed nullable payee columns; literal
+`length(NULL)` is a compilation error in the oracle and is explicitly rejected
+here. BQL backslashes and doubled quotes are preserved literally, as observed in
+0.2.0, rather than decoded as C/Python escapes. Ledger string decoding is separate;
+its non-BMP advancement now retains the text following an emoji. No upstream
+source, comments or test fixtures were read or copied. This remains a BQL subset.
 
 ## API and CI
 
@@ -417,3 +448,14 @@ already pass. See [baseline output](evidence/r6-baseline.log),
 [posting-level comparisons](evidence/r6-postings.json).
 
 R6 re-runs retain the same two seeded results: see [random summary](evidence/r6-random-summary.json) and [validation summary](evidence/r6-validation.json).
+
+## 0.2.1 local acceptance
+
+114 ledgers: 112 compared, 112 passed, two existing extensions. Four targets
+pass 129 tests each. Extended BQL: 34 output comparisons and 16 explicit
+capability/rejection checks. Both 1000-input seeds retain 858 matches, 142
+AVERAGE-only differences and zero other differences. `moon check --deny-warn
+--target all`, `moon fmt --check`, `moon info` (no `.mbti` changes), web build,
+29 Node checks and 8 DOM checks pass using MoonBit 0.1.20261104. The web build
+respects the caller's selected toolchain PATH. This is local evidence, not a new
+CI run, deployment, push or publication. Logs remain in `.oracle-cache/r7/`.

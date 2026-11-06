@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.1
+
+- Add Unicode code-point `length` and zero-origin, end-exclusive `substr` with negative/clipped integer literal indices and typed NULL propagation.
+- Add one-row-per-transaction `FROM transactions` / `#transactions` with explicit column boundaries; preserve empty versus absent payees.
+- Keep NULL and empty string groups distinct and sort NULL first in ascending order.
+- Preserve oracle BQL backslashes/doubled quotes and ledger text following non-BMP characters; retain query locations for invalid regex and unsupported capabilities.
+- Verify 114 ledgers (112 comparable, two extensions), 34 extended BQL outputs plus 16 capability boundaries, 129 tests per backend and both 1000-input differential seeds.
+- Document oracle support for Unicode upper/lower, subqueries and PIVOT BY as unimplemented; LIKE/JOIN and startswith/findfirst signatures are rejected by the pinned oracle.
+- Prepare 0.2.1 locally; no push or publication.
+
 ## 0.2.0
 
 - Match cost-bearing pad errors while preserving padding balances; a zero difference leaves the pad unused.

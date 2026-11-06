@@ -17,18 +17,19 @@ Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运
 | 指令：open / close / commodity / balance / pad / price / transaction，posting 语法（cost、price、金额表达式、省略金额），include，pushtag / pushmeta | 已支持 | 精确十进制与容差推断；pad 需补差额且余额含成本持仓时报错，无差额的 pad 报 Unused Pad；错误带类别、文件和行号 |
 | 七种 booking：STRICT / STRICT_WITH_SIZE / FIFO / LIFO / HIFO / AVERAGE / NONE | 已支持 | AVERAGE 与 `{*}` 是扩展，beancount 3.2.3 不支持 |
 | 报表：库存、价格库与多跳折算、试算平衡、资产负债表、损益表、register | 已支持 | 文本与 JSON 输出，资产负债表恒等式按币种精确成立 |
-| BQL：SELECT / WHERE / GROUP BY / HAVING / ORDER BY / LIMIT，FROM postings / balances，BALANCES，JOURNAL | 部分支持 | 函数只有 year / month / root / parent / leaf / sum / count；WHERE 支持比较、逻辑、`~` 正则，无 LIKE |
+| BQL：SELECT / WHERE / GROUP BY / HAVING / ORDER BY / LIMIT，FROM postings / balances / transactions，BALANCES，JOURNAL | 部分支持 | 函数为 year / month / root / parent / leaf / sum / count / length / substr；交易行源每笔一行，列范围与字符串签名边界见 conformance；WHERE 支持比较、逻辑、`~` 正则，无 LIKE |
 | `document` / `note` / `event` / `query` / `custom` | 部分支持 | 解析、校验账户并保留；`document` 不检查文件是否存在，`query` 不会自动执行 |
 | `option` | 部分支持 | 影响语义的 5 个选项已实现，`account_rounding`、`render_commas` 只解析 |
 | `plugin` | 内置 5 个插件已支持，其余只记录并警告 | 原生按声明顺序执行 `beancount.plugins.auto_accounts`、`implicit_prices`、`check_commodity`、`unique_prices`、`leafonly`，生成条目和错误保留来源。其他插件不执行 Python，`validation.plugin` 明确报告未实现名称；依赖这些插件生成条目或校验的账本仍可能与 Beancount 不同。配置正则边界见 conformance |
-| BQL 子查询 / JOIN / PIVOT / SQL `LIKE` / `FROM transactions` | 明确不支持 | 影响：用到它们的查询返回 `query.unsupported.*` 错误和位置，可改写为单一 postings 查询，或继续用 beanquery；本期不实现，不会近似执行 |
+| BQL 子查询 / JOIN / PIVOT / SQL `LIKE` | 明确不支持 | 影响：用到它们的查询返回 `query.unsupported.*` 错误和位置，可改写为单一 postings 查询，或继续用 beanquery；oracle 支持子查询与 PIVOT BY，不支持 LIKE/JOIN；本引擎也未实现 oracle 支持的 Unicode upper/lower，不会近似执行 |
 
 ## 一致性证据
 
-- 113 份自编账本对 beancount 3.2.3 与 beanquery 0.2.0：111 份可比较全部通过，另 2 份用到扩展，只用本项目测试验证。
+- 114 份自编账本对 beancount 3.2.3 与 beanquery 0.2.0：112 份可比较全部通过，另 2 份用到扩展，只用本项目测试验证。
+- 34 条扩展 BQL 输出与 16 条能力/拒绝边界检查通过，账本、查询及 oracle 期望输出纳入版本库。
 - 两个 seed 各 1000 份随机账本：858 份完全一致，142 份仅因 AVERAGE 扩展不同，其余差异为 0。
 - 22 份报表和 lot 回归账本共 144 项检查通过；5 份迁移边界账本逐一给出确定的诊断。
-- 四个后端各 125 个测试；Playground 有 29 项 node 检查和 8 项无头浏览器检查；CI 覆盖三个系统、oracle 和 Playground。
+- 四个后端各 129 个测试；Playground 有 29 项 node 检查和 8 项无头浏览器检查；CI 覆盖三个系统、oracle 和 Playground。
 - 10 万笔交易 `check` 约 0.56 s（固定种子，原始采样已存档）。
 
 ## 基础与本期工作
