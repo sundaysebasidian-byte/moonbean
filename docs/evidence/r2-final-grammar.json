@@ -1,0 +1,566 @@
+[
+  {
+    "query": "SELECT 1 + 2",
+    "exit": 0,
+    "stdout": "1 + 2\n3\n3\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 - 2",
+    "exit": 0,
+    "stdout": "1 - 2\n-1\n-1\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 * 2",
+    "exit": 0,
+    "stdout": "1 * 2\n2\n2\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 / 2",
+    "exit": 0,
+    "stdout": "1 / 2\n0.5\n0.5\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 % 2",
+    "exit": 0,
+    "stdout": "1 % 2\n1\n1\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 // 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 ^ 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 ** 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 & 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 | 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 << 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 >> 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 = 2",
+    "exit": 0,
+    "stdout": "1 = 2\nFALSE\nFALSE\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 == 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 != 2",
+    "exit": 0,
+    "stdout": "1 != 2\nTRUE\nTRUE\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 <> 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 < 2",
+    "exit": 0,
+    "stdout": "1 < 2\nTRUE\nTRUE\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 <= 2",
+    "exit": 0,
+    "stdout": "1 <= 2\nTRUE\nTRUE\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 > 2",
+    "exit": 0,
+    "stdout": "1 > 2\nFALSE\nFALSE\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 >= 2",
+    "exit": 0,
+    "stdout": "1 >= 2\nFALSE\nFALSE\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 IN  (1,2)",
+    "exit": 0,
+    "stdout": "\"1 IN  (1,2)\"\nTRUE\nTRUE\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 NOT IN  (1,2)",
+    "exit": 0,
+    "stdout": "\"1 NOT IN  (1,2)\"\nFALSE\nFALSE\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 BETWEEN 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 AND 2",
+    "exit": 0,
+    "stdout": "1 AND 2\nTRUE\nTRUE\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 OR 2",
+    "exit": 0,
+    "stdout": "1 OR 2\nTRUE\nTRUE\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 XOR 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 IS 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 IS NOT 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 ~ 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.compiler.CompilationError: operator \"match(int, int)\" not supported"
+  },
+  {
+    "query": "SELECT 1 !~ 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.compiler.CompilationError: operator \"notmatch(int, int)\" not supported"
+  },
+  {
+    "query": "SELECT 1 ?~ 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.compiler.CompilationError: operator \"matches(int, int)\" not supported"
+  },
+  {
+    "query": "SELECT 1 LIKE 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 ILIKE 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT 1 || 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number + 2",
+    "exit": 0,
+    "stdout": "account\nAssets:Cash\nEquity:Opening\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number - 2",
+    "exit": 0,
+    "stdout": "account\nAssets:Cash\nEquity:Opening\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number * 2",
+    "exit": 0,
+    "stdout": "account\nAssets:Cash\nEquity:Opening\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number / 2",
+    "exit": 0,
+    "stdout": "account\nAssets:Cash\nEquity:Opening\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number % 2",
+    "exit": 0,
+    "stdout": "account\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number // 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number ^ 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number ** 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number & 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number | 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number << 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number >> 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number = 2",
+    "exit": 0,
+    "stdout": "account\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number == 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number != 2",
+    "exit": 0,
+    "stdout": "account\nAssets:Cash\nEquity:Opening\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number <> 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number < 2",
+    "exit": 0,
+    "stdout": "account\nEquity:Opening\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number <= 2",
+    "exit": 0,
+    "stdout": "account\nEquity:Opening\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number > 2",
+    "exit": 0,
+    "stdout": "account\nAssets:Cash\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number >= 2",
+    "exit": 0,
+    "stdout": "account\nAssets:Cash\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number IN (1,2)",
+    "exit": 0,
+    "stdout": "account\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number NOT IN (1,2)",
+    "exit": 0,
+    "stdout": "account\nAssets:Cash\nEquity:Opening\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number BETWEEN 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number AND 2",
+    "exit": 0,
+    "stdout": "account\nAssets:Cash\nEquity:Opening\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number OR 2",
+    "exit": 0,
+    "stdout": "account\nAssets:Cash\nEquity:Opening\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account WHERE number XOR 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number IS 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number IS NOT 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number ~ 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.compiler.CompilationError: operator \"match(decimal, int)\" not supported"
+  },
+  {
+    "query": "SELECT account WHERE number !~ 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.compiler.CompilationError: operator \"notmatch(decimal, int)\" not supported"
+  },
+  {
+    "query": "SELECT account WHERE number ?~ 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.compiler.CompilationError: operator \"matches(decimal, int)\" not supported"
+  },
+  {
+    "query": "SELECT account WHERE number LIKE 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number ILIKE 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE number || 2",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT NOT true",
+    "exit": 0,
+    "stdout": "NOT true\nFALSE\nFALSE\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT NULL IS NULL",
+    "exit": 0,
+    "stdout": "NULL IS NULL\nTRUE\nTRUE\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 1 BETWEEN 0 AND 2",
+    "exit": 0,
+    "stdout": "1 BETWEEN 0 AND 2\nTRUE\nTRUE\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 'a' ~ 'a'",
+    "exit": 0,
+    "stdout": "'a' ~ 'a'\nTRUE\nTRUE\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT 'a'||'b'",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT DISTINCT position",
+    "exit": 0,
+    "stdout": "position\n 12 USD\n-12 USD\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT date AS d",
+    "exit": 0,
+    "stdout": "d\n2024-01-02\n2024-01-02\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT date GROUP BY 1",
+    "exit": 0,
+    "stdout": "date\n2024-01-02\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT date ORDER BY 1",
+    "exit": 0,
+    "stdout": "date\n2024-01-02\n2024-01-02\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account FROM (SELECT account)",
+    "exit": 0,
+    "stdout": "account\nAssets:Cash\nEquity:Opening\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account,currency,sum(number) GROUP BY account,currency PIVOT BY 1,2",
+    "exit": 0,
+    "stdout": "account/currency,USD\nAssets:Cash, 12\nEquity:Opening,-12\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT sum(position) FLATTEN",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT FLATTEN sum(position)",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT DISTINCT FLATTEN sum(position)",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT sum(position) FROM FLATTEN",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.compiler.CompilationError: column \"flatten\" not found in table \"postings\""
+  },
+  {
+    "query": "SELECT sum(position) FROM CLOSE",
+    "exit": 0,
+    "stdout": "sum(position)\n\"\"\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT accounts FROM OPEN ON 2024-01-02 CLOSE ON 2024-02-01 CLEAR",
+    "exit": 0,
+    "stdout": "accounts\n\"Assets:Cash,Equity:Opening\"\n\"Assets:Cash,Equity:Opening\"\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account FROM accounts",
+    "exit": 0,
+    "stdout": "account\nAssets:Cash\nEquity:Opening\n",
+    "stderr": ""
+  },
+  {
+    "query": "SELECT account FROM postings JOIN transactions",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "SELECT account WHERE account LIKE \"Assets%\"",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": "BALANCES",
+    "exit": 0,
+    "stdout": "account,SUM((position))\nAssets:Cash, 12 USD\nEquity:Opening,-12 USD\n",
+    "stderr": ""
+  },
+  {
+    "query": "JOURNAL",
+    "exit": 0,
+    "stdout": "date,flag,\"MAXWIDTH(payee, 48)\",\"MAXWIDTH(narration, 80)\",account,position,balance\n2024-01-02,*,,Opening,Assets:Cash, 12 USD, 12 USD\n2024-01-02,*,,Opening,Equity:Opening,-12 USD,       \n",
+    "stderr": ""
+  },
+  {
+    "query": "PRINT",
+    "exit": 0,
+    "stdout": "2024-01-01 open Assets:Cash                                     USD\n2024-01-01 open Equity:Opening                                  USD\n\n2024-01-01 commodity USD\n  label: \"US dollar\"\n\n2024-01-01 commodity EUR\n\n2024-01-02 * \"Opening\"\n  Assets:Cash      12 USD\n  Equity:Opening  -12 USD\n\n2024-01-03 event \"location\" \"Shanghai\"\n  site: \"home\"\n\n2024-01-04 note Assets:Cash \"counted\"\n\n2024-01-05 document Assets:Cash \"/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/README.md\" #receipt ^book\n\n2024-01-06 price USD                                  0.90 EUR\n\n2024-01-07 balance Assets:Cash                                     12 ~ 0.01 USD\n\n2024-01-08 query \"cash\" \"SELECT account\"\n\n2024-01-09 custom \"limit\" Assets:Cash 12 USD\n\n2024-01-10 close Assets:Cash\n",
+    "stderr": ""
+  },
+  {
+    "query": "PRINT FROM year=2024",
+    "exit": 0,
+    "stdout": "2024-01-01 open Assets:Cash                                     USD\n2024-01-01 open Equity:Opening                                  USD\n\n2024-01-01 commodity USD\n  label: \"US dollar\"\n\n2024-01-01 commodity EUR\n\n2024-01-02 * \"Opening\"\n  Assets:Cash      12 USD\n  Equity:Opening  -12 USD\n\n2024-01-03 event \"location\" \"Shanghai\"\n  site: \"home\"\n\n2024-01-04 note Assets:Cash \"counted\"\n\n2024-01-05 document Assets:Cash \"/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/README.md\" #receipt ^book\n\n2024-01-06 price USD                                  0.90 EUR\n\n2024-01-07 balance Assets:Cash                                     12 ~ 0.01 USD\n\n2024-01-08 query \"cash\" \"SELECT account\"\n\n2024-01-09 custom \"limit\" Assets:Cash 12 USD\n\n2024-01-10 close Assets:Cash\n",
+    "stderr": ""
+  },
+  {
+    "query": "EXPLAIN SELECT date",
+    "exit": 1,
+    "stdout": "",
+    "stderr": "beanquery.parser.ParseError: syntax error"
+  },
+  {
+    "query": ".explain SELECT date",
+    "exit": 0,
+    "stdout": "parsed statement\n----------------\n  (select\n    targets: (\n      (target\n        expression: (column\n          name: 'date'))))\n\ncompiled query\n--------------\n  EvalQuery(table=<beanquery.sources.beancount.PostingsTable object at 0x1067fc1a0>, c_targets=[EvalTarget(c_expr=date(<class 'datetime.date'>), name='date', is_aggregate=False)], c_where=None, group_indexes=None, having_index=None, order_spec=None, limit=None, distinct=None)\n\n",
+    "stderr": ""
+  }
+]

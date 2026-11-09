@@ -6,7 +6,7 @@ The compatibility endpoint is **beancount 3.2.3 syntax and accounting semantics 
 
 Oracle metadata was obtained through public runtime descriptors, independently authored parser inputs, and CLI `.tables`, `.describe`, `.help targets` and statement probes. No upstream source or fixtures were inspected or copied. Reproduce with the pinned oracle Python: `python scripts/compatibility_inventory.py`. [Machine-readable inventory](evidence/compatibility-inventory.json) retains signatures, defaults, repeated-assignment probes, columns and command results. A descriptor or successful parse is not semantic conformance evidence.
 
-Evidence: `scripts/conformance.py` (ledger fixtures), `scripts/bql_differential.py` (current results linked below), `query/query_test.mbt`, `syntax/parser_test.mbt`, and [current acceptance](evidence/r2-return-acceptance.md). QueryError now distinguishes Syntax, Compilation, Evaluation and Unsupported. Shared invalid-input cases compare normalized oracle error categories. Unsupported statements/functions return errors; recognized options retained as raw data may have no effect, as listed below.
+Evidence: `scripts/conformance.py` (ledger fixtures), `scripts/bql_differential.py` (current results linked below), `query/query_test.mbt`, `syntax/parser_test.mbt`, and [current acceptance](evidence/r2-final-acceptance.md). QueryError now distinguishes Syntax, Compilation, Evaluation and Unsupported. Shared invalid-input cases compare normalized oracle error categories. Unsupported statements/functions return errors; recognized options retained as raw data may have no effect, as listed below.
 
 ## Options
 
@@ -19,11 +19,11 @@ Defaults and types are oracle values. Repeat means collection accumulation; scal
 | `dcontext` | DisplayContext | `__default__     : sign=1   integer_max=1   fractional_common=_   fractional_max=_   "-0.*" "-0.*" ` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
 | `commodities` | set | `set()` | yes | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
 | `title` | str | `Beancount` | no | Supported storage; presentation title is host-owned (parser tests). |
-| `name_assets` | str | `Assets` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
-| `name_liabilities` | str | `Liabilities` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
+| `name_assets` | str | `Assets` | no | Used by account_sortkey; renamed root account syntax/lifecycle taxonomy remains unsupported. Use oracle for those semantics. |
+| `name_liabilities` | str | `Liabilities` | no | Used by account_sortkey; renamed root account syntax/lifecycle taxonomy remains unsupported. Use oracle for those semantics. |
 | `name_equity` | str | `Equity` | no | Used for summary/report equity account labels; full renamed account taxonomy unsupported (realization option regression). |
-| `name_income` | str | `Income` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
-| `name_expenses` | str | `Expenses` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
+| `name_income` | str | `Income` | no | Used by account_sortkey; renamed root account syntax/lifecycle taxonomy remains unsupported. Use oracle for those semantics. |
+| `name_expenses` | str | `Expenses` | no | Used by account_sortkey; renamed root account syntax/lifecycle taxonomy remains unsupported. Use oracle for those semantics. |
 | `account_previous_balances` | str | `Opening-Balances` | no | Used by FROM OPEN summary and report prior-earnings labels (period differential / realization option tests); other oracle contexts unverified. |
 | `account_previous_earnings` | str | `Earnings:Previous` | no | Used by FROM OPEN summary and report prior-earnings labels (period differential / realization option tests); other oracle contexts unverified. |
 | `account_previous_conversions` | str | `Conversions:Previous` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
@@ -36,7 +36,7 @@ Defaults and types are oracle values. Repeat means collection accumulation; scal
 | `inferred_tolerance_default` | dict | `{}` | yes | Supported per-currency and wildcard fallback defaults (044, 115–116); inferred currency tolerance overrides wildcard. Other combinations not exhaustively verified. |
 | `tolerance_multiplier` | Decimal | `0.5` | no | Supported decimal inference (044, 054); not an exhaustive tolerance proof. |
 | `inferred_tolerance_multiplier` | Decimal | `0.5` | no | Supported deprecated alias, emits warning (044). |
-| `infer_tolerance_from_cost` | bool | `False` | no | Supported inference; TRUE/True/true/1 enabled, other values false (054, 115 and parser tests). |
+| `infer_tolerance_from_cost` | bool | `False` | no | Supported quantity-precision times cost/price inference, with per-posting 0.5 cap and accumulated currency tolerances (119, object metadata differential); TRUE/True/true/1 enabled. |
 | `documents` | list | `[]` | yes | Unsupported folder discovery and file existence validation; paths stored only. Host must verify receipts. |
 | `operating_currency` | list | `[]` | yes | Stored repeatably; a single value selects report conversion in CLI/playground. Multi-currency oracle report layout unsupported. |
 | `render_commas` | bool | `False` | no | Unsupported comma rendering; boolean parsed/stored only. Amount text differs; host can format numbers. |
@@ -56,12 +56,12 @@ Defaults and types are oracle values. Repeat means collection accumulation; scal
 | --- | --- |
 | `open` (meta, date, account, currencies, booking) | Syntax, currencies and booking supported (009, 013, 029–034); renamed root options are a gap. |
 | `close` (meta, date, account) | Account lifecycle validation supported (010–014). |
-| `commodity` (meta, date, currency) | Syntax/metadata retained (003); full BQL table unsupported. |
+| `commodity` (meta, date, currency) | Syntax/metadata retained (003); typed commodity table supported (every-column differential). |
 | `pad` (meta, date, account, source_account) | Padding and cost-inventory rejection supported (006, 007, 100–103). |
 | `balance` (meta, date, account, amount, tolerance, diff_amount) | Assertions supported (004, 005, 048); tolerance combinations remain bounded by fixtures. |
 | `transaction` (meta, date, flag, payee, narration, tags, links, postings) | Booking, metadata and postings supported by conformance fixtures; complete short-position lifecycle not claimed. |
-| `note` (meta, date, account, comment, tags, links) | Account validation and text parsing supported (008, 087); tag/link round-trip and every oracle error category not exhaustively verified. |
-| `event` (meta, date, type, description) | Date/type/description parsing and retention supported (008); BQL events source unsupported. |
+| `note` (meta, date, account, comment, tags, links) | Account validation and text parsing supported (008, 087); tags/links and stacks retained and queried (118); every oracle error category is not exhaustively verified. |
+| `event` (meta, date, type, description) | Date/type/description parsing and retention supported (008); typed events source supported (every-column differential). |
 | `query` (meta, date, name, query_string) | Date/name/query text retained (008). Check does not execute stored queries, as with bean-check; oracle `.run name` execution unsupported. Call `run_query` explicitly for supported query texts. |
 | `price` (meta, date, currency, amount) | Raw prices and duplicate preservation supported (003, 057, 063–070). |
 | `document` (meta, date, account, filename, tags, links) | Account validation and metadata parsing supported (008, 088); file stat and documents-folder discovery unsupported: the pure library has no document resolver callback. A warning explicitly states the file was not checked; host must check it. |
@@ -72,97 +72,98 @@ Defaults and types are oracle values. Repeat means collection accumulation; scal
 
 ## BQL tables and every oracle column
 
-All ten advertised sources are now registered, with the per-column limits below. Use `#accounts`: bare `accounts` is a transaction filter in the oracle and is explicitly rejected until FROM filters are implemented. Bare `balances` is a MoonBean inventory extension. It is **not** oracle `#balances` (assertion rows). Table names are case-sensitive after `#`; unsupported sources are rejected. `transactions.meta` as a dict column is unsupported; `meta(key)` is supported on transactions.
+All ten advertised sources are now registered, with the per-column limits below. Use `#accounts`: bare `accounts` is a transaction filter in the oracle and is explicitly rejected until FROM filters are implemented. Bare `balances` is a MoonBean inventory extension. It is **not** oracle `#balances` (assertion rows). Table names are case-sensitive after `#`; unsupported sources are rejected. All advertised columns, including typed metadata/directives, fingerprints and assertion discrepancies, are enabled. Evidence is bounded by the authored corpus, not every possible input. The signed-zero representation boundary below limits admissible exact projections.
 
 | Table | Column | Oracle type | Status / evidence or alternative |
 | --- | --- | --- | --- |
-| `accounts` | `account` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `accounts` | `open` | `open` | Pending typed directive-object values. QueryValue cannot carry Open/Close objects; join the source data in the host or use oracle. |
-| `accounts` | `close` | `close` | Pending typed directive-object values. QueryValue cannot carry Open/Close objects; join the source data in the host or use oracle. |
-| `balances` | `meta` | `metadata` | Pending typed dictionary values and generated booking annotations. QueryValue has no dict variant; returning text or fabricated NULL would lose types. User-key meta() is available; use oracle for the whole dict. |
-| `balances` | `date` | `date` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `balances` | `account` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `balances` | `amount` | `amount` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `balances` | `tolerance` | `decimal` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `balances` | `discrepancy` | `amount` | Pending assertion-time differences. AST.Balance retains the assertion but not the validated discrepancy; use check diagnostics or oracle. |
-| `commodities` | `meta` | `metadata` | Pending typed dictionary values and generated booking annotations. QueryValue has no dict variant; returning text or fabricated NULL would lose types. User-key meta() is available; use oracle for the whole dict. |
-| `commodities` | `date` | `date` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `commodities` | `name` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `documents` | `meta` | `metadata` | Pending typed dictionary values and generated booking annotations. QueryValue has no dict variant; returning text or fabricated NULL would lose types. User-key meta() is available; use oracle for the whole dict. |
-| `documents` | `date` | `date` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `documents` | `account` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `documents` | `filename` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. Native query filenames are absolute; library hosts supply canonical source names. Document paths are lexically resolved, not stat-verified. |
-| `documents` | `tags` | `frozenset` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `documents` | `links` | `frozenset` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `entries` | `id` | `str` | Pending exact oracle directive fingerprinting; its canonical field encoding has not been reproduced. No guessed hash is emitted; use oracle. |
-| `entries` | `type` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `entries` | `filename` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. Native query filenames are absolute; library hosts supply canonical source names. Document paths are lexically resolved, not stat-verified. |
-| `entries` | `lineno` | `int` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `entries` | `date` | `date` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `entries` | `year` | `int` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `entries` | `month` | `int` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `entries` | `day` | `int` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `entries` | `flag` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `entries` | `payee` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `entries` | `narration` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `entries` | `description` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `entries` | `tags` | `set` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `entries` | `links` | `set` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `entries` | `meta` | `dict` | Pending typed dictionary values and generated booking annotations. QueryValue has no dict variant; returning text or fabricated NULL would lose types. User-key meta() is available; use oracle for the whole dict. |
-| `entries` | `accounts` | `set[str]` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `events` | `meta` | `metadata` | Pending typed dictionary values and generated booking annotations. QueryValue has no dict variant; returning text or fabricated NULL would lose types. User-key meta() is available; use oracle for the whole dict. |
-| `events` | `date` | `date` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `events` | `type` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `events` | `description` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `notes` | `meta` | `metadata` | Pending typed dictionary values and generated booking annotations. QueryValue has no dict variant; returning text or fabricated NULL would lose types. User-key meta() is available; use oracle for the whole dict. |
-| `notes` | `date` | `date` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `notes` | `account` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `notes` | `comment` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `notes` | `tags` | `frozenset` | Empty frozensets supported. Tagged/linked note syntax remains unimplemented: AST.Note has no fields for them; use oracle for such notes. |
-| `notes` | `links` | `frozenset` | Empty frozensets supported. Tagged/linked note syntax remains unimplemented: AST.Note has no fields for them; use oracle for such notes. |
-| `postings` | `type` | `str` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `id` | `str` | Pending exact oracle directive fingerprinting; its canonical field encoding has not been reproduced. No guessed hash is emitted; use oracle. |
-| `postings` | `date` | `date` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `postings` | `year` | `int` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `postings` | `month` | `int` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `postings` | `day` | `int` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `postings` | `filename` | `str` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `lineno` | `int` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `location` | `str` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `flag` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `postings` | `payee` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `postings` | `narration` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `postings` | `description` | `str` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `tags` | `set` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `postings` | `links` | `set` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `postings` | `posting_flag` | `str` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `account` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `postings` | `other_accounts` | `set` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `number` | `decimal` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `currency` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `postings` | `cost_number` | `decimal` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `cost_currency` | `str` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `cost_date` | `date` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `cost_label` | `str` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `position` | `position` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `postings` | `price` | `amount` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `weight` | `amount` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `postings` | `balance` | `inventory` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `meta` | `dict` | Pending typed dictionary values and generated booking annotations. QueryValue has no dict variant; returning text or fabricated NULL would lose types. User-key meta() is available; use oracle for the whole dict. |
-| `postings` | `entry` | `transaction` | Pending source adapter/typed evaluation; use the oracle. No equivalent value is promised. |
-| `postings` | `accounts` | `set[str]` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `prices` | `meta` | `metadata` | Pending typed dictionary values and generated booking annotations. QueryValue has no dict variant; returning text or fabricated NULL would lose types. User-key meta() is available; use oracle for the whole dict. |
-| `prices` | `date` | `date` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `prices` | `currency` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `prices` | `amount` | `amount` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `transactions` | `meta` | `metadata` | Pending typed dictionary values and generated booking annotations. QueryValue has no dict variant; returning text or fabricated NULL would lose types. User-key meta() is available; use oracle for the whole dict. |
-| `transactions` | `date` | `date` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `transactions` | `flag` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `transactions` | `payee` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `transactions` | `narration` | `str` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `transactions` | `tags` | `set` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `transactions` | `links` | `set` | Supported for accepted ledger inputs; table differential and four-backend tests. |
-| `transactions` | `accounts` | `set[str]` | Supported for accepted ledger inputs; table differential and four-backend tests. |
+| `accounts` | `account` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `accounts` | `open` | `open` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `accounts` | `close` | `close` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `balances` | `meta` | `metadata` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `balances` | `date` | `date` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `balances` | `account` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `balances` | `amount` | `amount` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `balances` | `tolerance` | `decimal` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `balances` | `discrepancy` | `amount` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. Snapshot at the failed assertion, including tolerated/padded NULL cases. |
+| `commodities` | `meta` | `metadata` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `commodities` | `date` | `date` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `commodities` | `name` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `documents` | `meta` | `metadata` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `documents` | `date` | `date` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `documents` | `account` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `documents` | `filename` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. Native paths are canonical; library hosts supply source names. Document paths are resolved lexically, without stat. |
+| `documents` | `tags` | `frozenset` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `documents` | `links` | `frozenset` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `entries` | `id` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. MD5 field encoding derived through public hash_entry outputs; source metadata and booking annotations included. Signed-zero limitation below remains. |
+| `entries` | `type` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `entries` | `filename` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. Native paths are canonical; library hosts supply source names. Document paths are resolved lexically, without stat. |
+| `entries` | `lineno` | `int` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `entries` | `date` | `date` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `entries` | `year` | `int` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `entries` | `month` | `int` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `entries` | `day` | `int` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `entries` | `flag` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `entries` | `payee` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `entries` | `narration` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `entries` | `description` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `entries` | `tags` | `set` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `entries` | `links` | `set` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `entries` | `meta` | `dict` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `entries` | `accounts` | `set[str]` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `events` | `meta` | `metadata` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `events` | `date` | `date` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `events` | `type` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `events` | `description` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `notes` | `meta` | `metadata` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `notes` | `date` | `date` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `notes` | `account` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `notes` | `comment` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `notes` | `tags` | `frozenset` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `notes` | `links` | `frozenset` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `type` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `id` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. MD5 field encoding derived through public hash_entry outputs; source metadata and booking annotations included. Signed-zero limitation below remains. |
+| `postings` | `date` | `date` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `year` | `int` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `month` | `int` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `day` | `int` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `filename` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. Native paths are canonical; library hosts supply source names. Document paths are resolved lexically, without stat. |
+| `postings` | `lineno` | `int` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `location` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `flag` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `payee` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `narration` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `description` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `tags` | `set` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `links` | `set` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `posting_flag` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `account` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `other_accounts` | `set` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `number` | `decimal` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `currency` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `cost_number` | `decimal` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `cost_currency` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `cost_date` | `date` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `cost_label` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `position` | `position` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `price` | `amount` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `weight` | `amount` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `balance` | `inventory` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `meta` | `dict` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `entry` | `transaction` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `postings` | `accounts` | `set[str]` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `prices` | `meta` | `metadata` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `prices` | `date` | `date` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `prices` | `currency` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `prices` | `amount` | `amount` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `transactions` | `meta` | `metadata` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `transactions` | `date` | `date` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `transactions` | `flag` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `transactions` | `payee` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `transactions` | `narration` | `str` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `transactions` | `tags` | `set` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `transactions` | `links` | `set` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+| `transactions` | `accounts` | `set[str]` | Supported typed value; every-column JSON oracle comparison in bql_object_differential.py; NULL and nested values compared. |
+
 
 ## BQL functions and aggregates
 
@@ -170,141 +171,141 @@ Support is limited to accepted argument expressions/types. Functions on unsuppor
 
 | Oracle signature | Status / evidence or alternative |
 | --- | --- |
-| `abs(decimal)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `abs(inventory)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `abs(position)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `account_sortkey(str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `any_meta(str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `bool(any)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `close_date(str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `commodity(amount)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `commodity_meta(str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `commodity_meta(str, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `convert(amount, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `convert(amount, str, date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `convert(position, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `convert(position, str, date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `convert(inventory, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `convert(inventory, str, date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `cost(position)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `cost(inventory)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `currency(amount)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `currency_meta(str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `currency_meta(str, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `date(date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `date(object)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `date(str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `date(int, int, int)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `date_add(date, int)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `date_bin(str, date, date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `date_bin(relativedelta, date, date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `date_diff(date, date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `date_part(str, date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `date_trunc(str, date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `day(date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `decimal(bool)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `decimal(decimal)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `decimal(int)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `decimal(object)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `decimal(str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `empty(inventory)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `entry_meta(str)` | User-key lookup supported. Directive sources additionally expose filename/lineno through meta(); posting reserved/generated metadata is not complete. Computed-key signatures and object conversion remain pending. |
-| `filter_currency(inventory, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `filter_currency(position, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `findfirst(str, set)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `getitem(dict, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `getitem(dict, str, any)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `getprice(str, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `getprice(str, str, date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `grep(str, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `grepn(str, str, int)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `has_account(str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `int(bool)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `int(decimal)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `int(int)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `int(object)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `int(str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `interval(str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `joinstr(set)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `leaf(str)` | Supported (BQL differential / query tests). |
-| `length(list)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `length(set)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `length(str)` | Supported (BQL differential / query tests). |
-| `lower(str)` | Supported for Unicode 16.0.0, matching the pinned CPython oracle. Multi-codepoint mappings and contextual final sigma; 7196-row differential corpus, including all 2981 changed scalars and 7060 contextual property scalars. |
-| `maxwidth(str, int)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `meta(str)` | User-key lookup supported. Directive sources additionally expose filename/lineno through meta(); posting reserved/generated metadata is not complete. Computed-key signatures and object conversion remain pending. |
-| `month(date)` | Supported (BQL differential / query tests). |
-| `neg(amount)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `neg(decimal)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `neg(inventory)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `neg(position)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `number(amount)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `only(str, inventory)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `open_date(str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `open_meta(str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `open_meta(str, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `parent(str)` | Supported (BQL differential / query tests). |
-| `parse_date(str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `parse_date(str, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `possign(amount, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `possign(decimal, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `possign(inventory, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `possign(position, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `quarter(date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `repr(any)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `root(str)` | Supported (BQL differential / query tests). |
-| `root(str, int)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `round(decimal)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `round(decimal, int)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `round(int)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `round(int, int)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `safediv(decimal, decimal)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `safediv(decimal, int)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `splitcomp(str, str, int)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `str(any)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `subst(str, str, str)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `substr(str, int, int)` | Supported (BQL differential / query tests). |
-| `today()` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `units(position)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `units(inventory)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `upper(str)` | Supported for Unicode 16.0.0, matching the pinned CPython oracle. Multi-codepoint mappings and contextual final sigma; 7196-row differential corpus, including all 2981 changed scalars and 7060 contextual property scalars. |
-| `value(inventory)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `value(inventory, date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `value(position)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `value(position, date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `weekday(date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `year(date)` | Supported (BQL differential / query tests). |
-| `yearmonth(date)` | Not implemented by the query parser/evaluator; use beanquery 0.2.0. |
-| `count(*)` | Supported for accepted expressions; count(expr) excludes NULL (BQL differential). |
-| `count(any)` | Supported for accepted expressions; count(expr) excludes NULL (BQL differential). |
-| `first(any)` | Supported for represented QueryValue types; first skips NULL, last preserves final NULL. Object/dict inputs depend on pending value types; generic accounts function calls also fail in the oracle. |
-| `last(any)` | Supported for represented QueryValue types; first skips NULL, last preserves final NULL. Object/dict inputs depend on pending value types; generic accounts function calls also fail in the oracle. |
-| `max(any)` | Scalar numbers, bools, dates and strings supported; NULL ignored. Set/position/inventory comparison rules are not implemented and explicitly rejected, not approximated as scalar ordering. |
-| `min(any)` | Scalar numbers, bools, dates and strings supported; NULL ignored. Set/position/inventory comparison rules are not implemented and explicitly rejected, not approximated as scalar ordering. |
-| `sum(amount)` | Supported for available amount columns; result is Inventory. Price-table differential covers the amount/currency total. |
-| `sum(inventory)` | Unsupported signature; use beanquery 0.2.0. |
-| `sum(decimal)` | Supported for accepted expressions; count(expr) excludes NULL (BQL differential). |
-| `sum(int)` | Supported for accepted expressions; count(expr) excludes NULL (BQL differential). |
-| `sum(position)` | Supported for accepted expressions; count(expr) excludes NULL (BQL differential). |
+| `abs(decimal)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `abs(inventory)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `abs(position)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `account_sortkey(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `any_meta(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `bool(any)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `close_date(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `commodity(amount)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `commodity_meta(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `commodity_meta(str, str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `convert(amount, str)` | Unsupported. Query price lookup/conversion is not implemented. The report PriceDb uses multi-edge conversion and is not an equivalent oracle query implementation; reusing it would change results. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `convert(amount, str, date)` | Unsupported. Query price lookup/conversion is not implemented. The report PriceDb uses multi-edge conversion and is not an equivalent oracle query implementation; reusing it would change results. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `convert(position, str)` | Unsupported. Query price lookup/conversion is not implemented. The report PriceDb uses multi-edge conversion and is not an equivalent oracle query implementation; reusing it would change results. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `convert(position, str, date)` | Unsupported. Query price lookup/conversion is not implemented. The report PriceDb uses multi-edge conversion and is not an equivalent oracle query implementation; reusing it would change results. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `convert(inventory, str)` | Unsupported. Query price lookup/conversion is not implemented. The report PriceDb uses multi-edge conversion and is not an equivalent oracle query implementation; reusing it would change results. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `convert(inventory, str, date)` | Unsupported. Query price lookup/conversion is not implemented. The report PriceDb uses multi-edge conversion and is not an equivalent oracle query implementation; reusing it would change results. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `cost(position)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `cost(inventory)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `currency(amount)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `currency_meta(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `currency_meta(str, str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `date(date)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `date(object)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `date(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `date(int, int, int)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `date_add(date, int)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `date_bin(str, date, date)` | Unsupported. No relativedelta/strptime/date-field query implementation; calendar truncation, bins and format errors need their own typed rules. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `date_bin(relativedelta, date, date)` | Unsupported. No relativedelta/strptime/date-field query implementation; calendar truncation, bins and format errors need their own typed rules. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `date_diff(date, date)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `date_part(str, date)` | Unsupported. No relativedelta/strptime/date-field query implementation; calendar truncation, bins and format errors need their own typed rules. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `date_trunc(str, date)` | Unsupported. No relativedelta/strptime/date-field query implementation; calendar truncation, bins and format errors need their own typed rules. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `day(date)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `decimal(bool)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. String/object nonfinite and signed-zero conversions are explicitly rejected by the finite Decimal model; exponent/rounding resource bounds are explicit (conversion exponent +/-1,000,000; round digits -999,999 through +1,000,000). No guessed value is returned. |
+| `decimal(decimal)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. String/object nonfinite and signed-zero conversions are explicitly rejected by the finite Decimal model; exponent/rounding resource bounds are explicit (conversion exponent +/-1,000,000; round digits -999,999 through +1,000,000). No guessed value is returned. |
+| `decimal(int)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. String/object nonfinite and signed-zero conversions are explicitly rejected by the finite Decimal model; exponent/rounding resource bounds are explicit (conversion exponent +/-1,000,000; round digits -999,999 through +1,000,000). No guessed value is returned. |
+| `decimal(object)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. String/object nonfinite and signed-zero conversions are explicitly rejected by the finite Decimal model; exponent/rounding resource bounds are explicit (conversion exponent +/-1,000,000; round digits -999,999 through +1,000,000). No guessed value is returned. |
+| `decimal(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. String/object nonfinite and signed-zero conversions are explicitly rejected by the finite Decimal model; exponent/rounding resource bounds are explicit (conversion exponent +/-1,000,000; round digits -999,999 through +1,000,000). No guessed value is returned. |
+| `empty(inventory)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `entry_meta(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `filter_currency(inventory, str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `filter_currency(position, str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `findfirst(str, set)` | Unsupported. Python regex matching/capture/replacement semantics are not implemented by this function layer; the core Regex subset is not a drop-in equivalent. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `getitem(dict, str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `getitem(dict, str, any)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `getprice(str, str)` | Unsupported. Query price lookup/conversion is not implemented. The report PriceDb uses multi-edge conversion and is not an equivalent oracle query implementation; reusing it would change results. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `getprice(str, str, date)` | Unsupported. Query price lookup/conversion is not implemented. The report PriceDb uses multi-edge conversion and is not an equivalent oracle query implementation; reusing it would change results. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `grep(str, str)` | Unsupported. Python regex matching/capture/replacement semantics are not implemented by this function layer; the core Regex subset is not a drop-in equivalent. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `grepn(str, str, int)` | Unsupported. Python regex matching/capture/replacement semantics are not implemented by this function layer; the core Regex subset is not a drop-in equivalent. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `has_account(str)` | Unsupported. Python regex matching/capture/replacement semantics are not implemented by this function layer; the core Regex subset is not a drop-in equivalent. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `int(bool)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `int(decimal)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `int(int)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `int(object)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `int(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `interval(str)` | Unsupported. No relativedelta/strptime/date-field query implementation; calendar truncation, bins and format errors need their own typed rules. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `joinstr(set)` | Unsupported. Not implemented in this batch; string/set ordering or sign/display rules require dedicated oracle cases before enabling this signature. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `leaf(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `length(list)` | Evaluator and type signature implemented; no positive list-typed expression is available in the currently supported oracle sources. Not counted as positive oracle evidence; getitem() returns object, not list. |
+| `length(set)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `length(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `lower(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `maxwidth(str, int)` | Unsupported. Not implemented in this batch; string/set ordering or sign/display rules require dedicated oracle cases before enabling this signature. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `meta(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `month(date)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `neg(amount)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `neg(decimal)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `neg(inventory)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `neg(position)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `number(amount)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `only(str, inventory)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `open_date(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `open_meta(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `open_meta(str, str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `parent(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `parse_date(str)` | Unsupported. No relativedelta/strptime/date-field query implementation; calendar truncation, bins and format errors need their own typed rules. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `parse_date(str, str)` | Unsupported. No relativedelta/strptime/date-field query implementation; calendar truncation, bins and format errors need their own typed rules. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `possign(amount, str)` | Unsupported. Not implemented in this batch; string/set ordering or sign/display rules require dedicated oracle cases before enabling this signature. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `possign(decimal, str)` | Unsupported. Not implemented in this batch; string/set ordering or sign/display rules require dedicated oracle cases before enabling this signature. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `possign(inventory, str)` | Unsupported. Not implemented in this batch; string/set ordering or sign/display rules require dedicated oracle cases before enabling this signature. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `possign(position, str)` | Unsupported. Not implemented in this batch; string/set ordering or sign/display rules require dedicated oracle cases before enabling this signature. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `quarter(date)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `repr(any)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Multi-member set representations (including nested sets) are explicitly rejected: CPython iteration depends on its hash seed; use typed JSON members or oracle for exact repr text. |
+| `root(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `root(str, int)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `round(decimal)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Precision overflow is an Evaluation failure; signed-zero results and exponent resource limits are explicit rejections. |
+| `round(decimal, int)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Precision overflow is an Evaluation failure; signed-zero results and exponent resource limits are explicit rejections. |
+| `round(int)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Precision overflow is an Evaluation failure; signed-zero results and exponent resource limits are explicit rejections. |
+| `round(int, int)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Precision overflow is an Evaluation failure; signed-zero results and exponent resource limits are explicit rejections. |
+| `safediv(decimal, decimal)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `safediv(decimal, int)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `splitcomp(str, str, int)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `str(any)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Multi-member set representations (including nested sets) are explicitly rejected: CPython iteration depends on its hash seed; use typed JSON members or oracle for exact repr text. |
+| `subst(str, str, str)` | Unsupported. Python regex matching/capture/replacement semantics are not implemented by this function layer; the core Regex subset is not a drop-in equivalent. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `substr(str, int, int)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `today()` | Unsupported. Pure query context has no host clock/date callback. Reading a platform clock would give target/timezone-dependent results. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `units(position)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `units(inventory)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `upper(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `value(inventory)` | Unsupported. Query price lookup/conversion is not implemented. The report PriceDb uses multi-edge conversion and is not an equivalent oracle query implementation; reusing it would change results. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `value(inventory, date)` | Unsupported. Query price lookup/conversion is not implemented. The report PriceDb uses multi-edge conversion and is not an equivalent oracle query implementation; reusing it would change results. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `value(position)` | Unsupported. Query price lookup/conversion is not implemented. The report PriceDb uses multi-edge conversion and is not an equivalent oracle query implementation; reusing it would change results. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `value(position, date)` | Unsupported. Query price lookup/conversion is not implemented. The report PriceDb uses multi-edge conversion and is not an equivalent oracle query implementation; reusing it would change results. Impact: this query fails explicitly. Alternative: pinned beanquery 0.2.0; typed result post-processing is host-owned. |
+| `weekday(date)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `year(date)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `yearmonth(date)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `count(*)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `count(any)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `first(any)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `last(any)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
+| `max(any)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Set subset ordering and oracle Amount/Position ordering covered; min/max(Position) with differing cost date/label and other unimplemented record orderings are rejected explicitly. Not full any-object ordering. |
+| `min(any)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Set subset ordering and oracle Amount/Position ordering covered; min/max(Position) with differing cost date/label and other unimplemented record orderings are rejected explicitly. Not full any-object ordering. |
+| `sum(amount)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Oracle amount/position/inventory forms return inventory; legacy sum(units/weight/cost/value) columns retain documented local amount semantics. |
+| `sum(inventory)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Oracle amount/position/inventory forms return inventory; legacy sum(units/weight/cost/value) columns retain documented local amount semantics. |
+| `sum(decimal)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Oracle amount/position/inventory forms return inventory; legacy sum(units/weight/cost/value) columns retain documented local amount semantics. |
+| `sum(int)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Oracle amount/position/inventory forms return inventory; legacy sum(units/weight/cost/value) columns retain documented local amount semantics. |
+| `sum(position)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Oracle amount/position/inventory forms return inventory; legacy sum(units/weight/cost/value) columns retain documented local amount semantics. |
 
 ## Statements, clauses and operators
 
 | Feature | Status / evidence or limitation |
 | --- | --- |
-| SELECT projections, SELECT * | Default stars supported on postings/transactions/events/prices/notes/documents; stars containing unsupported object/id/discrepancy columns remain rejected. Mixed star projections rejected. |
-| DISTINCT | Supported before LIMIT for scalar/set expressions; BQL differential and query tests. DISTINCT amount/position/inventory/sum projections are explicitly rejected: oracle position deduplication does not follow ordinary numeric equality. Currently quadratic in output count. |
+| SELECT projections, SELECT * | Oracle source stars, including object/discrepancy columns, have typed differential cases. Mixed star projections, aliases and positional references remain unsupported. |
+| DISTINCT | Scalar/set/amount/position DISTINCT supported before LIMIT. Position/amount keys preserve exact oracle representation (1.00 and 1.0 remain distinct); hash lookup replaces quadratic duplicate scans. Inventory/sum/object DISTINCT remains explicitly rejected. |
 | FROM postings / transactions | Supported, including adjacent lowercase # names; BQL source differential. |
-| WHERE, GROUP BY, HAVING, ORDER BY, LIMIT | Supported for accepted expressions; conformance and BQL differential. Aliases and positional references not implemented. |
+| WHERE, GROUP BY, HAVING, ORDER BY, LIMIT | Supported for accepted expressions; conformance and BQL differential. Aliases and positional references not implemented. Sorting caches expression keys, reuses projected column keys, preserves ties and NULL direction, and follows Unicode scalar ordering; bql_sort_differential.py covers seeded rows and a 100k-posting native corpus. |
 | FROM OPEN ON / CLOSE ON | Supported standalone period sources (period differential); accounts projections/filters on OPEN summaries are explicitly rejected; arbitrary directive filters and combined named-table transforms unsupported. |
 | FROM CLEAR, CLOSE without ON | Unsupported; use oracle. |
-| FLATTEN | Unsupported; host can expand supported inventory output, or use oracle. |
+| FLATTEN keyword | Tested forms are syntax errors in beanquery 0.2.0 too (94 grammar probes); absent from its SELECT help. No flatten implementation is claimed. Host can expand typed inventory results. |
 | PIVOT BY | Unsupported; host pivot or oracle. |
 | FROM (SELECT …) / subqueries | Unsupported; use oracle or explicitly stage results in host. |
 | BALANCES | Inventory report supported; oracle formatting and all clause combinations not promised. |
 | JOURNAL | Account report supported; full oracle statement syntax not implemented. |
-| PRINT / EXPLAIN / shell .run | Unsupported; ledger export/API query result is an alternative, not equivalent output. |
+| PRINT / shell .explain / shell .run | Oracle-supported commands remain unimplemented. QueryResult has no ledger-printer/plan result kind; export is a host alternative, not equivalent output. `EXPLAIN SELECT` is a syntax error in the oracle; `.explain SELECT` is the supported shell command. |
 | + - * /, comparisons = == != <> < <= > >=, AND OR NOT, IS [NOT] NULL, ~ regex | Supported for accepted expression types; arithmetic/NULL/regex differential. Python-specific regex syntax not promised. |
-| IN / NOT IN, quantified comparisons, other operators | Unsupported / not exhaustively enumerated. Operator inventory remains incomplete; no full-language claim. |
+| IN / NOT IN, BETWEEN, Boolean/comparison projections, %, aliases, positional references | Oracle accepts the probed forms; MoonBean does not implement them. [94 independent grammar/operator probes](evidence/r2-final-grammar.json), generated by scripts/bql_grammar_probe.py, record accepted/rejected forms. This is still not a proof of exhaustive grammar coverage. |
 | LIKE / JOIN | Rejected by both pinned oracle and MoonBean; outside compatibility endpoint. |
 | Unicode upper/lower | Supported using pinned CPython Unicode 16.0.0 data, including expansions and final sigma; typed bad arguments produce compilation errors. |
 
@@ -314,22 +315,28 @@ Support is limited to accepted argument expressions/types. Functions on unsuppor
 
 Inventory capture covers public built-in help and all 10 advertised tables; it is not a proof that undocumented function overloads/operators/shell commands do not exist. Full statement grammar and semantic combinations remain unverified. The endpoint is therefore not reached even beyond the explicit implementation gaps. Double-quoted words matching known column names are explicitly rejected: the parser does not yet preserve the oracle quoted-identifier resolution; use an unquoted column or a single-quoted literal.
 
-Performance evidence retains prior wasm-gc 1M FIFO default-heap limitation and uncompleted large ungrouped ORDER BY. See [performance.md](performance.md). No push, tag, deployment or publication is implied by this local candidate.
+Performance evidence retains the prior wasm-gc 1M FIFO default-heap baseline gap. ORDER BY now caches keys and sorts stably in O(n log n); native 100k-posting ordering has a separate oracle differential, while the unchanged baseline driver retains its historical large-order skips. See [performance.md](performance.md). No push, tag, deployment or publication is implied by this local candidate.
 
-## Return round 1: first implementation batch
+## Incremental implementation and unresolved scope
 
-Current local evidence is in [r2-return-acceptance.md](evidence/r2-return-acceptance.md); earlier acceptance describes the preceding candidate. CI now selects Python 3.14 to match the oracle's Unicode 16.0.0 runtime; this change has not been pushed or run remotely. Unicode data is reproducibly generated using CPython's public string API, without importing or reading Beancount implementation code.
+[Round 1 evidence](evidence/r2-return-acceptance.md) is historical. Round 2 adds typed dict/list/directive/enum/integer values, all advertised columns, booking annotations, assertion snapshots, exact field fingerprints on covered inputs, and note tags/links. [Round 2 acceptance](evidence/r2-final-acceptance.md) records actual reruns. Public runtime data and independently authored tests were used; no upstream implementation source or fixtures were read/copied.
 
-The eight additional source adapters are implemented for the scalar/amount/set columns marked above. Raw dict/directive/id/discrepancy values remain intentionally rejected. Document filename resolution does not prove file existence. Empty-source aggregates produce no rows, matching the oracle; numeric sum over nonempty all-NULL input produces zero. Booleans and frozensets retain explicit QueryValue variants.
+The compiler now resolves source column types before function signatures, distinguishing int/decimal and set/frozenset. All 105 advertised scalar signatures and 11 aggregate signatures are registered for argument checking; registering a signature does not implement it. The table above marks each evaluator boundary. Integer arithmetic and integer sums use arbitrary-precision BigInt, with seeded 29–60-digit oracle cases. Numeric neg/abs use the oracle 28-digit context, including seeded large-decimal comparisons. Comparison operators, dynamic object conversions and arbitrary record ordering are not a complete Python type system. Function projection labels retain the existing MoonBean API spelling (for example sum_units), rather than oracle expression spelling.
 
-The oracle itself raises an internal AttributeError when functions consume its generic `accounts` column type (observed for count, first and upper). MoonBean explicitly reports an Evaluation failure rather than returning a successful approximate result. The corpus records both failures and compares their error category. This is an oracle limitation, not evidence of successful aggregate execution.
+Typed JSON carries nested decimal/date/record tags so objects are not flattened into strings. Set members are compared without an iteration-order contract. Python decimal scientific formatting is supported for finite values. The accounting Decimal core still loses the sign of a parsed negative zero: the parser marks negative-zero-bearing sources and DISTINCT and exact metadata/fingerprint/str/repr queries reject them explicitly. Legacy numeric/report outputs still lack signed-zero fidelity. This pre-existing core limitation was not solved by adding object variants; use the oracle when sign-preserving representation matters. Library hosts constructing AST values directly must preserve this representation flag. Signed-zero-producing query arithmetic/round/safediv also reject explicitly. Object queries over every malformed/unbooked error-ledger shape were not audited; selected assertion-error cases are the available evidence. Query decimal(str/object) detects signed zero and rejects it instead of fabricating a positive value. No complete table/value-domain equivalence is claimed.
 
-## Remaining work in priority order
+The following work was **not completed in this round**; these are implementation gaps, not claims that the features are impossible:
 
-1. Implement typed metadata dictionaries/directive objects, booking-generated annotations, exact directive fingerprints and assertion discrepancies; then enable the rejected columns and applicable SELECT * forms. Add tagged/linked note storage. The adapters are not complete tables until these columns work.
-2. Implement the remaining function signatures, full scalar type inference/conversions, non-scalar min/max and inventory sum expressions. Preserve Python's integer/decimal distinction and signed/representational details. Current numeric value representation and static argument validation do not constitute a complete type system. Function result column labels also retain the legacy underscore convention instead of the oracle expression labels; direct source-column labels are checked separately.
-3. Implement FROM directive filters/OPEN/CLOSE/CLEAR combinations, subqueries, PIVOT BY, FLATTEN, position DISTINCT, PRINT/EXPLAIN, aliases, quoted identifiers and positional references. The source adapters do not solve this grammar work. Exhaustive grammar/operator enumeration also remains unfinished.
-4. Implement document host callbacks/discovery, rounding-account postings, comma/operating-currency presentation, remaining option converters and all directive diagnostic categories. No option or host-callback implementation was added in this batch.
-5. Add differential queries for every remaining item and error class, rather than treating the existing finite suite as full-language conformance.
+| Remaining work | Concrete cause, impact and alternative |
+| --- | --- |
+| Scalar signatures still marked unsupported | Query-local price semantics, Python regex/strptime/relativedelta, clock injection and remaining string/set/sign rules lack implementations. Valid calls fail; execute them with pinned beanquery. |
+| Full any-object aggregates and type/operator rules | Recursive values now exist, but arbitrary record comparison/hash coercion and Boolean/comparison projection plans do not. Declared non-hashable group types are Compilation failures; the oracle generic frozenset/accounts group failure is mirrored as Evaluation. Position grouping uses numeric equality, while DISTINCT uses exact representation. Arbitrary structural ordering/equality remains unsupported; legacy inventory comparison behavior is retained. Unsupported combinations fail; use scalar projections/typed host processing or oracle. |
+| Subqueries, PIVOT, aliases, positional references | AST is one SelectQuery over ledger BqlRows; it has no relation schema/relation-node plan or pivot output schema. Adding values alone cannot execute these correctly. Stage typed results in a host or use oracle. |
+| FROM directive filters, OPEN/CLOSE/CLEAR and accounts combinations | Period source construction retains balance summaries but not full synthetic transaction identities/account sets or final clearing/conversion entries. Combinations are rejected; use supported standalone periods or oracle. |
+| PRINT, shell .explain/.run | No statement result kind for ledger printing, explain plans or stored-query dispatch. Export/run_query are host alternatives with different output contracts. |
+| account_rounding | No residual-to-rounding-account pass on booked transactions; enabling only a label would change balances without correct tolerance/residual rules. Option remains stored without posting semantics; use oracle. |
+| documents callback/discovery | Current pure loader has include resolution but no document stat/enumeration callback. Missing/existing receipt diagnostics and documents-folder generated entries are not equivalent. Native/host callers must stat/discover explicitly or use oracle; warning states files were not checked. |
+| render_commas / operating_currency / display context | QueryResult lacks oracle display-context and multi-currency renderer. These options do not reproduce oracle JOURNAL/BALANCES/PRINT layouts. Host formatting is an alternative, not equivalent text. |
+| Every directive/option diagnostic | Normalized authored cases pass; read-only options, converters, renamed root taxonomy, exact messages and every document/note/event/query/custom error combination are unproven. Use bean-check for final oracle validation. |
 
-These are pending implementation tasks, not claims that the features are impossible. This first batch does not satisfy the full endpoint or clear the review rejection by itself.
+LIKE/JOIN and the probed FLATTEN/EXPLAIN keyword forms are rejected by the endpoint too. The remaining oracle-supported gaps above prevent a full-compatibility claim. The wasm-gc heap baseline gap and historical large-order timing skips remain documented in [performance.md](performance.md); the new large-order functional evidence is native-only.

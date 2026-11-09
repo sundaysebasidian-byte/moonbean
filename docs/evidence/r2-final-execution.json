@@ -1,0 +1,357 @@
+{
+  "utc": "2026-11-09T20:08:16.371288+00:00",
+  "code_commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+  "branch": "compat-0.2.3",
+  "commands": [
+    {
+      "command": [
+        "moon",
+        "check",
+        "--deny-warn",
+        "--target",
+        "all"
+      ],
+      "log": "check.log",
+      "exit": 0,
+      "utc": "2026-11-09T20:08:16.424180+00:00",
+      "seconds": 0.087
+    },
+    {
+      "command": [
+        "moon",
+        "fmt",
+        "--check"
+      ],
+      "log": "fmt.log",
+      "exit": 0,
+      "utc": "2026-11-09T20:08:16.511474+00:00",
+      "seconds": 0.202
+    },
+    {
+      "command": [
+        "moon",
+        "info"
+      ],
+      "log": "info.log",
+      "exit": 0,
+      "utc": "2026-11-09T20:08:16.713351+00:00",
+      "seconds": 0.245
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "--",
+        "*.mbti"
+      ],
+      "log": "mbti.log",
+      "exit": 0,
+      "utc": "2026-11-09T20:08:16.958588+00:00",
+      "seconds": 0.009
+    },
+    {
+      "command": [
+        "moon",
+        "test",
+        "--target",
+        "all"
+      ],
+      "log": "test.log",
+      "exit": 0,
+      "utc": "2026-11-09T20:08:16.967370+00:00",
+      "seconds": 0.405
+    },
+    {
+      "command": [
+        "moon",
+        "build",
+        "--target",
+        "native"
+      ],
+      "log": "build.log",
+      "exit": 0,
+      "utc": "2026-11-09T20:08:17.373028+00:00",
+      "seconds": 0.043
+    },
+    {
+      "command": [
+        "bash",
+        "scripts/build-web.sh"
+      ],
+      "log": "web-build.log",
+      "exit": 0,
+      "utc": "2026-11-09T20:08:17.416366+00:00",
+      "seconds": 0.511
+    },
+    {
+      "command": [
+        "node",
+        "web/smoke.mjs"
+      ],
+      "log": "web-smoke.log",
+      "exit": 0,
+      "utc": "2026-11-09T20:08:17.927564+00:00",
+      "seconds": 0.172
+    },
+    {
+      "command": [
+        "node",
+        "web/dom-smoke.mjs"
+      ],
+      "log": "dom-smoke.log",
+      "exit": 0,
+      "utc": "2026-11-09T20:08:18.100216+00:00",
+      "seconds": 8.134
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/conformance.py",
+        "--ours",
+        "_build/native/debug/build/cmd/main/main.exe",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin",
+        "--ledgers",
+        "tests/ledgers",
+        "--oracle-version",
+        "3.2.3",
+        "--json-out",
+        ".oracle-cache/r2-last/verified-4/conformance.json"
+      ],
+      "log": "conformance.log",
+      "exit": 0,
+      "utc": "2026-11-09T20:08:26.238285+00:00",
+      "seconds": 334.059
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bql_differential.py",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin"
+      ],
+      "exit": 0,
+      "log": "bql.json",
+      "seconds": 400.624
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/random_differential.py",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin",
+        "--seed",
+        "20261101",
+        "--count",
+        "1000",
+        "--allow-known-extensions",
+        "--out",
+        ".oracle-cache/r2-last/verified-4/random-20261101"
+      ],
+      "log": "random-20261101.log",
+      "exit": 0,
+      "utc": "2026-11-09T20:08:26.239804+00:00",
+      "seconds": 413.663
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/random_differential.py",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin",
+        "--seed",
+        "7",
+        "--count",
+        "1000",
+        "--allow-known-extensions",
+        "--out",
+        ".oracle-cache/r2-last/verified-4/random-7"
+      ],
+      "log": "random-7.log",
+      "exit": 0,
+      "utc": "2026-11-09T20:08:26.238381+00:00",
+      "seconds": 413.998
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "HEAD",
+        "--",
+        "ast",
+        "syntax",
+        "validation",
+        "query",
+        "booking",
+        "decimal",
+        "realization",
+        "cmd",
+        "moon.mod"
+      ],
+      "log": "source-unchanged.log",
+      "exit": 0,
+      "utc": "2026-11-09T20:15:20.238595+00:00",
+      "seconds": 0.009
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r2-last/verified-4/performance"
+      ],
+      "log": "bench-matrix.log",
+      "exit": 0,
+      "utc": "2026-11-09T20:15:20.248374+00:00",
+      "seconds": 795.743
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-compare.py",
+        ".oracle-cache/r2-last/verified-4/performance"
+      ],
+      "log": "bench-compare.log",
+      "exit": 1,
+      "utc": "2026-11-09T20:28:35.992192+00:00",
+      "seconds": 0.064
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r2-last/verified-4/repeat-1",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "1000",
+        "--methods",
+        "AVERAGE",
+        "STRICT"
+      ],
+      "log": "repeat-1-wasm-gc.log",
+      "exit": 0,
+      "seconds": 2.144
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r2-last/verified-4/repeat-1",
+        "--targets",
+        "js",
+        "--sizes",
+        "1000000",
+        "--methods",
+        "AVERAGE"
+      ],
+      "log": "repeat-1-js.log",
+      "exit": 0,
+      "seconds": 42.285
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r2-last/verified-4/repeat-2",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "1000",
+        "--methods",
+        "AVERAGE",
+        "STRICT"
+      ],
+      "log": "repeat-2-wasm-gc.log",
+      "exit": 0,
+      "seconds": 2.184
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r2-last/verified-4/repeat-2",
+        "--targets",
+        "js",
+        "--sizes",
+        "1000000",
+        "--methods",
+        "AVERAGE"
+      ],
+      "log": "repeat-2-js.log",
+      "exit": 0,
+      "seconds": 44.268
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r2-last/verified-4/repeat-3",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "1000",
+        "--methods",
+        "AVERAGE",
+        "STRICT"
+      ],
+      "log": "repeat-3-wasm-gc.log",
+      "exit": 0,
+      "seconds": 2.137
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r2-last/verified-4/repeat-3",
+        "--targets",
+        "js",
+        "--sizes",
+        "1000000",
+        "--methods",
+        "AVERAGE"
+      ],
+      "log": "repeat-3-js.log",
+      "exit": 0,
+      "seconds": 50.71
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-compare.py",
+        ".oracle-cache/r2-last/verified-4/performance-confirmed"
+      ],
+      "log": "bench-compare-confirmed.log",
+      "exit": 0
+    }
+  ],
+  "cli_sha256_before": "e179065dda57c30c61e7b97c3c78ccf7c223d9859a470d7788d9f50d084f3ec5",
+  "cli_sha256_after_random": "e179065dda57c30c61e7b97c3c78ccf7c223d9859a470d7788d9f50d084f3ec5",
+  "performance_remeasurement": [
+    {
+      "round": 1,
+      "failures": [],
+      "artifacts_unchanged": true
+    },
+    {
+      "round": 2,
+      "failures": [],
+      "artifacts_unchanged": true
+    },
+    {
+      "round": 3,
+      "failures": [],
+      "artifacts_unchanged": true
+    }
+  ],
+  "completed_utc": "2026-11-09T20:31:33.728570+00:00",
+  "cli_sha256_final": "e179065dda57c30c61e7b97c3c78ccf7c223d9859a470d7788d9f50d084f3ec5"
+}

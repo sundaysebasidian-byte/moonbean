@@ -250,3 +250,11 @@ writes evidence under `--out` (default `docs/evidence/performance`). Choose a ne
 `--out` to preserve previous evidence. The parser comparison requires the local
 Git history containing `e7c98b1`; ordinary timing does not. No working source is
 rewritten. Minimum five measured runs is enforced.
+
+## 0.2.3 return round 2
+
+The insertion-sort limitation described above belongs to the old baseline. The candidate now caches ORDER BY keys, reuses projected columns and sorts indices in O(n log n), with original indices preserving ties. `bql_sort_differential.py` compares 100,000 native postings row by row with the oracle; it is functional evidence, not a large-order throughput/RSS gate. The unchanged baseline driver still skips ORDER BY at 100k/1M to retain comparable stage metadata. Its skip text is historical, not a description of the new algorithm.
+
+The first full candidate matrix failed several gates and is preserved at `.oracle-cache/r2-last/verified-2/performance`. Follow-up changes keep optional provenance in a lazy record, fuse signed-zero detection into lexing, remove tolerance-cache closures/unused collections and cache sort keys. Small matrices are retained at `.oracle-cache/r2-last/perf-probe` and `perf-order-probe`. [Final acceptance](evidence/r2-final-acceptance.md) records the actual final full matrix/gate; no gate tolerance or baseline samples were changed. Existing wasm-gc 1M FIFO baseline incompleteness remains excluded by the established comparator. New large source/function workloads beyond the stated tests have not received a separate peak-memory profile.
+
+The final source full matrix attempted all 36 cases (35 complete), but initially exceeded four stage gates in three scenarios. A predeclared three-repeat plan for all three scenarios passed every unchanged limit in every round, with identical artifacts. The confirmed comparison uses the last repeat for those scenarios and the original records elsewhere; it passes. Original failures and all repeats are retained. Timing variation has no established cause. See the [acceptance record](evidence/r2-final-acceptance.md) and [measurement summaries](evidence/r2-final-performance.json); this is not a claim that the first full matrix passed.

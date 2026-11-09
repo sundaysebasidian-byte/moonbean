@@ -1,0 +1,71 @@
+{
+  "created_utc": "2026-11-09T18:49:07.692233+00:00",
+  "code_commit": "5189dc5c991e293fa4f4359d48c8a3bce31c5cd7",
+  "df_before": "Filesystem   1024-blocks      Used Available Capacity iused      ifree %iused  Mounted on\n/dev/disk3s5   482797652 320196316 133778516    71% 4239033 1337785160    0%   /System/Volumes/Data\n",
+  "candidates": [
+    {
+      "path": "/tmp/generate-moonbean-md5.py",
+      "resolved": "/private/tmp/generate-moonbean-md5.py",
+      "sha256": "87a2311030a70faee4e388dfcdfce1d926a5be072175b688c2c4f1eaef5e62bd",
+      "bytes": 2496,
+      "dev": 16777232,
+      "inode": 74385929,
+      "owner": "created by this implementation task",
+      "purpose": "superseded temporary code-generation authoring helper",
+      "status": "blocked; source preserved",
+      "recipe_inputs": "helper contents; committed oracle inventory / RFC 1321 constant derivation; generated source retained in Git",
+      "refreshed_unchanged": true
+    },
+    {
+      "path": "/tmp/moonbean-generate-types.py",
+      "resolved": "/private/tmp/moonbean-generate-types.py",
+      "sha256": "433b5e7bd6c27f066e071e93f1de34432410ef0abfe5ae82d9c2aba679119245",
+      "bytes": 1185,
+      "dev": 16777232,
+      "inode": 74391849,
+      "owner": "created by this implementation task",
+      "purpose": "superseded temporary code-generation authoring helper",
+      "status": "blocked; source preserved",
+      "recipe_inputs": "helper contents; committed oracle inventory / RFC 1321 constant derivation; generated source retained in Git",
+      "refreshed_unchanged": true
+    }
+  ],
+  "retained": [
+    "current worktree and all Git changes",
+    "original workspace and uncommitted proposal",
+    "oracle / new MoonBit shared environments",
+    "raw differential inputs/results, failed/interrupted runs, build and web evidence"
+  ],
+  "moved": [],
+  "restore_map": [],
+  "blocked": [
+    {
+      "path": "/tmp/generate-moonbean-md5.py",
+      "reason": "Trash destination could not be verified; no move attempted",
+      "error": "PermissionError: [Errno 1] Operation not permitted: '/Users/sebasidian/.Trash'"
+    },
+    {
+      "path": "/tmp/moonbean-generate-types.py",
+      "reason": "Trash destination could not be verified; no move attempted",
+      "error": "PermissionError: [Errno 1] Operation not permitted: '/Users/sebasidian/.Trash'"
+    }
+  ],
+  "trash_preflight": {
+    "utc": "2026-11-09T18:51:26.837037+00:00",
+    "trash": "/Users/sebasidian/.Trash",
+    "attempt": "read-only destination verification",
+    "verified": false,
+    "error": "PermissionError: [Errno 1] Operation not permitted: '/Users/sebasidian/.Trash'",
+    "no_retry": true
+  },
+  "final_code_commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+  "final_audit_utc": "2026-11-09T20:32:22.598954+00:00",
+  "df_after": "Filesystem   1024-blocks      Used Available Capacity iused      ifree %iused  Mounted on\n/dev/disk3s5   482797652 321835176 118783736    74% 4255671 1187837360    0%   /System/Volumes/Data\n",
+  "moved_bytes": 0,
+  "space_released_by_cleanup_bytes": 0,
+  "known_task_processes_remaining": [],
+  "process_audit": "No manual test service/browser was opened. Command-line smoke browsers exited. No unknown/shared process stopped.",
+  "original_proposal_sha256": "9b69e6865e6e1ef11bbdca95d582d37c1398ce2194e271148e43cf3b8c9cc245",
+  "original_status": " M docs/proposal.md\n",
+  "original_head": "86137ab578e5bad621830c0c738f86aed0985f32"
+}

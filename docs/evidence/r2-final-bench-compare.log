@@ -1,0 +1,2 @@
+NOT GATED (incomplete baseline): wasm-gc-1000000-FIFO.json
+PASS: all baseline stage medians and RSS within tolerance

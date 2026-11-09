@@ -1,0 +1,5233 @@
+{
+  "code_commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+  "original_full_matrix": [
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:20.686379+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.0005882352941176471,
+          "p95": 0.0006451612903225806,
+          "p99": 0.0006451612903225806,
+          "postings_per_second": 1699999.9999999998
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.0009090909090909091,
+          "p95": 0.001,
+          "p99": 0.001,
+          "postings_per_second": 1100000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 116916224,
+      "file": "js-1000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:15.063658+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "parse": {
+          "p50": 0.0023333333333333335,
+          "p95": 0.0025,
+          "p99": 0.002857142857142857,
+          "postings_per_second": 428571.4285714285
+        },
+        "booking_FIFO": {
+          "p50": 0.0004166666666666667,
+          "p95": 0.000425531914893617,
+          "p99": 0.0004347826086956522,
+          "postings_per_second": 2400000.0
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.0007407407407407407,
+          "p95": 0.0008333333333333334,
+          "p99": 0.0008695652173913044,
+          "postings_per_second": 1350000.0
+        },
+        "realize": {
+          "p50": 0.00012121212121212121,
+          "p95": 0.00013071895424836603,
+          "p99": 0.00013333333333333334,
+          "postings_per_second": 8250000.0
+        },
+        "format": {
+          "p50": 0.0014285714285714286,
+          "p95": 0.0015384615384615385,
+          "p99": 0.0016666666666666668,
+          "postings_per_second": 700000.0
+        },
+        "aggregate": {
+          "p50": 0.0002105263157894737,
+          "p95": 0.00021978021978021978,
+          "p99": 0.00022222222222222223,
+          "postings_per_second": 4750000.0
+        },
+        "group": {
+          "p50": 0.0004166666666666667,
+          "p95": 0.0005,
+          "p99": 0.0005128205128205128,
+          "postings_per_second": 2400000.0
+        },
+        "order": {
+          "p50": 0.0013333333333333333,
+          "p95": 0.0014285714285714286,
+          "p99": 0.0014285714285714286,
+          "postings_per_second": 750000.0
+        },
+        "regex": {
+          "p50": 0.0003076923076923077,
+          "p95": 0.0003125,
+          "p99": 0.0003125,
+          "postings_per_second": 3250000.0
+        },
+        "transactions": {
+          "p50": 0.00013986013986013986,
+          "p95": 0.00014814814814814815,
+          "p99": 0.00014925373134328358,
+          "postings_per_second": 7150000.0
+        },
+        "length": {
+          "p50": 0.0002105263157894737,
+          "p95": 0.00022471910112359551,
+          "p99": 0.00023255813953488373,
+          "postings_per_second": 4750000.0
+        },
+        "substr": {
+          "p50": 0.00036363636363636367,
+          "p95": 0.00037037037037037035,
+          "p99": 0.00037037037037037035,
+          "postings_per_second": 2749999.9999999995
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 227901440,
+      "file": "js-1000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:21.671676+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.0003846153846153846,
+          "p95": 0.0004347826086956522,
+          "p99": 0.0004347826086956522,
+          "postings_per_second": 2600000.0
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.0006896551724137932,
+          "p95": 0.0007142857142857143,
+          "p99": 0.0007142857142857143,
+          "postings_per_second": 1449999.9999999998
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 117653504,
+      "file": "js-1000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:29.211358+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.00625,
+          "p95": 0.006666666666666667,
+          "p99": 0.006666666666666667,
+          "postings_per_second": 1600000.0
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.01,
+          "p95": 0.011,
+          "p99": 0.0115,
+          "postings_per_second": 1000000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 244760576,
+      "file": "js-10000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:22.658627+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "parse": {
+          "p50": 0.026,
+          "p95": 0.03,
+          "p99": 0.032,
+          "postings_per_second": 384615.3846153846
+        },
+        "booking_FIFO": {
+          "p50": 0.004200000000000001,
+          "p95": 0.004200000000000001,
+          "p99": 0.004200000000000001,
+          "postings_per_second": 2380952.3809523806
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.008,
+          "p95": 0.008333333333333333,
+          "p99": 0.008333333333333333,
+          "postings_per_second": 1250000.0
+        },
+        "realize": {
+          "p50": 0.0011764705882352942,
+          "p95": 0.00125,
+          "p99": 0.00125,
+          "postings_per_second": 8500000.0
+        },
+        "format": {
+          "p50": 0.017,
+          "p95": 0.0185,
+          "p99": 0.0185,
+          "postings_per_second": 588235.294117647
+        },
+        "aggregate": {
+          "p50": 0.0021000000000000003,
+          "p95": 0.0022222222222222222,
+          "p99": 0.0022222222222222222,
+          "postings_per_second": 4761904.761904761
+        },
+        "group": {
+          "p50": 0.004200000000000001,
+          "p95": 0.0046,
+          "p99": 0.0046,
+          "postings_per_second": 2380952.3809523806
+        },
+        "order": {
+          "p50": 0.02,
+          "p95": 0.022,
+          "p99": 0.022,
+          "postings_per_second": 500000.0
+        },
+        "regex": {
+          "p50": 0.003,
+          "p95": 0.0031428571428571426,
+          "p99": 0.0033333333333333335,
+          "postings_per_second": 3333333.3333333335
+        },
+        "transactions": {
+          "p50": 0.0014285714285714286,
+          "p95": 0.0015384615384615385,
+          "p99": 0.0015384615384615385,
+          "postings_per_second": 7000000.0
+        },
+        "length": {
+          "p50": 0.002857142857142857,
+          "p95": 0.003,
+          "p99": 0.0031428571428571426,
+          "postings_per_second": 3500000.0
+        },
+        "substr": {
+          "p50": 0.004399999999999999,
+          "p95": 0.005,
+          "p99": 0.005,
+          "postings_per_second": 2272727.272727273
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 403439616,
+      "file": "js-10000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:30.386297+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.004,
+          "p95": 0.004200000000000001,
+          "p99": 0.004399999999999999,
+          "postings_per_second": 2500000.0
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.008,
+          "p95": 0.008666666666666666,
+          "p99": 0.009666666666666667,
+          "postings_per_second": 1250000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 248086528,
+      "file": "js-10000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:53.866433+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.061,
+          "p95": 0.065,
+          "p99": 0.065,
+          "postings_per_second": 1639344.262295082
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.097,
+          "p95": 0.101,
+          "p99": 0.108,
+          "postings_per_second": 1030927.8350515463
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 590512128,
+      "file": "js-100000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:31.561965+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "parse": {
+          "p50": 0.311,
+          "p95": 0.365,
+          "p99": 0.384,
+          "postings_per_second": 321543.40836012864
+        },
+        "booking_FIFO": {
+          "p50": 0.042,
+          "p95": 0.045,
+          "p99": 0.045,
+          "postings_per_second": 2380952.3809523806
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.081,
+          "p95": 0.086,
+          "p99": 0.102,
+          "postings_per_second": 1234567.9012345679
+        },
+        "realize": {
+          "p50": 0.012,
+          "p95": 0.013,
+          "p99": 0.013,
+          "postings_per_second": 8333333.333333333
+        },
+        "format": {
+          "p50": 0.236,
+          "p95": 0.279,
+          "p99": 0.284,
+          "postings_per_second": 423728.81355932204
+        },
+        "aggregate": {
+          "p50": 0.023,
+          "p95": 0.024,
+          "p99": 0.024,
+          "postings_per_second": 4347826.0869565215
+        },
+        "group": {
+          "p50": 0.062,
+          "p95": 0.068,
+          "p99": 0.079,
+          "postings_per_second": 1612903.2258064516
+        },
+        "regex": {
+          "p50": 0.034,
+          "p95": 0.037,
+          "p99": 0.038,
+          "postings_per_second": 2941176.470588235
+        },
+        "transactions": {
+          "p50": 0.016,
+          "p95": 0.0165,
+          "p99": 0.017,
+          "postings_per_second": 6250000.0
+        },
+        "length": {
+          "p50": 0.027,
+          "p95": 0.033,
+          "p99": 0.045,
+          "postings_per_second": 3703703.703703704
+        },
+        "substr": {
+          "p50": 0.047,
+          "p95": 0.057,
+          "p99": 0.07,
+          "postings_per_second": 2127659.574468085
+        }
+      },
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "status": "complete",
+      "peak_rss_bytes": 1118142464,
+      "file": "js-100000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:58.062863+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.04,
+          "p95": 0.042,
+          "p99": 0.042,
+          "postings_per_second": 2500000.0
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.079,
+          "p95": 0.084,
+          "p99": 0.095,
+          "postings_per_second": 1265822.7848101265
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 616906752,
+      "file": "js-100000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:25:06.779228+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.992,
+          "p95": 1.05,
+          "p99": 1.058,
+          "postings_per_second": 1008064.5161290322
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 1.381,
+          "p95": 1.671,
+          "p99": 1.681,
+          "postings_per_second": 724112.961622013
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 2276294656,
+      "file": "js-1000000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:21:01.362746+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "parse": {
+          "p50": 3.378,
+          "p95": 3.457,
+          "p99": 3.503,
+          "postings_per_second": 296033.1557134399
+        },
+        "booking_FIFO": {
+          "p50": 0.443,
+          "p95": 0.451,
+          "p99": 0.466,
+          "postings_per_second": 2257336.343115124
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.868,
+          "p95": 0.981,
+          "p99": 1.032,
+          "postings_per_second": 1152073.732718894
+        },
+        "realize": {
+          "p50": 0.142,
+          "p95": 0.148,
+          "p99": 0.153,
+          "postings_per_second": 7042253.521126761
+        },
+        "format": {
+          "p50": 2.781,
+          "p95": 2.961,
+          "p99": 3.071,
+          "postings_per_second": 359582.8838547285
+        },
+        "aggregate": {
+          "p50": 0.338,
+          "p95": 0.482,
+          "p99": 0.486,
+          "postings_per_second": 2958579.8816568046
+        },
+        "group": {
+          "p50": 0.652,
+          "p95": 0.827,
+          "p99": 0.831,
+          "postings_per_second": 1533742.3312883435
+        },
+        "regex": {
+          "p50": 0.43,
+          "p95": 0.607,
+          "p99": 0.638,
+          "postings_per_second": 2325581.395348837
+        },
+        "transactions": {
+          "p50": 0.225,
+          "p95": 0.34,
+          "p99": 0.361,
+          "postings_per_second": 4444444.444444444
+        },
+        "length": {
+          "p50": 0.379,
+          "p95": 0.556,
+          "p99": 0.568,
+          "postings_per_second": 2638522.427440633
+        },
+        "substr": {
+          "p50": 0.643,
+          "p95": 0.946,
+          "p99": 0.971,
+          "postings_per_second": 1555209.9533437013
+        }
+      },
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "status": "complete",
+      "peak_rss_bytes": 3161292800,
+      "file": "js-1000000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:26:07.414019+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.481,
+          "p95": 0.503,
+          "p99": 0.504,
+          "postings_per_second": 2079002.079002079
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.947,
+          "p95": 1.184,
+          "p99": 1.234,
+          "postings_per_second": 1055966.2090813094
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 2582167552,
+      "file": "js-1000000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:15:33.114310+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.000625,
+          "p95": 0.000625,
+          "p99": 0.000625,
+          "postings_per_second": 1600000.0
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.0008695652173913044,
+          "p95": 0.0008695652173913044,
+          "p99": 0.0008695652173913044,
+          "postings_per_second": 1150000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 4096000,
+      "file": "native-1000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:15:26.788015+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "parse": {
+          "p50": 0.0018181818181818182,
+          "p95": 0.0018181818181818182,
+          "p99": 0.0021000000000000003,
+          "postings_per_second": 550000.0
+        },
+        "booking_FIFO": {
+          "p50": 0.0004347826086956522,
+          "p95": 0.00044444444444444447,
+          "p99": 0.00044444444444444447,
+          "postings_per_second": 2300000.0
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.0006666666666666666,
+          "p95": 0.0006896551724137932,
+          "p99": 0.0006896551724137932,
+          "postings_per_second": 1500000.0
+        },
+        "realize": {
+          "p50": 0.00014388489208633093,
+          "p95": 0.00014492753623188405,
+          "p99": 0.00014598540145985403,
+          "postings_per_second": 6950000.0
+        },
+        "format": {
+          "p50": 0.0009090909090909091,
+          "p95": 0.0009523809523809524,
+          "p99": 0.0009523809523809524,
+          "postings_per_second": 1100000.0
+        },
+        "aggregate": {
+          "p50": 0.00024096385542168676,
+          "p95": 0.0002469135802469136,
+          "p99": 0.0002469135802469136,
+          "postings_per_second": 4149999.9999999995
+        },
+        "group": {
+          "p50": 0.0004761904761904762,
+          "p95": 0.0004878048780487805,
+          "p99": 0.0004878048780487805,
+          "postings_per_second": 2100000.0
+        },
+        "order": {
+          "p50": 0.0004166666666666667,
+          "p95": 0.0004347826086956522,
+          "p99": 0.0004347826086956522,
+          "postings_per_second": 2400000.0
+        },
+        "regex": {
+          "p50": 0.00029411764705882356,
+          "p95": 0.0003076923076923077,
+          "p99": 0.0003125,
+          "postings_per_second": 3399999.9999999995
+        },
+        "transactions": {
+          "p50": 0.0001724137931034483,
+          "p95": 0.00017543859649122808,
+          "p99": 0.00017543859649122808,
+          "postings_per_second": 5799999.999999999
+        },
+        "length": {
+          "p50": 0.00023529411764705883,
+          "p95": 0.0002380952380952381,
+          "p99": 0.0002380952380952381,
+          "postings_per_second": 4250000.0
+        },
+        "substr": {
+          "p50": 0.000425531914893617,
+          "p95": 0.0004347826086956522,
+          "p99": 0.0004347826086956522,
+          "postings_per_second": 2350000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 5865472,
+      "file": "native-1000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:15:34.044049+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.0004347826086956522,
+          "p95": 0.00044444444444444447,
+          "p99": 0.00045454545454545455,
+          "postings_per_second": 2300000.0
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.0006666666666666666,
+          "p95": 0.0006666666666666666,
+          "p99": 0.0006666666666666666,
+          "postings_per_second": 1500000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 4096000,
+      "file": "native-1000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:15:41.371328+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.00625,
+          "p95": 0.0065,
+          "p99": 0.006666666666666667,
+          "postings_per_second": 1600000.0
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.008333333333333333,
+          "p95": 0.008666666666666666,
+          "p99": 0.008666666666666666,
+          "postings_per_second": 1200000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 11894784,
+      "file": "native-10000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:15:34.972892+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "parse": {
+          "p50": 0.018,
+          "p95": 0.0185,
+          "p99": 0.0185,
+          "postings_per_second": 555555.5555555556
+        },
+        "booking_FIFO": {
+          "p50": 0.004399999999999999,
+          "p95": 0.0046,
+          "p99": 0.0046,
+          "postings_per_second": 2272727.272727273
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.007,
+          "p95": 0.007,
+          "p99": 0.007333333333333333,
+          "postings_per_second": 1428571.4285714286
+        },
+        "realize": {
+          "p50": 0.0014,
+          "p95": 0.0014285714285714286,
+          "p99": 0.0014285714285714286,
+          "postings_per_second": 7142857.142857143
+        },
+        "format": {
+          "p50": 0.009666666666666667,
+          "p95": 0.01,
+          "p99": 0.01,
+          "postings_per_second": 1034482.7586206896
+        },
+        "aggregate": {
+          "p50": 0.0023333333333333335,
+          "p95": 0.0025,
+          "p99": 0.0025,
+          "postings_per_second": 4285714.285714285
+        },
+        "group": {
+          "p50": 0.0046,
+          "p95": 0.0048000000000000004,
+          "p99": 0.0048000000000000004,
+          "postings_per_second": 2173913.0434782607
+        },
+        "order": {
+          "p50": 0.0048000000000000004,
+          "p95": 0.005,
+          "p99": 0.005,
+          "postings_per_second": 2083333.3333333333
+        },
+        "regex": {
+          "p50": 0.00275,
+          "p95": 0.002857142857142857,
+          "p99": 0.002857142857142857,
+          "postings_per_second": 3636363.6363636367
+        },
+        "transactions": {
+          "p50": 0.0016666666666666668,
+          "p95": 0.0016666666666666668,
+          "p99": 0.00175,
+          "postings_per_second": 6000000.0
+        },
+        "length": {
+          "p50": 0.0022222222222222222,
+          "p95": 0.0023333333333333335,
+          "p99": 0.0023333333333333335,
+          "postings_per_second": 4500000.0
+        },
+        "substr": {
+          "p50": 0.004200000000000001,
+          "p95": 0.004399999999999999,
+          "p99": 0.004399999999999999,
+          "postings_per_second": 2380952.3809523806
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 18415616,
+      "file": "native-10000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:15:42.557115+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.004399999999999999,
+          "p95": 0.004399999999999999,
+          "p99": 0.0046,
+          "postings_per_second": 2272727.272727273
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.007,
+          "p95": 0.007,
+          "p99": 0.007333333333333333,
+          "postings_per_second": 1428571.4285714286
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 12042240,
+      "file": "native-10000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:16:00.331601+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.063,
+          "p95": 0.064,
+          "p99": 0.064,
+          "postings_per_second": 1587301.5873015872
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.1,
+          "p95": 0.102,
+          "p99": 0.102,
+          "postings_per_second": 1000000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 85049344,
+      "file": "native-100000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:15:43.569457+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "parse": {
+          "p50": 0.184,
+          "p95": 0.185,
+          "p99": 0.186,
+          "postings_per_second": 543478.2608695652
+        },
+        "booking_FIFO": {
+          "p50": 0.048,
+          "p95": 0.049,
+          "p99": 0.049,
+          "postings_per_second": 2083333.3333333333
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.093,
+          "p95": 0.096,
+          "p99": 0.099,
+          "postings_per_second": 1075268.817204301
+        },
+        "realize": {
+          "p50": 0.0165,
+          "p95": 0.018,
+          "p99": 0.0185,
+          "postings_per_second": 6060606.060606061
+        },
+        "format": {
+          "p50": 0.093,
+          "p95": 0.094,
+          "p99": 0.1,
+          "postings_per_second": 1075268.817204301
+        },
+        "aggregate": {
+          "p50": 0.036,
+          "p95": 0.039,
+          "p99": 0.04,
+          "postings_per_second": 2777777.777777778
+        },
+        "group": {
+          "p50": 0.07,
+          "p95": 0.072,
+          "p99": 0.073,
+          "postings_per_second": 1428571.4285714284
+        },
+        "regex": {
+          "p50": 0.045,
+          "p95": 0.05,
+          "p99": 0.05,
+          "postings_per_second": 2222222.2222222225
+        },
+        "transactions": {
+          "p50": 0.025,
+          "p95": 0.026,
+          "p99": 0.026,
+          "postings_per_second": 4000000.0
+        },
+        "length": {
+          "p50": 0.034,
+          "p95": 0.036,
+          "p99": 0.037,
+          "postings_per_second": 2941176.470588235
+        },
+        "substr": {
+          "p50": 0.054,
+          "p95": 0.056,
+          "p99": 0.056,
+          "postings_per_second": 1851851.851851852
+        }
+      },
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "status": "complete",
+      "peak_rss_bytes": 151060480,
+      "file": "native-100000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:16:04.393919+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.045,
+          "p95": 0.045,
+          "p99": 0.046,
+          "postings_per_second": 2222222.2222222225
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.097,
+          "p95": 0.102,
+          "p99": 0.103,
+          "postings_per_second": 1030927.8350515463
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 87883776,
+      "file": "native-100000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:18:55.998198+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.693,
+          "p95": 0.709,
+          "p99": 0.716,
+          "postings_per_second": 1443001.443001443
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 1.063,
+          "p95": 1.095,
+          "p99": 1.111,
+          "postings_per_second": 940733.7723424272
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 834043904,
+      "file": "native-1000000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:16:07.909650+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "parse": {
+          "p50": 1.869,
+          "p95": 1.879,
+          "p99": 1.887,
+          "postings_per_second": 535045.4788657036
+        },
+        "booking_FIFO": {
+          "p50": 0.453,
+          "p95": 0.461,
+          "p99": 0.463,
+          "postings_per_second": 2207505.518763797
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.944,
+          "p95": 0.969,
+          "p99": 0.974,
+          "postings_per_second": 1059322.0338983051
+        },
+        "realize": {
+          "p50": 0.199,
+          "p95": 0.203,
+          "p99": 0.203,
+          "postings_per_second": 5025125.628140703
+        },
+        "format": {
+          "p50": 0.964,
+          "p95": 0.971,
+          "p99": 0.972,
+          "postings_per_second": 1037344.398340249
+        },
+        "aggregate": {
+          "p50": 0.392,
+          "p95": 0.399,
+          "p99": 0.4,
+          "postings_per_second": 2551020.4081632653
+        },
+        "group": {
+          "p50": 0.715,
+          "p95": 0.812,
+          "p99": 1.029,
+          "postings_per_second": 1398601.3986013986
+        },
+        "regex": {
+          "p50": 0.479,
+          "p95": 0.487,
+          "p99": 0.488,
+          "postings_per_second": 2087682.6722338204
+        },
+        "transactions": {
+          "p50": 0.264,
+          "p95": 0.269,
+          "p99": 0.269,
+          "postings_per_second": 3787878.7878787876
+        },
+        "length": {
+          "p50": 0.347,
+          "p95": 0.351,
+          "p99": 0.356,
+          "postings_per_second": 2881844.3804034586
+        },
+        "substr": {
+          "p50": 0.548,
+          "p95": 0.56,
+          "p99": 0.586,
+          "postings_per_second": 1824817.518248175
+        }
+      },
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "status": "complete",
+      "peak_rss_bytes": 1702871040,
+      "file": "native-1000000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:19:39.242979+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.452,
+          "p95": 0.459,
+          "p99": 0.461,
+          "postings_per_second": 2212389.3805309734
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.985,
+          "p95": 1.038,
+          "p99": 1.038,
+          "postings_per_second": 1015228.4263959391
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 869908480,
+      "file": "native-1000000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:26:52.725060+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.0005263157894736842,
+          "p95": 0.0005555555555555556,
+          "p99": 0.0005714285714285715,
+          "postings_per_second": 1900000.0
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.0008333333333333334,
+          "p95": 0.0008695652173913044,
+          "p99": 0.00125,
+          "postings_per_second": 1200000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 62652416,
+      "file": "wasm-gc-1000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:26:47.114777+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "parse": {
+          "p50": 0.0019090909090909091,
+          "p95": 0.002,
+          "p99": 0.0021000000000000003,
+          "postings_per_second": 523809.5238095238
+        },
+        "booking_FIFO": {
+          "p50": 0.0003225806451612903,
+          "p95": 0.0003278688524590164,
+          "p99": 0.0003333333333333333,
+          "postings_per_second": 3100000.0
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.0005128205128205128,
+          "p95": 0.0005263157894736842,
+          "p99": 0.0005405405405405405,
+          "postings_per_second": 1950000.0
+        },
+        "realize": {
+          "p50": 0.00011049723756906077,
+          "p95": 0.000111731843575419,
+          "p99": 0.000111731843575419,
+          "postings_per_second": 9050000.0
+        },
+        "format": {
+          "p50": 0.0011111111111111111,
+          "p95": 0.0011666666666666668,
+          "p99": 0.0011764705882352942,
+          "postings_per_second": 900000.0
+        },
+        "aggregate": {
+          "p50": 0.00015873015873015873,
+          "p95": 0.0001639344262295082,
+          "p99": 0.00016666666666666666,
+          "postings_per_second": 6300000.0
+        },
+        "group": {
+          "p50": 0.00036363636363636367,
+          "p95": 0.0003773584905660377,
+          "p99": 0.0003773584905660377,
+          "postings_per_second": 2749999.9999999995
+        },
+        "order": {
+          "p50": 0.0005555555555555556,
+          "p95": 0.0005714285714285715,
+          "p99": 0.0005714285714285715,
+          "postings_per_second": 1800000.0
+        },
+        "regex": {
+          "p50": 0.0002702702702702703,
+          "p95": 0.00028169014084507044,
+          "p99": 0.00028169014084507044,
+          "postings_per_second": 3700000.0
+        },
+        "transactions": {
+          "p50": 0.00012903225806451613,
+          "p95": 0.00013071895424836603,
+          "p99": 0.00013071895424836603,
+          "postings_per_second": 7750000.0
+        },
+        "length": {
+          "p50": 0.00020408163265306123,
+          "p95": 0.00022222222222222223,
+          "p99": 0.00022471910112359551,
+          "postings_per_second": 4900000.0
+        },
+        "substr": {
+          "p50": 0.000425531914893617,
+          "p95": 0.00045454545454545455,
+          "p99": 0.00046511627906976747,
+          "postings_per_second": 2350000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 69648384,
+      "file": "wasm-gc-1000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:26:53.680859+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.000425531914893617,
+          "p95": 0.00046511627906976747,
+          "p99": 0.0004761904761904762,
+          "postings_per_second": 2350000.0
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.0006666666666666666,
+          "p95": 0.0007407407407407407,
+          "p99": 0.0007692307692307692,
+          "postings_per_second": 1500000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 63111168,
+      "file": "wasm-gc-1000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:27:00.902132+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.004200000000000001,
+          "p95": 0.004399999999999999,
+          "p99": 0.004399999999999999,
+          "postings_per_second": 2380952.3809523806
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.007333333333333333,
+          "p95": 0.007666666666666666,
+          "p99": 0.008,
+          "postings_per_second": 1363636.3636363638
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 98598912,
+      "file": "wasm-gc-10000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:26:54.637069+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "parse": {
+          "p50": 0.026,
+          "p95": 0.03,
+          "p99": 0.033,
+          "postings_per_second": 384615.3846153846
+        },
+        "booking_FIFO": {
+          "p50": 0.003833333333333333,
+          "p95": 0.003833333333333333,
+          "p99": 0.004,
+          "postings_per_second": 2608695.652173913
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.00625,
+          "p95": 0.006666666666666667,
+          "p99": 0.00675,
+          "postings_per_second": 1600000.0
+        },
+        "realize": {
+          "p50": 0.0012352941176470588,
+          "p95": 0.00125,
+          "p99": 0.00125,
+          "postings_per_second": 8095238.095238095
+        },
+        "format": {
+          "p50": 0.0135,
+          "p95": 0.015,
+          "p99": 0.015,
+          "postings_per_second": 740740.7407407408
+        },
+        "aggregate": {
+          "p50": 0.0019090909090909091,
+          "p95": 0.0021000000000000003,
+          "p99": 0.0021000000000000003,
+          "postings_per_second": 5238095.238095238
+        },
+        "group": {
+          "p50": 0.0046,
+          "p95": 0.005,
+          "p99": 0.00575,
+          "postings_per_second": 2173913.0434782607
+        },
+        "order": {
+          "p50": 0.0105,
+          "p95": 0.012,
+          "p99": 0.012,
+          "postings_per_second": 952380.9523809523
+        },
+        "regex": {
+          "p50": 0.0033333333333333335,
+          "p95": 0.0036666666666666666,
+          "p99": 0.0036666666666666666,
+          "postings_per_second": 3000000.0
+        },
+        "transactions": {
+          "p50": 0.0014285714285714286,
+          "p95": 0.0015384615384615385,
+          "p99": 0.0015384615384615385,
+          "postings_per_second": 7000000.0
+        },
+        "length": {
+          "p50": 0.0021000000000000003,
+          "p95": 0.0025,
+          "p99": 0.0025,
+          "postings_per_second": 4761904.761904761
+        },
+        "substr": {
+          "p50": 0.004,
+          "p95": 0.004200000000000001,
+          "p99": 0.004200000000000001,
+          "postings_per_second": 2500000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 123273216,
+      "file": "wasm-gc-10000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:27:01.977107+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.0035,
+          "p95": 0.003833333333333333,
+          "p99": 0.004,
+          "postings_per_second": 2857142.8571428573
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.00625,
+          "p95": 0.007,
+          "p99": 0.007666666666666666,
+          "postings_per_second": 1600000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 98549760,
+      "file": "wasm-gc-10000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:27:22.027336+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.04,
+          "p95": 0.043,
+          "p99": 0.043,
+          "postings_per_second": 2500000.0
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.067,
+          "p95": 0.078,
+          "p99": 0.079,
+          "postings_per_second": 1492537.3134328357
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 237748224,
+      "file": "wasm-gc-100000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:27:03.087426+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "parse": {
+          "p50": 0.259,
+          "p95": 0.286,
+          "p99": 0.29,
+          "postings_per_second": 386100.3861003861
+        },
+        "booking_FIFO": {
+          "p50": 0.034,
+          "p95": 0.035,
+          "p99": 0.035,
+          "postings_per_second": 2941176.470588235
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.062,
+          "p95": 0.076,
+          "p99": 0.076,
+          "postings_per_second": 1612903.2258064516
+        },
+        "realize": {
+          "p50": 0.0125,
+          "p95": 0.014,
+          "p99": 0.025,
+          "postings_per_second": 8000000.0
+        },
+        "format": {
+          "p50": 0.13,
+          "p95": 0.154,
+          "p99": 0.155,
+          "postings_per_second": 769230.7692307692
+        },
+        "aggregate": {
+          "p50": 0.031,
+          "p95": 0.043,
+          "p99": 0.044,
+          "postings_per_second": 3225806.4516129033
+        },
+        "group": {
+          "p50": 0.066,
+          "p95": 0.085,
+          "p99": 0.091,
+          "postings_per_second": 1515151.5151515151
+        },
+        "regex": {
+          "p50": 0.046,
+          "p95": 0.061,
+          "p99": 0.061,
+          "postings_per_second": 2173913.0434782607
+        },
+        "transactions": {
+          "p50": 0.021,
+          "p95": 0.029,
+          "p99": 0.031,
+          "postings_per_second": 4761904.761904761
+        },
+        "length": {
+          "p50": 0.039,
+          "p95": 0.051,
+          "p99": 0.051,
+          "postings_per_second": 2564102.564102564
+        },
+        "substr": {
+          "p50": 0.056,
+          "p95": 0.074,
+          "p99": 0.077,
+          "postings_per_second": 1785714.2857142857
+        }
+      },
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "status": "complete",
+      "peak_rss_bytes": 437534720,
+      "file": "wasm-gc-100000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:27:24.982084+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.032,
+          "p95": 0.034,
+          "p99": 0.034,
+          "postings_per_second": 3125000.0
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.061,
+          "p95": 0.072,
+          "p99": 0.075,
+          "postings_per_second": 1639344.262295082
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 233144320,
+      "file": "wasm-gc-100000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:27:36.781129+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.414,
+          "p95": 0.443,
+          "p99": 0.47,
+          "postings_per_second": 2415458.9371980675
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.741,
+          "p95": 0.872,
+          "p99": 1.036,
+          "postings_per_second": 1349527.6653171391
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 1284194304,
+      "file": "wasm-gc-1000000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:27:27.567885+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {},
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "status": "incomplete",
+      "reason": "exit -5:                 0x000000010517a398 moonrun + 2761624\n    29  moonrun                             0x0000000104f993ec moonrun + 791532\n    30  moonrun                             0x0000000104f606e8 moonrun + 558824\n    31  moonrun                             0x0000000104f5d19c moonrun + 545180\n    32  moonrun                             0x0000000105016ac4 moonrun + 1305284\n    33  moonrun                             0x0000000104edeaa0 moonrun + 27296\n    34  moonrun                             0x0000000104edc060 moonrun + 16480\n    35  moonrun                             0x0000000104ee19b4 moonrun + 39348\n    36  dyld                                0x000000018b55cd7c start + 6652\ntime: command terminated abnormally\n        9.20 real        22.90 user         2.25 sys\n          1553219584  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              129310  page reclaims\n                   3  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   2  voluntary context switches\n              254531  involuntary context switches\n        280155238445  instructions retired\n         69671153016  cycles elapsed\n          1622312928  peak memory footprint\n",
+      "peak_rss_bytes": 1553219584,
+      "file": "wasm-gc-1000000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:28:08.222758+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.314,
+          "p95": 0.325,
+          "p99": 0.336,
+          "postings_per_second": 3184713.3757961784
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.695,
+          "p95": 0.826,
+          "p99": 0.84,
+          "postings_per_second": 1438848.9208633094
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 1278623744,
+      "file": "wasm-gc-1000000-STRICT.json"
+    }
+  ],
+  "fixed_three_repeats": [
+    {
+      "round": 1,
+      "measurements": [
+        {
+          "schema": 1,
+          "timestamp": "2026-11-09T20:29:12.149805+00:00",
+          "environment": {
+            "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+            "machine": "arm64",
+            "cores": 10,
+            "python": "3.14.6",
+            "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+            "node": "v24.18.0",
+            "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+            "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+            "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+            "model": "Mac16,12",
+            "cpu": "Apple M4",
+            "memory_bytes": 17179869184
+          },
+          "target": "js",
+          "postings": 1000000,
+          "generated_pad_postings": 2,
+          "method": "AVERAGE",
+          "seed": 20261101,
+          "runs": 21,
+          "warmups": 2,
+          "min_batch_ms": 20,
+          "command": [
+            "node",
+            "_build/js/release/build/bench/bench.js"
+          ],
+          "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+          "stages": {
+            "booking_AVERAGE": {
+              "p50": 0.597,
+              "p95": 0.609,
+              "p99": 0.629,
+              "postings_per_second": 1675041.8760469013
+            },
+            "validate_pad_AVERAGE": {
+              "p50": 1.03,
+              "p95": 1.11,
+              "p99": 1.148,
+              "postings_per_second": 970873.786407767
+            }
+          },
+          "skipped_stages": {},
+          "status": "complete",
+          "peak_rss_bytes": 2436956160,
+          "file": "js-1000000-AVERAGE.json"
+        },
+        {
+          "schema": 1,
+          "timestamp": "2026-11-09T20:29:10.106321+00:00",
+          "environment": {
+            "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+            "machine": "arm64",
+            "cores": 10,
+            "python": "3.14.6",
+            "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+            "node": "v24.18.0",
+            "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+            "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+            "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+            "model": "Mac16,12",
+            "cpu": "Apple M4",
+            "memory_bytes": 17179869184
+          },
+          "target": "wasm-gc",
+          "postings": 1000,
+          "generated_pad_postings": 2,
+          "method": "AVERAGE",
+          "seed": 20261101,
+          "runs": 21,
+          "warmups": 2,
+          "min_batch_ms": 20,
+          "command": [
+            "moonrun",
+            "_build/wasm-gc/release/build/bench/bench.wasm"
+          ],
+          "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+          "stages": {
+            "booking_AVERAGE": {
+              "p50": 0.0003448275862068966,
+              "p95": 0.00035714285714285714,
+              "p99": 0.00035714285714285714,
+              "postings_per_second": 2899999.9999999995
+            },
+            "validate_pad_AVERAGE": {
+              "p50": 0.0005405405405405405,
+              "p95": 0.0005714285714285715,
+              "p99": 0.0005882352941176471,
+              "postings_per_second": 1850000.0
+            }
+          },
+          "skipped_stages": {},
+          "status": "complete",
+          "peak_rss_bytes": 62652416,
+          "file": "wasm-gc-1000-AVERAGE.json"
+        },
+        {
+          "schema": 1,
+          "timestamp": "2026-11-09T20:29:11.087944+00:00",
+          "environment": {
+            "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+            "machine": "arm64",
+            "cores": 10,
+            "python": "3.14.6",
+            "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+            "node": "v24.18.0",
+            "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+            "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+            "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+            "model": "Mac16,12",
+            "cpu": "Apple M4",
+            "memory_bytes": 17179869184
+          },
+          "target": "wasm-gc",
+          "postings": 1000,
+          "generated_pad_postings": 2,
+          "method": "STRICT",
+          "seed": 20261101,
+          "runs": 21,
+          "warmups": 2,
+          "min_batch_ms": 20,
+          "command": [
+            "moonrun",
+            "_build/wasm-gc/release/build/bench/bench.wasm"
+          ],
+          "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+          "stages": {
+            "booking_STRICT": {
+              "p50": 0.0002898550724637681,
+              "p95": 0.00030303030303030303,
+              "p99": 0.0003225806451612903,
+              "postings_per_second": 3450000.0
+            },
+            "validate_pad_STRICT": {
+              "p50": 0.0004878048780487805,
+              "p95": 0.0005405405405405405,
+              "p99": 0.0006060606060606061,
+              "postings_per_second": 2050000.0
+            }
+          },
+          "skipped_stages": {},
+          "status": "complete",
+          "peak_rss_bytes": 62537728,
+          "file": "wasm-gc-1000-STRICT.json"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "measurements": [
+        {
+          "schema": 1,
+          "timestamp": "2026-11-09T20:29:56.632680+00:00",
+          "environment": {
+            "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+            "machine": "arm64",
+            "cores": 10,
+            "python": "3.14.6",
+            "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+            "node": "v24.18.0",
+            "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+            "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+            "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+            "model": "Mac16,12",
+            "cpu": "Apple M4",
+            "memory_bytes": 17179869184
+          },
+          "target": "js",
+          "postings": 1000000,
+          "generated_pad_postings": 2,
+          "method": "AVERAGE",
+          "seed": 20261101,
+          "runs": 21,
+          "warmups": 2,
+          "min_batch_ms": 20,
+          "command": [
+            "node",
+            "_build/js/release/build/bench/bench.js"
+          ],
+          "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+          "stages": {
+            "booking_AVERAGE": {
+              "p50": 0.629,
+              "p95": 0.642,
+              "p99": 0.654,
+              "postings_per_second": 1589825.119236884
+            },
+            "validate_pad_AVERAGE": {
+              "p50": 1.08,
+              "p95": 1.146,
+              "p99": 1.268,
+              "postings_per_second": 925925.9259259258
+            }
+          },
+          "skipped_stages": {},
+          "status": "complete",
+          "peak_rss_bytes": 2432991232,
+          "file": "js-1000000-AVERAGE.json"
+        },
+        {
+          "schema": 1,
+          "timestamp": "2026-11-09T20:29:54.563249+00:00",
+          "environment": {
+            "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+            "machine": "arm64",
+            "cores": 10,
+            "python": "3.14.6",
+            "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+            "node": "v24.18.0",
+            "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+            "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+            "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+            "model": "Mac16,12",
+            "cpu": "Apple M4",
+            "memory_bytes": 17179869184
+          },
+          "target": "wasm-gc",
+          "postings": 1000,
+          "generated_pad_postings": 2,
+          "method": "AVERAGE",
+          "seed": 20261101,
+          "runs": 21,
+          "warmups": 2,
+          "min_batch_ms": 20,
+          "command": [
+            "moonrun",
+            "_build/wasm-gc/release/build/bench/bench.wasm"
+          ],
+          "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+          "stages": {
+            "booking_AVERAGE": {
+              "p50": 0.00036363636363636367,
+              "p95": 0.0004,
+              "p99": 0.0004166666666666667,
+              "postings_per_second": 2749999.9999999995
+            },
+            "validate_pad_AVERAGE": {
+              "p50": 0.0005263157894736842,
+              "p95": 0.0005405405405405405,
+              "p99": 0.0005555555555555556,
+              "postings_per_second": 1900000.0
+            }
+          },
+          "skipped_stages": {},
+          "status": "complete",
+          "peak_rss_bytes": 62586880,
+          "file": "wasm-gc-1000-AVERAGE.json"
+        },
+        {
+          "schema": 1,
+          "timestamp": "2026-11-09T20:29:55.569065+00:00",
+          "environment": {
+            "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+            "machine": "arm64",
+            "cores": 10,
+            "python": "3.14.6",
+            "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+            "node": "v24.18.0",
+            "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+            "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+            "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+            "model": "Mac16,12",
+            "cpu": "Apple M4",
+            "memory_bytes": 17179869184
+          },
+          "target": "wasm-gc",
+          "postings": 1000,
+          "generated_pad_postings": 2,
+          "method": "STRICT",
+          "seed": 20261101,
+          "runs": 21,
+          "warmups": 2,
+          "min_batch_ms": 20,
+          "command": [
+            "moonrun",
+            "_build/wasm-gc/release/build/bench/bench.wasm"
+          ],
+          "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+          "stages": {
+            "booking_STRICT": {
+              "p50": 0.00028571428571428574,
+              "p95": 0.00030303030303030303,
+              "p99": 0.00030303030303030303,
+              "postings_per_second": 3499999.9999999995
+            },
+            "validate_pad_STRICT": {
+              "p50": 0.00046511627906976747,
+              "p95": 0.0004878048780487805,
+              "p99": 0.0004878048780487805,
+              "postings_per_second": 2150000.0
+            }
+          },
+          "skipped_stages": {},
+          "status": "complete",
+          "peak_rss_bytes": 62046208,
+          "file": "wasm-gc-1000-STRICT.json"
+        }
+      ]
+    },
+    {
+      "round": 3,
+      "measurements": [
+        {
+          "schema": 1,
+          "timestamp": "2026-11-09T20:30:43.047665+00:00",
+          "environment": {
+            "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+            "machine": "arm64",
+            "cores": 10,
+            "python": "3.14.6",
+            "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+            "node": "v24.18.0",
+            "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+            "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+            "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+            "model": "Mac16,12",
+            "cpu": "Apple M4",
+            "memory_bytes": 17179869184
+          },
+          "target": "js",
+          "postings": 1000000,
+          "generated_pad_postings": 2,
+          "method": "AVERAGE",
+          "seed": 20261101,
+          "runs": 21,
+          "warmups": 2,
+          "min_batch_ms": 20,
+          "command": [
+            "node",
+            "_build/js/release/build/bench/bench.js"
+          ],
+          "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+          "stages": {
+            "booking_AVERAGE": {
+              "p50": 0.688,
+              "p95": 0.899,
+              "p99": 0.9,
+              "postings_per_second": 1453488.3720930233
+            },
+            "validate_pad_AVERAGE": {
+              "p50": 1.186,
+              "p95": 1.465,
+              "p99": 1.904,
+              "postings_per_second": 843170.3204047218
+            }
+          },
+          "skipped_stages": {},
+          "status": "complete",
+          "peak_rss_bytes": 2459172864,
+          "file": "js-1000000-AVERAGE.json"
+        },
+        {
+          "schema": 1,
+          "timestamp": "2026-11-09T20:30:41.008193+00:00",
+          "environment": {
+            "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+            "machine": "arm64",
+            "cores": 10,
+            "python": "3.14.6",
+            "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+            "node": "v24.18.0",
+            "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+            "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+            "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+            "model": "Mac16,12",
+            "cpu": "Apple M4",
+            "memory_bytes": 17179869184
+          },
+          "target": "wasm-gc",
+          "postings": 1000,
+          "generated_pad_postings": 2,
+          "method": "AVERAGE",
+          "seed": 20261101,
+          "runs": 21,
+          "warmups": 2,
+          "min_batch_ms": 20,
+          "command": [
+            "moonrun",
+            "_build/wasm-gc/release/build/bench/bench.wasm"
+          ],
+          "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+          "stages": {
+            "booking_AVERAGE": {
+              "p50": 0.00035714285714285714,
+              "p95": 0.000392156862745098,
+              "p99": 0.000392156862745098,
+              "postings_per_second": 2800000.0
+            },
+            "validate_pad_AVERAGE": {
+              "p50": 0.0005263157894736842,
+              "p95": 0.0005405405405405405,
+              "p99": 0.0005405405405405405,
+              "postings_per_second": 1900000.0
+            }
+          },
+          "skipped_stages": {},
+          "status": "complete",
+          "peak_rss_bytes": 62963712,
+          "file": "wasm-gc-1000-AVERAGE.json"
+        },
+        {
+          "schema": 1,
+          "timestamp": "2026-11-09T20:30:41.984142+00:00",
+          "environment": {
+            "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+            "machine": "arm64",
+            "cores": 10,
+            "python": "3.14.6",
+            "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+            "node": "v24.18.0",
+            "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+            "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+            "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+            "model": "Mac16,12",
+            "cpu": "Apple M4",
+            "memory_bytes": 17179869184
+          },
+          "target": "wasm-gc",
+          "postings": 1000,
+          "generated_pad_postings": 2,
+          "method": "STRICT",
+          "seed": 20261101,
+          "runs": 21,
+          "warmups": 2,
+          "min_batch_ms": 20,
+          "command": [
+            "moonrun",
+            "_build/wasm-gc/release/build/bench/bench.wasm"
+          ],
+          "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+          "stages": {
+            "booking_STRICT": {
+              "p50": 0.00031746031746031746,
+              "p95": 0.0003278688524590164,
+              "p99": 0.0003278688524590164,
+              "postings_per_second": 3150000.0
+            },
+            "validate_pad_STRICT": {
+              "p50": 0.0004761904761904762,
+              "p95": 0.0004878048780487805,
+              "p99": 0.0005,
+              "postings_per_second": 2100000.0
+            }
+          },
+          "skipped_stages": {},
+          "status": "complete",
+          "peak_rss_bytes": 62799872,
+          "file": "wasm-gc-1000-STRICT.json"
+        }
+      ]
+    }
+  ],
+  "final_compared_matrix": [
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:20.686379+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.0005882352941176471,
+          "p95": 0.0006451612903225806,
+          "p99": 0.0006451612903225806,
+          "postings_per_second": 1699999.9999999998
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.0009090909090909091,
+          "p95": 0.001,
+          "p99": 0.001,
+          "postings_per_second": 1100000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 116916224,
+      "file": "js-1000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:15.063658+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "parse": {
+          "p50": 0.0023333333333333335,
+          "p95": 0.0025,
+          "p99": 0.002857142857142857,
+          "postings_per_second": 428571.4285714285
+        },
+        "booking_FIFO": {
+          "p50": 0.0004166666666666667,
+          "p95": 0.000425531914893617,
+          "p99": 0.0004347826086956522,
+          "postings_per_second": 2400000.0
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.0007407407407407407,
+          "p95": 0.0008333333333333334,
+          "p99": 0.0008695652173913044,
+          "postings_per_second": 1350000.0
+        },
+        "realize": {
+          "p50": 0.00012121212121212121,
+          "p95": 0.00013071895424836603,
+          "p99": 0.00013333333333333334,
+          "postings_per_second": 8250000.0
+        },
+        "format": {
+          "p50": 0.0014285714285714286,
+          "p95": 0.0015384615384615385,
+          "p99": 0.0016666666666666668,
+          "postings_per_second": 700000.0
+        },
+        "aggregate": {
+          "p50": 0.0002105263157894737,
+          "p95": 0.00021978021978021978,
+          "p99": 0.00022222222222222223,
+          "postings_per_second": 4750000.0
+        },
+        "group": {
+          "p50": 0.0004166666666666667,
+          "p95": 0.0005,
+          "p99": 0.0005128205128205128,
+          "postings_per_second": 2400000.0
+        },
+        "order": {
+          "p50": 0.0013333333333333333,
+          "p95": 0.0014285714285714286,
+          "p99": 0.0014285714285714286,
+          "postings_per_second": 750000.0
+        },
+        "regex": {
+          "p50": 0.0003076923076923077,
+          "p95": 0.0003125,
+          "p99": 0.0003125,
+          "postings_per_second": 3250000.0
+        },
+        "transactions": {
+          "p50": 0.00013986013986013986,
+          "p95": 0.00014814814814814815,
+          "p99": 0.00014925373134328358,
+          "postings_per_second": 7150000.0
+        },
+        "length": {
+          "p50": 0.0002105263157894737,
+          "p95": 0.00022471910112359551,
+          "p99": 0.00023255813953488373,
+          "postings_per_second": 4750000.0
+        },
+        "substr": {
+          "p50": 0.00036363636363636367,
+          "p95": 0.00037037037037037035,
+          "p99": 0.00037037037037037035,
+          "postings_per_second": 2749999.9999999995
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 227901440,
+      "file": "js-1000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:21.671676+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.0003846153846153846,
+          "p95": 0.0004347826086956522,
+          "p99": 0.0004347826086956522,
+          "postings_per_second": 2600000.0
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.0006896551724137932,
+          "p95": 0.0007142857142857143,
+          "p99": 0.0007142857142857143,
+          "postings_per_second": 1449999.9999999998
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 117653504,
+      "file": "js-1000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:29.211358+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.00625,
+          "p95": 0.006666666666666667,
+          "p99": 0.006666666666666667,
+          "postings_per_second": 1600000.0
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.01,
+          "p95": 0.011,
+          "p99": 0.0115,
+          "postings_per_second": 1000000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 244760576,
+      "file": "js-10000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:22.658627+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "parse": {
+          "p50": 0.026,
+          "p95": 0.03,
+          "p99": 0.032,
+          "postings_per_second": 384615.3846153846
+        },
+        "booking_FIFO": {
+          "p50": 0.004200000000000001,
+          "p95": 0.004200000000000001,
+          "p99": 0.004200000000000001,
+          "postings_per_second": 2380952.3809523806
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.008,
+          "p95": 0.008333333333333333,
+          "p99": 0.008333333333333333,
+          "postings_per_second": 1250000.0
+        },
+        "realize": {
+          "p50": 0.0011764705882352942,
+          "p95": 0.00125,
+          "p99": 0.00125,
+          "postings_per_second": 8500000.0
+        },
+        "format": {
+          "p50": 0.017,
+          "p95": 0.0185,
+          "p99": 0.0185,
+          "postings_per_second": 588235.294117647
+        },
+        "aggregate": {
+          "p50": 0.0021000000000000003,
+          "p95": 0.0022222222222222222,
+          "p99": 0.0022222222222222222,
+          "postings_per_second": 4761904.761904761
+        },
+        "group": {
+          "p50": 0.004200000000000001,
+          "p95": 0.0046,
+          "p99": 0.0046,
+          "postings_per_second": 2380952.3809523806
+        },
+        "order": {
+          "p50": 0.02,
+          "p95": 0.022,
+          "p99": 0.022,
+          "postings_per_second": 500000.0
+        },
+        "regex": {
+          "p50": 0.003,
+          "p95": 0.0031428571428571426,
+          "p99": 0.0033333333333333335,
+          "postings_per_second": 3333333.3333333335
+        },
+        "transactions": {
+          "p50": 0.0014285714285714286,
+          "p95": 0.0015384615384615385,
+          "p99": 0.0015384615384615385,
+          "postings_per_second": 7000000.0
+        },
+        "length": {
+          "p50": 0.002857142857142857,
+          "p95": 0.003,
+          "p99": 0.0031428571428571426,
+          "postings_per_second": 3500000.0
+        },
+        "substr": {
+          "p50": 0.004399999999999999,
+          "p95": 0.005,
+          "p99": 0.005,
+          "postings_per_second": 2272727.272727273
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 403439616,
+      "file": "js-10000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:30.386297+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.004,
+          "p95": 0.004200000000000001,
+          "p99": 0.004399999999999999,
+          "postings_per_second": 2500000.0
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.008,
+          "p95": 0.008666666666666666,
+          "p99": 0.009666666666666667,
+          "postings_per_second": 1250000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 248086528,
+      "file": "js-10000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:53.866433+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.061,
+          "p95": 0.065,
+          "p99": 0.065,
+          "postings_per_second": 1639344.262295082
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.097,
+          "p95": 0.101,
+          "p99": 0.108,
+          "postings_per_second": 1030927.8350515463
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 590512128,
+      "file": "js-100000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:31.561965+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "parse": {
+          "p50": 0.311,
+          "p95": 0.365,
+          "p99": 0.384,
+          "postings_per_second": 321543.40836012864
+        },
+        "booking_FIFO": {
+          "p50": 0.042,
+          "p95": 0.045,
+          "p99": 0.045,
+          "postings_per_second": 2380952.3809523806
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.081,
+          "p95": 0.086,
+          "p99": 0.102,
+          "postings_per_second": 1234567.9012345679
+        },
+        "realize": {
+          "p50": 0.012,
+          "p95": 0.013,
+          "p99": 0.013,
+          "postings_per_second": 8333333.333333333
+        },
+        "format": {
+          "p50": 0.236,
+          "p95": 0.279,
+          "p99": 0.284,
+          "postings_per_second": 423728.81355932204
+        },
+        "aggregate": {
+          "p50": 0.023,
+          "p95": 0.024,
+          "p99": 0.024,
+          "postings_per_second": 4347826.0869565215
+        },
+        "group": {
+          "p50": 0.062,
+          "p95": 0.068,
+          "p99": 0.079,
+          "postings_per_second": 1612903.2258064516
+        },
+        "regex": {
+          "p50": 0.034,
+          "p95": 0.037,
+          "p99": 0.038,
+          "postings_per_second": 2941176.470588235
+        },
+        "transactions": {
+          "p50": 0.016,
+          "p95": 0.0165,
+          "p99": 0.017,
+          "postings_per_second": 6250000.0
+        },
+        "length": {
+          "p50": 0.027,
+          "p95": 0.033,
+          "p99": 0.045,
+          "postings_per_second": 3703703.703703704
+        },
+        "substr": {
+          "p50": 0.047,
+          "p95": 0.057,
+          "p99": 0.07,
+          "postings_per_second": 2127659.574468085
+        }
+      },
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "status": "complete",
+      "peak_rss_bytes": 1118142464,
+      "file": "js-100000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:20:58.062863+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.04,
+          "p95": 0.042,
+          "p99": 0.042,
+          "postings_per_second": 2500000.0
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.079,
+          "p95": 0.084,
+          "p99": 0.095,
+          "postings_per_second": 1265822.7848101265
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 616906752,
+      "file": "js-100000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:30:43.047665+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.688,
+          "p95": 0.899,
+          "p99": 0.9,
+          "postings_per_second": 1453488.3720930233
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 1.186,
+          "p95": 1.465,
+          "p99": 1.904,
+          "postings_per_second": 843170.3204047218
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 2459172864,
+      "file": "js-1000000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:21:01.362746+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "parse": {
+          "p50": 3.378,
+          "p95": 3.457,
+          "p99": 3.503,
+          "postings_per_second": 296033.1557134399
+        },
+        "booking_FIFO": {
+          "p50": 0.443,
+          "p95": 0.451,
+          "p99": 0.466,
+          "postings_per_second": 2257336.343115124
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.868,
+          "p95": 0.981,
+          "p99": 1.032,
+          "postings_per_second": 1152073.732718894
+        },
+        "realize": {
+          "p50": 0.142,
+          "p95": 0.148,
+          "p99": 0.153,
+          "postings_per_second": 7042253.521126761
+        },
+        "format": {
+          "p50": 2.781,
+          "p95": 2.961,
+          "p99": 3.071,
+          "postings_per_second": 359582.8838547285
+        },
+        "aggregate": {
+          "p50": 0.338,
+          "p95": 0.482,
+          "p99": 0.486,
+          "postings_per_second": 2958579.8816568046
+        },
+        "group": {
+          "p50": 0.652,
+          "p95": 0.827,
+          "p99": 0.831,
+          "postings_per_second": 1533742.3312883435
+        },
+        "regex": {
+          "p50": 0.43,
+          "p95": 0.607,
+          "p99": 0.638,
+          "postings_per_second": 2325581.395348837
+        },
+        "transactions": {
+          "p50": 0.225,
+          "p95": 0.34,
+          "p99": 0.361,
+          "postings_per_second": 4444444.444444444
+        },
+        "length": {
+          "p50": 0.379,
+          "p95": 0.556,
+          "p99": 0.568,
+          "postings_per_second": 2638522.427440633
+        },
+        "substr": {
+          "p50": 0.643,
+          "p95": 0.946,
+          "p99": 0.971,
+          "postings_per_second": 1555209.9533437013
+        }
+      },
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "status": "complete",
+      "peak_rss_bytes": 3161292800,
+      "file": "js-1000000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:26:07.414019+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "js",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "node",
+        "_build/js/release/build/bench/bench.js"
+      ],
+      "artifact_sha256": "2941a953b71b2138cbea88ae7be5668fc0b51006abe61d30443a8f7c151d6ec3",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.481,
+          "p95": 0.503,
+          "p99": 0.504,
+          "postings_per_second": 2079002.079002079
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.947,
+          "p95": 1.184,
+          "p99": 1.234,
+          "postings_per_second": 1055966.2090813094
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 2582167552,
+      "file": "js-1000000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:15:33.114310+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.000625,
+          "p95": 0.000625,
+          "p99": 0.000625,
+          "postings_per_second": 1600000.0
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.0008695652173913044,
+          "p95": 0.0008695652173913044,
+          "p99": 0.0008695652173913044,
+          "postings_per_second": 1150000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 4096000,
+      "file": "native-1000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:15:26.788015+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "parse": {
+          "p50": 0.0018181818181818182,
+          "p95": 0.0018181818181818182,
+          "p99": 0.0021000000000000003,
+          "postings_per_second": 550000.0
+        },
+        "booking_FIFO": {
+          "p50": 0.0004347826086956522,
+          "p95": 0.00044444444444444447,
+          "p99": 0.00044444444444444447,
+          "postings_per_second": 2300000.0
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.0006666666666666666,
+          "p95": 0.0006896551724137932,
+          "p99": 0.0006896551724137932,
+          "postings_per_second": 1500000.0
+        },
+        "realize": {
+          "p50": 0.00014388489208633093,
+          "p95": 0.00014492753623188405,
+          "p99": 0.00014598540145985403,
+          "postings_per_second": 6950000.0
+        },
+        "format": {
+          "p50": 0.0009090909090909091,
+          "p95": 0.0009523809523809524,
+          "p99": 0.0009523809523809524,
+          "postings_per_second": 1100000.0
+        },
+        "aggregate": {
+          "p50": 0.00024096385542168676,
+          "p95": 0.0002469135802469136,
+          "p99": 0.0002469135802469136,
+          "postings_per_second": 4149999.9999999995
+        },
+        "group": {
+          "p50": 0.0004761904761904762,
+          "p95": 0.0004878048780487805,
+          "p99": 0.0004878048780487805,
+          "postings_per_second": 2100000.0
+        },
+        "order": {
+          "p50": 0.0004166666666666667,
+          "p95": 0.0004347826086956522,
+          "p99": 0.0004347826086956522,
+          "postings_per_second": 2400000.0
+        },
+        "regex": {
+          "p50": 0.00029411764705882356,
+          "p95": 0.0003076923076923077,
+          "p99": 0.0003125,
+          "postings_per_second": 3399999.9999999995
+        },
+        "transactions": {
+          "p50": 0.0001724137931034483,
+          "p95": 0.00017543859649122808,
+          "p99": 0.00017543859649122808,
+          "postings_per_second": 5799999.999999999
+        },
+        "length": {
+          "p50": 0.00023529411764705883,
+          "p95": 0.0002380952380952381,
+          "p99": 0.0002380952380952381,
+          "postings_per_second": 4250000.0
+        },
+        "substr": {
+          "p50": 0.000425531914893617,
+          "p95": 0.0004347826086956522,
+          "p99": 0.0004347826086956522,
+          "postings_per_second": 2350000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 5865472,
+      "file": "native-1000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:15:34.044049+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.0004347826086956522,
+          "p95": 0.00044444444444444447,
+          "p99": 0.00045454545454545455,
+          "postings_per_second": 2300000.0
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.0006666666666666666,
+          "p95": 0.0006666666666666666,
+          "p99": 0.0006666666666666666,
+          "postings_per_second": 1500000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 4096000,
+      "file": "native-1000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:15:41.371328+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.00625,
+          "p95": 0.0065,
+          "p99": 0.006666666666666667,
+          "postings_per_second": 1600000.0
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.008333333333333333,
+          "p95": 0.008666666666666666,
+          "p99": 0.008666666666666666,
+          "postings_per_second": 1200000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 11894784,
+      "file": "native-10000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:15:34.972892+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "parse": {
+          "p50": 0.018,
+          "p95": 0.0185,
+          "p99": 0.0185,
+          "postings_per_second": 555555.5555555556
+        },
+        "booking_FIFO": {
+          "p50": 0.004399999999999999,
+          "p95": 0.0046,
+          "p99": 0.0046,
+          "postings_per_second": 2272727.272727273
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.007,
+          "p95": 0.007,
+          "p99": 0.007333333333333333,
+          "postings_per_second": 1428571.4285714286
+        },
+        "realize": {
+          "p50": 0.0014,
+          "p95": 0.0014285714285714286,
+          "p99": 0.0014285714285714286,
+          "postings_per_second": 7142857.142857143
+        },
+        "format": {
+          "p50": 0.009666666666666667,
+          "p95": 0.01,
+          "p99": 0.01,
+          "postings_per_second": 1034482.7586206896
+        },
+        "aggregate": {
+          "p50": 0.0023333333333333335,
+          "p95": 0.0025,
+          "p99": 0.0025,
+          "postings_per_second": 4285714.285714285
+        },
+        "group": {
+          "p50": 0.0046,
+          "p95": 0.0048000000000000004,
+          "p99": 0.0048000000000000004,
+          "postings_per_second": 2173913.0434782607
+        },
+        "order": {
+          "p50": 0.0048000000000000004,
+          "p95": 0.005,
+          "p99": 0.005,
+          "postings_per_second": 2083333.3333333333
+        },
+        "regex": {
+          "p50": 0.00275,
+          "p95": 0.002857142857142857,
+          "p99": 0.002857142857142857,
+          "postings_per_second": 3636363.6363636367
+        },
+        "transactions": {
+          "p50": 0.0016666666666666668,
+          "p95": 0.0016666666666666668,
+          "p99": 0.00175,
+          "postings_per_second": 6000000.0
+        },
+        "length": {
+          "p50": 0.0022222222222222222,
+          "p95": 0.0023333333333333335,
+          "p99": 0.0023333333333333335,
+          "postings_per_second": 4500000.0
+        },
+        "substr": {
+          "p50": 0.004200000000000001,
+          "p95": 0.004399999999999999,
+          "p99": 0.004399999999999999,
+          "postings_per_second": 2380952.3809523806
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 18415616,
+      "file": "native-10000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:15:42.557115+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.004399999999999999,
+          "p95": 0.004399999999999999,
+          "p99": 0.0046,
+          "postings_per_second": 2272727.272727273
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.007,
+          "p95": 0.007,
+          "p99": 0.007333333333333333,
+          "postings_per_second": 1428571.4285714286
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 12042240,
+      "file": "native-10000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:16:00.331601+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.063,
+          "p95": 0.064,
+          "p99": 0.064,
+          "postings_per_second": 1587301.5873015872
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.1,
+          "p95": 0.102,
+          "p99": 0.102,
+          "postings_per_second": 1000000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 85049344,
+      "file": "native-100000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:15:43.569457+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "parse": {
+          "p50": 0.184,
+          "p95": 0.185,
+          "p99": 0.186,
+          "postings_per_second": 543478.2608695652
+        },
+        "booking_FIFO": {
+          "p50": 0.048,
+          "p95": 0.049,
+          "p99": 0.049,
+          "postings_per_second": 2083333.3333333333
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.093,
+          "p95": 0.096,
+          "p99": 0.099,
+          "postings_per_second": 1075268.817204301
+        },
+        "realize": {
+          "p50": 0.0165,
+          "p95": 0.018,
+          "p99": 0.0185,
+          "postings_per_second": 6060606.060606061
+        },
+        "format": {
+          "p50": 0.093,
+          "p95": 0.094,
+          "p99": 0.1,
+          "postings_per_second": 1075268.817204301
+        },
+        "aggregate": {
+          "p50": 0.036,
+          "p95": 0.039,
+          "p99": 0.04,
+          "postings_per_second": 2777777.777777778
+        },
+        "group": {
+          "p50": 0.07,
+          "p95": 0.072,
+          "p99": 0.073,
+          "postings_per_second": 1428571.4285714284
+        },
+        "regex": {
+          "p50": 0.045,
+          "p95": 0.05,
+          "p99": 0.05,
+          "postings_per_second": 2222222.2222222225
+        },
+        "transactions": {
+          "p50": 0.025,
+          "p95": 0.026,
+          "p99": 0.026,
+          "postings_per_second": 4000000.0
+        },
+        "length": {
+          "p50": 0.034,
+          "p95": 0.036,
+          "p99": 0.037,
+          "postings_per_second": 2941176.470588235
+        },
+        "substr": {
+          "p50": 0.054,
+          "p95": 0.056,
+          "p99": 0.056,
+          "postings_per_second": 1851851.851851852
+        }
+      },
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "status": "complete",
+      "peak_rss_bytes": 151060480,
+      "file": "native-100000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:16:04.393919+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.045,
+          "p95": 0.045,
+          "p99": 0.046,
+          "postings_per_second": 2222222.2222222225
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.097,
+          "p95": 0.102,
+          "p99": 0.103,
+          "postings_per_second": 1030927.8350515463
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 87883776,
+      "file": "native-100000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:18:55.998198+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.693,
+          "p95": 0.709,
+          "p99": 0.716,
+          "postings_per_second": 1443001.443001443
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 1.063,
+          "p95": 1.095,
+          "p99": 1.111,
+          "postings_per_second": 940733.7723424272
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 834043904,
+      "file": "native-1000000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:16:07.909650+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "parse": {
+          "p50": 1.869,
+          "p95": 1.879,
+          "p99": 1.887,
+          "postings_per_second": 535045.4788657036
+        },
+        "booking_FIFO": {
+          "p50": 0.453,
+          "p95": 0.461,
+          "p99": 0.463,
+          "postings_per_second": 2207505.518763797
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.944,
+          "p95": 0.969,
+          "p99": 0.974,
+          "postings_per_second": 1059322.0338983051
+        },
+        "realize": {
+          "p50": 0.199,
+          "p95": 0.203,
+          "p99": 0.203,
+          "postings_per_second": 5025125.628140703
+        },
+        "format": {
+          "p50": 0.964,
+          "p95": 0.971,
+          "p99": 0.972,
+          "postings_per_second": 1037344.398340249
+        },
+        "aggregate": {
+          "p50": 0.392,
+          "p95": 0.399,
+          "p99": 0.4,
+          "postings_per_second": 2551020.4081632653
+        },
+        "group": {
+          "p50": 0.715,
+          "p95": 0.812,
+          "p99": 1.029,
+          "postings_per_second": 1398601.3986013986
+        },
+        "regex": {
+          "p50": 0.479,
+          "p95": 0.487,
+          "p99": 0.488,
+          "postings_per_second": 2087682.6722338204
+        },
+        "transactions": {
+          "p50": 0.264,
+          "p95": 0.269,
+          "p99": 0.269,
+          "postings_per_second": 3787878.7878787876
+        },
+        "length": {
+          "p50": 0.347,
+          "p95": 0.351,
+          "p99": 0.356,
+          "postings_per_second": 2881844.3804034586
+        },
+        "substr": {
+          "p50": 0.548,
+          "p95": 0.56,
+          "p99": 0.586,
+          "postings_per_second": 1824817.518248175
+        }
+      },
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "status": "complete",
+      "peak_rss_bytes": 1702871040,
+      "file": "native-1000000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:19:39.242979+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "native",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "_build/native/release/build/bench/bench.exe"
+      ],
+      "artifact_sha256": "c1f6964b82416f2e0a27a34fd3011df6fe64b76075cdc5308844ccbf02e5ecdb",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.452,
+          "p95": 0.459,
+          "p99": 0.461,
+          "postings_per_second": 2212389.3805309734
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.985,
+          "p95": 1.038,
+          "p99": 1.038,
+          "postings_per_second": 1015228.4263959391
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 869908480,
+      "file": "native-1000000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:30:41.008193+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.00035714285714285714,
+          "p95": 0.000392156862745098,
+          "p99": 0.000392156862745098,
+          "postings_per_second": 2800000.0
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.0005263157894736842,
+          "p95": 0.0005405405405405405,
+          "p99": 0.0005405405405405405,
+          "postings_per_second": 1900000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 62963712,
+      "file": "wasm-gc-1000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:26:47.114777+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "parse": {
+          "p50": 0.0019090909090909091,
+          "p95": 0.002,
+          "p99": 0.0021000000000000003,
+          "postings_per_second": 523809.5238095238
+        },
+        "booking_FIFO": {
+          "p50": 0.0003225806451612903,
+          "p95": 0.0003278688524590164,
+          "p99": 0.0003333333333333333,
+          "postings_per_second": 3100000.0
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.0005128205128205128,
+          "p95": 0.0005263157894736842,
+          "p99": 0.0005405405405405405,
+          "postings_per_second": 1950000.0
+        },
+        "realize": {
+          "p50": 0.00011049723756906077,
+          "p95": 0.000111731843575419,
+          "p99": 0.000111731843575419,
+          "postings_per_second": 9050000.0
+        },
+        "format": {
+          "p50": 0.0011111111111111111,
+          "p95": 0.0011666666666666668,
+          "p99": 0.0011764705882352942,
+          "postings_per_second": 900000.0
+        },
+        "aggregate": {
+          "p50": 0.00015873015873015873,
+          "p95": 0.0001639344262295082,
+          "p99": 0.00016666666666666666,
+          "postings_per_second": 6300000.0
+        },
+        "group": {
+          "p50": 0.00036363636363636367,
+          "p95": 0.0003773584905660377,
+          "p99": 0.0003773584905660377,
+          "postings_per_second": 2749999.9999999995
+        },
+        "order": {
+          "p50": 0.0005555555555555556,
+          "p95": 0.0005714285714285715,
+          "p99": 0.0005714285714285715,
+          "postings_per_second": 1800000.0
+        },
+        "regex": {
+          "p50": 0.0002702702702702703,
+          "p95": 0.00028169014084507044,
+          "p99": 0.00028169014084507044,
+          "postings_per_second": 3700000.0
+        },
+        "transactions": {
+          "p50": 0.00012903225806451613,
+          "p95": 0.00013071895424836603,
+          "p99": 0.00013071895424836603,
+          "postings_per_second": 7750000.0
+        },
+        "length": {
+          "p50": 0.00020408163265306123,
+          "p95": 0.00022222222222222223,
+          "p99": 0.00022471910112359551,
+          "postings_per_second": 4900000.0
+        },
+        "substr": {
+          "p50": 0.000425531914893617,
+          "p95": 0.00045454545454545455,
+          "p99": 0.00046511627906976747,
+          "postings_per_second": 2350000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 69648384,
+      "file": "wasm-gc-1000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:30:41.984142+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 1000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.00031746031746031746,
+          "p95": 0.0003278688524590164,
+          "p99": 0.0003278688524590164,
+          "postings_per_second": 3150000.0
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.0004761904761904762,
+          "p95": 0.0004878048780487805,
+          "p99": 0.0005,
+          "postings_per_second": 2100000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 62799872,
+      "file": "wasm-gc-1000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:27:00.902132+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.004200000000000001,
+          "p95": 0.004399999999999999,
+          "p99": 0.004399999999999999,
+          "postings_per_second": 2380952.3809523806
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.007333333333333333,
+          "p95": 0.007666666666666666,
+          "p99": 0.008,
+          "postings_per_second": 1363636.3636363638
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 98598912,
+      "file": "wasm-gc-10000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:26:54.637069+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "parse": {
+          "p50": 0.026,
+          "p95": 0.03,
+          "p99": 0.033,
+          "postings_per_second": 384615.3846153846
+        },
+        "booking_FIFO": {
+          "p50": 0.003833333333333333,
+          "p95": 0.003833333333333333,
+          "p99": 0.004,
+          "postings_per_second": 2608695.652173913
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.00625,
+          "p95": 0.006666666666666667,
+          "p99": 0.00675,
+          "postings_per_second": 1600000.0
+        },
+        "realize": {
+          "p50": 0.0012352941176470588,
+          "p95": 0.00125,
+          "p99": 0.00125,
+          "postings_per_second": 8095238.095238095
+        },
+        "format": {
+          "p50": 0.0135,
+          "p95": 0.015,
+          "p99": 0.015,
+          "postings_per_second": 740740.7407407408
+        },
+        "aggregate": {
+          "p50": 0.0019090909090909091,
+          "p95": 0.0021000000000000003,
+          "p99": 0.0021000000000000003,
+          "postings_per_second": 5238095.238095238
+        },
+        "group": {
+          "p50": 0.0046,
+          "p95": 0.005,
+          "p99": 0.00575,
+          "postings_per_second": 2173913.0434782607
+        },
+        "order": {
+          "p50": 0.0105,
+          "p95": 0.012,
+          "p99": 0.012,
+          "postings_per_second": 952380.9523809523
+        },
+        "regex": {
+          "p50": 0.0033333333333333335,
+          "p95": 0.0036666666666666666,
+          "p99": 0.0036666666666666666,
+          "postings_per_second": 3000000.0
+        },
+        "transactions": {
+          "p50": 0.0014285714285714286,
+          "p95": 0.0015384615384615385,
+          "p99": 0.0015384615384615385,
+          "postings_per_second": 7000000.0
+        },
+        "length": {
+          "p50": 0.0021000000000000003,
+          "p95": 0.0025,
+          "p99": 0.0025,
+          "postings_per_second": 4761904.761904761
+        },
+        "substr": {
+          "p50": 0.004,
+          "p95": 0.004200000000000001,
+          "p99": 0.004200000000000001,
+          "postings_per_second": 2500000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 123273216,
+      "file": "wasm-gc-10000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:27:01.977107+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 10000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.0035,
+          "p95": 0.003833333333333333,
+          "p99": 0.004,
+          "postings_per_second": 2857142.8571428573
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.00625,
+          "p95": 0.007,
+          "p99": 0.007666666666666666,
+          "postings_per_second": 1600000.0
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 98549760,
+      "file": "wasm-gc-10000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:27:22.027336+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.04,
+          "p95": 0.043,
+          "p99": 0.043,
+          "postings_per_second": 2500000.0
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.067,
+          "p95": 0.078,
+          "p99": 0.079,
+          "postings_per_second": 1492537.3134328357
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 237748224,
+      "file": "wasm-gc-100000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:27:03.087426+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "parse": {
+          "p50": 0.259,
+          "p95": 0.286,
+          "p99": 0.29,
+          "postings_per_second": 386100.3861003861
+        },
+        "booking_FIFO": {
+          "p50": 0.034,
+          "p95": 0.035,
+          "p99": 0.035,
+          "postings_per_second": 2941176.470588235
+        },
+        "validate_pad_FIFO": {
+          "p50": 0.062,
+          "p95": 0.076,
+          "p99": 0.076,
+          "postings_per_second": 1612903.2258064516
+        },
+        "realize": {
+          "p50": 0.0125,
+          "p95": 0.014,
+          "p99": 0.025,
+          "postings_per_second": 8000000.0
+        },
+        "format": {
+          "p50": 0.13,
+          "p95": 0.154,
+          "p99": 0.155,
+          "postings_per_second": 769230.7692307692
+        },
+        "aggregate": {
+          "p50": 0.031,
+          "p95": 0.043,
+          "p99": 0.044,
+          "postings_per_second": 3225806.4516129033
+        },
+        "group": {
+          "p50": 0.066,
+          "p95": 0.085,
+          "p99": 0.091,
+          "postings_per_second": 1515151.5151515151
+        },
+        "regex": {
+          "p50": 0.046,
+          "p95": 0.061,
+          "p99": 0.061,
+          "postings_per_second": 2173913.0434782607
+        },
+        "transactions": {
+          "p50": 0.021,
+          "p95": 0.029,
+          "p99": 0.031,
+          "postings_per_second": 4761904.761904761
+        },
+        "length": {
+          "p50": 0.039,
+          "p95": 0.051,
+          "p99": 0.051,
+          "postings_per_second": 2564102.564102564
+        },
+        "substr": {
+          "p50": 0.056,
+          "p95": 0.074,
+          "p99": 0.077,
+          "postings_per_second": 1785714.2857142857
+        }
+      },
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "status": "complete",
+      "peak_rss_bytes": 437534720,
+      "file": "wasm-gc-100000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:27:24.982084+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 100000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.032,
+          "p95": 0.034,
+          "p99": 0.034,
+          "postings_per_second": 3125000.0
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.061,
+          "p95": 0.072,
+          "p99": 0.075,
+          "postings_per_second": 1639344.262295082
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 233144320,
+      "file": "wasm-gc-100000-STRICT.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:27:36.781129+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "AVERAGE",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_AVERAGE": {
+          "p50": 0.414,
+          "p95": 0.443,
+          "p99": 0.47,
+          "postings_per_second": 2415458.9371980675
+        },
+        "validate_pad_AVERAGE": {
+          "p50": 0.741,
+          "p95": 0.872,
+          "p99": 1.036,
+          "postings_per_second": 1349527.6653171391
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 1284194304,
+      "file": "wasm-gc-1000000-AVERAGE.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:27:27.567885+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "FIFO",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {},
+      "skipped_stages": {
+        "order": "Not completed at >=100000: insertion sort in query/eval.mbt; 10x postings measured about 100x time at smaller native sizes; bounded run avoids quadratic sort."
+      },
+      "status": "incomplete",
+      "reason": "exit -5:                 0x000000010517a398 moonrun + 2761624\n    29  moonrun                             0x0000000104f993ec moonrun + 791532\n    30  moonrun                             0x0000000104f606e8 moonrun + 558824\n    31  moonrun                             0x0000000104f5d19c moonrun + 545180\n    32  moonrun                             0x0000000105016ac4 moonrun + 1305284\n    33  moonrun                             0x0000000104edeaa0 moonrun + 27296\n    34  moonrun                             0x0000000104edc060 moonrun + 16480\n    35  moonrun                             0x0000000104ee19b4 moonrun + 39348\n    36  dyld                                0x000000018b55cd7c start + 6652\ntime: command terminated abnormally\n        9.20 real        22.90 user         2.25 sys\n          1553219584  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              129310  page reclaims\n                   3  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   2  voluntary context switches\n              254531  involuntary context switches\n        280155238445  instructions retired\n         69671153016  cycles elapsed\n          1622312928  peak memory footprint\n",
+      "peak_rss_bytes": 1553219584,
+      "file": "wasm-gc-1000000-FIFO.json"
+    },
+    {
+      "schema": 1,
+      "timestamp": "2026-11-09T20:28:08.222758+00:00",
+      "environment": {
+        "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+        "machine": "arm64",
+        "cores": 10,
+        "python": "3.14.6",
+        "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+        "node": "v24.18.0",
+        "commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
+        "driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+        "runner_sha256": "828f3a8e4801f23a53f014000bd67c8d83f63ca2b51d8853fe27e65c76f832cd",
+        "model": "Mac16,12",
+        "cpu": "Apple M4",
+        "memory_bytes": 17179869184
+      },
+      "target": "wasm-gc",
+      "postings": 1000000,
+      "generated_pad_postings": 2,
+      "method": "STRICT",
+      "seed": 20261101,
+      "runs": 21,
+      "warmups": 2,
+      "min_batch_ms": 20,
+      "command": [
+        "moonrun",
+        "_build/wasm-gc/release/build/bench/bench.wasm"
+      ],
+      "artifact_sha256": "dd08783de6816be9a688baed97e8df43c40dddd265a1587c1785ef254b9b7cee",
+      "stages": {
+        "booking_STRICT": {
+          "p50": 0.314,
+          "p95": 0.325,
+          "p99": 0.336,
+          "postings_per_second": 3184713.3757961784
+        },
+        "validate_pad_STRICT": {
+          "p50": 0.695,
+          "p95": 0.826,
+          "p99": 0.84,
+          "postings_per_second": 1438848.9208633094
+        }
+      },
+      "skipped_stages": {},
+      "status": "complete",
+      "peak_rss_bytes": 1278623744,
+      "file": "wasm-gc-1000000-STRICT.json"
+    }
+  ],
+  "selection": "Original matrix, replacing all three remeasured scenarios with the final predeclared round 3. Every round passed unchanged baseline limits; not best-of selection.",
+  "raw_root": ".oracle-cache/r2-last/verified-4",
+  "first_gate": "NOT GATED (incomplete baseline): wasm-gc-1000000-FIFO.json\njs-1000000-AVERAGE.json/booking_AVERAGE: p50 0.992, baseline 0.681000s\nwasm-gc-1000-AVERAGE.json/booking_AVERAGE: p50 0.0005263157894736842, baseline 0.000392s\nwasm-gc-1000-AVERAGE.json/validate_pad_AVERAGE: p50 0.0008333333333333334, baseline 0.000606s\nwasm-gc-1000-STRICT.json/booking_STRICT: p50 0.000425531914893617, baseline 0.000313s\n",
+  "final_gate": "NOT GATED (incomplete baseline): wasm-gc-1000000-FIFO.json\nPASS: all baseline stage medians and RSS within tolerance\n"
+}

@@ -2,7 +2,14 @@
 
 ## 0.2.3 (local candidate)
 
-- Return round 1: add scalar/amount/set adapters for eight directive sources, source column validation and canonical native query filenames; typed object/id/discrepancy columns remain rejected.
+- Preserve arbitrary precision for integer add/subtract/multiply and integer sums; compare seeded 29–60-digit queries with the oracle.
+
+- Cache stable O(n log n) sort keys, distinguish text/date group keys and Unicode scalar ordering; add seeded sort and 100k native posting differentials. Keep row provenance lazy and avoid parser/tolerance hot-path allocations.
+- Return round 2: add typed recursive metadata/directive values and every advertised table column, including generated metadata, identities and assertion discrepancies; preserve note tags/links and correct same-day directive order.
+- Resolve function signatures after source types, distinguish int/decimal and set/frozenset; add common metadata, calendar, amount/inventory, numeric conversion, rounding and component functions. 74 scalar signatures have evaluators; 31 remain unimplemented, with explicit value-domain/type gaps.
+- Implement exact-representation position DISTINCT with hash lookup, finite Python decimal rendering and explicit rejection of signed-zero object queries/nonfinite conversions/nonportable set repr. Correct cost-based tolerance inference and add structured/random oracle cases. See compatibility.md for remaining query-plan, option and diagnostic work.
+
+- Return round 1: add scalar/amount/set adapters for eight directive sources, source column validation and canonical native query filenames; the first batch retained typed object/id/discrepancy gaps (resolved with the round 2 boundaries above).
 - Add full Unicode 16 upper/lower mappings with contextual final sigma, reproducible data generation and a 7196-row oracle corpus; align CI Python to 3.14 (remote CI unverified).
 - Add first/last and scalar min/max, amount-column sums, empty-source and all-NULL sum behavior, boolean/frozenset values and matchable Compilation/Evaluation errors. Guard unsupported quoted identifiers and bare accounts FROM filtering rather than silently approximating them.
 
