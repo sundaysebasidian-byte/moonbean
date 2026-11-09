@@ -1,0 +1,23 @@
+COMMAND LOG: toolchain.log
+moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon
+moonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc
+moonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun
+
+Feature flags enabled: rr_moon_mod,rr_moon_pkg
+v24.18.0
+
+COMMAND LOG: check.log
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 19 tasks, now up to date
+
+COMMAND LOG: fmt.log
+Finished. moon: ran 46 tasks, now up to date
+
+COMMAND LOG: info.log
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 12 tasks, now up to date
+
+COMMAND LOG: mbti.log
+

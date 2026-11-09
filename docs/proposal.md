@@ -8,29 +8,25 @@
 
 Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运行。MoonBean 用同一套账本语法和记账语义，用 MoonBit 从零实现解析、记账（booking）、校验、报表和 BQL 查询。库只有纯函数，在 native、wasm-gc、JavaScript 上都能跑，不依赖文件系统和外部进程；另有 native 命令行和浏览器离线 Playground。面向个人和小企业记账、已有 Beancount 账本的用户，以及需要离线或嵌入式记账的应用（`include` 由宿主回调提供）。
 
-## 规范覆盖矩阵
+## 兼容终点与当前边界
 
-兼容目标：Beancount v3 的语法与记账语义，以 beancount 3.2.3 与 beanquery 0.2.0 作外部黑盒对照。状态只有三种：已支持、部分支持（逐项写明边界）、明确不支持。
+兼容终点是 beancount 3.2.3 的语法与记账语义，以及 beanquery 0.2.0 全集；0.2.3 尚未达到全集，不作完整兼容声明。[逐项清单](compatibility.md)列出全部 oracle 表/列、函数签名、option 默认值和当前证据与缺口。
 
-| 范围 | 状态 | 说明 |
-| --- | --- | --- |
-| 指令：open / close / commodity / balance / pad / price / transaction，posting 语法（cost、price、金额表达式、省略金额），include，pushtag / pushmeta | 已支持 | 精确十进制与容差推断；pad 需补差额且余额含成本持仓时报错，无差额的 pad 报 Unused Pad；错误带类别、文件和行号 |
-| 七种 booking：STRICT / STRICT_WITH_SIZE / FIFO / LIFO / HIFO / AVERAGE / NONE | 已支持 | AVERAGE 与 `{*}` 是扩展，beancount 3.2.3 不支持 |
-| 报表：库存、价格库与多跳折算、试算平衡、资产负债表、损益表、register | 已支持 | 文本与 JSON 输出，资产负债表恒等式按币种精确成立 |
-| BQL：SELECT / WHERE / GROUP BY / HAVING / ORDER BY / LIMIT，FROM postings / balances / transactions，BALANCES，JOURNAL | 部分支持 | 函数为 year / month / root / parent / leaf / sum / count / length / substr；交易行源每笔一行，列范围与字符串签名边界见 conformance；仅接受紧邻小写的 #postings/#transactions，#balances 断言表和 SELECT * 明确拒绝（count(*) 除外），裸 balances 保持库存语义；WHERE 支持比较、逻辑、`~` 正则，无 LIKE |
-| `document` / `note` / `event` / `query` / `custom` | 部分支持 | 解析、校验账户并保留；`document` 不检查文件是否存在，`query` 不会自动执行 |
-| `option` | 部分支持 | 影响语义的 5 个选项已实现，`account_rounding`、`render_commas` 只解析 |
-| `plugin` | 内置 5 个插件已支持，其余只记录并警告 | 原生按声明顺序执行 `beancount.plugins.auto_accounts`、`implicit_prices`、`check_commodity`、`unique_prices`、`leafonly`，生成条目和错误保留来源。其他插件不执行 Python，`validation.plugin` 明确报告未实现名称；依赖这些插件生成条目或校验的账本仍可能与 Beancount 不同。配置正则边界见 conformance |
-| BQL 子查询 / JOIN / PIVOT / SQL `LIKE` | 明确不支持 | 影响：用到它们的查询返回 `query.unsupported.*` 错误和位置，可改写为单一 postings 查询，或继续用 beanquery；oracle 支持子查询与 PIVOT BY，不支持 LIKE/JOIN；本引擎也未实现 oracle 支持的 Unicode upper/lower，不会近似执行 |
+| 范围 | 当前可核对边界 |
+| --- | --- |
+| 记账与指令 | open/close/commodity/balance/pad/price/transaction、include 与元数据栈有差分证据；document 仅校验账户并警告未检查文件；note/event/query/custom 保留语法与数据，未证明所有错误类别一致。query 存储后由调用方显式执行 |
+| BQL | postings/transactions 的 SELECT、星号、DISTINCT、筛选、分组、排序、计数与交易 accounts/meta 查询；DISTINCT 限于标量/集合投影，position/inventory 明确拒绝；其余 8 张 oracle 表、完整列与函数集、FLATTEN、PIVOT BY、子查询、CLEAR、PRINT/EXPLAIN、Unicode upper/lower 尚未实现。LIKE/JOIN 被 oracle 拒绝，不属于终点 |
+| option | booking、容差推断、按币种和通配符默认容差有证据；operating_currency 仅单币种报表转换；account_rounding、render_commas、documents 等未实现的效果逐项披露，不能仅凭解析成功计为兼容 |
+| plugin 与扩展 | 五个内置插件有差分证据，其余 Python 插件警告且不执行；AVERAGE、{*}、裸 FROM balances 库存语义均为扩展 |
 
 ## 一致性证据
 
-- 114 份自编账本对 beancount 3.2.3 与 beanquery 0.2.0：112 份可比较全部通过，另 2 份用到扩展，只用本项目测试验证。
-- 41 条扩展 BQL 输出与 51 条能力/拒绝边界检查通过，账本、查询及 oracle 期望输出纳入版本库。
+- 116 份自编账本对 beancount 3.2.3 与 beanquery 0.2.0：114 份可比较全部通过，另 2 份用到扩展，只用本项目测试验证。
+- 109 条 BQL 输出与能力/拒绝边界检查通过，账本、查询及 oracle 期望输出纳入版本库。
 - 两个 seed 各 1000 份随机账本：858 份完全一致，142 份仅因 AVERAGE 扩展不同，其余差异为 0。
-- 22 份报表和 lot 回归账本共 144 项检查通过；5 份迁移边界账本逐一给出确定的诊断。
-- 四个后端各 132 个测试；Playground 有 29 项 node 检查和 8 项无头浏览器检查；CI 覆盖三个系统、oracle 和 Playground。
-- 固定种子、100 万 source posting 的 native release 库阶段中位数：解析 1.931 s、FIFO booking 0.505 s、校验含 pad 1.017 s、BQL GROUP BY 0.812 s（Apple M4 / 16 GiB / MoonBit 0.1.20261104；2 次预热、21 次测量）。[原始数组、阶段 profile 与本地趋势检查](performance.md)均可复现；阶段并非互斥，不可相加。未分组 ORDER BY 在小规模呈二次方增长，10 万/100 万该场景未完成；wasm-gc 的 100 万 FIFO 综合场景因默认 moonrun 堆耗尽未完成；未作性能优化。
+- 既有版本的 22 份报表和 lot 回归账本共 144 项检查、5 份迁移边界账本证据保留，未将其计为本轮重跑。
+- 四个后端各 136 个测试；Playground 有 29 项 node 检查和 8 项无头浏览器检查；既有 CI 覆盖三个系统、oracle 和 Playground，本候选尚未推送运行 CI。
+- 0.2.2 历史性能基线：固定种子、100 万 source posting 的 native release 库阶段中位数：解析 1.931 s、FIFO booking 0.505 s、校验含 pad 1.017 s、BQL GROUP BY 0.812 s（Apple M4 / 16 GiB / MoonBit 0.1.20261104；2 次预热、21 次测量）。[原始数组、阶段 profile 与本地趋势检查](performance.md)均可复现；阶段并非互斥，不可相加。未分组 ORDER BY 在小规模呈二次方增长，10 万/100 万该场景未完成；wasm-gc 的 100 万 FIFO 综合场景因默认 moonrun 堆耗尽未完成。当前候选验收见 [本轮结果](evidence/r2-acceptance.md)。
 
 ## 基础与本期工作
 

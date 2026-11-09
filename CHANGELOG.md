@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.3 (local candidate)
+
+- Record pinned oracle option, directive, table/column and function inventories and an explicit compatibility contract; full beanquery compatibility remains unimplemented.
+- Support SELECT *, scalar/set DISTINCT, transaction accounts and meta(), entry_meta(), and NULL-aware count(expr).
+- Accept oracle boolean spellings and wildcard inferred tolerance defaults; retain explicit rounding, document host and rendering limitations.
+
+
 ## 0.2.2
 
 - Add offline seeded, multi-scale library-stage performance measurements for native, JS and wasm-gc, including cost booking and representative BQL queries.

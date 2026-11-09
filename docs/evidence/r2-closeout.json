@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-11-09T08:22:26.965308+00:00",
+  "branch": "compat-0.2.3",
+  "code_head": "b84a85fd0f1c9298f966205c9627384cb34c47f4",
+  "version": "0.2.3",
+  "original_status": "M docs/proposal.md",
+  "original_proposal_sha256": "9b69e6865e6e1ef11bbdca95d582d37c1398ce2194e271148e43cf3b8c9cc245",
+  "current_worktree": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2",
+  "worktrees": [
+    "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean        86137ab [main]",
+    "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2 b84a85f [compat-0.2.3]"
+  ],
+  "backup_status": "New commits are local only; complete remote backup not verified. All source copies retained; no deletion candidates.",
+  "active_task_processes": [],
+  "task_servers_started": 0,
+  "task_browser_tabs_opened": 0,
+  "candidates": [],
+  "moved": [],
+  "blocked_moves": [],
+  "moved_bytes": 0,
+  "recovery_mapping": [],
+  "trash_destination": null,
+  "kept": [
+    "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2",
+    "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean",
+    ".oracle-cache/r2: raw test inputs, failed attempts and benchmark arrays",
+    "_build: current build artifacts",
+    "/tmp/moon-new: shared toolchain",
+    "/tmp/moonbean-r4-oracle: shared pinned oracle"
+  ],
+  "process_log": [
+    "Stopped only initial task-owned benchmark runner 72956 and its time/node descendants 15187/15188; partial measurements retained. Final validation processes have exited."
+  ],
+  "df_before": "Filesystem   1024-blocks      Used Available Capacity iused      ifree %iused  Mounted on\n/dev/disk3s5   482797652 318461688 135513148    71% 4206267 1355131480    0%   /System/Volumes/Data\n",
+  "df_after": "Filesystem   1024-blocks      Used Available Capacity iused      ifree %iused  Mounted on\n/dev/disk3s5   482797652 318461692 135513144    71% 4206267 1355131440    0%   /System/Volumes/Data\n",
+  "space_claim": "No Trash moves and no claimed released disk space."
+}

@@ -1,0 +1,1236 @@
+[
+  {
+    "case": "js-1000-AVERAGE.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "47b94adad1c47ec8d4fcd52e54516ba4775296421f912f073aeacf1524fd2693",
+    "status": "complete",
+    "peak_rss_bytes": 108216320,
+    "reason": null,
+    "stages": {
+      "booking_AVERAGE": {
+        "p50": 0.0005714285714285715,
+        "p95": 0.0005882352941176471,
+        "p99": 0.0005882352941176471
+      },
+      "validate_pad_AVERAGE": {
+        "p50": 0.0009090909090909091,
+        "p95": 0.0009090909090909091,
+        "p99": 0.0009090909090909091
+      }
+    }
+  },
+  {
+    "case": "js-1000-FIFO.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "47b94adad1c47ec8d4fcd52e54516ba4775296421f912f073aeacf1524fd2693",
+    "status": "complete",
+    "peak_rss_bytes": 217776128,
+    "reason": null,
+    "stages": {
+      "parse": {
+        "p50": 0.0023333333333333335,
+        "p95": 0.0024444444444444444,
+        "p99": 0.00275
+      },
+      "booking_FIFO": {
+        "p50": 0.0003846153846153846,
+        "p95": 0.0004,
+        "p99": 0.0004
+      },
+      "validate_pad_FIFO": {
+        "p50": 0.0006896551724137932,
+        "p95": 0.0007142857142857143,
+        "p99": 0.0007407407407407407
+      },
+      "realize": {
+        "p50": 0.00011299435028248587,
+        "p95": 0.00011764705882352942,
+        "p99": 0.00011834319526627219
+      },
+      "format": {
+        "p50": 0.0014285714285714286,
+        "p95": 0.0014285714285714286,
+        "p99": 0.0016153846153846155
+      },
+      "aggregate": {
+        "p50": 0.00018518518518518518,
+        "p95": 0.00019047619047619048,
+        "p99": 0.0001923076923076923
+      },
+      "group": {
+        "p50": 0.000425531914893617,
+        "p95": 0.0004347826086956522,
+        "p99": 0.00044444444444444447
+      },
+      "order": {
+        "p50": 0.007666666666666666,
+        "p95": 0.008,
+        "p99": 0.008333333333333333
+      },
+      "regex": {
+        "p50": 0.0002898550724637681,
+        "p95": 0.00029850746268656717,
+        "p99": 0.00029850746268656717
+      },
+      "transactions": {
+        "p50": 0.00013605442176870748,
+        "p95": 0.00013793103448275863,
+        "p99": 0.0001388888888888889
+      },
+      "length": {
+        "p50": 0.0002127659574468085,
+        "p95": 0.00021505376344086021,
+        "p99": 0.0002173913043478261
+      },
+      "substr": {
+        "p50": 0.0004347826086956522,
+        "p95": 0.00044444444444444447,
+        "p99": 0.00044444444444444447
+      }
+    }
+  },
+  {
+    "case": "js-1000-STRICT.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "47b94adad1c47ec8d4fcd52e54516ba4775296421f912f073aeacf1524fd2693",
+    "status": "complete",
+    "peak_rss_bytes": 107823104,
+    "reason": null,
+    "stages": {
+      "booking_STRICT": {
+        "p50": 0.0003773584905660377,
+        "p95": 0.0003846153846153846,
+        "p99": 0.000392156862745098
+      },
+      "validate_pad_STRICT": {
+        "p50": 0.0006896551724137932,
+        "p95": 0.0007142857142857143,
+        "p99": 0.0007407407407407407
+      }
+    }
+  },
+  {
+    "case": "js-10000-AVERAGE.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "47b94adad1c47ec8d4fcd52e54516ba4775296421f912f073aeacf1524fd2693",
+    "status": "complete",
+    "peak_rss_bytes": 221052928,
+    "reason": null,
+    "stages": {
+      "booking_AVERAGE": {
+        "p50": 0.00575,
+        "p95": 0.006,
+        "p99": 0.006
+      },
+      "validate_pad_AVERAGE": {
+        "p50": 0.009333333333333334,
+        "p95": 0.0105,
+        "p99": 0.0105
+      }
+    }
+  },
+  {
+    "case": "js-10000-FIFO.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "47b94adad1c47ec8d4fcd52e54516ba4775296421f912f073aeacf1524fd2693",
+    "status": "complete",
+    "peak_rss_bytes": 382517248,
+    "reason": null,
+    "stages": {
+      "parse": {
+        "p50": 0.025,
+        "p95": 0.029,
+        "p99": 0.031
+      },
+      "booking_FIFO": {
+        "p50": 0.004,
+        "p95": 0.004200000000000001,
+        "p99": 0.004200000000000001
+      },
+      "validate_pad_FIFO": {
+        "p50": 0.007666666666666666,
+        "p95": 0.008,
+        "p99": 0.008333333333333333
+      },
+      "realize": {
+        "p50": 0.0011111111111111111,
+        "p95": 0.00125,
+        "p99": 0.00175
+      },
+      "format": {
+        "p50": 0.017,
+        "p95": 0.0175,
+        "p99": 0.0175
+      },
+      "aggregate": {
+        "p50": 0.002,
+        "p95": 0.002,
+        "p99": 0.002
+      },
+      "group": {
+        "p50": 0.0048000000000000004,
+        "p95": 0.005,
+        "p99": 0.00525
+      },
+      "order": {
+        "p50": 0.702,
+        "p95": 0.725,
+        "p99": 0.8
+      },
+      "regex": {
+        "p50": 0.003,
+        "p95": 0.0032857142857142855,
+        "p99": 0.0033333333333333335
+      },
+      "transactions": {
+        "p50": 0.0014,
+        "p95": 0.0014285714285714286,
+        "p99": 0.0015
+      },
+      "length": {
+        "p50": 0.0025,
+        "p95": 0.002625,
+        "p99": 0.002625
+      },
+      "substr": {
+        "p50": 0.005,
+        "p95": 0.00525,
+        "p99": 0.0055
+      }
+    }
+  },
+  {
+    "case": "js-10000-STRICT.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "47b94adad1c47ec8d4fcd52e54516ba4775296421f912f073aeacf1524fd2693",
+    "status": "complete",
+    "peak_rss_bytes": 226181120,
+    "reason": null,
+    "stages": {
+      "booking_STRICT": {
+        "p50": 0.003833333333333333,
+        "p95": 0.004,
+        "p99": 0.0055
+      },
+      "validate_pad_STRICT": {
+        "p50": 0.007666666666666666,
+        "p95": 0.008666666666666666,
+        "p99": 0.009333333333333334
+      }
+    }
+  },
+  {
+    "case": "js-100000-AVERAGE.json",
+    "source_revision": "b84a85fd0f1c9298f966205c9627384cb34c47f4",
+    "artifact_sha256": "1430d669f2e8112ae24c208f85f42e13e740822f9dd2ae44a4f8f1877b2d4c53",
+    "status": "complete",
+    "peak_rss_bytes": 506642432,
+    "reason": null,
+    "stages": {
+      "booking_AVERAGE": {
+        "p50": 0.063,
+        "p95": 0.064,
+        "p99": 0.065
+      },
+      "validate_pad_AVERAGE": {
+        "p50": 0.094,
+        "p95": 0.107,
+        "p99": 0.118
+      }
+    }
+  },
+  {
+    "case": "js-100000-FIFO.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "47b94adad1c47ec8d4fcd52e54516ba4775296421f912f073aeacf1524fd2693",
+    "status": "complete",
+    "peak_rss_bytes": 1006960640,
+    "reason": null,
+    "stages": {
+      "parse": {
+        "p50": 0.318,
+        "p95": 0.379,
+        "p99": 0.408
+      },
+      "booking_FIFO": {
+        "p50": 0.044,
+        "p95": 0.046,
+        "p99": 0.046
+      },
+      "validate_pad_FIFO": {
+        "p50": 0.082,
+        "p95": 0.086,
+        "p99": 0.096
+      },
+      "realize": {
+        "p50": 0.015,
+        "p95": 0.016,
+        "p99": 0.016
+      },
+      "format": {
+        "p50": 0.249,
+        "p95": 0.303,
+        "p99": 0.314
+      },
+      "aggregate": {
+        "p50": 0.027,
+        "p95": 0.029,
+        "p99": 0.03
+      },
+      "group": {
+        "p50": 0.068,
+        "p95": 0.086,
+        "p99": 0.09
+      },
+      "regex": {
+        "p50": 0.038,
+        "p95": 0.042,
+        "p99": 0.046
+      },
+      "transactions": {
+        "p50": 0.018,
+        "p95": 0.02,
+        "p99": 0.029
+      },
+      "length": {
+        "p50": 0.032,
+        "p95": 0.036,
+        "p99": 0.045
+      },
+      "substr": {
+        "p50": 0.063,
+        "p95": 0.134,
+        "p99": 0.17
+      }
+    }
+  },
+  {
+    "case": "js-100000-STRICT.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "47b94adad1c47ec8d4fcd52e54516ba4775296421f912f073aeacf1524fd2693",
+    "status": "complete",
+    "peak_rss_bytes": 527515648,
+    "reason": null,
+    "stages": {
+      "booking_STRICT": {
+        "p50": 0.041,
+        "p95": 0.043,
+        "p99": 0.043
+      },
+      "validate_pad_STRICT": {
+        "p50": 0.076,
+        "p95": 0.082,
+        "p99": 0.088
+      }
+    }
+  },
+  {
+    "case": "js-1000000-AVERAGE.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "47b94adad1c47ec8d4fcd52e54516ba4775296421f912f073aeacf1524fd2693",
+    "status": "complete",
+    "peak_rss_bytes": 2597339136,
+    "reason": null,
+    "stages": {
+      "booking_AVERAGE": {
+        "p50": 0.6,
+        "p95": 0.617,
+        "p99": 0.618
+      },
+      "validate_pad_AVERAGE": {
+        "p50": 0.968,
+        "p95": 1.11,
+        "p99": 1.13
+      }
+    }
+  },
+  {
+    "case": "js-1000000-FIFO.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "47b94adad1c47ec8d4fcd52e54516ba4775296421f912f073aeacf1524fd2693",
+    "status": "complete",
+    "peak_rss_bytes": 3175841792,
+    "reason": null,
+    "stages": {
+      "parse": {
+        "p50": 3.23,
+        "p95": 3.762,
+        "p99": 3.766
+      },
+      "booking_FIFO": {
+        "p50": 0.43,
+        "p95": 0.458,
+        "p99": 0.475
+      },
+      "validate_pad_FIFO": {
+        "p50": 0.816,
+        "p95": 1.041,
+        "p99": 1.108
+      },
+      "realize": {
+        "p50": 0.132,
+        "p95": 0.136,
+        "p99": 0.139
+      },
+      "format": {
+        "p50": 2.611,
+        "p95": 3.122,
+        "p99": 3.18
+      },
+      "aggregate": {
+        "p50": 0.301,
+        "p95": 0.425,
+        "p99": 0.437
+      },
+      "group": {
+        "p50": 0.75,
+        "p95": 0.851,
+        "p99": 1.113
+      },
+      "regex": {
+        "p50": 0.388,
+        "p95": 0.58,
+        "p99": 0.595
+      },
+      "transactions": {
+        "p50": 0.203,
+        "p95": 0.287,
+        "p99": 0.388
+      },
+      "length": {
+        "p50": 0.341,
+        "p95": 0.488,
+        "p99": 0.501
+      },
+      "substr": {
+        "p50": 0.585,
+        "p95": 0.774,
+        "p99": 0.783
+      }
+    }
+  },
+  {
+    "case": "js-1000000-STRICT.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "47b94adad1c47ec8d4fcd52e54516ba4775296421f912f073aeacf1524fd2693",
+    "status": "complete",
+    "peak_rss_bytes": 2370600960,
+    "reason": null,
+    "stages": {
+      "booking_STRICT": {
+        "p50": 0.399,
+        "p95": 0.418,
+        "p99": 0.428
+      },
+      "validate_pad_STRICT": {
+        "p50": 0.819,
+        "p95": 1.018,
+        "p99": 1.187
+      }
+    }
+  },
+  {
+    "case": "native-1000-AVERAGE.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "c705e2bb1e9b6da991a92c38f4b2361a787b4734f848c378da53d61b7850b519",
+    "status": "complete",
+    "peak_rss_bytes": 3751936,
+    "reason": null,
+    "stages": {
+      "booking_AVERAGE": {
+        "p50": 0.0006451612903225806,
+        "p95": 0.0006666666666666666,
+        "p99": 0.0006666666666666666
+      },
+      "validate_pad_AVERAGE": {
+        "p50": 0.0008695652173913044,
+        "p95": 0.0008695652173913044,
+        "p99": 0.0009090909090909091
+      }
+    }
+  },
+  {
+    "case": "native-1000-FIFO.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "c705e2bb1e9b6da991a92c38f4b2361a787b4734f848c378da53d61b7850b519",
+    "status": "complete",
+    "peak_rss_bytes": 5373952,
+    "reason": null,
+    "stages": {
+      "parse": {
+        "p50": 0.0018181818181818182,
+        "p95": 0.0019090909090909091,
+        "p99": 0.0021000000000000003
+      },
+      "booking_FIFO": {
+        "p50": 0.00044444444444444447,
+        "p95": 0.00045454545454545455,
+        "p99": 0.00046511627906976747
+      },
+      "validate_pad_FIFO": {
+        "p50": 0.0006896551724137932,
+        "p95": 0.0007407407407407407,
+        "p99": 0.0007407407407407407
+      },
+      "realize": {
+        "p50": 0.00014598540145985403,
+        "p95": 0.00015037593984962405,
+        "p99": 0.00015037593984962405
+      },
+      "format": {
+        "p50": 0.0009523809523809524,
+        "p95": 0.001,
+        "p99": 0.0010526315789473684
+      },
+      "aggregate": {
+        "p50": 0.0002380952380952381,
+        "p95": 0.00024096385542168676,
+        "p99": 0.00024390243902439024
+      },
+      "group": {
+        "p50": 0.0005,
+        "p95": 0.0005128205128205128,
+        "p99": 0.0005128205128205128
+      },
+      "order": {
+        "p50": 0.007,
+        "p95": 0.007333333333333333,
+        "p99": 0.007666666666666666
+      },
+      "regex": {
+        "p50": 0.00030303030303030303,
+        "p95": 0.0003076923076923077,
+        "p99": 0.0003076923076923077
+      },
+      "transactions": {
+        "p50": 0.0001639344262295082,
+        "p95": 0.00016528925619834712,
+        "p99": 0.0001680672268907563
+      },
+      "length": {
+        "p50": 0.00022727272727272727,
+        "p95": 0.00023255813953488373,
+        "p99": 0.00023529411764705883
+      },
+      "substr": {
+        "p50": 0.00044444444444444447,
+        "p95": 0.00045454545454545455,
+        "p99": 0.00045454545454545455
+      }
+    }
+  },
+  {
+    "case": "native-1000-STRICT.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "c705e2bb1e9b6da991a92c38f4b2361a787b4734f848c378da53d61b7850b519",
+    "status": "complete",
+    "peak_rss_bytes": 3751936,
+    "reason": null,
+    "stages": {
+      "booking_STRICT": {
+        "p50": 0.00045454545454545455,
+        "p95": 0.00046511627906976747,
+        "p99": 0.00046511627906976747
+      },
+      "validate_pad_STRICT": {
+        "p50": 0.0006451612903225806,
+        "p95": 0.0006666666666666666,
+        "p99": 0.0006666666666666666
+      }
+    }
+  },
+  {
+    "case": "native-10000-AVERAGE.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "c705e2bb1e9b6da991a92c38f4b2361a787b4734f848c378da53d61b7850b519",
+    "status": "complete",
+    "peak_rss_bytes": 11436032,
+    "reason": null,
+    "stages": {
+      "booking_AVERAGE": {
+        "p50": 0.00625,
+        "p95": 0.00625,
+        "p99": 0.0065
+      },
+      "validate_pad_AVERAGE": {
+        "p50": 0.008333333333333333,
+        "p95": 0.008666666666666666,
+        "p99": 0.008666666666666666
+      }
+    }
+  },
+  {
+    "case": "native-10000-FIFO.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "c705e2bb1e9b6da991a92c38f4b2361a787b4734f848c378da53d61b7850b519",
+    "status": "complete",
+    "peak_rss_bytes": 17350656,
+    "reason": null,
+    "stages": {
+      "parse": {
+        "p50": 0.0185,
+        "p95": 0.019,
+        "p99": 0.019
+      },
+      "booking_FIFO": {
+        "p50": 0.0048000000000000004,
+        "p95": 0.005,
+        "p99": 0.005
+      },
+      "validate_pad_FIFO": {
+        "p50": 0.008,
+        "p95": 0.008333333333333333,
+        "p99": 0.008666666666666666
+      },
+      "realize": {
+        "p50": 0.00175,
+        "p95": 0.005,
+        "p99": 0.008
+      },
+      "format": {
+        "p50": 0.01,
+        "p95": 0.0105,
+        "p99": 0.011
+      },
+      "aggregate": {
+        "p50": 0.0023333333333333335,
+        "p95": 0.0025,
+        "p99": 0.0025
+      },
+      "group": {
+        "p50": 0.005,
+        "p95": 0.00525,
+        "p99": 0.00525
+      },
+      "order": {
+        "p50": 0.743,
+        "p95": 0.797,
+        "p99": 0.959
+      },
+      "regex": {
+        "p50": 0.002857142857142857,
+        "p95": 0.002857142857142857,
+        "p99": 0.002857142857142857
+      },
+      "transactions": {
+        "p50": 0.0016153846153846155,
+        "p95": 0.0016666666666666668,
+        "p99": 0.0016666666666666668
+      },
+      "length": {
+        "p50": 0.0022222222222222222,
+        "p95": 0.0023333333333333335,
+        "p99": 0.0023333333333333335
+      },
+      "substr": {
+        "p50": 0.004399999999999999,
+        "p95": 0.0046,
+        "p99": 0.0046
+      }
+    }
+  },
+  {
+    "case": "native-10000-STRICT.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "c705e2bb1e9b6da991a92c38f4b2361a787b4734f848c378da53d61b7850b519",
+    "status": "complete",
+    "peak_rss_bytes": 11665408,
+    "reason": null,
+    "stages": {
+      "booking_STRICT": {
+        "p50": 0.004200000000000001,
+        "p95": 0.004399999999999999,
+        "p99": 0.0046
+      },
+      "validate_pad_STRICT": {
+        "p50": 0.0065,
+        "p95": 0.006666666666666667,
+        "p99": 0.006666666666666667
+      }
+    }
+  },
+  {
+    "case": "native-100000-AVERAGE.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "c705e2bb1e9b6da991a92c38f4b2361a787b4734f848c378da53d61b7850b519",
+    "status": "complete",
+    "peak_rss_bytes": 83132416,
+    "reason": null,
+    "stages": {
+      "booking_AVERAGE": {
+        "p50": 0.063,
+        "p95": 0.066,
+        "p99": 0.066
+      },
+      "validate_pad_AVERAGE": {
+        "p50": 0.094,
+        "p95": 0.114,
+        "p99": 0.124
+      }
+    }
+  },
+  {
+    "case": "native-100000-FIFO.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "c705e2bb1e9b6da991a92c38f4b2361a787b4734f848c378da53d61b7850b519",
+    "status": "complete",
+    "peak_rss_bytes": 145768448,
+    "reason": null,
+    "stages": {
+      "parse": {
+        "p50": 0.184,
+        "p95": 0.185,
+        "p99": 0.186
+      },
+      "booking_FIFO": {
+        "p50": 0.048,
+        "p95": 0.049,
+        "p99": 0.05
+      },
+      "validate_pad_FIFO": {
+        "p50": 0.092,
+        "p95": 0.096,
+        "p99": 0.097
+      },
+      "realize": {
+        "p50": 0.0165,
+        "p95": 0.018,
+        "p99": 0.0185
+      },
+      "format": {
+        "p50": 0.099,
+        "p95": 0.1,
+        "p99": 0.1
+      },
+      "aggregate": {
+        "p50": 0.036,
+        "p95": 0.042,
+        "p99": 0.043
+      },
+      "group": {
+        "p50": 0.071,
+        "p95": 0.076,
+        "p99": 0.078
+      },
+      "regex": {
+        "p50": 0.043,
+        "p95": 0.045,
+        "p99": 0.046
+      },
+      "transactions": {
+        "p50": 0.025,
+        "p95": 0.027,
+        "p99": 0.027
+      },
+      "length": {
+        "p50": 0.033,
+        "p95": 0.035,
+        "p99": 0.036
+      },
+      "substr": {
+        "p50": 0.057,
+        "p95": 0.058,
+        "p99": 0.059
+      }
+    }
+  },
+  {
+    "case": "native-100000-STRICT.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "c705e2bb1e9b6da991a92c38f4b2361a787b4734f848c378da53d61b7850b519",
+    "status": "complete",
+    "peak_rss_bytes": 85950464,
+    "reason": null,
+    "stages": {
+      "booking_STRICT": {
+        "p50": 0.045,
+        "p95": 0.047,
+        "p99": 0.047
+      },
+      "validate_pad_STRICT": {
+        "p50": 0.08,
+        "p95": 0.081,
+        "p99": 0.082
+      }
+    }
+  },
+  {
+    "case": "native-1000000-AVERAGE.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "c705e2bb1e9b6da991a92c38f4b2361a787b4734f848c378da53d61b7850b519",
+    "status": "complete",
+    "peak_rss_bytes": 831488000,
+    "reason": null,
+    "stages": {
+      "booking_AVERAGE": {
+        "p50": 0.635,
+        "p95": 0.648,
+        "p99": 0.674
+      },
+      "validate_pad_AVERAGE": {
+        "p50": 0.973,
+        "p95": 0.996,
+        "p99": 1.002
+      }
+    }
+  },
+  {
+    "case": "native-1000000-FIFO.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "c705e2bb1e9b6da991a92c38f4b2361a787b4734f848c378da53d61b7850b519",
+    "status": "complete",
+    "peak_rss_bytes": 1407041536,
+    "reason": null,
+    "stages": {
+      "parse": {
+        "p50": 1.917,
+        "p95": 2.01,
+        "p99": 2.012
+      },
+      "booking_FIFO": {
+        "p50": 0.481,
+        "p95": 0.559,
+        "p99": 0.596
+      },
+      "validate_pad_FIFO": {
+        "p50": 0.984,
+        "p95": 1.043,
+        "p99": 1.111
+      },
+      "realize": {
+        "p50": 0.21,
+        "p95": 0.227,
+        "p99": 0.231
+      },
+      "format": {
+        "p50": 0.983,
+        "p95": 1.126,
+        "p99": 1.215
+      },
+      "aggregate": {
+        "p50": 0.415,
+        "p95": 0.428,
+        "p99": 0.438
+      },
+      "group": {
+        "p50": 0.768,
+        "p95": 0.78,
+        "p99": 0.792
+      },
+      "regex": {
+        "p50": 0.493,
+        "p95": 0.507,
+        "p99": 0.513
+      },
+      "transactions": {
+        "p50": 0.266,
+        "p95": 0.271,
+        "p99": 0.273
+      },
+      "length": {
+        "p50": 0.364,
+        "p95": 0.374,
+        "p99": 0.403
+      },
+      "substr": {
+        "p50": 0.577,
+        "p95": 0.8,
+        "p99": 0.901
+      }
+    }
+  },
+  {
+    "case": "native-1000000-STRICT.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "c705e2bb1e9b6da991a92c38f4b2361a787b4734f848c378da53d61b7850b519",
+    "status": "complete",
+    "peak_rss_bytes": 836829184,
+    "reason": null,
+    "stages": {
+      "booking_STRICT": {
+        "p50": 0.476,
+        "p95": 0.483,
+        "p99": 0.496
+      },
+      "validate_pad_STRICT": {
+        "p50": 0.83,
+        "p95": 0.86,
+        "p99": 0.861
+      }
+    }
+  },
+  {
+    "case": "wasm-gc-1000-AVERAGE.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "d6077c8a37ddbbcbc376fa0356f50a43e210e69721862a385b246682fc1cc8b6",
+    "status": "complete",
+    "peak_rss_bytes": 59375616,
+    "reason": null,
+    "stages": {
+      "booking_AVERAGE": {
+        "p50": 0.00035714285714285714,
+        "p95": 0.00036363636363636367,
+        "p99": 0.00037037037037037035
+      },
+      "validate_pad_AVERAGE": {
+        "p50": 0.0005263157894736842,
+        "p95": 0.0005263157894736842,
+        "p99": 0.0005405405405405405
+      }
+    }
+  },
+  {
+    "case": "wasm-gc-1000-FIFO.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "d6077c8a37ddbbcbc376fa0356f50a43e210e69721862a385b246682fc1cc8b6",
+    "status": "complete",
+    "peak_rss_bytes": 67338240,
+    "reason": null,
+    "stages": {
+      "parse": {
+        "p50": 0.0016666666666666668,
+        "p95": 0.0018181818181818182,
+        "p99": 0.0018181818181818182
+      },
+      "booking_FIFO": {
+        "p50": 0.00029411764705882356,
+        "p95": 0.00030303030303030303,
+        "p99": 0.0003076923076923077
+      },
+      "validate_pad_FIFO": {
+        "p50": 0.0004761904761904762,
+        "p95": 0.0005128205128205128,
+        "p99": 0.0005128205128205128
+      },
+      "realize": {
+        "p50": 0.00010362694300518135,
+        "p95": 0.00010695187165775402,
+        "p99": 0.00010752688172043011
+      },
+      "format": {
+        "p50": 0.0010526315789473684,
+        "p95": 0.0010526315789473684,
+        "p99": 0.0010526315789473684
+      },
+      "aggregate": {
+        "p50": 0.00014705882352941178,
+        "p95": 0.00014925373134328358,
+        "p99": 0.00014925373134328358
+      },
+      "group": {
+        "p50": 0.00037037037037037035,
+        "p95": 0.0003773584905660377,
+        "p99": 0.0003773584905660377
+      },
+      "order": {
+        "p50": 0.006666666666666667,
+        "p95": 0.006666666666666667,
+        "p99": 0.007
+      },
+      "regex": {
+        "p50": 0.0002127659574468085,
+        "p95": 0.00022988505747126436,
+        "p99": 0.00023529411764705883
+      },
+      "transactions": {
+        "p50": 0.00011111111111111112,
+        "p95": 0.00011363636363636364,
+        "p99": 0.00011363636363636364
+      },
+      "length": {
+        "p50": 0.00015384615384615385,
+        "p95": 0.0001550387596899225,
+        "p99": 0.00015625
+      },
+      "substr": {
+        "p50": 0.00030303030303030303,
+        "p95": 0.0003076923076923077,
+        "p99": 0.0003125
+      }
+    }
+  },
+  {
+    "case": "wasm-gc-1000-STRICT.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "d6077c8a37ddbbcbc376fa0356f50a43e210e69721862a385b246682fc1cc8b6",
+    "status": "complete",
+    "peak_rss_bytes": 59457536,
+    "reason": null,
+    "stages": {
+      "booking_STRICT": {
+        "p50": 0.00028169014084507044,
+        "p95": 0.00029411764705882356,
+        "p99": 0.00029850746268656717
+      },
+      "validate_pad_STRICT": {
+        "p50": 0.00045454545454545455,
+        "p95": 0.00046511627906976747,
+        "p99": 0.00046511627906976747
+      }
+    }
+  },
+  {
+    "case": "wasm-gc-10000-AVERAGE.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "d6077c8a37ddbbcbc376fa0356f50a43e210e69721862a385b246682fc1cc8b6",
+    "status": "complete",
+    "peak_rss_bytes": 95027200,
+    "reason": null,
+    "stages": {
+      "booking_AVERAGE": {
+        "p50": 0.0033333333333333335,
+        "p95": 0.0035,
+        "p99": 0.0035
+      },
+      "validate_pad_AVERAGE": {
+        "p50": 0.00575,
+        "p95": 0.006,
+        "p99": 0.006
+      }
+    }
+  },
+  {
+    "case": "wasm-gc-10000-FIFO.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "d6077c8a37ddbbcbc376fa0356f50a43e210e69721862a385b246682fc1cc8b6",
+    "status": "complete",
+    "peak_rss_bytes": 118538240,
+    "reason": null,
+    "stages": {
+      "parse": {
+        "p50": 0.02,
+        "p95": 0.022,
+        "p99": 0.025
+      },
+      "booking_FIFO": {
+        "p50": 0.003,
+        "p95": 0.003,
+        "p99": 0.003
+      },
+      "validate_pad_FIFO": {
+        "p50": 0.005,
+        "p95": 0.00525,
+        "p99": 0.00525
+      },
+      "realize": {
+        "p50": 0.0010526315789473684,
+        "p95": 0.0010526315789473684,
+        "p99": 0.0010526315789473684
+      },
+      "format": {
+        "p50": 0.011,
+        "p95": 0.0125,
+        "p99": 0.013
+      },
+      "aggregate": {
+        "p50": 0.0015384615384615385,
+        "p95": 0.0016153846153846155,
+        "p99": 0.00175
+      },
+      "group": {
+        "p50": 0.004200000000000001,
+        "p95": 0.0046,
+        "p99": 0.005
+      },
+      "order": {
+        "p50": 0.676,
+        "p95": 0.726,
+        "p99": 0.73
+      },
+      "regex": {
+        "p50": 0.0024444444444444444,
+        "p95": 0.00275,
+        "p99": 0.002857142857142857
+      },
+      "transactions": {
+        "p50": 0.0011111111111111111,
+        "p95": 0.0011111111111111111,
+        "p99": 0.0011111111111111111
+      },
+      "length": {
+        "p50": 0.0016666666666666668,
+        "p95": 0.0016666666666666668,
+        "p99": 0.0016666666666666668
+      },
+      "substr": {
+        "p50": 0.0035,
+        "p95": 0.0036666666666666666,
+        "p99": 0.0036666666666666666
+      }
+    }
+  },
+  {
+    "case": "wasm-gc-10000-STRICT.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "d6077c8a37ddbbcbc376fa0356f50a43e210e69721862a385b246682fc1cc8b6",
+    "status": "complete",
+    "peak_rss_bytes": 94371840,
+    "reason": null,
+    "stages": {
+      "booking_STRICT": {
+        "p50": 0.00275,
+        "p95": 0.002857142857142857,
+        "p99": 0.002857142857142857
+      },
+      "validate_pad_STRICT": {
+        "p50": 0.005,
+        "p95": 0.00525,
+        "p99": 0.0055
+      }
+    }
+  },
+  {
+    "case": "wasm-gc-100000-AVERAGE.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "d6077c8a37ddbbcbc376fa0356f50a43e210e69721862a385b246682fc1cc8b6",
+    "status": "complete",
+    "peak_rss_bytes": 227868672,
+    "reason": null,
+    "stages": {
+      "booking_AVERAGE": {
+        "p50": 0.035,
+        "p95": 0.039,
+        "p99": 0.041
+      },
+      "validate_pad_AVERAGE": {
+        "p50": 0.059,
+        "p95": 0.069,
+        "p99": 0.069
+      }
+    }
+  },
+  {
+    "case": "wasm-gc-100000-FIFO.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "d6077c8a37ddbbcbc376fa0356f50a43e210e69721862a385b246682fc1cc8b6",
+    "status": "complete",
+    "peak_rss_bytes": 425852928,
+    "reason": null,
+    "stages": {
+      "parse": {
+        "p50": 0.221,
+        "p95": 0.249,
+        "p99": 0.257
+      },
+      "booking_FIFO": {
+        "p50": 0.029,
+        "p95": 0.03,
+        "p99": 0.031
+      },
+      "validate_pad_FIFO": {
+        "p50": 0.054,
+        "p95": 0.065,
+        "p99": 0.066
+      },
+      "realize": {
+        "p50": 0.0115,
+        "p95": 0.012,
+        "p99": 0.0125
+      },
+      "format": {
+        "p50": 0.118,
+        "p95": 0.137,
+        "p99": 0.138
+      },
+      "aggregate": {
+        "p50": 0.028,
+        "p95": 0.037,
+        "p99": 0.038
+      },
+      "group": {
+        "p50": 0.059,
+        "p95": 0.073,
+        "p99": 0.074
+      },
+      "regex": {
+        "p50": 0.033,
+        "p95": 0.045,
+        "p99": 0.045
+      },
+      "transactions": {
+        "p50": 0.0155,
+        "p95": 0.026,
+        "p99": 0.026
+      },
+      "length": {
+        "p50": 0.028,
+        "p95": 0.041,
+        "p99": 0.045
+      },
+      "substr": {
+        "p50": 0.042,
+        "p95": 0.058,
+        "p99": 0.059
+      }
+    }
+  },
+  {
+    "case": "wasm-gc-100000-STRICT.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "d6077c8a37ddbbcbc376fa0356f50a43e210e69721862a385b246682fc1cc8b6",
+    "status": "complete",
+    "peak_rss_bytes": 224526336,
+    "reason": null,
+    "stages": {
+      "booking_STRICT": {
+        "p50": 0.029,
+        "p95": 0.029,
+        "p99": 0.029
+      },
+      "validate_pad_STRICT": {
+        "p50": 0.054,
+        "p95": 0.067,
+        "p99": 0.068
+      }
+    }
+  },
+  {
+    "case": "wasm-gc-1000000-AVERAGE.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "d6077c8a37ddbbcbc376fa0356f50a43e210e69721862a385b246682fc1cc8b6",
+    "status": "complete",
+    "peak_rss_bytes": 1254866944,
+    "reason": null,
+    "stages": {
+      "booking_AVERAGE": {
+        "p50": 0.368,
+        "p95": 0.382,
+        "p99": 0.386
+      },
+      "validate_pad_AVERAGE": {
+        "p50": 0.621,
+        "p95": 0.731,
+        "p99": 0.732
+      }
+    }
+  },
+  {
+    "case": "wasm-gc-1000000-FIFO.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "d6077c8a37ddbbcbc376fa0356f50a43e210e69721862a385b246682fc1cc8b6",
+    "status": "incomplete",
+    "peak_rss_bytes": 1550090240,
+    "reason": "exit -5:                 0x00000001051ce398 moonrun + 2761624\n    28  moonrun                             0x0000000104fed3ec moonrun + 791532\n    29  moonrun                             0x0000000104fb46e8 moonrun + 558824\n    30  moonrun                             0x0000000104fb119c moonrun + 545180\n    31  moonrun                             0x000000010506aac4 moonrun + 1305284\n    32  moonrun                             0x0000000104f32aa0 moonrun + 27296\n    33  moonrun                             0x0000000104f30060 moonrun + 16480\n    34  moonrun                             0x0000000104f359b4 moonrun + 39348\n    35  dyld                                0x000000018b55cd7c start + 6652\ntime: command terminated abnormally\n        8.43 real        17.12 user         1.97 sys\n          1550090240  maximum resident set size\n                   0  average shared memory size\n                   0  average unshared data size\n                   0  average unshared stack size\n              129438  page reclaims\n                   3  page faults\n                   0  swaps\n                   0  block input operations\n                   0  block output operations\n                   0  messages sent\n                   0  messages received\n                   0  signals received\n                   2  voluntary context switches\n              231306  involuntary context switches\n        283174316244  instructions retired\n         68073505281  cycles elapsed\n          1620887520  peak memory footprint\n",
+    "stages": {}
+  },
+  {
+    "case": "wasm-gc-1000000-STRICT.json",
+    "source_revision": "139388a571832d3b60589c03d44fd5ec35472b92",
+    "artifact_sha256": "d6077c8a37ddbbcbc376fa0356f50a43e210e69721862a385b246682fc1cc8b6",
+    "status": "complete",
+    "peak_rss_bytes": 1246937088,
+    "reason": null,
+    "stages": {
+      "booking_STRICT": {
+        "p50": 0.29,
+        "p95": 0.296,
+        "p99": 0.297
+      },
+      "validate_pad_STRICT": {
+        "p50": 0.581,
+        "p95": 0.67,
+        "p99": 0.671
+      }
+    }
+  }
+]

@@ -489,3 +489,7 @@ validation logs are in `.oracle-cache/r7-star/`.
 
 Star-argument regressions fail on baseline `355a6a8`; all eight new function
 boundaries and both new `count(*)` output comparisons pass after the parser fix.
+
+## 0.2.3 candidate
+
+See [compatibility.md](compatibility.md) for the pinned endpoint, complete advertised table/column and function inventories, per-option boundaries and remaining unimplemented features. This supersedes older statements that SELECT * or transaction meta() are unsupported. Current local acceptance is recorded in [r2-acceptance.md](evidence/r2-acceptance.md); earlier numbers above describe earlier versions.
