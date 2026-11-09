@@ -525,7 +525,7 @@ fn cond_holds(ctx : QueryContext, cond : Cond, row : BqlRow) -> Bool {
     CCmp(left, op, right) => {
       let a = eval_expr(ctx, left, row)
       let b = eval_expr(ctx, right, row)
-      match value_compare(a, b) {
+      match typed_compare(ctx, a, b) {
         Some(order) =>
           match op {
             "=" | "==" => order == 0
@@ -797,6 +797,18 @@ fn group_key(ctx : QueryContext, exprs : Array[Expr], row : BqlRow) -> String {
     sb.write_string(
       match value {
         QBool(b) => if b { "1" } else { "0" }
+        QSet(_) | QFrozenSet(_) => distinct_key(value)
+        QDict(_)
+        | QRecord(_, _)
+        | QList(_)
+        | QInventory(_)
+        | QEnum(_, _)
+        | QPythonType(_) => {
+          query_error(
+            ctx, "unsupported query.unsupported.group_type: structural value hashing",
+          )
+          ""
+        }
         QNumber(n) => decimal_group_key(n)
         QAmount(a) => "amount:" + a.currency + ":" + decimal_group_key(a.number)
         _ => value.to_json()
@@ -895,7 +907,7 @@ fn sort_outputs(
             (QNull, _) => -1
             (_, QNull) => 1
             _ =>
-              match value_compare(a, b) {
+              match typed_compare(ctx, a, b) {
                 Some(value) => value
                 None => 0
               }
@@ -923,7 +935,7 @@ fn run_select(
   realized : @realization.RealizedLedger,
   query : SelectQuery,
 ) -> QueryResult {
-  if query_any(query, representation_expr) &&
+  if (query.distinct || query_any(query, representation_expr)) &&
     realized.entries.any(fn(e) { !e.query_exact_decimal }) {
     return {
       columns: [],
@@ -1135,7 +1147,11 @@ fn grouped_cond(ctx : QueryContext, cond : Cond, rows : Array[BqlRow]) -> Bool {
       }
     CCmp(a, op, b) =>
       match
-        value_compare(eval_grouped(ctx, a, rows), eval_grouped(ctx, b, rows)) {
+        typed_compare(
+          ctx,
+          eval_grouped(ctx, a, rows),
+          eval_grouped(ctx, b, rows),
+        ) {
         Some(n) =>
           match op {
             "=" | "==" => n == 0

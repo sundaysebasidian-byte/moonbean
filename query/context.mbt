@@ -421,3 +421,30 @@ fn representation_expr(expr : Expr) -> Bool {
     _ => false
   }
 }
+
+///|
+fn structural_value(value : QueryValue) -> Bool {
+  match value {
+    QDict(_)
+    | QRecord(_, _)
+    | QList(_)
+    | QInventory(_)
+    | QEnum(_, _)
+    | QPythonType(_) => true
+    _ => false
+  }
+}
+
+///|
+fn typed_compare(ctx : QueryContext, a : QueryValue, b : QueryValue) -> Int32? {
+  if !(a is QNull) &&
+    !(b is QNull) &&
+    (structural_value(a) || structural_value(b)) {
+    query_error(
+      ctx, "unsupported query.unsupported.object_comparison: structural value ordering/equality",
+    )
+    None
+  } else {
+    value_compare(a, b)
+  }
+}

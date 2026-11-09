@@ -774,14 +774,6 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
       !table_cond(having, table) {
       return PqError("compilation query.invalid_column")
     }
-    // Object columns need typed values; never manufacture strings or NULLs.
-    if projections.any(table_object) ||
-      groups.any(table_object) ||
-      orders.any(fn(o) { table_object(o.expr) }) ||
-      table_object_cond(filter) ||
-      table_object_cond(having) {
-      return PqError("unsupported query.unsupported.object_column")
-    }
   }
   if !(source is SrcDirectives(_)) && !(source is SrcTransactions) {
     let valid = fn(expr) { posting_expr(expr) }
@@ -1069,27 +1061,6 @@ fn table_cond(cond : Cond, table : String) -> Bool {
     CAnd(a, b) | COr(a, b) => table_cond(a, table) && table_cond(b, table)
     CCmp(a, _, b) => table_expr(a, table) && table_expr(b, table)
     CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => table_expr(e, table)
-  }
-}
-
-///|
-fn table_object(expr : Expr) -> Bool {
-  match expr {
-    ECol(_) => false
-    ECall(_, args) => args.any(table_object)
-    EBinary(a, _, b) => table_object(a) || table_object(b)
-    _ => false
-  }
-}
-
-///|
-fn table_object_cond(cond : Cond) -> Bool {
-  match cond {
-    CTrue => false
-    CNot(c) => table_object_cond(c)
-    CAnd(a, b) | COr(a, b) => table_object_cond(a) || table_object_cond(b)
-    CCmp(a, _, b) => table_object(a) || table_object(b)
-    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => table_object(e)
   }
 }
 

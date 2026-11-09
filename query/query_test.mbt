@@ -633,4 +633,21 @@ test "signed zero input rejects exact object and fingerprint projections" {
   assert_true(
     r.error.unwrap().contains("query.unsupported.decimal_representation"),
   )
+  assert_true(
+    queried(source, "SELECT DISTINCT position").failure()
+    is Some(@query.Unsupported(_)),
+  )
+}
+
+///|
+test "structural operations fail explicitly and set grouping ignores member order" {
+  let r = queried(ledger_source(), "SELECT meta FROM #entries GROUP BY meta")
+  assert_true(r.failure() is Some(@query.Unsupported(_)))
+  let r = queried(ledger_source(), "SELECT meta FROM #entries WHERE meta=meta")
+  assert_true(r.failure() is Some(@query.Unsupported(_)))
+  let source = "2024-01-01 open Assets:A USD\n2024-01-01 open Equity:A USD\n2024-01-02 * \"one\" #a #b\n  Assets:A 1 USD\n  Equity:A -1 USD\n2024-01-03 * \"two\" #b #a\n  Assets:A 1 USD\n  Equity:A -1 USD\n"
+  let r = queried(source, "SELECT count(*) GROUP BY tags")
+  assert_true(r.is_ok())
+  assert_eq(r.rows.length(), 1)
+  assert_eq(r.rows[0][0].to_text(), "4")
 }

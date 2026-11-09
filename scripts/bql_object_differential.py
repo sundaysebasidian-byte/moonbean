@@ -36,6 +36,8 @@ def run(ours,oracle,full=False):
             if ok:cases.append((str(f.resolve()),'SELECT id,meta FROM #entries'))
     ordering=str(Path('tests/bql-sources/value-order.beancount').resolve())
     cases.extend((ordering,q) for q in ["SELECT str(sum(position)),repr(sum(position)) WHERE account='Assets:Cash'", "SELECT min(position),max(position),min(units(position)),max(units(position))"])
+    groups=str(Path('tests/bql-sources/set-groups.beancount').resolve())
+    cases.append((groups,'SELECT count(*) GROUP BY tags'))
     results=[]
     for f,q in cases:
         a=subprocess.run([ours,'query',f,q,'--json'],capture_output=True,text=True)
@@ -54,6 +56,11 @@ def run(ours,oracle,full=False):
     b=subprocess.run([str(Path(oracle)/'python'),'scripts/oracle_query_values.py',str(boundary),query],capture_output=True,text=True)
     ok=a.returncode!=0 and b.returncode==0 and 'query.unsupported.decimal_representation' in a.stdout+a.stderr
     results.append(dict(query=query,kind='explicit signed-zero boundary',ok=ok,detail='' if ok else 'signed-zero rejection changed'))
+    query='SELECT DISTINCT position'
+    a=subprocess.run([ours,'query',str(boundary),query,'--json'],capture_output=True,text=True)
+    b=subprocess.run([str(Path(oracle)/'python'),'scripts/oracle_query_values.py',str(boundary),query],capture_output=True,text=True)
+    ok=a.returncode!=0 and b.returncode==0 and 'query.unsupported.decimal_representation' in a.stdout+a.stderr
+    results.append(dict(query=query,kind='explicit signed-zero distinct boundary',ok=ok,detail='' if ok else 'signed-zero distinct rejection changed'))
     return results
 
 if __name__=='__main__':

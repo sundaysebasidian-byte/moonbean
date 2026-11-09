@@ -1,0 +1,8 @@
+2024-01-01 open Assets:A USD
+2024-01-01 open Equity:A USD
+2024-01-02 * "one" #a #b
+  Assets:A 1 USD
+  Equity:A -1 USD
+2024-01-03 * "two" #b #a
+  Assets:A 1 USD
+  Equity:A -1 USD
