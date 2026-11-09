@@ -63,7 +63,7 @@ def run(ours, oracle):
         b=c.run([str(Path(oracle)/'bean-query'),'-f','csv',ledger,query])
         ac=error_category(a.stdout+a.stderr,True);bc=error_category(b.stdout+b.stderr)
         results.append(dict(query=query,ok=a.returncode!=0 and b.returncode!=0 and ac==bc,detail=f'{ac}/{bc}'))
-    for query in ['SELECT * FROM events','SELECT * FROM prices','SELECT * FROM notes','SELECT * FROM documents',
+    for query in ['SELECT year,month,day FROM postings ORDER BY date','SELECT * FROM events','SELECT * FROM prices','SELECT * FROM notes','SELECT * FROM documents',
                   'SELECT type,count(*) FROM entries GROUP BY type ORDER BY type',
                   "SELECT meta('filename'),meta('lineno') FROM entries ORDER BY date",
                   'SELECT name FROM commodities WHERE name = "EUR"',
