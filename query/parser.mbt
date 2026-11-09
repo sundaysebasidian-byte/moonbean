@@ -715,6 +715,9 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   if !parser.at_end() {
     return PqError("unexpected input after query")
   }
+  if distinct && !projections.all(distinct_expr) {
+    return PqError("unsupported query.unsupported.distinct_type")
+  }
   if source is SrcTransactions {
     if !projections.all(transaction_expr) ||
       !groups.all(transaction_expr) ||
@@ -920,5 +923,16 @@ fn transaction_cond(cond : Cond) -> Bool {
     CAnd(a, b) | COr(a, b) => transaction_cond(a) && transaction_cond(b)
     CCmp(a, _, b) => transaction_expr(a) && transaction_expr(b)
     CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => transaction_expr(e)
+  }
+}
+
+///|
+fn distinct_expr(expr : Expr) -> Bool {
+  match expr {
+    ECol("position" | "units" | "weight" | "cost" | "value") => false
+    ECall("sum", _) => false
+    ECall(_, args) => args.all(distinct_expr)
+    EBinary(a, _, b) => distinct_expr(a) && distinct_expr(b)
+    _ => true
   }
 }

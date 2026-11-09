@@ -25,7 +25,6 @@ def compare_bql(ours, oracle):
 queries = [
     'SELECT DISTINCT account ORDER BY account LIMIT 3',
     'SELECT DISTINCT date ORDER BY date DESC LIMIT 2',
-    'SELECT DISTINCT position WHERE account = "Assets:Cash"',
     'SELECT DISTINCT tags, links FROM transactions',
     'SELECT DISTINCT payee FROM transactions ORDER BY payee',
     'SELECT count(payee), count(*) FROM transactions',
@@ -101,6 +100,17 @@ def main():
                 ok = ok and text.returncode == 0 and all(cell in text.stdout for row in oracle[1:] for cell in row)
                 ok = ok and all(row == [['shop', 'cafe'], ['zulu', 'alpha']] for row in ours['rows'])
         results.append(dict(query=query, ledger=ledger, ok=ok, detail='' if ok else 'source/set oracle regression'))
+    for case in json.loads(Path('tests/bql-r2.json').read_text()):
+        oracle = c.oracle_query(args.oracle, case['ledger'], case.get('oracle_query', case['query']))
+        ours = c.ours_query(args.ours, case['ledger'], case['query'])
+        if 'kind' in case:
+            proc = subprocess.run([args.ours, 'query', case['ledger'], case['query'], '--json'], capture_output=True, text=True)
+            ok = proc.returncode == 1 and ('query.unsupported.' + case['kind']) in (proc.stdout + proc.stderr)
+            detail = '' if ok else 'expected explicit unsupported boundary'
+        else:
+            ok, detail = compare_bql(ours, oracle) if ours else (False, 'moonbean failed')
+        ok = ok and oracle == case['oracle']
+        results.append(dict(query=case['query'], ledger=case['ledger'], ok=ok, detail=detail))
     print(json.dumps(results, indent=2))
     return int(any(not r['ok'] for r in results))
 

@@ -514,3 +514,10 @@ test "distinct star and nullable transaction counts" {
   assert_eq(counts.rows[0][0].to_text(), "0")
   assert_eq(counts.rows[0][1].to_text(), "2")
 }
+
+///|
+test "distinct position identity is explicitly unsupported" {
+  let r = queried(ledger_source(), "SELECT DISTINCT position")
+  assert_true(r.failure() is Some(@query.Unsupported(_)))
+  assert_true(r.error.unwrap().contains("query.unsupported.distinct_type"))
+}

@@ -1,0 +1,13 @@
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Equity:Opening USD
+2024-01-02 * "metadata"
+  receipt: "entry"
+  Assets:Cash 1.00 USD
+    receipt: "posting"
+  Equity:Opening -1 USD
+2024-01-03 * "" "explicit empty payee"
+  Assets:Cash 2 USD
+  Equity:Opening -2 USD
+2024-01-04 * "Shop" "metadata"
+  Assets:Cash 1.0 USD
+  Equity:Opening -1 USD

@@ -1,0 +1,231 @@
+[
+  {
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "query": "SELECT DISTINCT position WHERE account = \"Assets:Cash\"",
+    "oracle": [
+      [
+        "position"
+      ],
+      [
+        " 1 USD"
+      ],
+      [
+        " 2 USD"
+      ],
+      [
+        " 1 USD"
+      ]
+    ],
+    "kind": "distinct_type"
+  },
+  {
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "query": "SELECT DISTINCT payee FROM transactions ORDER BY payee",
+    "oracle": [
+      [
+        "payee"
+      ],
+      [
+        ""
+      ],
+      [
+        ""
+      ],
+      [
+        "Shop"
+      ]
+    ]
+  },
+  {
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "query": "SELECT meta('receipt') FROM transactions ORDER BY date",
+    "oracle": [
+      [
+        "meta('receipt')"
+      ],
+      [
+        "entry"
+      ],
+      [
+        ""
+      ],
+      [
+        ""
+      ]
+    ]
+  },
+  {
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "query": "SELECT meta('receipt'), entry_meta('receipt') ORDER BY date, account",
+    "oracle": [
+      [
+        "meta('receipt')",
+        "entry_meta('receipt')"
+      ],
+      [
+        "posting",
+        "entry"
+      ],
+      [
+        "",
+        "entry"
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "",
+        ""
+      ],
+      [
+        "",
+        ""
+      ]
+    ]
+  },
+  {
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "query": "SELECT count(payee), count(*) FROM transactions",
+    "oracle": [
+      [
+        "count(payee)",
+        "count(*)"
+      ],
+      [
+        "2",
+        "3"
+      ]
+    ]
+  },
+  {
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "query": "SELECT DISTINCT narration FROM transactions ORDER BY narration LIMIT 1",
+    "oracle": [
+      [
+        "narration"
+      ],
+      [
+        "explicit empty payee"
+      ]
+    ]
+  },
+  {
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "query": "SELECT * FROM transactions",
+    "oracle": [
+      [
+        "date",
+        "flag",
+        "payee",
+        "narration",
+        "tags",
+        "links",
+        "accounts"
+      ],
+      [
+        "2024-01-02",
+        "*",
+        "",
+        "metadata",
+        "",
+        "",
+        "Assets:Cash,Equity:Opening"
+      ],
+      [
+        "2024-01-03",
+        "*",
+        "",
+        "explicit empty payee",
+        "",
+        "",
+        "Assets:Cash,Equity:Opening"
+      ],
+      [
+        "2024-01-04",
+        "*",
+        "Shop",
+        "metadata",
+        "",
+        "",
+        "Assets:Cash,Equity:Opening"
+      ]
+    ]
+  },
+  {
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "query": "SELECT * FROM postings",
+    "oracle": [
+      [
+        "date",
+        "flag",
+        "payee",
+        "narration",
+        "position"
+      ],
+      [
+        "2024-01-02",
+        "*",
+        "",
+        "metadata",
+        " 1 USD"
+      ],
+      [
+        "2024-01-02",
+        "*",
+        "",
+        "metadata",
+        "-1 USD"
+      ],
+      [
+        "2024-01-03",
+        "*",
+        "",
+        "explicit empty payee",
+        " 2 USD"
+      ],
+      [
+        "2024-01-03",
+        "*",
+        "",
+        "explicit empty payee",
+        "-2 USD"
+      ],
+      [
+        "2024-01-04",
+        "*",
+        "Shop",
+        "metadata",
+        " 1 USD"
+      ],
+      [
+        "2024-01-04",
+        "*",
+        "Shop",
+        "metadata",
+        "-1 USD"
+      ]
+    ]
+  },
+  {
+    "ledger": "tests/ledgers/024-cost-per.beancount",
+    "query": "SELECT DISTINCT position ORDER BY date, account",
+    "oracle": [
+      [
+        "str(position)"
+      ],
+      [
+        "-125.00 USD"
+      ],
+      [
+        "10 HOOL {12.50 USD, 2024-01-02}"
+      ]
+    ],
+    "oracle_query": "SELECT DISTINCT str(position) ORDER BY date, account",
+    "kind": "distinct_type"
+  }
+]

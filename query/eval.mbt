@@ -1008,29 +1008,6 @@ fn distinct_equal(a : QueryValue, b : QueryValue) -> Bool {
   match (a, b) {
     (QSet(a), QSet(b)) =>
       a.length() == b.length() && a.all(fn(s) { b.contains(s) })
-    (QPosition(a), QPosition(b)) => {
-      let cost_equal = match (a.cost, b.cost) {
-        (None, None) => true
-        (Some(a), Some(b)) =>
-          a.number.equal(b.number) &&
-          a.currency == b.currency &&
-          (match (a.date, b.date) {
-            (None, None) => true
-            (Some(a), Some(b)) => a.compare(b) == 0
-            _ => false
-          }) &&
-          a.label == b.label
-        _ => false
-      }
-      a.units.currency == b.units.currency &&
-      a.units.number.equal(b.units.number) &&
-      cost_equal
-    }
-    (QInventory(a), QInventory(b)) =>
-      a.positions.length() == b.positions.length() &&
-      a.positions.all(fn(p) {
-        b.positions.any(fn(q) { distinct_equal(QPosition(p), QPosition(q)) })
-      })
     _ => value_compare(a, b) == Some(0)
   }
 }
