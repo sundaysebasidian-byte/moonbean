@@ -46,6 +46,9 @@ def run(ours,oracle):
     for _ in range(40):
         digits=str(rng.randrange(10**35,10**55))+'.'+str(rng.randrange(10**7,10**8))
         extra.append('SELECT repr(abs('+digits+')),repr(neg('+digits+')) LIMIT 1')
+    for _ in range(12):
+        n=rng.randrange(10**28,10**60);m=rng.randrange(-10**35,10**35)
+        extra.append(f'SELECT repr({n}+({m})),repr({n}-({m})),repr({n}*({m})),repr(sum({n})),repr(sum({n}+({m})))')
     queries.extend(('extra',q) for q in extra)
     result=[]
     for sig,q in queries:

@@ -705,6 +705,7 @@ fn eval_aggregate(
           let kind = expression_type(arg, ctx.source, [])
           let inventory = @booking.Inventory::new()
           let mut total = @decimal.Decimal::zero()
+          let mut integer_total = @bigint.BigInt::from_int(0)
           for row in rows {
             match eval_expr(ctx, arg, row) {
               QAmount(a) => inventory.add_amount(a)
@@ -713,16 +714,19 @@ fn eval_aggregate(
                 for p in i.positions {
                   inventory.add(p)
                 }
-              QInt(n) => total = total.add(@decimal.Decimal::new(n, 0))
+              QInt(n) => integer_total = integer_total.add(n)
               QNumber(n) => total = total.add(n)
-              QBool(b) => if b { total = total.add(@decimal.Decimal::one()) }
+              QBool(b) =>
+                if b {
+                  integer_total = integer_total.add(@bigint.BigInt::from_int(1))
+                }
               _ => ()
             }
           }
           if ["amount", "position", "inventory"].contains(kind) {
             QInventory(inventory)
           } else if kind == "int" || kind == "bool" {
-            QInt(total.mantissa())
+            QInt(integer_total)
           } else {
             QNumber(total)
           }
@@ -1151,6 +1155,14 @@ fn arithmetic(
   op : String,
   b : QueryValue,
 ) -> QueryValue {
+  if a is QInt(x) && b is QInt(y) {
+    match op {
+      "+" => return QInt(x.add(y))
+      "-" => return QInt(x.sub(y))
+      "*" => return QInt(x.mul(y))
+      _ => ()
+    }
+  }
   match (value_number(a), value_number(b)) {
     (Some(x), Some(y)) => {
       let result = match op {

@@ -696,3 +696,22 @@ test "cached sorting preserves duplicate order and Unicode scalar order" {
   )
   assert_eq(r.rows[0][0].to_text(), "")
 }
+
+///|
+test "integer arithmetic and aggregates preserve more than 28 digits" {
+  let n = "123456789012345678901234567890"
+  let r = queried(
+    ledger_source(),
+    "SELECT " + n + "+1," + n + "-1," + n + "*10,sum(" + n + ")",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0][0].to_text(), "123456789012345678901234567891")
+  assert_eq(r.rows[0][1].to_text(), "123456789012345678901234567889")
+  assert_eq(r.rows[0][2].to_text(), "1234567890123456789012345678900")
+  let count = queried(ledger_source(), "SELECT count(*)").rows[0][0].to_text()
+  let expected = queried(
+    ledger_source(),
+    "SELECT " + n + "*" + count + " LIMIT 1",
+  )
+  assert_eq(r.rows[0][3].to_text(), expected.rows[0][0].to_text())
+}
