@@ -227,5 +227,39 @@
     ],
     "oracle_query": "SELECT DISTINCT str(position) ORDER BY date, account",
     "kind": "distinct_type"
+  },
+  {
+    "query": "SELECT accounts FROM OPEN ON 2024-01-03",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "kind": "period_column",
+    "oracle": [
+      [
+        "accounts"
+      ],
+      [
+        "Assets:Cash,Equity:Opening-Balances"
+      ],
+      [
+        "Assets:Cash,Equity:Opening-Balances"
+      ],
+      [
+        "Equity:Opening,Equity:Opening-Balances"
+      ],
+      [
+        "Equity:Opening,Equity:Opening-Balances"
+      ],
+      [
+        "Assets:Cash,Equity:Opening"
+      ],
+      [
+        "Assets:Cash,Equity:Opening"
+      ],
+      [
+        "Assets:Cash,Equity:Opening"
+      ],
+      [
+        "Assets:Cash,Equity:Opening"
+      ]
+    ]
   }
 ]

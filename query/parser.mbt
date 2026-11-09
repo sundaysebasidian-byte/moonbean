@@ -715,6 +715,16 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   if !parser.at_end() {
     return PqError("unexpected input after query")
   }
+  // Opening summary rows do not retain the synthetic transaction's account set.
+  if source is SrcOpen(_, _) &&
+    parser.tokens.any(fn(token) {
+      match token {
+        BWord(word) => word.to_lower() == "accounts"
+        _ => false
+      }
+    }) {
+    return PqError("unsupported query.unsupported.period_column")
+  }
   if distinct && !projections.all(distinct_expr) {
     return PqError("unsupported query.unsupported.distinct_type")
   }

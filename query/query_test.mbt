@@ -521,3 +521,10 @@ test "distinct position identity is explicitly unsupported" {
   assert_true(r.failure() is Some(@query.Unsupported(_)))
   assert_true(r.error.unwrap().contains("query.unsupported.distinct_type"))
 }
+
+///|
+test "opening summaries reject unavailable transaction account sets" {
+  let r = queried(ledger_source(), "SELECT accounts FROM OPEN ON 2024-03-01")
+  assert_true(r.failure() is Some(@query.Unsupported(_)))
+  assert_true(r.error.unwrap().contains("query.unsupported.period_column"))
+}
