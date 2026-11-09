@@ -239,98 +239,20 @@ fn parse_primary(parser : QueryParser) -> Expr? {
             return None
           }
         }
-        if [
-            "sum", "count", "first", "last", "min", "max", "upper", "lower", "length",
-            "substr", "root", "parent", "leaf", "year", "month", "meta", "entry_meta",
-          ].contains(lower) &&
-          args.any(fn(arg) { arg is ECol("accounts") }) {
-          parser.fail(
-            "query.oracle_type_error: generic accounts type fails in beanquery 0.2.0 functions",
-          )
-          return None
-        }
         if ["sum", "count", "first", "last", "min", "max"].contains(lower) &&
           args.any(contains_sum) {
           parser.fail("compilation query.invalid_aggregate")
           return None
         }
-        match lower {
-          "year" | "month" | "root" | "parent" | "leaf" =>
-            Some(ECall(lower, args))
-          "sum" =>
-            if args is [arg] && sum_expr(arg) {
-              Some(ECall(lower, args))
-            } else {
-              parser.fail("compilation query.invalid_signature")
-              None
-            }
-          "first" | "last" =>
-            if args is [_] {
-              Some(ECall(lower, args))
-            } else {
-              parser.fail("compilation query.invalid_signature")
-              None
-            }
-          "min" | "max" =>
-            if args is [arg] && scalar_order_expr(arg) {
-              Some(ECall(lower, args))
-            } else {
-              parser.fail(
-                if args.length() != 1 {
-                  "compilation query.invalid_signature"
-                } else {
-                  "unsupported query.unsupported.aggregate_type"
-                },
-              )
-              None
-            }
-          "count" =>
-            if args is [_] {
-              Some(ECall(lower, args))
-            } else {
-              parser.fail("compilation query.invalid_signature")
-              None
-            }
-          "meta" | "entry_meta" =>
-            if args is [arg] && string_expr(arg) {
-              Some(ECall(lower, args))
-            } else {
-              parser.fail("compilation query.invalid_signature")
-              None
-            }
-          "getitem" =>
-            if (args.length() == 2 || args.length() == 3) &&
-              args[0] is ECol("meta") &&
-              string_expr(args[1]) {
-              Some(ECall(lower, args))
-            } else {
-              parser.fail("compilation query.invalid_signature")
-              None
-            }
-          "upper" | "lower" | "length" | "substr" => {
-            let valid = match (lower, args) {
-              ("upper" | "lower" | "length", [arg]) => string_expr(arg)
-              ("substr", [arg, start, end]) =>
-                string_expr(arg) && integer_expr(start) && integer_expr(end)
-              _ => false
-            }
-            if valid {
-              Some(ECall(lower, args))
-            } else {
-              parser.fail(
-                if lower == "upper" || lower == "lower" {
-                  "compilation query.invalid_signature"
-                } else {
-                  "unsupported query.unsupported.signature"
-                },
-              )
-              None
-            }
-          }
-          _ => {
-            parser.fail("unsupported query.unsupported.function `" + word + "`")
-            None
-          }
+        if oracle_signatures.any(fn(s) { s.0 == lower }) {
+          Some(ECall(lower, args))
+        } else {
+          parser.fail(
+            "compilation query.invalid_signature: unknown function `" +
+            word +
+            "`",
+          )
+          None
         }
       } else if lower == "null" {
         Some(ENull)
@@ -880,6 +802,21 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
       return PqError("unsupported query.unsupported.transaction_column")
     }
   }
+  let errors : Array[String] = []
+  for e in projections {
+    expression_type(e, source, errors) |> ignore
+  }
+  for e in groups {
+    expression_type(e, source, errors) |> ignore
+  }
+  for o in orders {
+    expression_type(o.expr, source, errors) |> ignore
+  }
+  condition_types(filter, source, errors)
+  condition_types(having, source, errors)
+  if !errors.is_empty() {
+    return PqError(errors[0])
+  }
   PqSelect({
     projections,
     distinct,
@@ -1039,40 +976,6 @@ fn parse_balances(parser : QueryParser) -> ParsedQuery {
 }
 
 ///|
-fn string_expr(expr : Expr) -> Bool {
-  match expr {
-    EStr(_)
-    | ECol(
-      "payee"
-      | "narration"
-      | "account"
-      | "flag"
-      | "currency"
-      | "root"
-      | "parent"
-      | "leaf"
-      | "type"
-      | "filename"
-      | "comment"
-      | "description"
-      | "name"
-    ) => true
-    ECall("first" | "last" | "min" | "max", [arg]) => string_expr(arg)
-    ECall("upper" | "lower" | "substr" | "root" | "parent" | "leaf", _) => true
-    _ => false
-  }
-}
-
-///|
-fn integer_expr(expr : Expr) -> Bool {
-  match expr {
-    ENum(n) => !n.to_string().contains(".")
-    EBinary(ENum(n), "-" | "+", right) => n.is_zero() && integer_expr(right)
-    _ => false
-  }
-}
-
-///|
 fn transaction_expr(expr : Expr) -> Bool {
   match expr {
     ECol(
@@ -1107,7 +1010,7 @@ fn transaction_cond(cond : Cond) -> Bool {
 ///|
 fn distinct_expr(expr : Expr) -> Bool {
   match expr {
-    ECol("position" | "units" | "weight" | "cost" | "value") => false
+    ECol("meta" | "entry" | "open" | "close") => false
     ECall("sum", _) => false
     ECall(_, args) => args.all(distinct_expr)
     EBinary(a, _, b) => distinct_expr(a) && distinct_expr(b)
@@ -1220,45 +1123,6 @@ fn posting_cond(cond : Cond) -> Bool {
 }
 
 ///|
-fn scalar_order_expr(expr : Expr) -> Bool {
-  match expr {
-    ECol(
-      "date"
-      | "year"
-      | "month"
-      | "day"
-      | "lineno"
-      | "flag"
-      | "payee"
-      | "narration"
-      | "account"
-      | "currency"
-      | "type"
-      | "name"
-      | "filename"
-      | "comment"
-      | "description"
-      | "tolerance"
-    ) => true
-    EStr(_) | ENum(_) | EDate(_) | EBool(_) | ENull => true
-    EBinary(a, _, b) => scalar_order_expr(a) && scalar_order_expr(b)
-    ECall(
-      "upper"
-      | "lower"
-      | "substr"
-      | "length"
-      | "root"
-      | "parent"
-      | "leaf"
-      | "year"
-      | "month",
-      _
-    ) => true
-    _ => false
-  }
-}
-
-///|
 fn aggregate_free_cond(cond : Cond) -> Bool {
   match cond {
     CTrue => true
@@ -1266,24 +1130,5 @@ fn aggregate_free_cond(cond : Cond) -> Bool {
     CAnd(a, b) | COr(a, b) => aggregate_free_cond(a) && aggregate_free_cond(b)
     CCmp(a, _, b) => !contains_sum(a) && !contains_sum(b)
     CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => !contains_sum(e)
-  }
-}
-
-///|
-fn numeric_expr(expr : Expr) -> Bool {
-  match expr {
-    ENum(_) | EBool(_) => true
-    ECol("year" | "month" | "day" | "lineno" | "tolerance") => true
-    ECall("year" | "month" | "length", _) => true
-    EBinary(a, _, b) => numeric_expr(a) && numeric_expr(b)
-    _ => false
-  }
-}
-
-///|
-fn sum_expr(expr : Expr) -> Bool {
-  match expr {
-    ECol("amount" | "position" | "units" | "weight" | "cost" | "value") => true
-    _ => numeric_expr(expr)
   }
 }

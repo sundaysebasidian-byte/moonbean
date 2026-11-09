@@ -56,7 +56,7 @@ fn python_string(text : String) -> String {
 fn python_repr(value : QueryValue) -> String {
   match value {
     QText(s) => python_string(s)
-    QNumber(n) => "Decimal(" + python_string(n.to_string()) + ")"
+    QNumber(n) => "Decimal(" + python_string(python_decimal(n)) + ")"
     QInt(n) => n.to_string()
     QDate(d) =>
       "datetime.date(" +
@@ -90,6 +90,7 @@ fn python_repr(value : QueryValue) -> String {
         sorted.sort_by(fn(a, b) { a.lexical_compare(b) })
         "frozenset({" + sorted.map(python_string).join(", ") + "})"
       }
+    QInventory(i) => inventory_repr(i)
     _ => value.to_text()
   }
 }
@@ -124,7 +125,7 @@ fn nested_json(value : QueryValue) -> String {
       ",\"value\":" +
       QText(v).to_json() +
       "}"
-    QNumber(n) => "{\"_decimal\":" + QText(n.to_string()).to_json() + "}"
+    QNumber(n) => "{\"_decimal\":" + QText(python_decimal(n)).to_json() + "}"
     QDate(d) => "{\"_date\":" + QText(d.to_string()).to_json() + "}"
     _ => value.to_json()
   }

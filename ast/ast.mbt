@@ -488,6 +488,7 @@ pub(all) struct Entry {
   mut inferred_tolerances : Array[(String, @decimal.Decimal)]?
   mut balance_discrepancy : Amount?
   mut query_origin : Loc?
+  mut query_exact_decimal : Bool
   directive : Directive
 }
 
@@ -500,6 +501,7 @@ pub fn Entry::new(date : Date, loc : Loc, directive : Directive) -> Entry {
     inferred_tolerances: None,
     balance_discrepancy: None,
     query_origin: None,
+    query_exact_decimal: true,
     directive,
   }
 }

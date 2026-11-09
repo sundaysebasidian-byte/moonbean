@@ -318,9 +318,9 @@ fn eval_column(ctx : QueryContext, row : BqlRow, name : String) -> QueryValue {
         None => QNull
       }
     "date" => QDate(row.date)
-    "year" => QNumber(@decimal.Decimal::from_int(row.date.year))
-    "month" => QNumber(@decimal.Decimal::from_int(row.date.month))
-    "day" => QNumber(@decimal.Decimal::from_int(row.date.day))
+    "year" => query_int(row.date.year)
+    "month" => query_int(row.date.month)
+    "day" => query_int(row.date.day)
     "flag" => QText(row.flag)
     "payee" =>
       match row.payee {
@@ -373,7 +373,12 @@ fn eval_expr(ctx : QueryContext, expr : Expr, row : BqlRow) -> QueryValue {
       arithmetic(eval_expr(ctx, left, row), op, eval_expr(ctx, right, row))
     ECol(name) => eval_column(ctx, row, name)
     EStr(text) => QText(text)
-    ENum(number) => QNumber(number)
+    ENum(number) =>
+      if number.scale() == 0 {
+        QInt(number.mantissa())
+      } else {
+        QNumber(number)
+      }
     EDate(date) => QDate(date)
     ENull => QNull
     EStar => QNull
@@ -423,7 +428,9 @@ fn eval_expr(ctx : QueryContext, expr : Expr, row : BqlRow) -> QueryValue {
           }
         ("length", [arg]) =>
           match eval_expr(ctx, arg, row) {
-            QText(s) => QNumber(@decimal.Decimal::from_int(s.iter().count()))
+            QSet(v) | QFrozenSet(v) => query_int(v.length())
+            QList(v) => query_int(v.length())
+            QText(s) => query_int(s.iter().count())
             _ => QNull
           }
         ("substr", [arg, start, end]) =>
@@ -443,12 +450,12 @@ fn eval_expr(ctx : QueryContext, expr : Expr, row : BqlRow) -> QueryValue {
           }
         ("year", [arg]) =>
           match eval_expr(ctx, arg, row) {
-            QDate(date) => QNumber(@decimal.Decimal::from_int(date.year))
+            QDate(date) => query_int(date.year)
             _ => QNull
           }
         ("month", [arg]) =>
           match eval_expr(ctx, arg, row) {
-            QDate(date) => QNumber(@decimal.Decimal::from_int(date.month))
+            QDate(date) => query_int(date.month)
             _ => QNull
           }
         ("root", [arg]) =>
@@ -466,7 +473,13 @@ fn eval_expr(ctx : QueryContext, expr : Expr, row : BqlRow) -> QueryValue {
             QText(account) => QText(@ast.account_leaf(account))
             _ => QNull
           }
-        _ => QNull
+        _ =>
+          eval_function(
+            ctx,
+            name,
+            args.map(fn(arg) { eval_expr(ctx, arg, row) }),
+            row,
+          )
       }
   }
 }
@@ -603,18 +616,6 @@ fn sum_amounts(values : Array[@ast.Amount]) -> QueryValue {
 }
 
 ///|
-fn sum_numbers(values : Array[@decimal.Decimal]) -> QueryValue {
-  if values.length() == 0 {
-    return QNumber(@decimal.Decimal::zero())
-  }
-  let mut total = @decimal.Decimal::zero()
-  for value in values {
-    total = total.add(value)
-  }
-  QNumber(total)
-}
-
-///|
 fn eval_aggregate(
   ctx : QueryContext,
   expr : Expr,
@@ -637,13 +638,10 @@ fn eval_aggregate(
           continue
         }
         match expr {
-          ECall("min" | "max", _) => {
-            let order = value_compare(value, result)
-            if (expr is ECall("min", _) && order is Some(n) && n < 0) ||
-              (expr is ECall("max", _) && order is Some(n) && n > 0) {
+          ECall("min" | "max", _) =>
+            if aggregate_precedes(ctx, value, result, expr is ECall("max", _)) {
               result = value
             }
-          }
           _ => ()
         }
       }
@@ -657,7 +655,7 @@ fn eval_aggregate(
       } else {
         0
       }
-      QNumber(@decimal.Decimal::from_int(count))
+      query_int(count)
     }
     ECall("sum", [arg]) =>
       match arg {
@@ -715,14 +713,30 @@ fn eval_aggregate(
           sum_amounts(values)
         }
         _ => {
-          let numbers : Array[@decimal.Decimal] = []
+          let kind = expression_type(arg, ctx.source, [])
+          let inventory = @booking.Inventory::new()
+          let mut total = @decimal.Decimal::zero()
           for row in rows {
-            match value_number(eval_expr(ctx, arg, row)) {
-              Some(number) => numbers.push(number)
-              None => ()
+            match eval_expr(ctx, arg, row) {
+              QAmount(a) => inventory.add_amount(a)
+              QPosition(p) => inventory.add(p)
+              QInventory(i) =>
+                for p in i.positions {
+                  inventory.add(p)
+                }
+              QInt(n) => total = total.add(@decimal.Decimal::new(n, 0))
+              QNumber(n) => total = total.add(n)
+              QBool(b) => if b { total = total.add(@decimal.Decimal::one()) }
+              _ => ()
             }
           }
-          sum_numbers(numbers)
+          if ["amount", "position", "inventory"].contains(kind) {
+            QInventory(inventory)
+          } else if kind == "int" || kind == "bool" {
+            QInt(total.mantissa())
+          } else {
+            QNumber(total)
+          }
         }
       }
     _ => QNull
@@ -909,7 +923,17 @@ fn run_select(
   realized : @realization.RealizedLedger,
   query : SelectQuery,
 ) -> QueryResult {
-  let ctx = QueryContext::new(realized)
+  if query_any(query, representation_expr) &&
+    realized.entries.any(fn(e) { !e.query_exact_decimal }) {
+    return {
+      columns: [],
+      rows: [],
+      error: Some(
+        "unsupported query.unsupported.decimal_representation: source contains signed zero; exact metadata/fingerprint representation unavailable",
+      ),
+    }
+  }
+  let ctx = QueryContext::new(realized, query.source)
   let origin = query_any(query, origin_expr)
   let running = query_any(query, fn(e) { e is ECol("balance") })
   let all_rows = source_rows(realized, query.source, origin)
@@ -928,14 +952,14 @@ fn run_select(
   sort_outputs(ctx, outputs, query.orders)
   if query.distinct {
     let unique : Array[OutputRow] = []
+    let seen : Map[String, Bool] = Map([])
     for output in outputs {
-      if !unique.any(fn(prev) {
-          prev.values.length() == output.values.length() &&
-          prev.values
-          .iter()
-          .zip(output.values.iter())
-          .all(fn(pair) { distinct_equal(pair.0, pair.1) })
-        }) {
+      let key = output.values
+        .map(distinct_key)
+        .map(fn(s) { s.length().to_string() + ":" + s })
+        .join("")
+      if !seen.contains(key) {
+        seen.set(key, true)
         unique.push(output)
       }
     }
@@ -1066,19 +1090,25 @@ pub fn run_query(
 
 ///|
 fn arithmetic(a : QueryValue, op : String, b : QueryValue) -> QueryValue {
-  match (a, b) {
-    (QNumber(x), QNumber(y)) =>
-      match op {
-        "+" => QNumber(x.add(y))
-        "-" => QNumber(x.sub(y))
-        "*" => QNumber(x.mul(y))
-        "/" =>
-          match x.div(y) {
-            Some(n) => QNumber(n)
-            None => QNull
-          }
-        _ => QNull
+  match (value_number(a), value_number(b)) {
+    (Some(x), Some(y)) => {
+      let result = match op {
+        "+" => Some(x.add(y))
+        "-" => Some(x.sub(y))
+        "*" => Some(x.mul(y))
+        "/" => x.div(y)
+        _ => None
       }
+      match result {
+        Some(n) =>
+          if a is QInt(_) && b is QInt(_) && op != "/" {
+            QInt(n.mantissa())
+          } else {
+            QNumber(n)
+          }
+        None => QNull
+      }
+    }
     _ => QNull
   }
 }
@@ -1225,7 +1255,11 @@ fn slice_index(
   row : BqlRow,
   size : Int32,
 ) -> Int32 {
-  let raw = eval_expr(ctx, expr, row).to_text()
+  let value = eval_expr(ctx, expr, row)
+  let raw = match value {
+    QBool(b) => if b { "1" } else { "0" }
+    _ => value.to_text()
+  }
   // Clamp before conversion, avoiding overflow for arbitrarily large indices.
   let number = @decimal.Decimal::parse(raw).unwrap()
   let bound = @decimal.Decimal::from_int(size)
@@ -1300,11 +1334,18 @@ fn transaction_accounts(postings : Array[@ast.Posting]) -> Array[String] {
 }
 
 ///|
-fn distinct_equal(a : QueryValue, b : QueryValue) -> Bool {
-  match (a, b) {
-    (QSet(a) | QFrozenSet(a), QSet(b) | QFrozenSet(b)) =>
-      a.length() == b.length() && a.all(fn(s) { b.contains(s) })
-    _ => value_compare(a, b) == Some(0)
+fn distinct_key(value : QueryValue) -> String {
+  match value {
+    QInt(n) => "n:" + n.to_string()
+    QNumber(n) => "n:" + decimal_group_key(n)
+    QBool(b) => if b { "n:1" } else { "n:0" }
+    QSet(s) | QFrozenSet(s) => {
+      let sorted = s.copy()
+      sorted.sort_by(fn(a, b) { a.lexical_compare(b) })
+      "set:" + sorted.map(fn(s) { s.length().to_string() + ":" + s }).join("")
+    }
+    QPosition(_) | QAmount(_) => "repr:" + value.to_text()
+    _ => value.to_json()
   }
 }
 
@@ -1406,11 +1447,10 @@ fn directive_column(
       }
     }
     "date" => return QDate(entry.date)
-    "year" => return QNumber(@decimal.Decimal::from_int(entry.date.year))
-    "month" => return QNumber(@decimal.Decimal::from_int(entry.date.month))
-    "day" => return QNumber(@decimal.Decimal::from_int(entry.date.day))
-    "lineno" =>
-      return QNumber(@decimal.Decimal::from_int(query_location(entry).line))
+    "year" => return query_int(entry.date.year)
+    "month" => return query_int(entry.date.month)
+    "day" => return query_int(entry.date.day)
+    "lineno" => return query_int(query_location(entry).line)
     "filename" =>
       match entry.directive {
         DDocument(document) =>

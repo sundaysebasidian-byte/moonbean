@@ -229,6 +229,7 @@ priv struct Parser {
   source_map : Array[@ast.Loc]
   lines : Array[String]
   mut index : Int32
+  mut query_signed_zero : Bool
   ledger : @ast.Ledger
   meta_stack : @ast.Meta
   tag_stack : Array[String]
@@ -249,6 +250,7 @@ fn Parser::new(
     source_map,
     lines,
     index: 0,
+    query_signed_zero: false,
     ledger: @ast.Ledger::new(),
     meta_stack: @ast.Meta::new(),
     tag_stack: [],
@@ -904,7 +906,7 @@ fn parse_transaction(
     if is_blank_line(text) || is_comment_line(text) {
       continue
     }
-    let line_tokens = tokenize(text)
+    let line_tokens = parser.tokens(text)
     let mut handled = false
     match line_tokens[0].kind {
       Word(w) =>
@@ -1930,7 +1932,7 @@ fn attach_continuation_meta(
     if is_blank_line(text) || is_comment_line(text) {
       continue
     }
-    let tokens = tokenize(text)
+    let tokens = parser.tokens(text)
     match parse_meta_line(tokens) {
       Some((key, value)) => own_meta.set(key, value)
       None => parser.error(meta_line, "parse.meta", "invalid metadata line")
@@ -2008,8 +2010,29 @@ pub fn parse_source(
       )
       continue
     }
-    let tokens = tokenize(line)
+    let tokens = parser.tokens(line)
     parse_toplevel(parser, tokens, line_no)
   }
+  if parser.query_signed_zero {
+    for entry in parser.ledger.entries {
+      entry.query_exact_decimal = false
+    }
+  }
   parser.ledger
+}
+
+///|
+fn Parser::tokens(self : Parser, text : String) -> Array[Token] {
+  let tokens = tokenize(text)
+  if !self.query_signed_zero {
+    self.query_signed_zero = tokens.any(fn(token) {
+      match token.kind {
+        Word(raw) =>
+          raw.has_prefix("-0") &&
+          raw[1:].iter().all(fn(c) { c == '0' || c == '.' || c == ',' })
+        _ => false
+      }
+    })
+  }
+  tokens
 }

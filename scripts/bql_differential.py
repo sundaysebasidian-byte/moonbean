@@ -9,6 +9,7 @@ import report_differential as reports
 import bql_table_differential as tables
 import bql_unicode_differential as unicode_cases
 import bql_object_differential as object_cases
+import bql_function_differential as function_cases
 
 
 def compare_bql(ours, oracle):
@@ -85,7 +86,8 @@ def main():
         ok = (oracle is not None) == case['oracle_supported']
         if case['oracle_supported']:
             ok = ok and oracle[1:] == case['oracle_rows']
-        ok = ok and proc.returncode != 0 and ('query.unsupported.' + case['kind']) in output and 'BQL:' in output
+        code = 'query.invalid_signature' if case['kind']=='compilation' else 'query.unsupported.'+case['kind']
+        ok = ok and proc.returncode != 0 and code in output and 'BQL:' in output
         results.append(dict(query=query, ok=ok, detail='' if ok else 'boundary or oracle capability changed'))
     sources = json.loads((Path(__file__).resolve().parent.parent / 'tests/bql-sources.json').read_text(encoding='utf-8'))
     for case in sources['cases'] + sources['boundaries']:
@@ -121,6 +123,7 @@ def main():
     results.extend(tables.run(args.ours, args.oracle))
     results.extend(unicode_cases.run(args.ours, args.oracle))
     results.extend(object_cases.run(args.ours, args.oracle, full=True))
+    results.extend(function_cases.run(args.ours,args.oracle))
     print(json.dumps(results, indent=2))
     return int(any(not r['ok'] for r in results))
 

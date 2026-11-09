@@ -132,6 +132,7 @@ pub(all) struct Entry {
   mut inferred_tolerances : Array[(String, @decimal.Decimal)]?
   mut balance_discrepancy : Amount?
   mut query_origin : Loc?
+  mut query_exact_decimal : Bool
   directive : Directive
 }
 pub fn Entry::is_transaction(Self) -> Bool

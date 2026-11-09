@@ -415,7 +415,6 @@ test "new unsupported boundaries preserve positions" {
   for
     (q, code) in [
       ("SELECT account WHERE account LIKE 'A%'", "like"),
-      ("SELECT length(NULL)", "signature"),
       ("SELECT account FROM transactions", "transaction_column"),
     ] {
     let r = queried(ledger_source(), q)
@@ -512,10 +511,10 @@ test "distinct star and nullable transaction counts" {
 }
 
 ///|
-test "distinct position identity is explicitly unsupported" {
+test "distinct position uses exact oracle representation" {
   let r = queried(ledger_source(), "SELECT DISTINCT position")
-  assert_true(r.failure() is Some(@query.Unsupported(_)))
-  assert_true(r.error.unwrap().contains("query.unsupported.distinct_type"))
+  assert_true(r.is_ok())
+  assert_eq(r.rows.length(), 4)
 }
 
 ///|
@@ -607,5 +606,31 @@ test "typed metadata directive references and failed assertion snapshots" {
   )
   assert_true(
     b.rows[0][0] is @query.QAmount(a) && a.number.to_string() == "980",
+  )
+}
+
+///|
+test "function arguments use resolved source types" {
+  assert_true(
+    queried(ledger_source(), "SELECT length(NULL)").failure()
+    is Some(@query.Compilation(_)),
+  )
+  let r = queried(
+    ledger_source(),
+    "SELECT repr(1),repr(1.0),repr(year(date)),str(cost(position)) LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0][0].to_text(), "1")
+  assert_eq(r.rows[0][1].to_text(), "Decimal('1.0')")
+  assert_eq(r.rows[0][2].to_text(), "2024")
+}
+
+///|
+test "signed zero input rejects exact object and fingerprint projections" {
+  let source = "2024-01-01 event \"kind\" \"value\"\n  signed: -0.00\n"
+  let r = queried(source, "SELECT id,meta FROM #entries")
+  assert_true(r.failure() is Some(@query.Unsupported(_)))
+  assert_true(
+    r.error.unwrap().contains("query.unsupported.decimal_representation"),
   )
 }

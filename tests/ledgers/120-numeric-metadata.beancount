@@ -1,0 +1,8 @@
+2024-01-01 commodity USD
+  tiny: 0.0000001
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Equity:Opening USD
+2024-01-02 * "scientific representations"
+  tiny: 0.00000001
+  Assets:Cash 0.0000001 USD
+  Equity:Opening -0.0000001 USD

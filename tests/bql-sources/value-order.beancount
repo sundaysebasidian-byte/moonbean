@@ -1,0 +1,38 @@
+2024-01-01 open Assets:Cash
+2024-01-01 open Equity:Opening
+2024-01-02 * "AAAAA"
+  Assets:Cash 1.0 AAAAA
+  Equity:Opening -1.0 AAAAA
+2024-01-02 * "A"
+  Assets:Cash 2.0 A
+  Equity:Opening -2.0 A
+2024-01-02 * "BEAN"
+  Assets:Cash 3.0 BEAN
+  Equity:Opening -3.0 BEAN
+2024-01-02 * "AAA"
+  Assets:Cash 4.0 AAA
+  Equity:Opening -4.0 AAA
+2024-01-02 * "CHF"
+  Assets:Cash 5.0 CHF
+  Equity:Opening -5.0 CHF
+2024-01-02 * "NZD"
+  Assets:Cash 6.0 NZD
+  Equity:Opening -6.0 NZD
+2024-01-02 * "AUD"
+  Assets:Cash 7.0 AUD
+  Equity:Opening -7.0 AUD
+2024-01-02 * "GBP"
+  Assets:Cash 8.0 GBP
+  Equity:Opening -8.0 GBP
+2024-01-02 * "CAD"
+  Assets:Cash 9.0 CAD
+  Equity:Opening -9.0 CAD
+2024-01-02 * "JPY"
+  Assets:Cash 10.0 JPY
+  Equity:Opening -10.0 JPY
+2024-01-02 * "EUR"
+  Assets:Cash 11.0 EUR
+  Equity:Opening -11.0 EUR
+2024-01-02 * "USD"
+  Assets:Cash 12.0 USD
+  Equity:Opening -12.0 USD

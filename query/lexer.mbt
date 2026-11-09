@@ -212,13 +212,6 @@ fn lex_bql(
           }
         }
         "like" => "like"
-        "startswith"
-        | "endswith"
-        | "findfirst"
-        | "findlast"
-        | "substring"
-        | "trim"
-        | "split" => "function"
         "join" => "join"
         "pivot" => "pivot"
         _ => ""

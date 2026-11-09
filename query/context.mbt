@@ -1,5 +1,6 @@
 ///|
 priv struct QueryContext {
+  source : QuerySource
   realized : @realization.RealizedLedger
   mut error : String?
   running : @booking.Inventory
@@ -8,8 +9,12 @@ priv struct QueryContext {
 }
 
 ///|
-fn QueryContext::new(realized : @realization.RealizedLedger) -> QueryContext {
+fn QueryContext::new(
+  realized : @realization.RealizedLedger,
+  source : QuerySource,
+) -> QueryContext {
   {
+    source,
     realized,
     error: None,
     running: @booking.Inventory::new(),
@@ -395,5 +400,24 @@ fn dict_get(value : QueryValue, key : String) -> QueryValue? {
       None
     }
     _ => None
+  }
+}
+
+///|
+fn representation_expr(expr : Expr) -> Bool {
+  match expr {
+    ECol("id" | "meta" | "entry" | "open" | "close") => true
+    ECall(
+      "str"
+      | "repr"
+      | "meta"
+      | "entry_meta"
+      | "any_meta"
+      | "open_meta"
+      | "commodity_meta"
+      | "currency_meta",
+      _
+    ) => true
+    _ => false
   }
 }

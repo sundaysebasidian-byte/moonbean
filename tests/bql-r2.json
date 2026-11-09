@@ -15,8 +15,7 @@
       [
         " 1 USD"
       ]
-    ],
-    "kind": "distinct_type"
+    ]
   },
   {
     "ledger": "tests/bql-sources/metadata.beancount",
@@ -225,8 +224,7 @@
         "10 HOOL {12.50 USD, 2024-01-02}"
       ]
     ],
-    "oracle_query": "SELECT DISTINCT str(position) ORDER BY date, account",
-    "kind": "distinct_type"
+    "oracle_query": "SELECT DISTINCT str(position) ORDER BY date, account"
   },
   {
     "query": "SELECT accounts FROM OPEN ON 2024-01-03",

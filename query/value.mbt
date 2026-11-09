@@ -46,7 +46,12 @@ fn query_json_escape(text : String) -> String {
       '\n' => sb.write_string("\\n")
       '\r' => sb.write_string("\\r")
       '\t' => sb.write_string("\\t")
-      other => sb.write_char(other)
+      other =>
+        if other.to_int() < 32 {
+          sb.write_string("\\u00" + repr_hex(other.to_int(), 2))
+        } else {
+          sb.write_char(other)
+        }
     }
   }
   sb.to_string()
@@ -81,10 +86,10 @@ pub fn QueryValue::to_text(self : QueryValue) -> String {
       sorted.join(",")
     }
     QText(text) => text
-    QNumber(number) => number.to_string()
+    QNumber(number) => python_decimal(number)
     QDate(date) => date.to_string()
-    QAmount(amount) => amount.to_string()
-    QPosition(position) => position.to_string()
+    QAmount(amount) => python_amount(amount)
+    QPosition(position) => python_position(position)
     QInventory(inventory) => {
       let sb = StringBuilder()
       let mut first = true
@@ -105,7 +110,7 @@ pub fn QueryValue::to_text(self : QueryValue) -> String {
 ///|
 fn query_amount_json(amount : @ast.Amount) -> String {
   "{\"number\":\"" +
-  amount.number.to_string() +
+  python_decimal(amount.number) +
   "\",\"currency\":\"" +
   query_json_escape(amount.currency) +
   "\"}"
@@ -116,7 +121,7 @@ fn query_cost_json(cost : @ast.Cost?) -> String {
   match cost {
     Some(c) =>
       "{ \"number\": \"" +
-      c.number.to_string() +
+      python_decimal(c.number) +
       "\", \"currency\": \"" +
       query_json_escape(c.currency) +
       "\", \"date\":" +
@@ -154,7 +159,7 @@ pub fn QueryValue::to_json(self : QueryValue) -> String {
       values.map(fn(s) { "\"" + query_json_escape(s) + "\"" }).join(",") +
       "]"
     QText(text) => "\"" + query_json_escape(text) + "\""
-    QNumber(number) => number.to_string()
+    QNumber(number) => python_decimal(number)
     QDate(date) => "\"" + date.to_string() + "\""
     QAmount(amount) => query_amount_json(amount)
     QPosition(position) => query_position_json(position)
