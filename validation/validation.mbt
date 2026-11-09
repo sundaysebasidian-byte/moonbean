@@ -882,12 +882,14 @@ fn posting_tolerance(
   currency : String,
 ) -> @decimal.Decimal {
   let mut tolerance = @decimal.Decimal::zero()
+  let mut inferred = false
   for posting in postings {
     let units = match posting.units {
       Some(units) => units
       None => continue
     }
     if units.currency == currency && units.number.has_fractional_digits() {
+      inferred = true
       tolerance = larger(
         tolerance,
         units.number
@@ -904,6 +906,7 @@ fn posting_tolerance(
               match spec.currency {
                 Some(cost_currency) =>
                   if cost_currency == currency {
+                    inferred = true
                     tolerance = larger(
                       tolerance,
                       number
@@ -921,6 +924,7 @@ fn posting_tolerance(
                   match spec.currency {
                     Some(cost_currency) =>
                       if cost_currency == currency {
+                        inferred = true
                         tolerance = larger(
                           tolerance,
                           total
@@ -942,7 +946,7 @@ fn posting_tolerance(
     Some(default) => larger(tolerance, default)
     None =>
       match ctx.options.inferred_tolerance_default.get("*") {
-        Some(default) => larger(tolerance, default)
+        Some(default) => if inferred { tolerance } else { default }
         None => tolerance
       }
   }
