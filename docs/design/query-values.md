@@ -40,3 +40,12 @@ must remain unchanged. Check affected cases first, then repeat the complete gate
 Signed-zero detection moves into the existing lexer pass with a private optional
 flag; the public tokenize API is unchanged. This avoids scanning each token array
 a second time, particularly costly on wasm-gc.
+
+The small-matrix follow-up isolated the remaining regression to ORDER BY.
+Evaluate non-projected order expressions once per output row, reuse projected
+column keys, and sort row indices in O(n log n), breaking equal keys by original
+index. This keeps NULL/direction/tie behavior stable and avoids repeated grouped
+expression evaluation. Amount/position order uses independently observed oracle
+keys; unsupported structural order remains an error. String grouping keys use a
+type/length prefix instead of JSON escaping; date and text keys must stay distinct.
+The unchanged baseline driver still skips its historical large-order cases.
