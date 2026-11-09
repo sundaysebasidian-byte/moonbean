@@ -37,6 +37,8 @@ def run(ours,oracle,full=False):
     ordering=str(Path('tests/bql-sources/value-order.beancount').resolve())
     cases.extend((ordering,q) for q in ["SELECT str(sum(position)),repr(sum(position)) WHERE account='Assets:Cash'", "SELECT min(position),max(position),min(units(position)),max(units(position))"])
     cases.append((str(Path('tests/bql-sources/metadata.beancount').resolve()),"SELECT position,count(*) WHERE account='Assets:Cash' GROUP BY position"))
+    cases.append((str(Path('tests/bql-sources/meta-groups.beancount').resolve()),"SELECT count(*) FROM #events GROUP BY meta('value')"))
+    cases.append((str(Path('tests/bql-sources/value-order.beancount').resolve()),"SELECT position FROM #postings ORDER BY position"))
     results=[]
     for f,q in cases:
         a=subprocess.run([ours,'query',f,q,'--json'],capture_output=True,text=True)

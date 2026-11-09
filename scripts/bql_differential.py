@@ -10,6 +10,7 @@ import bql_table_differential as tables
 import bql_unicode_differential as unicode_cases
 import bql_object_differential as object_cases
 import bql_function_differential as function_cases
+import bql_sort_differential as sort_cases
 
 
 def compare_bql(ours, oracle):
@@ -124,6 +125,7 @@ def main():
     results.extend(unicode_cases.run(args.ours, args.oracle))
     results.extend(object_cases.run(args.ours, args.oracle, full=True))
     results.extend(function_cases.run(args.ours,args.oracle))
+    results.extend(sort_cases.run(args.ours,args.oracle))
     print(json.dumps(results, indent=2))
     return int(any(not r['ok'] for r in results))
 

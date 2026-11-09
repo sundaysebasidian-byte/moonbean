@@ -441,7 +441,7 @@ fn structural_value(value : QueryValue) -> Bool {
 ///|
 fn typed_compare(ctx : QueryContext, a : QueryValue, b : QueryValue) -> Int32? {
   if a is QText(a) && b is QText(b) {
-    return Some(a.lexical_compare(b))
+    return Some(python_text_compare(a, b))
   }
   if !(a is QNull) &&
     !(b is QNull) &&

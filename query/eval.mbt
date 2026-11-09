@@ -787,6 +787,7 @@ fn group_key(ctx : QueryContext, exprs : Array[Expr], row : BqlRow) -> String {
     sb.write_string(
       match value {
         QBool(b) => if b { "1" } else { "0" }
+        QText(text) => "s" + text.length().to_string() + ":" + text
         QSet(_) | QFrozenSet(_) => distinct_key(value)
         QPosition(p) => position_group_key(p)
         QDict(_)
@@ -880,44 +881,99 @@ fn sort_outputs(
   ctx : QueryContext,
   outputs : Array[OutputRow],
   orders : Array[OrderSpec],
+  projections : Array[Expr],
 ) -> Unit {
-  let mut i = 1
-  while i < outputs.length() {
-    let current = outputs[i]
-    let mut j = i
-    while j > 0 {
-      let prev = outputs[j - 1]
-      let mut before = false
-      let mut decided = false
-      for spec in orders {
-        if !decided {
-          let a = eval_grouped(ctx, spec.expr, prev.group)
-          let b = eval_grouped(ctx, spec.expr, current.group)
-          let order = match (a, b) {
-            (QNull, QNull) => 0
-            (QNull, _) => -1
-            (_, QNull) => 1
-            _ =>
-              match typed_compare(ctx, a, b) {
-                Some(value) => value
-                None => 0
-              }
-          }
-          if order != 0 {
-            before = if spec.descending { order < 0 } else { order > 0 }
-            decided = true
-          }
+  if orders.is_empty() || outputs.is_empty() {
+    return
+  }
+  let projected = orders.map(fn(spec) {
+    if spec.expr is ECol(name) {
+      for i in 0..<projections.length() {
+        if projections[i] is ECol(other) && name == other {
+          return i
         }
       }
-      if before {
-        outputs[j - 1] = current
-        outputs[j] = prev
-        j = j - 1
-      } else {
-        break
+    }
+    -1
+  })
+  let reuse = projected.all(fn(i) { i >= 0 })
+  let keys = outputs.map(fn(output) {
+    if reuse {
+      output.values
+    } else {
+      let values : Array[QueryValue] = []
+      for i in 0..<orders.length() {
+        values.push(
+          if projected[i] >= 0 {
+            output.values[projected[i]]
+          } else {
+            eval_grouped(ctx, orders[i].expr, output.group)
+          },
+        )
+      }
+      values
+    }
+  })
+  if outputs.length() < 2 || ctx.error is Some(_) {
+    return
+  }
+  let indices : Array[Int32] = []
+  for i in 0..<outputs.length() {
+    indices.push(i)
+  }
+  indices.sort_by(fn(a, b) {
+    for i in 0..<orders.length() {
+      let slot = if reuse { projected[i] } else { i }
+      let order = sort_value_compare(ctx, keys[a][slot], keys[b][slot])
+      if order != 0 {
+        return if orders[i].descending { -order } else { order }
       }
     }
-    i = i + 1
+    a.compare(b)
+  })
+  let original = outputs.copy()
+  for i in 0..<indices.length() {
+    outputs[i] = original[indices[i]]
+  }
+}
+
+///|
+fn sort_value_compare(
+  ctx : QueryContext,
+  a : QueryValue,
+  b : QueryValue,
+) -> Int32 {
+  match (a, b) {
+    (QNull, QNull) => 0
+    (QNull, _) => -1
+    (_, QNull) => 1
+    (QAmount(a), QAmount(b)) => {
+      let currency = a.currency.lexical_compare(b.currency)
+      if currency == 0 {
+        a.number.compare(b.number)
+      } else {
+        currency
+      }
+    }
+    (QPosition(a), QPosition(b)) => position_sort_compare(a, b)
+    (QSet(_) | QFrozenSet(_), _) | (_, QSet(_) | QFrozenSet(_)) => {
+      query_error(
+        ctx, "unsupported query.unsupported.set_order: partial set ordering",
+      )
+      0
+    }
+    _ =>
+      match typed_compare(ctx, a, b) {
+        Some(order) => order
+        None => {
+          if ctx.error is None {
+            query_error(
+              ctx, "query.oracle_type_error: TypeError incomparable sort keys",
+            )
+          }
+          0
+        }
+      }
   }
 }
 
@@ -952,7 +1008,7 @@ fn run_select(
   let mut outputs = build_output(ctx, query, rows).filter(fn(output) {
     grouped_cond(ctx, query.having, output.group)
   })
-  sort_outputs(ctx, outputs, query.orders)
+  sort_outputs(ctx, outputs, query.orders, query.projections)
   if query.distinct {
     let unique : Array[OutputRow] = []
     let seen : Map[String, Bool] = Map([])

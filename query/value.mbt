@@ -201,7 +201,7 @@ fn value_compare(a : QueryValue, b : QueryValue) -> Int32? {
     (QNull, _) => None
     (_, QNull) => None
     (QDate(da), QDate(db)) => Some(da.compare(db))
-    (QText(ta), QText(tb)) => Some(ta.lexical_compare(tb))
+    (QText(ta), QText(tb)) => Some(python_text_compare(ta, tb))
     (QAmount(aa), QAmount(ab)) =>
       if aa.currency == ab.currency {
         Some(aa.number.compare(ab.number))

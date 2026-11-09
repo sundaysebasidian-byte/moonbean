@@ -157,3 +157,23 @@ fn source_metadata(
   }
   result
 }
+
+///|
+fn python_text_compare(a : String, b : String) -> Int32 {
+  let left = a.code_units()
+  let right = b.code_units()
+  for i in 0..<left.length().min(right.length()) {
+    let x = left[i].to_int()
+    let y = right[i].to_int()
+    if x != y {
+      if x >= 0xd800 && x <= 0xdbff && y >= 0xe000 {
+        return 1
+      }
+      if y >= 0xd800 && y <= 0xdbff && x >= 0xe000 {
+        return -1
+      }
+      return x.compare(y)
+    }
+  }
+  left.length().compare(right.length())
+}

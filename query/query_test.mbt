@@ -667,3 +667,32 @@ test "legacy multi currency inventory HAVING does not become an object error" {
   assert_true(r.is_ok())
   assert_eq(r.rows.length(), 0)
 }
+
+///|
+test "date and text metadata groups preserve their Python types" {
+  let source = "2024-01-01 event \"date\" \"one\"\n  value: 2024-01-01\n2024-01-02 event \"text\" \"two\"\n  value: \"2024-01-01\"\n"
+  let r = queried(source, "SELECT count(*) FROM #events GROUP BY meta('value')")
+  assert_true(r.is_ok())
+  assert_eq(r.rows.length(), 2)
+  assert_eq(r.rows[0][0].to_text(), "1")
+  assert_eq(r.rows[1][0].to_text(), "1")
+}
+
+///|
+test "cached sorting preserves duplicate order and Unicode scalar order" {
+  let source = "2024-01-01 open Assets:A USD\n2024-01-01 open Equity:A USD\n" +
+    "2024-01-02 * \"😀\"\n  Assets:A 1 USD\n  Equity:A -1 USD\n" +
+    "2024-01-03 * \"\"\n  Assets:A 2 USD\n  Equity:A -2 USD\n" +
+    "2024-01-04 * \"\"\n  Assets:A 3 USD\n  Equity:A -3 USD\n"
+  let r = queried(
+    source, "SELECT narration,date FROM transactions ORDER BY narration",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0][1].to_text(), "2024-01-03")
+  assert_eq(r.rows[1][1].to_text(), "2024-01-04")
+  assert_eq(r.rows[2][1].to_text(), "2024-01-02")
+  let r = queried(
+    source, "SELECT narration FROM transactions ORDER BY length(narration),date DESC",
+  )
+  assert_eq(r.rows[0][0].to_text(), "")
+}
