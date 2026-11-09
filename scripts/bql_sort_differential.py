@@ -35,6 +35,22 @@ def run(ours,oracle):
             detail='' if ok else str((av,bv))[:1200]
         except Exception as e:ok=False;detail=str(e)
         result.append(dict(query=q,corpus_rows=648,ok=ok,detail=detail))
+    # The baseline matrix skips large ORDER BY; prove the new native path separately.
+    large=Path('.oracle-cache/r2-last/large-sort.beancount').resolve()
+    large_rng=random.Random(7)
+    with large.open('w') as out:
+        out.write('2024-01-01 open Assets:A USD\n2024-01-01 open Equity:A USD\n')
+        for _ in range(50000):
+            out.write('2024-01-02 * "lot-'+str(large_rng.randrange(1000000))+'"\n  Assets:A 1 USD\n  Equity:A -1 USD\n')
+    q='SELECT narration ORDER BY narration'
+    a=subprocess.run([ours,'query',str(large),q,'--json'],capture_output=True,text=True)
+    b=subprocess.run([str(Path(oracle)/'python'),'scripts/oracle_query_values.py',str(large),q],capture_output=True,text=True)
+    try:
+        av=json.loads(a.stdout);bv=json.loads(b.stdout)
+        ok=a.returncode==0 and b.returncode==0 and len(av['rows'])==100000 and equivalent(av['rows'],bv)
+        detail='' if ok else 'large native ordering differs'
+    except Exception as e:ok=False;detail=str(e)
+    result.append(dict(query=q,kind='large native sort',postings=100000,ok=ok,detail=detail))
     return result
 
 if __name__=='__main__':
