@@ -472,7 +472,6 @@ fn eval_aggregate(expr : Expr, rows : Array[BqlRow]) -> QueryValue {
           continue
         }
         match expr {
-          ECall("last", _) => result = value
           ECall("min" | "max", _) => {
             let order = value_compare(value, result)
             if (expr is ECall("min", _) && order is Some(n) && n < 0) ||
