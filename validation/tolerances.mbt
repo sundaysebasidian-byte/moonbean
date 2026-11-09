@@ -33,31 +33,45 @@ fn infer_transaction_tolerances(
 ) -> Array[(String, @decimal.Decimal)] {
   let options = ctx.options
   let values : Array[(String, @decimal.Decimal)] = []
-  for (name, raw) in options.raw {
-    if name == "inferred_tolerance_default" {
-      let parts = raw.split(":").to_array()
-      if parts.length() == 2 {
-        let currency = String::from_iter(parts[0].iter())
-        if currency != "*" &&
-          options.inferred_tolerance_default.get(currency) is Some(n) {
-          set_tolerance(values, currency, n, false)
+  if options.inferred_tolerance_default.length() > 0 {
+    for (name, raw) in options.raw {
+      if name == "inferred_tolerance_default" {
+        let parts = raw.split(":").to_array()
+        if parts.length() == 2 {
+          let currency = String::from_iter(parts[0].iter())
+          if currency != "*" &&
+            options.inferred_tolerance_default.get(currency) is Some(n) {
+            set_tolerance(values, currency, n, false)
+          }
         }
       }
     }
-  }
-  for (currency, n) in options.inferred_tolerance_default {
-    if currency != "*" {
-      set_tolerance(values, currency, n, false)
+    for (currency, n) in options.inferred_tolerance_default {
+      if currency != "*" {
+        set_tolerance(values, currency, n, false)
+      }
     }
   }
-  let costs : Array[(String, @decimal.Decimal)] = []
+  let costs : Array[(String, @decimal.Decimal)]? = if options.infer_tolerance_from_cost {
+    Some([])
+  } else {
+    None
+  }
   for p in postings {
     if p.units is Some(units) && units.number.has_fractional_digits() {
-      let tolerance = ctx.tolerance_cache.get_or_init(units.number.scale(), fn() {
-        units.number.last_digit_place().mul(options.tolerance_multiplier)
-      })
+      let scale = units.number.scale()
+      let tolerance = match ctx.tolerance_cache.get(scale) {
+        Some(n) => n
+        None => {
+          let n = units.number
+            .last_digit_place()
+            .mul(options.tolerance_multiplier)
+          ctx.tolerance_cache.set(scale, n)
+          n
+        }
+      }
       set_tolerance(values, units.currency, tolerance, false)
-      if options.infer_tolerance_from_cost {
+      if costs is Some(costs) {
         if p.cost is Some(cost) &&
           cost.number_per is Some(n) &&
           cost.currency is Some(currency) {
@@ -83,8 +97,10 @@ fn infer_transaction_tolerances(
       }
     }
   }
-  for (currency, n) in costs {
-    set_tolerance(values, currency, n, false)
+  if costs is Some(costs) {
+    for (currency, n) in costs {
+      set_tolerance(values, currency, n, false)
+    }
   }
   values
 }

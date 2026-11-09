@@ -84,14 +84,14 @@ fn metadata_function(
     _ => return QNull
   }
   if name == "any_meta" {
-    if row.posting is Some(p) {
+    if row_posting(row) is Some(p) {
       for (k, v) in source_metadata(p.loc, p.meta) {
         if k == key {
           return v
         }
       }
     }
-    return match row.entry {
+    return match row_entry(row) {
       Some(e) => dict_get(entry_metadata(e), key).unwrap_or(QNull)
       None => QNull
     }

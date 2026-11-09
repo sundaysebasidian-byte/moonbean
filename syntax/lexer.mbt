@@ -89,6 +89,11 @@ fn read_string(text : String, start : Int32) -> (String, Int32) {
 
 ///|
 pub fn tokenize(text : String) -> Array[Token] {
+  tokenize_guarded(text, None)
+}
+
+///|
+fn tokenize_guarded(text : String, signed_zero : Array[Bool]?) -> Array[Token] {
   let tokens = []
   let len = text.length()
   let mut i = 0
@@ -229,10 +234,14 @@ pub fn tokenize(text : String) -> Array[Token] {
       // parser can report a precise error instead of looping forever.
       j = j + 1
     }
-    tokens.push({
-      kind: Word(text.unsafe_substring(start~, end=j)),
-      pos: start,
-    })
+    let word = text.unsafe_substring(start~, end=j)
+    if signed_zero is Some(flag) &&
+      !flag[0] &&
+      word.has_prefix("-0") &&
+      word[1:].iter().all(fn(c) { c == '0' || c == '.' || c == ',' }) {
+      flag[0] = true
+    }
+    tokens.push({ kind: Word(word), pos: start, })
     i = j
   }
   tokens.push({ kind: Eof, pos: len, })

@@ -229,7 +229,7 @@ priv struct Parser {
   source_map : Array[@ast.Loc]
   lines : Array[String]
   mut index : Int32
-  mut query_signed_zero : Bool
+  query_signed_zero : Array[Bool]
   ledger : @ast.Ledger
   meta_stack : @ast.Meta
   tag_stack : Array[String]
@@ -250,7 +250,7 @@ fn Parser::new(
     source_map,
     lines,
     index: 0,
-    query_signed_zero: false,
+    query_signed_zero: [false],
     ledger: @ast.Ledger::new(),
     meta_stack: @ast.Meta::new(),
     tag_stack: [],
@@ -2013,7 +2013,7 @@ pub fn parse_source(
     let tokens = parser.tokens(line)
     parse_toplevel(parser, tokens, line_no)
   }
-  if parser.query_signed_zero {
+  if parser.query_signed_zero[0] {
     for entry in parser.ledger.entries {
       entry.query_exact_decimal = false
     }
@@ -2023,16 +2023,5 @@ pub fn parse_source(
 
 ///|
 fn Parser::tokens(self : Parser, text : String) -> Array[Token] {
-  let tokens = tokenize(text)
-  if !self.query_signed_zero {
-    self.query_signed_zero = tokens.any(fn(token) {
-      match token.kind {
-        Word(raw) =>
-          raw.has_prefix("-0") &&
-          raw[1:].iter().all(fn(c) { c == '0' || c == '.' || c == ',' })
-        _ => false
-      }
-    })
-  }
-  tokens
+  tokenize_guarded(text, Some(self.query_signed_zero))
 }

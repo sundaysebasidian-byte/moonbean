@@ -324,12 +324,20 @@ fn query_error(ctx : QueryContext, message : String) -> Unit {
 
 ///|
 fn running_balance(ctx : QueryContext, row : BqlRow) -> QueryValue {
-  if row.running is Some(inventory) {
+  if row.extra is Some(extra) && extra.running is Some(inventory) {
     return QInventory(inventory)
   }
   ctx.running.add(row.position)
   let snapshot = ctx.running.copy()
-  row.running = Some(snapshot)
+  let extra = match row.extra {
+    Some(extra) => extra
+    None => {
+      let extra = new_row_extra(None, None, None)
+      row.extra = Some(extra)
+      extra
+    }
+  }
+  extra.running = Some(snapshot)
   QInventory(snapshot)
 }
 
@@ -432,6 +440,9 @@ fn structural_value(value : QueryValue) -> Bool {
 
 ///|
 fn typed_compare(ctx : QueryContext, a : QueryValue, b : QueryValue) -> Int32? {
+  if a is QText(a) && b is QText(b) {
+    return Some(a.lexical_compare(b))
+  }
   if !(a is QNull) &&
     !(b is QNull) &&
     (structural_value(a) || structural_value(b)) {
@@ -441,5 +452,38 @@ fn typed_compare(ctx : QueryContext, a : QueryValue, b : QueryValue) -> Int32? {
     None
   } else {
     value_compare(a, b)
+  }
+}
+
+///|
+priv struct RowExtra {
+  entry : @ast.Entry?
+  source : String?
+  posting : @ast.Posting?
+  mut running : @booking.Inventory?
+}
+
+///|
+fn new_row_extra(
+  entry : @ast.Entry?,
+  source : String?,
+  posting : @ast.Posting?,
+) -> RowExtra {
+  { entry, source, posting, running: None, }
+}
+
+///|
+fn row_entry(row : BqlRow) -> @ast.Entry? {
+  match row.extra {
+    Some(extra) => extra.entry
+    None => None
+  }
+}
+
+///|
+fn row_posting(row : BqlRow) -> @ast.Posting? {
+  match row.extra {
+    Some(extra) => extra.posting
+    None => None
   }
 }

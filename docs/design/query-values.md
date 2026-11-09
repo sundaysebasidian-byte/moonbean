@@ -36,3 +36,7 @@ structural-value checks. Tolerance inference uses explicit cache lookup (no
 per-posting closure) and allocates cost collections only when that option is on.
 These are private representation changes; typed values and rejection boundaries
 must remain unchanged. Check affected cases first, then repeat the complete gate.
+
+Signed-zero detection moves into the existing lexer pass with a private optional
+flag; the public tokenize API is unchanged. This avoids scanning each token array
+a second time, particularly costly on wasm-gc.

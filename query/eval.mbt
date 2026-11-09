@@ -5,10 +5,7 @@
 ///|
 priv struct BqlRow {
   date : @ast.Date
-  entry : @ast.Entry?
-  directive_source : String?
-  posting : @ast.Posting?
-  mut running : @booking.Inventory?
+  mut extra : RowExtra?
   flag : String
   payee : String?
   narration : String
@@ -116,18 +113,11 @@ fn posting_rows(
             Some(units) => {
               let cost = posting_cost(posting, units)
               rows.push({
-                entry: if origin {
-                  Some(entry)
+                extra: if origin {
+                  Some(new_row_extra(Some(entry), None, Some(posting)))
                 } else {
                   None
                 },
-                directive_source: None,
-                posting: if origin {
-                  Some(posting)
-                } else {
-                  None
-                },
-                running: None,
                 date: entry.date,
                 flag: txn.flag,
                 payee: txn.payee,
@@ -167,10 +157,7 @@ fn balance_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
   for account in realized.account_names() {
     for position in realized.inventory(account).positions {
       rows.push({
-        entry: None,
-        directive_source: None,
-        posting: None,
-        running: None,
+        extra: None,
         date,
         flag: "",
         payee: None,
@@ -210,13 +197,15 @@ fn source_rows(
 
 ///|
 fn eval_column(ctx : QueryContext, row : BqlRow, name : String) -> QueryValue {
-  if row.entry is Some(entry) && row.directive_source is Some(table) {
+  if row.extra is Some(extra) &&
+    extra.entry is Some(entry) &&
+    extra.source is Some(table) {
     return directive_column(ctx, entry, name, table)
   }
   match name {
     "balance" => running_balance(ctx, row)
     "entry" | "id" =>
-      match row.entry {
+      match row_entry(row) {
         Some(entry) => {
           let value = directive_value(entry)
           if name == "id" {
@@ -231,10 +220,10 @@ fn eval_column(ctx : QueryContext, row : BqlRow, name : String) -> QueryValue {
         }
       }
     "meta" =>
-      if row.posting is Some(p) {
+      if row_posting(row) is Some(p) {
         QDict(source_metadata(p.loc, p.meta))
       } else {
-        match row.entry {
+        match row_entry(row) {
           Some(entry) => entry_metadata(entry)
           None => {
             query_error(ctx, "unsupported query.unsupported.synthetic_metadata")
@@ -244,25 +233,25 @@ fn eval_column(ctx : QueryContext, row : BqlRow, name : String) -> QueryValue {
       }
     "type" => QText("transaction")
     "filename" | "lineno" | "location" =>
-      match row.entry {
+      match row_entry(row) {
         Some(e) =>
           if name == "filename" {
             QText(
-              row.posting
+              row_posting(row)
               .map(fn(p) { p.loc.file })
               .unwrap_or(query_location(e).file),
             )
           } else if name == "lineno" {
             QInt(
               @bigint.BigInt::from_int(
-                row.posting
+                row_posting(row)
                 .map(fn(p) { p.loc.line })
                 .unwrap_or(query_location(e).line),
               ),
             )
           } else {
             QText(
-              row.posting
+              row_posting(row)
               .map(fn(p) { p.loc.file + ":" + p.loc.line.to_string() + ":" })
               .unwrap_or(
                 query_location(e).file +
@@ -278,7 +267,7 @@ fn eval_column(ctx : QueryContext, row : BqlRow, name : String) -> QueryValue {
         }
       }
     "posting_flag" =>
-      match row.posting {
+      match row_posting(row) {
         Some(p) =>
           match p.flag {
             Some(s) => QText(s)
@@ -313,7 +302,7 @@ fn eval_column(ctx : QueryContext, row : BqlRow, name : String) -> QueryValue {
     "cost_label" =>
       QText(row.cost.map(fn(c) { c.label.unwrap_or("") }).unwrap_or(""))
     "price" =>
-      match row.posting {
+      match row_posting(row) {
         Some(p) => posting_price(p)
         None => QNull
       }
@@ -388,10 +377,10 @@ fn eval_expr(ctx : QueryContext, expr : Expr, row : BqlRow) -> QueryValue {
         ("meta" | "entry_meta", [arg]) =>
           match eval_expr(ctx, arg, row) {
             QText(key) => {
-              let metadata = if name == "meta" && row.posting is Some(p) {
+              let metadata = if name == "meta" && row_posting(row) is Some(p) {
                 QDict(source_metadata(p.loc, p.meta))
               } else {
-                match row.entry {
+                match row_entry(row) {
                   Some(e) => entry_metadata(e)
                   None =>
                     QDict(
@@ -1020,10 +1009,7 @@ fn journal_row(entry : @ast.Entry, posting : @ast.Posting) -> BqlRow? {
     Some(units) => {
       let cost = posting_cost(posting, units)
       Some({
-        entry: None,
-        directive_source: None,
-        posting: None,
-        running: None,
+        extra: None,
         date: entry.date,
         flag: "",
         payee: None,
@@ -1235,10 +1221,7 @@ fn opening_rows(
     for position in inventory.positions {
       let narration = "Opening balance for '" + account + "' (Summarization)"
       let row : BqlRow = {
-        entry: None,
-        directive_source: None,
-        posting: None,
-        running: None,
+        extra: None,
         date,
         flag: "S",
         payee: None,
@@ -1325,14 +1308,11 @@ fn transaction_rows(
       // Posting-only columns are rejected before evaluation for this source.
       let units = @ast.Amount::new(@decimal.Decimal::zero(), "")
       rows.push({
-        entry: if origin {
-          Some(entry)
+        extra: if origin {
+          Some(new_row_extra(Some(entry), None, None))
         } else {
           None
         },
-        directive_source: None,
-        posting: None,
-        running: None,
         date: entry.date,
         flag: txn.flag,
         payee: txn.payee,
@@ -1425,10 +1405,7 @@ fn directive_rows(
     }
     let units = @ast.Amount::new(@decimal.Decimal::zero(), "")
     result.push({
-      entry: Some(entry),
-      directive_source: Some(table),
-      posting: None,
-      running: None,
+      extra: Some(new_row_extra(Some(entry), Some(table), None)),
       date: entry.date,
       flag: table,
       payee: None,
