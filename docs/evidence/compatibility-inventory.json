@@ -5,6 +5,8 @@
   },
   "options": [
     {
+      "probe_errors": [],
+      "probe_value": "['some-other-file.beancount', 'some-other-file.beancount']",
       "name": "include",
       "type": "list",
       "default": "[]",
@@ -14,6 +16,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "841ee3be9acef165feba2342",
       "name": "input_hash",
       "type": "str",
       "default": "",
@@ -23,6 +27,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "__default__     : sign=1   integer_max=1   fractional_common=_   fractional_max=_   \"-0.*\" \"-0.*\"\n",
       "name": "dcontext",
       "type": "DisplayContext",
       "default": "__default__     : sign=1   integer_max=1   fractional_common=_   fractional_max=_   \"-0.*\" \"-0.*\"\n",
@@ -32,6 +38,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "set()",
       "name": "commodities",
       "type": "set",
       "default": "set()",
@@ -41,6 +49,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "Joe Smith's Personal Ledger",
       "name": "title",
       "type": "str",
       "default": "Beancount",
@@ -50,6 +60,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "Assets",
       "name": "name_assets",
       "type": "str",
       "default": "Assets",
@@ -59,6 +71,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "Liabilities",
       "name": "name_liabilities",
       "type": "str",
       "default": "Liabilities",
@@ -68,6 +82,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "Equity",
       "name": "name_equity",
       "type": "str",
       "default": "Equity",
@@ -77,6 +93,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "Income",
       "name": "name_income",
       "type": "str",
       "default": "Income",
@@ -86,6 +104,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "Expenses",
       "name": "name_expenses",
       "type": "str",
       "default": "Expenses",
@@ -95,6 +115,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "Opening-Balances",
       "name": "account_previous_balances",
       "type": "str",
       "default": "Opening-Balances",
@@ -104,6 +126,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "Earnings:Previous",
       "name": "account_previous_earnings",
       "type": "str",
       "default": "Earnings:Previous",
@@ -113,6 +137,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "Conversions:Previous",
       "name": "account_previous_conversions",
       "type": "str",
       "default": "Conversions:Previous",
@@ -122,6 +148,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "Earnings:Current",
       "name": "account_current_earnings",
       "type": "str",
       "default": "Earnings:Current",
@@ -131,6 +159,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "Conversions:Current",
       "name": "account_current_conversions",
       "type": "str",
       "default": "Conversions:Current",
@@ -140,6 +170,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "Earnings:Unrealized",
       "name": "account_unrealized_gains",
       "type": "str",
       "default": "Earnings:Unrealized",
@@ -149,6 +181,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "Rounding",
       "name": "account_rounding",
       "type": "NoneType",
       "default": "None",
@@ -158,6 +192,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "NOTHING",
       "name": "conversion_currency",
       "type": "str",
       "default": "NOTHING",
@@ -167,6 +203,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "{'CHF': Decimal('0.01')}",
       "name": "display_precision",
       "type": "dict",
       "default": "{}",
@@ -176,6 +214,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "{'CHF': Decimal('0.005')}",
       "name": "inferred_tolerance_default",
       "type": "dict",
       "default": "{}",
@@ -185,6 +225,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "0.5",
       "name": "tolerance_multiplier",
       "type": "Decimal",
       "default": "0.5",
@@ -194,6 +236,11 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [
+        "Renamed to 'tolerance_multiplier'.",
+        "Renamed to 'tolerance_multiplier'."
+      ],
+      "probe_value": "0.5",
       "name": "inferred_tolerance_multiplier",
       "type": "Decimal",
       "default": "0.5",
@@ -203,6 +250,8 @@
       "deprecated": "Renamed to 'tolerance_multiplier'."
     },
     {
+      "probe_errors": [],
+      "probe_value": "True",
       "name": "infer_tolerance_from_cost",
       "type": "bool",
       "default": "False",
@@ -212,6 +261,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "['/path/to/your/documents/archive', '/path/to/your/documents/archive']",
       "name": "documents",
       "type": "list",
       "default": "[]",
@@ -221,6 +272,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "['USD', 'USD']",
       "name": "operating_currency",
       "type": "list",
       "default": "[]",
@@ -230,6 +283,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "True",
       "name": "render_commas",
       "type": "bool",
       "default": "False",
@@ -239,6 +294,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "raw",
       "name": "plugin_processing_mode",
       "type": "str",
       "default": "default",
@@ -248,6 +305,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "64",
       "name": "long_string_maxlines",
       "type": "int",
       "default": "64",
@@ -257,6 +316,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "Booking.STRICT",
       "name": "booking_method",
       "type": "Booking",
       "default": "Booking.STRICT",
@@ -266,6 +327,11 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [
+        "Allowing pipe separator temporarily; this will go away eventually.",
+        "Allowing pipe separator temporarily; this will go away eventually."
+      ],
+      "probe_value": "True",
       "name": "allow_pipe_separator",
       "type": "bool",
       "default": "False",
@@ -275,6 +341,11 @@
       "deprecated": "Allowing pipe separator temporarily; this will go away eventually."
     },
     {
+      "probe_errors": [
+        "Allowing None for tags and link will go away eventually.",
+        "Allowing None for tags and link will go away eventually."
+      ],
+      "probe_value": "True",
       "name": "allow_deprecated_none_for_tags_and_links",
       "type": "bool",
       "default": "False",
@@ -284,6 +355,8 @@
       "deprecated": "Allowing None for tags and link will go away eventually."
     },
     {
+      "probe_errors": [],
+      "probe_value": "True",
       "name": "use_precise_interpolation",
       "type": "bool",
       "default": "False",
@@ -293,6 +366,8 @@
       "deprecated": ""
     },
     {
+      "probe_errors": [],
+      "probe_value": "True",
       "name": "insert_pythonpath",
       "type": "bool",
       "default": "False",
@@ -302,6 +377,89 @@
       "deprecated": ""
     }
   ],
+  "directives": {
+    "Open": [
+      "meta",
+      "date",
+      "account",
+      "currencies",
+      "booking"
+    ],
+    "Close": [
+      "meta",
+      "date",
+      "account"
+    ],
+    "Commodity": [
+      "meta",
+      "date",
+      "currency"
+    ],
+    "Pad": [
+      "meta",
+      "date",
+      "account",
+      "source_account"
+    ],
+    "Balance": [
+      "meta",
+      "date",
+      "account",
+      "amount",
+      "tolerance",
+      "diff_amount"
+    ],
+    "Transaction": [
+      "meta",
+      "date",
+      "flag",
+      "payee",
+      "narration",
+      "tags",
+      "links",
+      "postings"
+    ],
+    "Note": [
+      "meta",
+      "date",
+      "account",
+      "comment",
+      "tags",
+      "links"
+    ],
+    "Event": [
+      "meta",
+      "date",
+      "type",
+      "description"
+    ],
+    "Query": [
+      "meta",
+      "date",
+      "name",
+      "query_string"
+    ],
+    "Price": [
+      "meta",
+      "date",
+      "currency",
+      "amount"
+    ],
+    "Document": [
+      "meta",
+      "date",
+      "account",
+      "filename",
+      "tags",
+      "links"
+    ],
+    "Custom": [
+      "meta",
+      "date",
+      "type",
+      "values"
+    ]
+  },
   "tables": {
     "accounts": "table accounts:\n  account (str)\n  open (open)\n  close (close)\n",
     "balances": "table balances:\n  meta (metadata)\n  date (date)\n  account (str)\n  amount (amount)\n  tolerance (decimal)\n  discrepancy (amount)\n",
@@ -489,6 +647,156 @@
       "exit": 1,
       "stdout": "",
       "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 281, in parse\n    return rule()\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 100, in _bql_\n    self._statement_()\n    ~~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 121, in _statement_\n    self._error(\n    ~~~~~~~~~~~^\n        'expecting one of: '\n        ^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n        '<print> <select>'\n        ^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedParse: (1:1) expecting one of: 'BALANCES' 'CREATE' 'INSERT' 'JOURNAL''PRINT' 'SELECT' <balances><create_table> <insert> <journal><print> <select> :\nEXPLAIN SELECT date\n^\nstatement\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 64, in parse\n    return BQLParser().parse(text, semantics=BQLSemantics())\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 284, in parse\n    raise self._furthest_exception from e  # type: ignore\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 822, in _option\n    yield\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 110, in _statement_\n    self._select_()\n    ~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 131, in _select_\n    self._token('SELECT')\n    ~~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 756, in _token\n    self._error(token, exclass=FailedToken)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedToken: (1:1) expecting 'SELECT' :\nEXPLAIN SELECT date\n^\nselect\nstatement\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/bin/bean-query\", line 6, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1631, in __call__\n    return self.main(*args, **kwargs)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1552, in main\n    rv = self.invoke(ctx)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1415, in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 910, in invoke\n    return callback(*args, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 815, in main\n    shell.onecmd(query)\n    ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 268, in onecmd\n    return self.execute(line)\n           ~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 395, in execute\n    statement = self.parse(query, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 387, in parse\n    statement = self.context.parse(line)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/__init__.py\", line 57, in parse\n    return parser.parse(query)\n           ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 68, in parse\n    raise ParseError(parseinfo) from exc\nbeanquery.parser.ParseError: syntax error\n"
+    },
+    ".explain SELECT date": {
+      "exit": 0,
+      "stdout": "parsed statement\n----------------\n  (select\n    targets: (\n      (target\n        expression: (column\n          name: 'date'))))\n\ncompiled query\n--------------\n  EvalQuery(table=<beanquery.sources.beancount.PostingsTable object at 0x10909fcb0>, c_targets=[EvalTarget(c_expr=date(<class 'datetime.date'>), name='date', is_aggregate=False)], c_where=None, group_indexes=None, having_index=None, order_spec=None, limit=None, distinct=None)\n\n",
+      "stderr": ""
+    },
+    "BALANCES": {
+      "exit": 0,
+      "stdout": "   account      SUM((po\n--------------  -------\nAssets:Cash      10 USD\nEquity:Opening  -10 USD\n",
+      "stderr": ""
+    },
+    "JOURNAL": {
+      "exit": 0,
+      "stdout": "   date     f  M  MAXW     account      positio  balance\n----------  -  -  ----  --------------  -------  -------\n2024-01-02  *     sets  Assets:Cash      10 USD   10 USD\n2024-01-02  *     sets  Equity:Opening  -10 USD         \n",
+      "stderr": ""
+    },
+    "SELECT 1+2": {
+      "exit": 0,
+      "stdout": "1\n-\n3\n3\n",
+      "stderr": ""
+    },
+    "SELECT 1-2": {
+      "exit": 0,
+      "stdout": "1-\n--\n-1\n-1\n",
+      "stderr": ""
+    },
+    "SELECT 1*2": {
+      "exit": 0,
+      "stdout": "1\n-\n2\n2\n",
+      "stderr": ""
+    },
+    "SELECT 1/2": {
+      "exit": 0,
+      "stdout": "1/2\n---\n0.5\n0.5\n",
+      "stderr": ""
+    },
+    "SELECT 1%2": {
+      "exit": 0,
+      "stdout": "1\n-\n1\n1\n",
+      "stderr": ""
+    },
+    "SELECT 1//2": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 281, in parse\n    return rule()\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 104, in _bql_\n    self._check_eof()\n    ~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 799, in _check_eof\n    self._error(\n    ~~~~~~~~~~~^\n        'Expecting end of text', exclass=FailedExpectingEndOfText,\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedExpectingEndOfText: (1:9) Expecting end of text :\nSELECT 1//2\n        ^\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 64, in parse\n    return BQLParser().parse(text, semantics=BQLSemantics())\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 284, in parse\n    raise self._furthest_exception from e  # type: ignore\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 822, in _option\n    yield\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 878, in _unary_\n    self._uplus_()\n    ~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 891, in _uplus_\n    self._token('+')\n    ~~~~~~~~~~~^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 756, in _token\n    self._error(token, exclass=FailedToken)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedToken: (1:10) expecting '+' :\nSELECT 1//2\n         ^\nuplus\nunary\nfactor\ndiv\nterm\nsum\nany\ncomparison\ninversion\nand\nconjunction\nor\ndisjunction\nexpression\ntarget\nselect\nstatement\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/bin/bean-query\", line 6, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1631, in __call__\n    return self.main(*args, **kwargs)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1552, in main\n    rv = self.invoke(ctx)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1415, in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 910, in invoke\n    return callback(*args, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 815, in main\n    shell.onecmd(query)\n    ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 268, in onecmd\n    return self.execute(line)\n           ~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 395, in execute\n    statement = self.parse(query, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 387, in parse\n    statement = self.context.parse(line)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/__init__.py\", line 57, in parse\n    return parser.parse(query)\n           ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 68, in parse\n    raise ParseError(parseinfo) from exc\nbeanquery.parser.ParseError: syntax error\n"
+    },
+    "SELECT 1^2": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 281, in parse\n    return rule()\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 104, in _bql_\n    self._check_eof()\n    ~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 799, in _check_eof\n    self._error(\n    ~~~~~~~~~~~^\n        'Expecting end of text', exclass=FailedExpectingEndOfText,\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedExpectingEndOfText: (1:9) Expecting end of text :\nSELECT 1^2\n        ^\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 64, in parse\n    return BQLParser().parse(text, semantics=BQLSemantics())\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 284, in parse\n    raise self._furthest_exception from e  # type: ignore\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 822, in _option\n    yield\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 907, in _primary_\n    self._attribute_()\n    ~~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 924, in _attribute_\n    self._token('.')\n    ~~~~~~~~~~~^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 756, in _token\n    self._error(token, exclass=FailedToken)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedToken: (1:9) expecting '.' :\nSELECT 1^2\n        ^\nattribute\nprimary\nunary\nfactor\nterm\nsum\nany\ncomparison\ninversion\nand\nconjunction\nor\ndisjunction\nexpression\ntarget\nselect\nstatement\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/bin/bean-query\", line 6, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1631, in __call__\n    return self.main(*args, **kwargs)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1552, in main\n    rv = self.invoke(ctx)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1415, in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 910, in invoke\n    return callback(*args, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 815, in main\n    shell.onecmd(query)\n    ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 268, in onecmd\n    return self.execute(line)\n           ~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 395, in execute\n    statement = self.parse(query, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 387, in parse\n    statement = self.context.parse(line)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/__init__.py\", line 57, in parse\n    return parser.parse(query)\n           ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 68, in parse\n    raise ParseError(parseinfo) from exc\nbeanquery.parser.ParseError: syntax error\n"
+    },
+    "SELECT 1&2": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 281, in parse\n    return rule()\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 104, in _bql_\n    self._check_eof()\n    ~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 799, in _check_eof\n    self._error(\n    ~~~~~~~~~~~^\n        'Expecting end of text', exclass=FailedExpectingEndOfText,\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedExpectingEndOfText: (1:9) Expecting end of text :\nSELECT 1&2\n        ^\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 64, in parse\n    return BQLParser().parse(text, semantics=BQLSemantics())\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 284, in parse\n    raise self._furthest_exception from e  # type: ignore\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 822, in _option\n    yield\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 907, in _primary_\n    self._attribute_()\n    ~~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 924, in _attribute_\n    self._token('.')\n    ~~~~~~~~~~~^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 756, in _token\n    self._error(token, exclass=FailedToken)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedToken: (1:9) expecting '.' :\nSELECT 1&2\n        ^\nattribute\nprimary\nunary\nfactor\nterm\nsum\nany\ncomparison\ninversion\nand\nconjunction\nor\ndisjunction\nexpression\ntarget\nselect\nstatement\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/bin/bean-query\", line 6, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1631, in __call__\n    return self.main(*args, **kwargs)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1552, in main\n    rv = self.invoke(ctx)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1415, in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 910, in invoke\n    return callback(*args, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 815, in main\n    shell.onecmd(query)\n    ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 268, in onecmd\n    return self.execute(line)\n           ~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 395, in execute\n    statement = self.parse(query, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 387, in parse\n    statement = self.context.parse(line)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/__init__.py\", line 57, in parse\n    return parser.parse(query)\n           ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 68, in parse\n    raise ParseError(parseinfo) from exc\nbeanquery.parser.ParseError: syntax error\n"
+    },
+    "SELECT 1|2": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 281, in parse\n    return rule()\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 104, in _bql_\n    self._check_eof()\n    ~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 799, in _check_eof\n    self._error(\n    ~~~~~~~~~~~^\n        'Expecting end of text', exclass=FailedExpectingEndOfText,\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedExpectingEndOfText: (1:9) Expecting end of text :\nSELECT 1|2\n        ^\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 64, in parse\n    return BQLParser().parse(text, semantics=BQLSemantics())\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 284, in parse\n    raise self._furthest_exception from e  # type: ignore\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 822, in _option\n    yield\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 907, in _primary_\n    self._attribute_()\n    ~~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 924, in _attribute_\n    self._token('.')\n    ~~~~~~~~~~~^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 756, in _token\n    self._error(token, exclass=FailedToken)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedToken: (1:9) expecting '.' :\nSELECT 1|2\n        ^\nattribute\nprimary\nunary\nfactor\nterm\nsum\nany\ncomparison\ninversion\nand\nconjunction\nor\ndisjunction\nexpression\ntarget\nselect\nstatement\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/bin/bean-query\", line 6, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1631, in __call__\n    return self.main(*args, **kwargs)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1552, in main\n    rv = self.invoke(ctx)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1415, in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 910, in invoke\n    return callback(*args, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 815, in main\n    shell.onecmd(query)\n    ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 268, in onecmd\n    return self.execute(line)\n           ~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 395, in execute\n    statement = self.parse(query, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 387, in parse\n    statement = self.context.parse(line)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/__init__.py\", line 57, in parse\n    return parser.parse(query)\n           ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 68, in parse\n    raise ParseError(parseinfo) from exc\nbeanquery.parser.ParseError: syntax error\n"
+    },
+    "SELECT 1=2": {
+      "exit": 0,
+      "stdout": " 1=2 \n-----\nFALSE\nFALSE\n",
+      "stderr": ""
+    },
+    "SELECT 1!=2": {
+      "exit": 0,
+      "stdout": "1!=2\n----\nTRUE\nTRUE\n",
+      "stderr": ""
+    },
+    "SELECT 1<>2": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 281, in parse\n    return rule()\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 104, in _bql_\n    self._check_eof()\n    ~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 799, in _check_eof\n    self._error(\n    ~~~~~~~~~~~^\n        'Expecting end of text', exclass=FailedExpectingEndOfText,\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedExpectingEndOfText: (1:9) Expecting end of text :\nSELECT 1<>2\n        ^\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 64, in parse\n    return BQLParser().parse(text, semantics=BQLSemantics())\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 284, in parse\n    raise self._furthest_exception from e  # type: ignore\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 822, in _option\n    yield\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 545, in _comparison_\n    self._any_()\n    ~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 593, in _any_\n    self._token('any')\n    ~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 756, in _token\n    self._error(token, exclass=FailedToken)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedToken: (1:10) expecting 'any' :\nSELECT 1<>2\n         ^\nany\ncomparison\ninversion\nand\nconjunction\nor\ndisjunction\nexpression\ntarget\nselect\nstatement\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/bin/bean-query\", line 6, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1631, in __call__\n    return self.main(*args, **kwargs)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1552, in main\n    rv = self.invoke(ctx)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1415, in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 910, in invoke\n    return callback(*args, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 815, in main\n    shell.onecmd(query)\n    ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 268, in onecmd\n    return self.execute(line)\n           ~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 395, in execute\n    statement = self.parse(query, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 387, in parse\n    statement = self.context.parse(line)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/__init__.py\", line 57, in parse\n    return parser.parse(query)\n           ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 68, in parse\n    raise ParseError(parseinfo) from exc\nbeanquery.parser.ParseError: syntax error\n"
+    },
+    "SELECT 1<2": {
+      "exit": 0,
+      "stdout": "1<2 \n----\nTRUE\nTRUE\n",
+      "stderr": ""
+    },
+    "SELECT 1<=2": {
+      "exit": 0,
+      "stdout": "1<=2\n----\nTRUE\nTRUE\n",
+      "stderr": ""
+    },
+    "SELECT 1>2": {
+      "exit": 0,
+      "stdout": " 1>2 \n-----\nFALSE\nFALSE\n",
+      "stderr": ""
+    },
+    "SELECT 1>=2": {
+      "exit": 0,
+      "stdout": " 1>=2\n-----\nFALSE\nFALSE\n",
+      "stderr": ""
+    },
+    "SELECT TRUE AND FALSE": {
+      "exit": 0,
+      "stdout": "TRUE \n-----\nFALSE\nFALSE\n",
+      "stderr": ""
+    },
+    "SELECT TRUE OR FALSE": {
+      "exit": 0,
+      "stdout": "TRUE\n----\nTRUE\nTRUE\n",
+      "stderr": ""
+    },
+    "SELECT NOT TRUE": {
+      "exit": 0,
+      "stdout": "NOT T\n-----\nFALSE\nFALSE\n",
+      "stderr": ""
+    },
+    "SELECT NULL IS NULL": {
+      "exit": 0,
+      "stdout": "NULL\n----\nTRUE\nTRUE\n",
+      "stderr": ""
+    },
+    "SELECT NULL IS NOT NULL": {
+      "exit": 0,
+      "stdout": "NULL \n-----\nFALSE\nFALSE\n",
+      "stderr": ""
+    },
+    "SELECT 'a' ~ 'a'": {
+      "exit": 0,
+      "stdout": "'a' \n----\nTRUE\nTRUE\n",
+      "stderr": ""
+    },
+    "SELECT 1 IN (1,2)": {
+      "exit": 0,
+      "stdout": "1 IN\n----\nTRUE\nTRUE\n",
+      "stderr": ""
+    },
+    "SELECT 1 NOT IN (1,2)": {
+      "exit": 0,
+      "stdout": "1 NOT\n-----\nFALSE\nFALSE\n",
+      "stderr": ""
+    },
+    "SELECT 1 BETWEEN 0 AND 2": {
+      "exit": 0,
+      "stdout": "1 BE\n----\nTRUE\nTRUE\n",
+      "stderr": ""
+    },
+    "SELECT 'a'||'b'": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 281, in parse\n    return rule()\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 104, in _bql_\n    self._check_eof()\n    ~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 799, in _check_eof\n    self._error(\n    ~~~~~~~~~~~^\n        'Expecting end of text', exclass=FailedExpectingEndOfText,\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedExpectingEndOfText: (1:11) Expecting end of text :\nSELECT 'a'||'b'\n          ^\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 64, in parse\n    return BQLParser().parse(text, semantics=BQLSemantics())\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 284, in parse\n    raise self._furthest_exception from e  # type: ignore\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 822, in _option\n    yield\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 907, in _primary_\n    self._attribute_()\n    ~~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 924, in _attribute_\n    self._token('.')\n    ~~~~~~~~~~~^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 756, in _token\n    self._error(token, exclass=FailedToken)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedToken: (1:11) expecting '.' :\nSELECT 'a'||'b'\n          ^\nattribute\nprimary\nunary\nfactor\nterm\nsum\nany\ncomparison\ninversion\nand\nconjunction\nor\ndisjunction\nexpression\ntarget\nselect\nstatement\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/bin/bean-query\", line 6, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1631, in __call__\n    return self.main(*args, **kwargs)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1552, in main\n    rv = self.invoke(ctx)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1415, in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 910, in invoke\n    return callback(*args, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 815, in main\n    shell.onecmd(query)\n    ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 268, in onecmd\n    return self.execute(line)\n           ~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 395, in execute\n    statement = self.parse(query, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 387, in parse\n    statement = self.context.parse(line)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/__init__.py\", line 57, in parse\n    return parser.parse(query)\n           ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 68, in parse\n    raise ParseError(parseinfo) from exc\nbeanquery.parser.ParseError: syntax error\n"
+    },
+    "SELECT 'a' ?~ 'a'": {
+      "exit": 0,
+      "stdout": "'a' \n----\nTRUE\nTRUE\n",
+      "stderr": ""
     }
   }
 }

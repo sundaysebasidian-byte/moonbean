@@ -11,7 +11,7 @@ import re
 import subprocess
 import sys
 from beancount.parser import options, parser
-from beancount.core import data
+from beancount.core import data as bean_data
 
 
 def main():
@@ -39,7 +39,7 @@ def main():
     targets = query('.help targets')['stdout']
     functions, aggregates = targets.split('Functions\n---------\n', 1)[1].split('Aggregate functions\n-------------------\n')
     data = dict(versions={k: importlib.metadata.version(k) for k in ['beancount','beanquery']},
-                options=opts, directives={c.__name__: list(c._fields) for c in data.ALL_DIRECTIVES}, tables={name: query('.describe '+name)['stdout'] for name in tables},
+                options=opts, directives={c.__name__: list(c._fields) for c in bean_data.ALL_DIRECTIVES}, tables={name: query('.describe '+name)['stdout'] for name in tables},
                 functions=re.findall(r'^\w+\([^\n]*\)$', functions, re.M),
                 aggregates=re.findall(r'^\w+\([^\n]*\)$', aggregates, re.M),
                 help={name: query('.help '+name)['stdout'] for name in ['select','from','where','print','journal','balances','explain','run']},
@@ -48,7 +48,13 @@ def main():
                     'SELECT DISTINCT date', 'SELECT account, sum(position) GROUP BY account FLATTEN',
                     'SELECT account, currency, sum(number) GROUP BY account, currency PIVOT BY account, currency',
                     'SELECT date FROM (SELECT date)', 'SELECT date FROM OPEN ON 2024-01-01 CLOSE ON 2024-02-01 CLEAR',
-                    'PRINT', 'EXPLAIN SELECT date']})
+                    'PRINT', 'EXPLAIN SELECT date', '.explain SELECT date', 'BALANCES', 'JOURNAL',
+                    *['SELECT '+expr for expr in [
+                        '1+2', '1-2', '1*2', '1/2', '1%2', '1//2', '1^2', '1&2', '1|2',
+                        '1=2', '1!=2', '1<>2', '1<2', '1<=2', '1>2', '1>=2',
+                        'TRUE AND FALSE', 'TRUE OR FALSE', 'NOT TRUE', 'NULL IS NULL',
+                        'NULL IS NOT NULL', "'a' ~ 'a'", '1 IN (1,2)', '1 NOT IN (1,2)',
+                        '1 BETWEEN 0 AND 2', "'a'||'b'", "'a' ?~ 'a'"]]]})
     Path(a.out).write_text(json.dumps(data, indent=2, ensure_ascii=False)+'\n')
     print(f'{len(opts)} writable options, {len(tables)} tables, {len(data["functions"])} function signatures, {len(data["aggregates"])} aggregate signatures')
 
