@@ -12,7 +12,7 @@ priv struct BqlRow {
   links : Array[String]
   meta : @ast.Meta
   entry_meta : @ast.Meta
-  accounts : Array[String]
+  accounts : Array[@ast.Posting]
   account : String
   units : @ast.Amount
   cost : @ast.Cost?
@@ -107,7 +107,7 @@ fn posting_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
                 links: txn.links,
                 meta: posting.meta,
                 entry_meta: entry.meta,
-                accounts: transaction_accounts(txn),
+                accounts: txn.postings,
                 account: posting.account,
                 units,
                 cost,
@@ -188,7 +188,7 @@ fn eval_column(row : BqlRow, name : String) -> QueryValue {
     "narration" => QText(row.narration)
     "tags" => QSet(row.tags)
     "links" => QSet(row.links)
-    "accounts" => QSet(row.accounts)
+    "accounts" => QSet(transaction_accounts(row.accounts))
     "account" => QText(row.account)
     "root" => QText(@ast.account_root(row.account))
     "parent" => QText(@ast.account_parent(row.account))
@@ -980,7 +980,7 @@ fn transaction_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
         links: txn.links,
         meta: entry.meta,
         entry_meta: entry.meta,
-        accounts: transaction_accounts(txn),
+        accounts: txn.postings,
         account: "",
         units,
         cost: None,
@@ -993,9 +993,9 @@ fn transaction_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
 }
 
 ///|
-fn transaction_accounts(txn : @ast.Transaction) -> Array[String] {
+fn transaction_accounts(postings : Array[@ast.Posting]) -> Array[String] {
   let accounts : Array[String] = []
-  for posting in txn.postings {
+  for posting in postings {
     if !accounts.contains(posting.account) {
       accounts.push(posting.account)
     }
