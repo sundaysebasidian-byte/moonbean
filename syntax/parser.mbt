@@ -1024,7 +1024,6 @@ fn parse_open(
     parser.loc(line),
     @ast.Directive::DOpen(open),
   )
-  entry.meta = parser.meta_stack.copy()
   Some(entry)
 }
 
@@ -1068,7 +1067,6 @@ fn parse_close(
     parser.loc(line),
     @ast.Directive::DClose(close),
   )
-  entry.meta = parser.meta_stack.copy()
   Some(entry)
 }
 
@@ -1110,7 +1108,6 @@ fn parse_commodity(
     parser.loc(line),
     @ast.Directive::DCommodity(commodity),
   )
-  entry.meta = parser.meta_stack.copy()
   Some(entry)
 }
 
@@ -1158,7 +1155,6 @@ fn parse_pad(
     parser.loc(line),
     @ast.Directive::DPad({ account, source_account: source, }),
   )
-  entry.meta = parser.meta_stack.copy()
   Some(entry)
 }
 
@@ -1250,7 +1246,6 @@ fn parse_balance(
       tolerance,
     }),
   )
-  entry.meta = parser.meta_stack.copy()
   Some(entry)
 }
 
@@ -1295,7 +1290,6 @@ fn parse_price(
     parser.loc(line),
     @ast.Directive::DPrice({ currency, amount, }),
   )
-  entry.meta = parser.meta_stack.copy()
   Some(entry)
 }
 
@@ -1360,7 +1354,6 @@ fn parse_event(
         parser.loc(line),
         @ast.Directive::DEvent({ event_type, description, }),
       )
-      entry.meta = parser.meta_stack.copy()
       Some(entry)
     }
     None => None
@@ -1382,7 +1375,6 @@ fn parse_query(
         parser.loc(line),
         @ast.Directive::DQuery({ name, query, }),
       )
-      entry.meta = parser.meta_stack.copy()
       Some(entry)
     }
     None => None
@@ -1423,6 +1415,9 @@ fn parse_note(
       return None
     }
   }
+  let tags = parser.tag_stack.copy()
+  let links : Array[String] = []
+  parse_tags_and_links(cursor, tags, links)
   if !cursor.eof() {
     parser.error(
       line,
@@ -1435,9 +1430,8 @@ fn parse_note(
   let entry = @ast.Entry::new(
     date,
     parser.loc(line),
-    @ast.Directive::DNote({ account, comment, }),
+    @ast.Directive::DNote({ account, comment, tags, links, }),
   )
-  entry.meta = parser.meta_stack.copy()
   Some(entry)
 }
 
@@ -1485,7 +1479,6 @@ fn parse_document(
     parser.loc(line),
     @ast.Directive::DDocument({ account, filename, tags, links, }),
   )
-  entry.meta = parser.meta_stack.copy()
   Some(entry)
 }
 
@@ -1585,7 +1578,6 @@ fn parse_custom(
     parser.loc(line),
     @ast.Directive::DCustom({ custom_type, values, }),
   )
-  entry.meta = parser.meta_stack.copy()
   Some(entry)
 }
 

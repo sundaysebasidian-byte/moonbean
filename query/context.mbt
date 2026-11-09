@@ -1,0 +1,399 @@
+///|
+priv struct QueryContext {
+  realized : @realization.RealizedLedger
+  mut error : String?
+  running : @booking.Inventory
+  mut opens : Map[String, @ast.Entry]?
+  mut closes : Map[String, @ast.Entry]?
+}
+
+///|
+fn QueryContext::new(realized : @realization.RealizedLedger) -> QueryContext {
+  {
+    realized,
+    error: None,
+    running: @booking.Inventory::new(),
+    opens: None,
+    closes: None,
+  }
+}
+
+///|
+fn ensure_account_index(ctx : QueryContext) -> Unit {
+  if ctx.opens is Some(_) {
+    return
+  }
+  let opens : Map[String, @ast.Entry] = Map([])
+  let closes : Map[String, @ast.Entry] = Map([])
+  for entry in ctx.realized.entries {
+    match entry.directive {
+      DOpen(o) => opens.set(o.account, entry)
+      DClose(c) => closes.set(c.account, entry)
+      _ => ()
+    }
+  }
+  ctx.opens = Some(opens)
+  ctx.closes = Some(closes)
+}
+
+///|
+fn entry_metadata(entry : @ast.Entry) -> QueryValue {
+  let fields = source_metadata(query_location(entry), entry.meta)
+  if entry.inferred_tolerances is Some(values) {
+    fields.push(
+      ("__tolerances__", QDict(values.map(fn(p) { (p.0, QNumber(p.1)) }))),
+    )
+  }
+  QDict(fields)
+}
+
+///|
+fn directive_value(entry : @ast.Entry) -> QueryValue {
+  let fields : Array[(String, QueryValue)] = [
+    ("meta", entry_metadata(entry)),
+    ("date", QDate(entry.date)),
+  ]
+  let name = match entry.directive {
+    DOpen(o) => {
+      fields.append([
+        ("account", QText(o.account)),
+        (
+          "currencies",
+          if o.currencies.is_empty() {
+            QNull
+          } else {
+            QList(o.currencies.map(fn(s) { QText(s) }))
+          },
+        ),
+        (
+          "booking",
+          match o.booking {
+            Some(b) => QEnum("Booking", b)
+            None => QNull
+          },
+        ),
+      ])
+      "Open"
+    }
+    DClose(c) => {
+      fields.push(("account", QText(c.account)))
+      "Close"
+    }
+    DCommodity(c) => {
+      fields.push(("currency", QText(c.currency)))
+      "Commodity"
+    }
+    DEvent(e) => {
+      fields.append([
+        ("type", QText(e.event_type)),
+        ("description", QText(e.description)),
+      ])
+      "Event"
+    }
+    DPrice(p) => {
+      fields.append([
+        ("currency", QText(p.currency)),
+        ("amount", QAmount(p.amount)),
+      ])
+      "Price"
+    }
+    DNote(n) => {
+      fields.append([
+        ("account", QText(n.account)),
+        ("comment", QText(n.comment)),
+        ("tags", QFrozenSet(n.tags)),
+        ("links", QFrozenSet(n.links)),
+      ])
+      "Note"
+    }
+    DDocument(d) => {
+      fields.append([
+        ("account", QText(d.account)),
+        ("filename", QText(document_filename(entry, d))),
+        ("tags", QFrozenSet(d.tags)),
+        ("links", QFrozenSet(d.links)),
+      ])
+      "Document"
+    }
+    DPad(p) => {
+      fields.append([
+        ("account", QText(p.account)),
+        ("source_account", QText(p.source_account)),
+      ])
+      "Pad"
+    }
+    DBalance(b) => {
+      fields.append([
+        ("account", QText(b.account)),
+        ("amount", QAmount(b.amount)),
+        (
+          "tolerance",
+          match b.tolerance {
+            Some(n) => QNumber(n)
+            None => QNull
+          },
+        ),
+        (
+          "diff_amount",
+          match entry.balance_discrepancy {
+            Some(a) => QAmount(a)
+            None => QNull
+          },
+        ),
+      ])
+      "Balance"
+    }
+    DQuery(q) => {
+      fields.append([("name", QText(q.name)), ("query_string", QText(q.query))])
+      "Query"
+    }
+    DTransaction(t) => {
+      fields.append([
+        ("flag", QText(t.flag)),
+        (
+          "payee",
+          match t.payee {
+            Some(s) => QText(s)
+            None => QNull
+          },
+        ),
+        ("narration", QText(t.narration)),
+        ("tags", QFrozenSet(t.tags)),
+        ("links", QFrozenSet(t.links)),
+        ("postings", QList(t.postings.map(posting_value_record))),
+      ])
+      "Transaction"
+    }
+    DCustom(c) => {
+      fields.append([
+        ("type", QText(c.custom_type)),
+        ("values", QList(c.values.map(custom_value_record))),
+      ])
+      "Custom"
+    }
+  }
+  QRecord(name, fields)
+}
+
+///|
+fn posting_price(p : @ast.Posting) -> QueryValue {
+  match p.price {
+    Some(PerUnit(a)) => QAmount(a)
+    Some(Total(a)) =>
+      match p.units {
+        Some(u) =>
+          if u.number.is_zero() {
+            QAmount(@ast.Amount::new(@decimal.Decimal::zero(), a.currency))
+          } else {
+            match a.number.div(u.number.abs()) {
+              Some(n) => QAmount(@ast.Amount::new(n, a.currency))
+              None => QNull
+            }
+          }
+        None => QNull
+      }
+    None => QNull
+  }
+}
+
+///|
+fn posting_value_record(p : @ast.Posting) -> QueryValue {
+  let cost = match (p.cost, p.units) {
+    (Some(_), Some(units)) =>
+      match posting_cost(p, units) {
+        Some(c) =>
+          QRecord("Cost", [
+            ("number", QNumber(c.number)),
+            ("currency", QText(c.currency)),
+            (
+              "date",
+              match c.date {
+                Some(d) => QDate(d)
+                None => QNull
+              },
+            ),
+            (
+              "label",
+              match c.label {
+                Some(s) => QText(s)
+                None => QNull
+              },
+            ),
+          ])
+        None => QNull
+      }
+    _ => QNull
+  }
+  QRecord("Posting", [
+    ("account", QText(p.account)),
+    (
+      "units",
+      match p.units {
+        Some(a) => QAmount(a)
+        None => QNull
+      },
+    ),
+    ("cost", cost),
+    ("price", posting_price(p)),
+    (
+      "flag",
+      match p.flag {
+        Some(s) => QText(s)
+        None => QNull
+      },
+    ),
+    ("meta", QDict(source_metadata(p.loc, p.meta))),
+  ])
+}
+
+///|
+fn custom_value_record(value : @ast.CustomValue) -> QueryValue {
+  let (v, t) = match value {
+    CString(s) | CCurrency(s) | CTag(s) => (QText(s), QPythonType("str"))
+    CAccount(s) => (QText(s), QText("<AccountDummy>"))
+    CNumber(n) => (QNumber(n), QPythonType("decimal.Decimal"))
+    CBool(b) => (QBool(b), QPythonType("bool"))
+    CDate(d) => (QDate(d), QPythonType("datetime.date"))
+    CAmount(a) => (QAmount(a), QPythonType("beancount.core.amount.Amount"))
+  }
+  QRecord("ValueType", [("value", v), ("dtype", t)])
+}
+
+///|
+fn hash_scalar(value : QueryValue) -> String {
+  match value {
+    QNull => "None"
+    QBool(b) => if b { "True" } else { "False" }
+    QDict(_) | QRecord(_, _) | QList(_) => python_repr(value)
+    _ => value.to_text()
+  }
+}
+
+///|
+fn directive_identity(value : QueryValue) -> String {
+  match value {
+    QRecord(_, fields) => {
+      let out = StringBuilder()
+      for (_, field) in fields {
+        match field {
+          QList(values) => {
+            let hashes = values.map(fn(v) {
+              match v {
+                QRecord(_, _) => directive_identity(v)
+                _ => query_md5(hash_scalar(v))
+              }
+            })
+            hashes.sort_by(fn(a, b) { a.lexical_compare(b) })
+            out.write_string(hashes.join(""))
+          }
+          QSet(values) | QFrozenSet(values) => {
+            let hashes = values.map(fn(v) { query_md5(v) })
+            hashes.sort_by(fn(a, b) { a.lexical_compare(b) })
+            out.write_string(hashes.join(""))
+          }
+          _ => out.write_string(hash_scalar(field))
+        }
+      }
+      query_md5(out.to_string())
+    }
+    _ => query_md5(hash_scalar(value))
+  }
+}
+
+///|
+fn document_filename(entry : @ast.Entry, document : @ast.Document) -> String {
+  let file = @path.Path(document.filename)
+  if file.is_absolute() {
+    file.normalize().to_string()
+  } else {
+    @path.Path(entry.loc.file).dirname().join(file).normalize().to_string()
+  }
+}
+
+///|
+fn query_error(ctx : QueryContext, message : String) -> Unit {
+  if ctx.error is None {
+    ctx.error = Some(message)
+  }
+}
+
+///|
+fn running_balance(ctx : QueryContext, row : BqlRow) -> QueryValue {
+  if row.running is Some(inventory) {
+    return QInventory(inventory)
+  }
+  ctx.running.add(row.position)
+  let snapshot = ctx.running.copy()
+  row.running = Some(snapshot)
+  QInventory(snapshot)
+}
+
+///|
+fn origin_expr(expr : Expr) -> Bool {
+  match expr {
+    ECol(
+      "entry"
+      | "id"
+      | "meta"
+      | "filename"
+      | "lineno"
+      | "location"
+      | "posting_flag"
+      | "price"
+    ) => true
+    ECall("meta" | "entry_meta" | "any_meta", _) => true
+    _ => false
+  }
+}
+
+///|
+fn expr_any(expr : Expr, predicate : (Expr) -> Bool) -> Bool {
+  if predicate(expr) {
+    return true
+  }
+  match expr {
+    ECall(_, args) => args.any(fn(e) { expr_any(e, predicate) })
+    EBinary(a, _, b) => expr_any(a, predicate) || expr_any(b, predicate)
+    _ => false
+  }
+}
+
+///|
+fn cond_any(cond : Cond, predicate : (Expr) -> Bool) -> Bool {
+  match cond {
+    CTrue => false
+    CNot(c) => cond_any(c, predicate)
+    CAnd(a, b) | COr(a, b) => cond_any(a, predicate) || cond_any(b, predicate)
+    CCmp(a, _, b) => expr_any(a, predicate) || expr_any(b, predicate)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => expr_any(e, predicate)
+  }
+}
+
+///|
+fn query_any(query : SelectQuery, predicate : (Expr) -> Bool) -> Bool {
+  query.projections.any(fn(e) { expr_any(e, predicate) }) ||
+  query.groups.any(fn(e) { expr_any(e, predicate) }) ||
+  query.orders.any(fn(o) { expr_any(o.expr, predicate) }) ||
+  cond_any(query.filter, predicate) ||
+  cond_any(query.having, predicate)
+}
+
+///|
+fn query_location(entry : @ast.Entry) -> @ast.Loc {
+  entry.query_origin.unwrap_or(entry.loc)
+}
+
+///|
+fn dict_get(value : QueryValue, key : String) -> QueryValue? {
+  match value {
+    QDict(fields) => {
+      for (name, v) in fields {
+        if name == key {
+          return Some(v)
+        }
+      }
+      None
+    }
+    _ => None
+  }
+}

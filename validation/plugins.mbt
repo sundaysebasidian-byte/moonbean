@@ -26,24 +26,31 @@ fn plugin_error(
 fn auto_accounts(entries : Array[@ast.Entry]) -> Array[@ast.Entry] {
   let opened : Map[String, Bool] = Map([])
   for entry in entries {
-    if entry.directive is DOpen(x) {
-      opened.set(x.account, true)
+    if entry.directive is DOpen(o) {
+      opened.set(o.account, true)
     }
   }
-  let result = entries.copy()
+  let first : Map[String, @ast.Entry] = Map([])
   for entry in sorted_entries(entries) {
     for account in plugin_accounts(entry) {
-      if !opened.contains(account) {
-        opened.set(account, true)
-        result.push(
-          @ast.Entry::new(
-            entry.date,
-            entry.loc,
-            DOpen({ account, currencies: [], booking: None, }),
-          ),
-        )
+      if !opened.contains(account) && !first.contains(account) {
+        first.set(account, entry)
       }
     }
+  }
+  let names = first.keys().to_array()
+  names.sort_by(fn(a, b) { a.lexical_compare(b) })
+  let result = entries.copy()
+  for i in 0..<names.length() {
+    let account = names[i]
+    let origin = first.get(account).unwrap()
+    let generated = @ast.Entry::new(
+      origin.date,
+      origin.loc,
+      DOpen({ account, currencies: [], booking: None, }),
+    )
+    generated.query_origin = Some(@ast.Loc::new("<auto_accounts>", i))
+    result.push(generated)
   }
   sorted_entries(result)
 }

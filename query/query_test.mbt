@@ -540,11 +540,7 @@ test "directive tables preserve NULLs and validate schemas" {
     .unwrap()
     .contains("query.invalid_column"),
   )
-  assert_true(
-    queried(ledger_source(), "SELECT meta FROM entries").error
-    .unwrap()
-    .contains("query.unsupported.object_column"),
-  )
+  assert_true(queried(ledger_source(), "SELECT meta FROM entries").is_ok())
   let empty = queried(ledger_source(), "SELECT count(*) FROM prices")
   assert_true(empty.is_ok())
   assert_eq(empty.rows.length(), 0)
@@ -586,5 +582,30 @@ test "query errors distinguish compilation and oracle engine failures" {
   assert_true(
     queried(ledger_source(), "SELECT count(accounts) FROM entries").failure()
     is Some(@query.Evaluation(_)),
+  )
+}
+
+///|
+test "typed metadata directive references and failed assertion snapshots" {
+  let r = queried(
+    ledger_source(),
+    "SELECT open,close FROM #accounts ORDER BY account",
+  )
+  assert_true(r.is_ok())
+  assert_true(r.rows[0][0] is @query.QRecord("Open", _))
+  assert_true(r.rows[0][1] is @query.QNull)
+  let m = queried(
+    ledger_source(),
+    "SELECT getitem(meta,'lineno'),meta FROM #entries LIMIT 1",
+  )
+  assert_true(m.is_ok())
+  assert_eq(m.rows[0][0].to_text(), "1")
+  assert_true(m.rows[0][1] is @query.QDict(_))
+  let b = queried(
+    ledger_source() + "2024-04-01 balance Assets:Cash 0 USD\n",
+    "SELECT discrepancy FROM #balances",
+  )
+  assert_true(
+    b.rows[0][0] is @query.QAmount(a) && a.number.to_string() == "980",
   )
 }

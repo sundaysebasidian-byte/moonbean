@@ -255,7 +255,7 @@ fn parse_primary(parser : QueryParser) -> Expr? {
           return None
         }
         match lower {
-          "year" | "month" | "root" | "parent" | "leaf" | "meta" =>
+          "year" | "month" | "root" | "parent" | "leaf" =>
             Some(ECall(lower, args))
           "sum" =>
             if args is [arg] && sum_expr(arg) {
@@ -291,11 +291,20 @@ fn parse_primary(parser : QueryParser) -> Expr? {
               parser.fail("compilation query.invalid_signature")
               None
             }
-          "entry_meta" =>
-            if args is [EStr(_)] {
+          "meta" | "entry_meta" =>
+            if args is [arg] && string_expr(arg) {
               Some(ECall(lower, args))
             } else {
-              parser.fail("unsupported query.unsupported.signature")
+              parser.fail("compilation query.invalid_signature")
+              None
+            }
+          "getitem" =>
+            if (args.length() == 2 || args.length() == 3) &&
+              args[0] is ECol("meta") &&
+              string_expr(args[1]) {
+              Some(ECall(lower, args))
+            } else {
+              parser.fail("compilation query.invalid_signature")
               None
             }
           "upper" | "lower" | "length" | "substr" => {
@@ -348,6 +357,17 @@ fn parse_primary(parser : QueryParser) -> Expr? {
           | "links"
           | "accounts"
           | "weight"
+          | "posting_flag"
+          | "other_accounts"
+          | "number"
+          | "cost_number"
+          | "cost_currency"
+          | "cost_date"
+          | "cost_label"
+          | "price"
+          | "balance"
+          | "entry"
+          | "location"
           | "type"
           | "id"
           | "filename"
@@ -1063,6 +1083,7 @@ fn transaction_expr(expr : Expr) -> Bool {
       | "tags"
       | "links"
       | "accounts"
+      | "meta"
     ) => true
     ECol(_) => false
     ECall("sum", _) => false
@@ -1151,7 +1172,7 @@ fn table_cond(cond : Cond, table : String) -> Bool {
 ///|
 fn table_object(expr : Expr) -> Bool {
   match expr {
-    ECol("meta" | "id" | "open" | "close" | "discrepancy") => true
+    ECol(_) => false
     ECall(_, args) => args.any(table_object)
     EBinary(a, _, b) => table_object(a) || table_object(b)
     _ => false
@@ -1173,19 +1194,13 @@ fn table_object_cond(cond : Cond) -> Bool {
 fn posting_expr(expr : Expr) -> Bool {
   match expr {
     ECol(
-      "id"
-      | "filename"
-      | "lineno"
-      | "name"
+      "name"
       | "amount"
       | "tolerance"
       | "discrepancy"
-      | "description"
       | "comment"
-      | "meta"
       | "open"
       | "close"
-      | "type"
     ) => false
     ECall(_, args) => args.all(posting_expr)
     EBinary(a, _, b) => posting_expr(a) && posting_expr(b)

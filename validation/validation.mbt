@@ -103,6 +103,7 @@ priv struct Context {
   options : @ast.Options
   plugins : Array[@ast.Plugin]
   known_opens : Map[String, @ast.Date]
+  tolerance_cache : Map[Int32, @decimal.Decimal]
 }
 
 ///|
@@ -128,6 +129,7 @@ fn Context::new(ledger : @ast.Ledger) -> Context {
     options: ledger.options,
     plugins: ledger.plugins,
     known_opens,
+    tolerance_cache: Map([]),
   }
 }
 
@@ -165,18 +167,11 @@ fn is_booking_method(name : String) -> Bool {
 ///|
 fn directive_rank(directive : @ast.Directive) -> Int32 {
   match directive {
-    DOpen(_) => 0
-    DCommodity(_) => 1
+    DOpen(_) => -2
+    DBalance(_) => -1
+    DDocument(_) => 1
     DClose(_) => 2
-    DPad(_) => 3
-    DBalance(_) => 4
-    DPrice(_) => 5
-    DNote(_) => 6
-    DDocument(_) => 7
-    DEvent(_) => 8
-    DQuery(_) => 9
-    DCustom(_) => 10
-    DTransaction(_) => 11
+    _ => 0
   }
 }
 
@@ -196,7 +191,11 @@ fn sorted_entries(entries : Array[@ast.Entry]) -> Array[@ast.Entry] {
       let rank_cmp = directive_rank(prev.directive).compare(
         directive_rank(current.directive),
       )
-      let should_swap = date_cmp > 0 || (date_cmp == 0 && rank_cmp > 0)
+      let line_cmp = prev.query_origin.unwrap_or(prev.loc).line.compare(
+        current.query_origin.unwrap_or(current.loc).line,
+      )
+      let should_swap = date_cmp > 0 ||
+        (date_cmp == 0 && (rank_cmp > 0 || (rank_cmp == 0 && line_cmp > 0)))
       if should_swap {
         result[j - 1] = current
         result[j] = prev
@@ -253,15 +252,6 @@ fn infer_currency(weights : Array[@ast.Amount]) -> String? {
     return Some(weights[0].currency)
   }
   None
-}
-
-///|
-fn larger(a : @decimal.Decimal, b : @decimal.Decimal) -> @decimal.Decimal {
-  if a.less_than(b) {
-    b
-  } else {
-    a
-  }
 }
 
 ///|
@@ -496,10 +486,13 @@ fn insert_padding(
   pad : PadState,
   expected : @ast.Amount,
   difference : @decimal.Decimal,
+  loc : @ast.Loc,
 ) -> Unit {
   let target = @ast.Posting::new(pad.account)
+  target.loc = loc
   target.units = Some(@ast.Amount::new(difference, expected.currency))
   let source = @ast.Posting::new(pad.source)
+  source.loc = loc
   source.units = Some(@ast.Amount::new(difference.neg(), expected.currency))
   let txn = @ast.Transaction::new(
     "P",
@@ -607,7 +600,7 @@ fn process_balance(
       }
       pad.consumed = true
       ctx.pads[index] = pad
-      insert_padding(ctx, pad, balance.amount, difference)
+      insert_padding(ctx, pad, balance.amount, difference, entry.loc)
       return
     }
     None => ()
@@ -620,6 +613,9 @@ fn process_balance(
   } else {
     "too much"
   }
+  entry.balance_discrepancy = Some(
+    @ast.Amount::new(difference.neg(), balance.amount.currency),
+  )
   error(
     ctx,
     "validation.balance",
@@ -781,6 +777,9 @@ fn infer_cost(
             Some(date) => date
             None => entry.date
           }
+          posting.meta.entries.push(
+            ("__automatic__", @ast.MetaValue::MBool(true)),
+          )
           let cost = @ast.Cost::new(number, currency, Some(date), spec.label)
           posting.cost = Some(
             @ast.CostSpec::new_per(number, currency, Some(date), spec.label),
@@ -848,6 +847,7 @@ fn interpolate_missing(
           }
         None => weight_sum(weights, currency).neg()
       }
+      posting.meta.set("__automatic__", @ast.MBool(true))
       posting.units = Some(@ast.Amount::new(amount, currency))
       ctx.state
       .inventory_for(posting.account)
@@ -876,87 +876,10 @@ fn interpolate_missing(
 }
 
 ///|
-fn posting_tolerance(
-  ctx : Context,
-  postings : Array[@ast.Posting],
-  currency : String,
-) -> @decimal.Decimal {
-  let mut tolerance = @decimal.Decimal::zero()
-  let mut inferred = false
-  for posting in postings {
-    let units = match posting.units {
-      Some(units) => units
-      None => continue
-    }
-    if units.currency == currency && units.number.has_fractional_digits() {
-      inferred = true
-      tolerance = larger(
-        tolerance,
-        units.number
-        .last_digit_place()
-        .abs()
-        .mul(ctx.options.tolerance_multiplier),
-      )
-    }
-    if ctx.options.infer_tolerance_from_cost {
-      match posting.cost {
-        Some(spec) =>
-          match spec.number_per {
-            Some(number) =>
-              match spec.currency {
-                Some(cost_currency) =>
-                  if cost_currency == currency {
-                    inferred = true
-                    tolerance = larger(
-                      tolerance,
-                      number
-                      .last_digit_place()
-                      .abs()
-                      .mul(units.number.abs())
-                      .mul(ctx.options.tolerance_multiplier),
-                    )
-                  }
-                None => ()
-              }
-            None =>
-              match spec.number_total {
-                Some(total) =>
-                  match spec.currency {
-                    Some(cost_currency) =>
-                      if cost_currency == currency {
-                        inferred = true
-                        tolerance = larger(
-                          tolerance,
-                          total
-                          .last_digit_place()
-                          .abs()
-                          .mul(ctx.options.tolerance_multiplier),
-                        )
-                      }
-                    None => ()
-                  }
-                None => ()
-              }
-          }
-        None => ()
-      }
-    }
-  }
-  match ctx.options.inferred_tolerance_default.get(currency) {
-    Some(default) => larger(tolerance, default)
-    None =>
-      match ctx.options.inferred_tolerance_default.get("*") {
-        Some(default) => if inferred { tolerance } else { default }
-        None => tolerance
-      }
-  }
-}
-
-///|
 fn check_balanced(
   ctx : Context,
   entry : @ast.Entry,
-  postings : Array[@ast.Posting],
+  _postings : Array[@ast.Posting],
   weights : Array[@ast.Amount],
 ) -> Unit {
   let totals = []
@@ -967,7 +890,15 @@ fn check_balanced(
     if total.number.is_zero() {
       continue
     }
-    let tolerance = posting_tolerance(ctx, postings, total.currency)
+    let mut tolerance = ctx.options.inferred_tolerance_default
+      .get("*")
+      .unwrap_or(@decimal.Decimal::zero())
+    for (currency, value) in entry.inferred_tolerances.unwrap_or([]) {
+      if currency == total.currency {
+        tolerance = value
+        break
+      }
+    }
     if total.number.abs().less_equal(tolerance) {
       continue
     }
@@ -1143,6 +1074,7 @@ fn process_transaction(
   } else if deferred.length() == 1 {
     infer_cost(ctx, entry, deferred[0], postings[deferred[0]], weights)
   }
+  entry.inferred_tolerances = Some(infer_transaction_tolerances(ctx, postings))
   if missing.length() > 1 {
     let last = missing[missing.length() - 1]
     let target = postings[last].loc

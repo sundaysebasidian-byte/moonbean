@@ -8,6 +8,7 @@ import conformance as c
 import report_differential as reports
 import bql_table_differential as tables
 import bql_unicode_differential as unicode_cases
+import bql_object_differential as object_cases
 
 
 def compare_bql(ours, oracle):
@@ -119,6 +120,7 @@ def main():
         results.append(dict(query=case['query'], ledger=case['ledger'], ok=ok, detail=detail))
     results.extend(tables.run(args.ours, args.oracle))
     results.extend(unicode_cases.run(args.ours, args.oracle))
+    results.extend(object_cases.run(args.ours, args.oracle, full=True))
     print(json.dumps(results, indent=2))
     return int(any(not r['ok'] for r in results))
 

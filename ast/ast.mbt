@@ -420,6 +420,8 @@ pub(all) struct QueryDirective {
 pub(all) struct Note {
   account : String
   comment : String
+  tags : Array[String]
+  links : Array[String]
 }
 
 ///|
@@ -483,12 +485,23 @@ pub(all) struct Entry {
   date : Date
   loc : Loc
   mut meta : Meta
+  mut inferred_tolerances : Array[(String, @decimal.Decimal)]?
+  mut balance_discrepancy : Amount?
+  mut query_origin : Loc?
   directive : Directive
 }
 
 ///|
 pub fn Entry::new(date : Date, loc : Loc, directive : Directive) -> Entry {
-  { date, loc, meta: Meta::new(), directive, }
+  {
+    date,
+    loc,
+    meta: Meta::new(),
+    inferred_tolerances: None,
+    balance_discrepancy: None,
+    query_origin: None,
+    directive,
+  }
 }
 
 ///|

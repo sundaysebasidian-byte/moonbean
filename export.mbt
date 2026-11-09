@@ -272,6 +272,10 @@ fn jdirective(entry : @ast.Entry) -> String {
       jstr(note.account) +
       ",\"comment\":" +
       jstr(note.comment) +
+      ",\"tags\":" +
+      jstring_array(note.tags) +
+      ",\"links\":" +
+      jstring_array(note.links) +
       "}"
     @ast.DDocument(document) =>
       "{\"type\":\"document\",\"account\":" +

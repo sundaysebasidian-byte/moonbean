@@ -2,6 +2,7 @@
 package "sundaysebasidian-byte/moonbean/query"
 
 import {
+  "moonbitlang/core/bigint",
   "sundaysebasidian-byte/moonbean/ast",
   "sundaysebasidian-byte/moonbean/booking",
   "sundaysebasidian-byte/moonbean/decimal",
@@ -32,6 +33,12 @@ pub fn QueryResult::to_json(Self) -> String
 pub fn QueryResult::to_text(Self) -> String
 
 pub(all) enum QueryValue {
+  QInt(@bigint.BigInt)
+  QDict(Array[(String, QueryValue)])
+  QList(Array[QueryValue])
+  QRecord(String, Array[(String, QueryValue)])
+  QEnum(String, String)
+  QPythonType(String)
   QText(String)
   QSet(Array[String])
   QFrozenSet(Array[String])

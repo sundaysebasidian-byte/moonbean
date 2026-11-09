@@ -129,6 +129,9 @@ pub(all) struct Entry {
   date : Date
   loc : Loc
   mut meta : Meta
+  mut inferred_tolerances : Array[(String, @decimal.Decimal)]?
+  mut balance_discrepancy : Amount?
+  mut query_origin : Loc?
   directive : Directive
 }
 pub fn Entry::is_transaction(Self) -> Bool
@@ -181,6 +184,8 @@ pub fn MetaValue::to_string(Self) -> String
 pub(all) struct Note {
   account : String
   comment : String
+  tags : Array[String]
+  links : Array[String]
 }
 
 pub(all) struct Open {

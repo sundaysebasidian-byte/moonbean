@@ -2,6 +2,12 @@
 
 ///|
 pub(all) enum QueryValue {
+  QInt(@bigint.BigInt)
+  QDict(Array[(String, QueryValue)])
+  QList(Array[QueryValue])
+  QRecord(String, Array[(String, QueryValue)])
+  QEnum(String, String)
+  QPythonType(String)
   QText(String)
   QSet(Array[String])
   QFrozenSet(Array[String])
@@ -49,6 +55,10 @@ fn query_json_escape(text : String) -> String {
 ///|
 pub fn QueryValue::to_text(self : QueryValue) -> String {
   match self {
+    QInt(n) => n.to_string()
+    QDict(_) | QList(_) | QRecord(_, _) => python_repr(self)
+    QEnum(name, value) => name + "." + value
+    QPythonType(name) => "<class '" + name + "'>"
     QFrozenSet(values) =>
       if values.is_empty() {
         "frozenset()"
@@ -136,6 +146,9 @@ fn query_position_json(position : @booking.Position) -> String {
 ///|
 pub fn QueryValue::to_json(self : QueryValue) -> String {
   match self {
+    QInt(n) => n.to_string()
+    QDict(_) | QList(_) | QRecord(_, _) | QEnum(_, _) | QPythonType(_) =>
+      nested_json(self)
     QSet(values) | QFrozenSet(values) =>
       "[" +
       values.map(fn(s) { "\"" + query_json_escape(s) + "\"" }).join(",") +
@@ -168,6 +181,7 @@ pub fn QueryValue::to_json(self : QueryValue) -> String {
 fn value_number(value : QueryValue) -> @decimal.Decimal? {
   match value {
     QBool(b) => Some(@decimal.Decimal::from_int(if b { 1 } else { 0 }))
+    QInt(n) => Some(@decimal.Decimal::new(n, 0))
     QNumber(number) => Some(number)
     QAmount(amount) => Some(amount.number)
     QPosition(position) => Some(position.units.number)

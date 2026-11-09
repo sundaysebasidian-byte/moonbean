@@ -284,7 +284,6 @@ async fn cmd_query(args : Array[String]) -> Unit {
       print_warnings(ledger)
       if ledger.errors.length() > 0 {
         print_diagnostics(ledger.errors)
-        exit(1)
       }
       let result = @moonbean.run_query(ledger, options.bql, at=options.at)
       if options.json {
