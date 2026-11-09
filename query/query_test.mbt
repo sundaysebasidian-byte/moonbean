@@ -576,3 +576,15 @@ test "last preserves final NULL and boolean results retain their type" {
   assert_eq(r.rows[0][2].to_json(), "true")
   assert_eq(r.rows[0][3].to_text(), "FALSE")
 }
+
+///|
+test "query errors distinguish compilation and oracle engine failures" {
+  assert_true(
+    queried(ledger_source(), "SELECT account FROM #prices").failure()
+    is Some(@query.Compilation(_)),
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT count(accounts) FROM entries").failure()
+    is Some(@query.Evaluation(_)),
+  )
+}

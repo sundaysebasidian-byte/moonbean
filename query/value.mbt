@@ -313,6 +313,8 @@ pub fn QueryResult::to_json(self : QueryResult) -> String {
 /// Matchable query failure; the original message remains available in each case.
 pub(all) enum QueryError {
   Syntax(String)
+  Compilation(String)
+  Evaluation(String)
   Unsupported(String)
 }
 
@@ -323,7 +325,11 @@ pub fn QueryResult::failure(self : QueryResult) -> QueryError? {
   match self.error {
     None => None
     Some(message) =>
-      if message.has_prefix("unsupported ") ||
+      if message.has_prefix("compilation ") {
+        Some(Compilation(message))
+      } else if message.has_prefix("query.oracle_type_error") {
+        Some(Evaluation(message))
+      } else if message.has_prefix("unsupported ") ||
         message.has_prefix("unknown function ") ||
         message.has_prefix("unknown FROM source ") ||
         message.has_prefix("BALANCES AT supports ") {

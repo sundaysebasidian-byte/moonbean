@@ -16,6 +16,8 @@ pub fn run_query(@realization.RealizedLedger, String) -> QueryResult
 // Types and methods
 pub(all) enum QueryError {
   Syntax(String)
+  Compilation(String)
+  Evaluation(String)
   Unsupported(String)
 }
 
