@@ -20,7 +20,7 @@
 
 ## 从 Beancount 迁移
 
-可直接使用的范围是仅依赖已实现指令、booking 方法和下列原生插件（其余账户须显式声明）的纯文本账本，以及本文和 [conformance](docs/conformance.md) 列出的 BQL 子集。116 份自编账本的对比不是对任意 Beancount/Fava 账本的保证；Fava 的界面、扩展、上传附件和 Python 插件运行环境不在本引擎内。迁移前运行 `moonbean check FILE`，并审阅警告和报表。
+可直接使用的范围是仅依赖已实现指令、booking 方法和下列原生插件（其余账户须显式声明）的纯文本账本，以及本文和 [conformance](docs/conformance.md) 列出的 BQL 子集。117 份自编账本的对比不是对任意 Beancount/Fava 账本的保证；Fava 的界面、扩展、上传附件和 Python 插件运行环境不在本引擎内。迁移前运行 `moonbean check FILE`，并审阅警告和报表。
 
 [迁移示例](examples/migration/) 均为本项目独立编写，确定行为如下：
 
@@ -243,14 +243,14 @@ fn analyze(source : String) -> Unit {
 | 试算平衡 / 资产负债表 / 损益表 / register | 支持 | 资产负债表把当期和往期收益结转到 `Equity:Earnings:*`，恒等式按币种精确成立；不折算时按成本，指定折算币种时按市值，市值相对成本的变化列在 `Equity:Earnings:Unrealized`。命令行有 `bal`、`bs`、`is`、`register FILE ACCOUNT`（可加 `--json`）和 `dups FILE` |
 | `SELECT ... FROM postings/balances` | 支持 | 列：`date`、`flag`、`payee`、`narration`、`account`、`root`、`parent`、`leaf`、`units`、`currency`、`cost`、`value`、`position` |
 | `FROM transactions` / `FROM #transactions` | 部分 | 每笔交易一行；支持 date / flag / payee / narration / tags / links，过滤、分组、排序、计数 / accounts；meta(key) 读取交易元数据，posting 列仍返回带位置的错误 |
-| `#` 表与星号 | 部分 | 仅支持紧邻且小写的 `#transactions` / `#postings`；`#balances` 是 oracle 的断言表，本引擎以 `query.unsupported.source` 拒绝，其它 `#` 表亦拒绝。裸 `FROM balances` 仍为库存源。`SELECT *` 在 postings/transactions 上按 oracle 默认列展开；标量/集合 DISTINCT 已支持，position/inventory DISTINCT 明确拒绝；除 `count(*)` 外，所有函数中的星号实参同样拒绝；`count(*)` 保持支持 |
+| `#` 表与星号 | 逐列边界 | 十张 oracle 表均已注册；新增表支持列见 [compatibility](docs/compatibility.md)，dict/directive/id/discrepancy 值仍明确拒绝。`#balances` 是断言表，裸 `FROM balances` 保留库存扩展。支持 postings/transactions/events/prices/notes/documents 的默认星号列；其它包含对象列的星号仍拒绝。除 `count(*)` 外，函数星号参数拒绝 |
 | `WHERE` | 部分 | 比较、`is [not] null`、`and/or/not`，支持 `~` 正则字面量；没有 `LIKE` 和子查询 |
 | `HAVING` / 数值算术 | 支持 | `HAVING` 支持聚合条件；Decimal 支持 `+ - * /` 和括号，不含 Amount/Inventory 运算 |
 | tags / links / 元数据 | 支持 | `tags`、`links` 的文本按集合字典序排序；JSON 数组保留账本书写顺序（oracle 返回 frozenset，转 JSON 数组的顺序随 hash seed 变化，无稳定顺序契约）；`meta('key')` 按行源读取 posting 或交易元数据，`entry_meta('key')` 读取父交易元数据 |
 | `GROUP BY` / `ORDER BY` / `LIMIT` | 支持 | 多键分组和排序，`ASC` / `DESC` |
-| 函数 | 部分 | `year`、`month`、`root`、`parent`、`leaf`、`sum`、`count`、`meta`、`entry_meta`、`length`、`substr`；count(expr) 排除 NULL；length 按 Unicode 码点计数，substr(s,start,end) 为零起点、右端不含的切片，支持负索引、越界截断及 NULL 传播；仅接受字符串表达式与整数字面量索引 |
+| 函数 | 部分 | `year`、`month`、`root`、`parent`、`leaf`、`sum`、`count`、`meta`、`entry_meta`、`length`、`substr`、`upper`、`lower`、`first`、`last`、标量 `min/max`；count(expr) 排除 NULL；length 按 Unicode 码点计数，substr(s,start,end) 为零起点、右端不含的切片，支持负索引、越界截断及 NULL 传播；仅接受字符串表达式与整数字面量索引 |
 | `BALANCES` / `JOURNAL` | 支持 | `BALANCES AT units|cost FROM OPEN ON date CLOSE ON date`；`JOURNAL <account> [LIMIT n]`；时间点由 `run_query` 的 `at~` 或命令行的 `--at` 控制 |
-| 不支持的 BQL | 不支持 | 子查询、`PIVOT BY`（oracle 支持但本引擎未实现）、JOIN、SQL `LIKE`（oracle 也不支持）、upper/lower（oracle 支持 Unicode，本引擎未实现）、startswith（oracle 无此签名）、findfirst(str,set)（oracle 支持，本引擎未实现）；BQL 的 `CLOSE ON` 不合成币种转换条目，关闭和结转由报表层处理 |
+| 不支持的 BQL | 不支持 | 子查询、`PIVOT BY`（oracle 支持但本引擎未实现）、JOIN、SQL `LIKE`（oracle 也不支持）、其余未实现的函数和对象列（见兼容清单）、startswith（oracle 无此签名）、findfirst(str,set)（oracle 支持，本引擎未实现）；BQL 的 `CLOSE ON` 不合成币种转换条目，关闭和结转由报表层处理 |
 
 ### 格式化与命令行
 
@@ -264,13 +264,13 @@ fn analyze(source : String) -> Unit {
 
 没有任何 Beancount 代码被复制。测试时把 beancount `3.2.3` 和 beanquery `0.2.0` 当作外部黑盒，对同一份账本比较输出。
 
-**自编账本。** 在 macOS (arm64)、MoonBit `0.1.20261104` 上，对自己写的 116 份账本逐份比较：
+**自编账本。** 在 macOS (arm64)、MoonBit `0.1.20261104` 上，对自己写的 117 份账本逐份比较：
 
 ```
-ledgers: 116, compared: 114, passed: 114, failed: 0, extensions: 2
+ledgers: 117, compared: 115, passed: 115, failed: 0, extensions: 2
 ```
 
-- 114 份可比较的账本全部通过：诊断集合、最终余额、原始 price 条目和固定 BQL 查询一致；插件合成位置的比较规则见 conformance。
+- 115 份可比较的账本全部通过：诊断集合、最终余额、原始 price 条目和固定 BQL 查询一致；插件合成位置的比较规则见 conformance。
 - 另外 2 份用到 AVERAGE 和 `{*}`，beancount 3.2.3 不支持，只用本项目自己的测试验证。
 - 逐份结果、比较口径和已知差异见 [docs/conformance.md](docs/conformance.md)。
 
@@ -289,7 +289,7 @@ ledgers: 116, compared: 114, passed: 114, failed: 0, extensions: 2
 
 这 142 份不是错误，而是 MoonBean 的扩展：把 oracle 的 `average_unsupported` 诊断去掉后，两边的诊断集合完全相同。CI 用 `--allow-known-extensions` 校验这一点，出现任何其他差异都会失败。每个 seed 的统计和 AVERAGE 账本编号在 [docs/random-differential.json](docs/random-differential.json)。
 
-`tests/regression/` 还有 22 份专门针对报表、跨 lot 减记和价格路径写的账本，`scripts/report_differential.py` 对它们做逐项检查（25 组场景、144 项，全部通过）。本轮另有 109 条 BQL 输出与能力/拒绝边界检查（HAVING、算术、正则、tags/links/元数据、期间余额）全部通过。这是基于模板的随机测试，不是穷尽的语法 fuzz。
+`tests/regression/` 还有 22 份专门针对报表、跨 lot 减记和价格路径写的账本，`scripts/report_differential.py` 对它们做逐项检查（25 组场景、144 项，全部通过）。本轮 176 项 BQL 输出/边界/错误类别检查通过，另包含 7196 行 Unicode 语料；详见 [最新验收](docs/evidence/r2-return-acceptance.md)。这是基于模板的随机测试，不是穷尽的语法 fuzz。
 
 ```sh
 python3 scripts/random_differential.py --seed 7 --out .oracle-cache/differential/seed-7 --allow-known-extensions
@@ -346,13 +346,13 @@ mooncakes 上目前没有 Beancount 实现。MoonBean 不是现有账本库的�
 
 - 上述 5 个内置插件原生执行；其他插件只记录并给出警告，不运行 Python。
 - `document` 不检查文件是否存在；未实现的 option 不会改变行为。
-- BQL 是子集，不支持子查询、JOIN、PIVOT、SQL LIKE 和 length/substr 以外的字符串函数；数值算术只支持 Decimal，不含 Amount/Inventory 运算。正则用 MoonBit core 的 Regex 子集，非法或不支持的模式会明确报错并保留位置。BQL 字符串的反斜杠和重复引号与 oracle 一样保留原字符，不按 Python 或 C 转义解码。
+- BQL 是子集，不支持子查询、JOIN、PIVOT、SQL LIKE 和 upper/lower/length/substr 以外的字符串函数；数值算术只支持 Decimal，不含 Amount/Inventory 运算。正则用 MoonBit core 的 Regex 子集，非法或不支持的模式会明确报错并保留位置。BQL 字符串的反斜杠和重复引号与 oracle 一样保留原字符，不按 Python 或 C 转义解码。
 - Playground 一次只处理一段文本，不加载 `include`。
 
 路线图：
 
 1. 插件扩展点（宿主可以注册自定义校验和变换）。
-2. 更完整的 BQL（Unicode upper/lower、子查询、PIVOT、金额运算、更多聚合、期间转换的归一化）；LIKE/JOIN 不属于 beanquery 0.2.0 的已验证语法。
+2. 更完整的 BQL（类型与对象列、子查询、PIVOT、金额运算、更多聚合、期间转换的归一化）；LIKE/JOIN 不属于 beanquery 0.2.0 的已验证语法。
 3. `account_rounding` 的输出语义。
 4. 更大账本的增量 realize 和缓存。
 
@@ -382,4 +382,6 @@ moon info && git diff --exit-code
 
 ## 0.2.3 compatibility boundary
 
-The endpoint is beancount 3.2.3 plus beanquery 0.2.0 in full; this candidate has not reached it. [The compatibility matrix](docs/compatibility.md) lists every advertised oracle table/column, function signature and option, with evidence and explicit gaps. SELECT star, scalar/set DISTINCT, transaction accounts/metadata and NULL-aware count are supported. Eight other oracle tables, subqueries, PIVOT, FLATTEN, full option semantics and Unicode casing remain unsupported. LIKE/JOIN are rejected by the pinned oracle too.
+The endpoint is beancount 3.2.3 plus beanquery 0.2.0 in full; this candidate has not reached it. [The compatibility matrix](docs/compatibility.md) lists every advertised oracle table/column, function signature and option, with evidence and explicit gaps. SELECT star, scalar/set DISTINCT, transaction accounts/metadata and NULL-aware count are supported. Eight additional source adapters now support the scalar/amount/set columns listed in the matrix, alongside Unicode 16 casing and scalar aggregates. Typed object columns, full function/type support, subqueries, PIVOT, FLATTEN and full option semantics remain pending. LIKE/JOIN are rejected by the pinned oracle too.
+
+返工首批新增表必须按[逐列清单](docs/compatibility.md)使用：metadata/entry/open/close/id/discrepancy 对象值、带 tag/link 的 note 仍未实现；不是完整表兼容。`#accounts` 是账户表，裸 `accounts` 的 FROM 过滤语义尚未实现。Unicode casing 绑定 Python 3.14 / Unicode 16.0.0；四后端共有实现。

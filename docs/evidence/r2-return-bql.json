@@ -1,0 +1,937 @@
+[
+  {
+    "query": "BALANCES AT units FROM CLOSE ON 2024-03-01",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "BALANCES AT units FROM OPEN ON 2024-02-01 CLOSE ON 2024-06-01",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "BALANCES AT cost FROM CLOSE ON 2024-03-01",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "BALANCES AT cost FROM OPEN ON 2024-02-01 CLOSE ON 2024-06-01",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT first(payee),last(payee),min(payee),max(payee) FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT upper(first(payee)),lower(last(payee)) FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT min(true),max(false),first(true),last(false) FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT first(NULL),last(NULL),min(NULL),max(NULL) FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT account ORDER BY account LIMIT 3",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT date ORDER BY date DESC LIMIT 2",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT tags, links FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT payee FROM transactions ORDER BY payee",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(payee), count(*) FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT accounts FROM transactions ORDER BY date LIMIT 3",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta('absent') FROM transactions LIMIT 2",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT entry_meta('absent') LIMIT 2",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account, count(*) GROUP BY account HAVING count(*) > 1 ORDER BY account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account, count(*) * 2 + 1 GROUP BY account HAVING count(*) >= 1 ORDER BY account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account WHERE account ~ '^assets:' ORDER BY account LIMIT 3",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account WHERE account ~ '(Income|Expenses):' ORDER BY account LIMIT 3",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT tags, links WHERE date = 2024-01-03 ORDER BY account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta('receipt'), meta('note') WHERE date = 2024-01-03 ORDER BY account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT 1+2*3, (1+2)*3, -2+5, 6/4 LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(date)-2000, month(date)*2 ORDER BY date, account LIMIT 4",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date, flag, payee, narration, tags, links FROM transactions ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date, narration FROM #transactions ORDER BY date DESC LIMIT 2",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date, length(payee), length(narration), substr(payee,0,2), substr(narration,0,2) FROM transactions ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT length(''), length('\ud83d\ude00\u4e2dabc'), substr('abcdef',1,3), substr('\ud83d\ude00\u4e2dabc',0,2) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT substr('abcdef',-4,-1), substr('abcdef',4,2), substr('abcdef',-99,99), substr('',0,2) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT substr('abcdef',99,100), substr('abcdef',-100,-99), substr('abcdef',0,0) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT length(substr('abcdef',1,3)), substr(substr('abcdef',1,5),1,3) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE length(payee) IS NULL ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE length(payee) = 0 ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT length(narration), count(*) FROM transactions GROUP BY length(narration) ORDER BY length(narration)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE narration ~ 'a_%' ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE narration ~ '^\ud83d\ude00\u4e2d' ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE narration ~ '' ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE payee ~ 'mixed' ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE payee ~ '^MIXED$' ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT length('a\\tb'), length('a\\nb'), substr('a\\\\b',0,3) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE substr(narration,0,2) = '\ud83d\ude00\u4e2d' ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions GROUP BY date HAVING count(*) > 0 ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT substr('abc',-999999999999,999999999999), length('a''b') LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE narration ~ '\\\\end$' ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT payee, count(*) FROM transactions GROUP BY payee ORDER BY payee",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT upper('Ab') LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT lower('Ab') LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account WHERE account LIKE 'Assets%'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT startswith('Ab','A') LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT endswith('Ab','b') LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT findfirst('Ab','b') LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account FROM postings JOIN transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account FROM (SELECT account) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date, account, count(*) GROUP BY date,account PIVOT BY 1,2",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT length(NULL) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT substr('abc',1) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT substr('abc',1.5,2) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration WHERE narration ~ '['",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration\nWHERE narration ~ '('",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT tags, links FROM transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT tags, links FROM #transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT tags, links FROM #postings ORDER BY account",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM #transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM #postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT *",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM transactions",
+    "ledger": "tests/bql-sources/assertion.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM #transactions",
+    "ledger": "tests/bql-sources/assertion.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM postings",
+    "ledger": "tests/bql-sources/assertion.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM #postings",
+    "ledger": "tests/bql-sources/assertion.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT *",
+    "ledger": "tests/bql-sources/assertion.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date, account FROM #balances",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date, account FROM #balances",
+    "ledger": "tests/bql-sources/assertion.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #entries",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #accounts",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #commodities",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #prices",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #documents",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #events",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #notes",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #customs",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #open",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #close",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #unknown",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #Transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #POSTINGS",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM # transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #\npostings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT sum(*) FROM postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(*) FROM postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta(*) FROM postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT root(*) FROM postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT sum(*) FROM transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(*) FROM transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta(*) FROM transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT root(*) FROM transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT position WHERE account = \"Assets:Cash\"",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT payee FROM transactions ORDER BY payee",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta('receipt') FROM transactions ORDER BY date",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta('receipt'), entry_meta('receipt') ORDER BY date, account",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(payee), count(*) FROM transactions",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT narration FROM transactions ORDER BY narration LIMIT 1",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM transactions",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM postings",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT position ORDER BY date, account",
+    "ledger": "tests/ledgers/024-cost-per.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT accounts FROM OPEN ON 2024-01-03",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT type,date,year,month,day,filename,lineno,flag,payee,narration,description,tags,links,accounts FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #entries WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account FROM #entries",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT account FROM #accounts",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #accounts",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #accounts WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM #accounts",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT date,account,amount,tolerance FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #balances WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM #balances",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT date,name FROM #commodities",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #commodities",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #commodities WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM #commodities",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT date,account,filename,tags,links FROM #documents",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #documents",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #documents WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM #documents",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT date,type,description FROM #events",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #events",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #events WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM #events",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT date,account,comment,tags,links FROM #notes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #notes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #notes WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM #notes",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT date,currency,amount FROM #prices",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #prices",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #prices WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM #prices",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT year,month,day FROM postings ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM events",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM prices",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM notes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM documents",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT type,count(*) FROM entries GROUP BY type ORDER BY type",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta('filename'),meta('lineno') FROM entries ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT name FROM commodities WHERE name = \"EUR\"",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(flag),count(narration) FROM entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT first(type),last(type),min(type),max(type) FROM entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT min(date),max(date),first(date),last(date) FROM prices",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(accounts) FROM entries",
+    "ok": true,
+    "detail": "evaluation/evaluation"
+  },
+  {
+    "query": "SELECT first(accounts) FROM entries",
+    "ok": true,
+    "detail": "evaluation/evaluation"
+  },
+  {
+    "query": "SELECT upper(accounts) FROM entries",
+    "ok": true,
+    "detail": "evaluation/evaluation"
+  },
+  {
+    "query": "SELECT sum(date) FROM entries",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT sum(type) FROM entries",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT count() FROM entries",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT first() FROM entries",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT min(date,date) FROM entries",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT sum(count(*)) FROM entries",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT date FROM entries WHERE count(*) > 0",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT count(*) FROM entries GROUP BY count(*)",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT filename,lineno FROM #entries ORDER BY lineno",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT currency,sum(amount) FROM prices GROUP BY currency",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT sum(tolerance) FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT upper(narration),lower(narration) FROM transactions",
+    "ok": true,
+    "detail": "",
+    "rows": 7196,
+    "changed_scalars": 2981,
+    "context_scalars": 7060
+  },
+  {
+    "query": "SELECT upper(1) LIMIT 1",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT lower(NULL) LIMIT 1",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT upper(date) LIMIT 1",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT lower(tags) LIMIT 1",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT upper('x',1) LIMIT 1",
+    "ok": true,
+    "detail": "compilation/compilation"
+  }
+]

@@ -57,6 +57,8 @@ def run(ours, oracle):
                       f'SELECT count(*) FROM #{table} WHERE 1 = 0']:
             a = c.ours_query(ours,ledger,query); b = c.oracle_query(oracle,ledger,query)
             ok,detail=compare(a,b) if a else (False,'ours failed')
+            if ok and query == f'SELECT {cols} FROM #{table}' and a['columns'] != b[0]:
+                ok,detail=False,'source projection column labels differ'
             results.append(dict(query=query,ok=ok,detail=detail))
         query=f'SELECT narration FROM #{table}' if table!='entries' else 'SELECT account FROM #entries'
         a=subprocess.run([ours,'query',ledger,query,'--json'],capture_output=True,text=True)

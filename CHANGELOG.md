@@ -2,6 +2,10 @@
 
 ## 0.2.3 (local candidate)
 
+- Return round 1: add scalar/amount/set adapters for eight directive sources, source column validation and canonical native query filenames; typed object/id/discrepancy columns remain rejected.
+- Add full Unicode 16 upper/lower mappings with contextual final sigma, reproducible data generation and a 7196-row oracle corpus; align CI Python to 3.14 (remote CI unverified).
+- Add first/last and scalar min/max, amount-column sums, empty-source and all-NULL sum behavior, boolean/frozenset values and matchable Compilation/Evaluation errors. Guard unsupported quoted identifiers and bare accounts FROM filtering rather than silently approximating them.
+
 - Record pinned oracle option, directive, table/column and function inventories and an explicit compatibility contract; full beanquery compatibility remains unimplemented.
 - Support SELECT *, scalar/set DISTINCT, transaction accounts and meta(), entry_meta(), and NULL-aware count(expr).
 - Accept oracle boolean spellings and wildcard inferred tolerance defaults; retain explicit rounding, document host and rendering limitations.

@@ -15,18 +15,18 @@ Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运
 | 范围 | 当前可核对边界 |
 | --- | --- |
 | 记账与指令 | open/close/commodity/balance/pad/price/transaction、include 与元数据栈有差分证据；document 仅校验账户并警告未检查文件；note/event/query/custom 保留语法与数据，未证明所有错误类别一致。query 存储后由调用方显式执行 |
-| BQL | postings/transactions 的 SELECT、星号、DISTINCT、筛选、分组、排序、计数与交易 accounts/meta 查询；DISTINCT 限于标量/集合投影，position/inventory 明确拒绝；其余 8 张 oracle 表、完整列与函数集、FLATTEN、PIVOT BY、子查询、CLEAR、PRINT/EXPLAIN、Unicode upper/lower 尚未实现。LIKE/JOIN 被 oracle 拒绝，不属于终点 |
+| BQL | postings/transactions 的 SELECT、星号、DISTINCT、筛选、分组、排序、计数与交易 accounts/meta 查询；DISTINCT 限于标量/集合投影，position/inventory 明确拒绝；新增 8 张表的标量/金额/集合列、Unicode 16 upper/lower、first/last、标量 min/max 已实现；dict/directive/id/discrepancy 列和其余函数、FLATTEN、PIVOT BY、子查询、CLEAR、PRINT/EXPLAIN 尚未实现。LIKE/JOIN 被 oracle 拒绝，不属于终点 |
 | option | booking、容差推断、按币种和通配符默认容差有证据；operating_currency 仅单币种报表转换；account_rounding、render_commas、documents 等未实现的效果逐项披露，不能仅凭解析成功计为兼容 |
 | plugin 与扩展 | 五个内置插件有差分证据，其余 Python 插件警告且不执行；AVERAGE、{*}、裸 FROM balances 库存语义均为扩展 |
 
 ## 一致性证据
 
-- 116 份自编账本对 beancount 3.2.3 与 beanquery 0.2.0：114 份可比较全部通过，另 2 份用到扩展，只用本项目测试验证。
-- 109 条 BQL 输出与能力/拒绝边界检查通过，账本、查询及 oracle 期望输出纳入版本库。
+- 117 份自编账本对 beancount 3.2.3 与 beanquery 0.2.0：115 份可比较全部通过，另 2 份用到扩展，只用本项目测试验证。
+- 176 项 BQL 输出、拒绝边界和共享错误类别检查通过，包含 7196 行 Unicode 语料；不把边界拒绝计为功能已实现，详见[本轮验收](evidence/r2-return-acceptance.md)。
 - 两个 seed 各 1000 份随机账本：858 份完全一致，142 份仅因 AVERAGE 扩展不同，其余差异为 0。
 - 既有版本的 22 份报表和 lot 回归账本共 144 项检查、5 份迁移边界账本证据保留，未将其计为本轮重跑。
-- 四个后端各 136 个测试；Playground 有 29 项 node 检查和 8 项无头浏览器检查；既有 CI 覆盖三个系统、oracle 和 Playground，本候选尚未推送运行 CI。
-- 0.2.2 历史性能基线：固定种子、100 万 source posting 的 native release 库阶段中位数：解析 1.931 s、FIFO booking 0.505 s、校验含 pad 1.017 s、BQL GROUP BY 0.812 s（Apple M4 / 16 GiB / MoonBit 0.1.20261104；2 次预热、21 次测量）。[原始数组、阶段 profile 与本地趋势检查](performance.md)均可复现；阶段并非互斥，不可相加。未分组 ORDER BY 在小规模呈二次方增长，10 万/100 万该场景未完成；wasm-gc 的 100 万 FIFO 综合场景因默认 moonrun 堆耗尽未完成。当前候选验收见 [本轮结果](evidence/r2-acceptance.md)。
+- 四个后端各 140 个测试；Playground 有 29 项 node 检查和 8 项无头浏览器检查；既有 CI 覆盖三个系统、oracle 和 Playground，本候选尚未推送运行 CI。
+- 0.2.2 历史性能基线：固定种子、100 万 source posting 的 native release 库阶段中位数：解析 1.931 s、FIFO booking 0.505 s、校验含 pad 1.017 s、BQL GROUP BY 0.812 s（Apple M4 / 16 GiB / MoonBit 0.1.20261104；2 次预热、21 次测量）。[原始数组、阶段 profile 与本地趋势检查](performance.md)均可复现；阶段并非互斥，不可相加。未分组 ORDER BY 在小规模呈二次方增长，10 万/100 万该场景未完成；wasm-gc 的 100 万 FIFO 综合场景因默认 moonrun 堆耗尽未完成。当前候选验收见 [本轮结果](evidence/r2-return-acceptance.md)。
 
 ## 基础与本期工作
 

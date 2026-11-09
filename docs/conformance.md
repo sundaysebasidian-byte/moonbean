@@ -493,3 +493,9 @@ boundaries and both new `count(*)` output comparisons pass after the parser fix.
 ## 0.2.3 candidate
 
 See [compatibility.md](compatibility.md) for the pinned endpoint, complete advertised table/column and function inventories, per-option boundaries and remaining unimplemented features. This supersedes older statements that SELECT * or transaction meta() are unsupported. Current local acceptance is recorded in [r2-acceptance.md](evidence/r2-acceptance.md); earlier numbers above describe earlier versions.
+
+## Return round 1 implementation batch
+
+The previous tables and counts are historical. Current evidence is in [r2-return-acceptance.md](evidence/r2-return-acceptance.md). New independently authored inputs cover eight directive sources, NULLs, amount values, frozensets, scalar aggregates and matching compilation/evaluation failures. Unicode tests cover all 2981 codepoints whose case mapping changes, 7060 contextual-property scalars and seeded strings in 7196 rows. Source/type and implementation limits remain in [compatibility.md](compatibility.md).
+
+Native query paths are now canonical absolute filenames, enabling filename/lineno provenance comparisons; pure-library hosts supply their source names. New QueryValue Bool/FrozenSet variants and QueryError Compilation/Evaluation variants are intentional interface additions; moon info is regenerated and then checked for zero further differences. CI's Python version changes to 3.14 for Unicode 16 parity; no new remote CI success is claimed.
