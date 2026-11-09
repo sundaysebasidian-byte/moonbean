@@ -236,7 +236,7 @@ fn eval_function(
           if (v is QInt(_) || v is QBool(_)) && digits >= 0 {
             return QInt(n.mantissa())
           }
-          if digits > 1000000 || digits < -1000000 {
+          if digits > 1000000 || digits < -999999 {
             query_error(
               ctx, "unsupported query.unsupported.decimal_representation: rounding resource bound",
             )
@@ -255,12 +255,17 @@ fn eval_function(
             )
             return QNull
           }
-          let rounded = if n.scale() - digits > magnitude + 1 {
+          let rounded = if n.is_zero() || n.scale() - digits > magnitude + 1 {
             @decimal.Decimal::zero_scaled(digits)
           } else {
             n.quantize(digits)
           }
-          if v is QInt(_) || v is QBool(_) {
+          if v is QNumber(_) && rounded.is_zero() && n.is_negative() {
+            query_error(
+              ctx, "unsupported query.unsupported.decimal_representation: signed-zero rounding",
+            )
+            QNull
+          } else if v is QInt(_) || v is QBool(_) {
             QInt(
               @decimal.Decimal::parse(rounded.to_string()).unwrap().mantissa(),
             )
@@ -429,18 +434,22 @@ fn eval_function(
         _ => QNull
       }
     ("neg", [QAmount(a)]) =>
-      QAmount(@ast.Amount::new(a.number.neg(), a.currency))
+      QAmount(
+        @ast.Amount::new(a.number.neg().round_to_significant(28), a.currency),
+      )
     ("neg" | "abs", [QNumber(n)]) =>
-      QNumber(if name == "neg" { n.neg() } else { n.abs() })
+      QNumber(
+        (if name == "neg" { n.neg() } else { n.abs() }).round_to_significant(28),
+      )
     ("neg" | "abs", [v]) =>
       map_positions(v, fn(p) {
         Some(
           @booking.Position::new(
             @ast.Amount::new(
               if name == "neg" {
-                p.units.number.neg()
+                p.units.number.neg().round_to_significant(28)
               } else {
-                p.units.number.abs()
+                p.units.number.abs().round_to_significant(28)
               },
               p.units.currency,
             ),
@@ -453,6 +462,11 @@ fn eval_function(
         (Some(a), Some(b)) =>
           if b.is_zero() {
             QNumber(@decimal.Decimal::zero())
+          } else if a.is_zero() && b.is_negative() {
+            query_error(
+              ctx, "unsupported query.unsupported.decimal_representation: signed-zero safediv",
+            )
+            QNull
           } else {
             QNumber(a.div(b).unwrap())
           }

@@ -43,6 +43,9 @@ def run(ours,oracle):
     for _ in range(40):
         y=rng.randrange(1,9999);m=rng.randrange(1,13);d=rng.randrange(1,28);delta=rng.randrange(-365,366)
         extra.append(f'SELECT repr(date_add({y:04}-{m:02}-{d:02},{delta})),weekday({y:04}-{m:02}-{d:02}),quarter({y:04}-{m:02}-{d:02}),repr(int({rng.randrange(-999999,999999)}.25)) LIMIT 1')
+    for _ in range(40):
+        digits=str(rng.randrange(10**35,10**55))+'.'+str(rng.randrange(10**7,10**8))
+        extra.append('SELECT repr(abs('+digits+')),repr(neg('+digits+')) LIMIT 1')
     queries.extend(('extra',q) for q in extra)
     result=[]
     for sig,q in queries:
@@ -58,7 +61,7 @@ def run(ours,oracle):
                 ok=equivalent(av,bv);detail='' if ok else str((av,bv))[:1000]
         except Exception as e:ok=False;detail=str(e)
         result.append(dict(signature=sig,query=q,ok=ok,detail=detail))
-    for expression in ["decimal('-0.00')","decimal('NaN')"]:
+    for expression in ["decimal('-0.00')","decimal('NaN')","round(-0.1)","0.0/-1","safediv(0.0,-1)","0.0*-1"]:
         q='SELECT '+expression
         a=subprocess.run([ours,'query',ledger,q,'--json'],capture_output=True,text=True)
         b=subprocess.run([str(Path(oracle)/'python'),'scripts/oracle_query_values.py',ledger,q],capture_output=True,text=True)

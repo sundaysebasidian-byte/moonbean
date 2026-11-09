@@ -425,12 +425,7 @@ fn representation_expr(expr : Expr) -> Bool {
 ///|
 fn structural_value(value : QueryValue) -> Bool {
   match value {
-    QDict(_)
-    | QRecord(_, _)
-    | QList(_)
-    | QInventory(_)
-    | QEnum(_, _)
-    | QPythonType(_) => true
+    QDict(_) | QRecord(_, _) | QList(_) | QEnum(_, _) | QPythonType(_) => true
     _ => false
   }
 }

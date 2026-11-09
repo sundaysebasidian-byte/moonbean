@@ -370,7 +370,7 @@ fn eval_expr(ctx : QueryContext, expr : Expr, row : BqlRow) -> QueryValue {
   match expr {
     EValue(value) => value
     EBinary(left, op, right) =>
-      arithmetic(eval_expr(ctx, left, row), op, eval_expr(ctx, right, row))
+      arithmetic(ctx, eval_expr(ctx, left, row), op, eval_expr(ctx, right, row))
     ECol(name) => eval_column(ctx, row, name)
     EStr(text) => QText(text)
     ENum(number) =>
@@ -751,6 +751,7 @@ fn eval_grouped(
 ) -> QueryValue {
   if expr is EBinary(left, op, right) {
     arithmetic(
+      ctx,
       eval_grouped(ctx, left, rows),
       op,
       eval_grouped(ctx, right, rows),
@@ -798,6 +799,7 @@ fn group_key(ctx : QueryContext, exprs : Array[Expr], row : BqlRow) -> String {
       match value {
         QBool(b) => if b { "1" } else { "0" }
         QSet(_) | QFrozenSet(_) => distinct_key(value)
+        QPosition(p) => position_group_key(p)
         QDict(_)
         | QRecord(_, _)
         | QList(_)
@@ -805,7 +807,7 @@ fn group_key(ctx : QueryContext, exprs : Array[Expr], row : BqlRow) -> String {
         | QEnum(_, _)
         | QPythonType(_) => {
           query_error(
-            ctx, "unsupported query.unsupported.group_type: structural value hashing",
+            ctx, "query.oracle_type_error: TypeError unhashable structural value",
           )
           ""
         }
@@ -1101,7 +1103,12 @@ pub fn run_query(
 }
 
 ///|
-fn arithmetic(a : QueryValue, op : String, b : QueryValue) -> QueryValue {
+fn arithmetic(
+  ctx : QueryContext,
+  a : QueryValue,
+  op : String,
+  b : QueryValue,
+) -> QueryValue {
   match (value_number(a), value_number(b)) {
     (Some(x), Some(y)) => {
       let result = match op {
@@ -1113,7 +1120,15 @@ fn arithmetic(a : QueryValue, op : String, b : QueryValue) -> QueryValue {
       }
       match result {
         Some(n) =>
-          if a is QInt(_) && b is QInt(_) && op != "/" {
+          if n.is_zero() &&
+            (op == "*" || op == "/") &&
+            x.is_negative() != y.is_negative() &&
+            !(a is QInt(_) && b is QInt(_) && op != "/") {
+            query_error(
+              ctx, "unsupported query.unsupported.decimal_representation: signed-zero arithmetic",
+            )
+            QNull
+          } else if a is QInt(_) && b is QInt(_) && op != "/" {
             QInt(n.mantissa())
           } else {
             QNumber(n)

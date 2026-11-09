@@ -61,3 +61,23 @@ fn portable_repr(value : QueryValue) -> Bool {
     _ => true
   }
 }
+
+///|
+fn position_group_key(p : @booking.Position) -> String {
+  let cost = match p.cost {
+    None => QNull
+    Some(c) =>
+      QList([
+        QText(decimal_group_key(c.number)),
+        QText(c.currency),
+        c.date.map(fn(d) { QDate(d) }).unwrap_or(QNull),
+        c.label.map(fn(s) { QText(s) }).unwrap_or(QNull),
+      ])
+  }
+  "position:" +
+  QList([
+    QText(decimal_group_key(p.units.number)),
+    QText(p.units.currency),
+    cost,
+  ]).to_json()
+}

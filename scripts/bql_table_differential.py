@@ -9,7 +9,7 @@ import conformance as c
 
 def error_category(text, ours=False):
     if ours and 'query.oracle_type_error' in text: return 'evaluation'
-    if 'CompilationError' in text or (ours and ('query.invalid_column' in text or 'query.invalid_signature' in text or 'query.invalid_aggregate' in text or 'unsupported column' in text)):
+    if 'CompilationError' in text or (ours and ('compilation ' in text or 'query.invalid_column' in text or 'query.invalid_signature' in text or 'query.invalid_aggregate' in text or 'unsupported column' in text)):
         return 'compilation'
     if 'ParseError' in text or 'FailedParse' in text or 'query.invalid_character' in text:
         return 'syntax'
@@ -80,7 +80,7 @@ def run(ours, oracle):
     b=c.run([str(Path(oracle)/'bean-query'),'-f','csv',ledger,query])
     ac=error_category(a.stdout+a.stderr,True);bc=error_category(b.stdout+b.stderr)
     results.append(dict(query=query,ok=a.returncode!=0 and b.returncode!=0 and ac==bc,detail=f'{ac}/{bc}'))
-    for query in ['SELECT first(accounts) FROM entries','SELECT upper(accounts) FROM entries',
+    for query in ['SELECT count(*) GROUP BY tags','SELECT count(*) GROUP BY meta','SELECT count(*) GROUP BY balance','SELECT count(*) GROUP BY entry','SELECT count(*) FROM #accounts GROUP BY open','SELECT count(*) FROM #notes GROUP BY tags','SELECT first(accounts) FROM entries','SELECT upper(accounts) FROM entries',
                   'SELECT sum(date) FROM entries','SELECT sum(type) FROM entries',
                   'SELECT count() FROM entries','SELECT first() FROM entries',
                   'SELECT min(date,date) FROM entries','SELECT sum(count(*)) FROM entries',
@@ -104,4 +104,10 @@ def run(ours, oracle):
     a=c.ours_query(ours,assertion,query);b=c.oracle_query(oracle,assertion,query)
     ok,detail=compare(a,b) if a else (False,'ours failed')
     results.append(dict(query=query,ok=ok,detail=detail))
+    query='SELECT count(*) GROUP BY tags'
+    grouped_ledger=str(Path('tests/bql-sources/set-groups.beancount').resolve())
+    a=subprocess.run([ours,'query',grouped_ledger,query,'--json'],capture_output=True,text=True)
+    b=c.run([str(Path(oracle)/'bean-query'),'-f','csv',grouped_ledger,query])
+    ac=error_category(a.stdout+a.stderr,True);bc=error_category(b.stdout+b.stderr)
+    results.append(dict(query=query,ledger=grouped_ledger,ok=a.returncode!=0 and b.returncode!=0 and ac==bc=='compilation',detail=f'{ac}/{bc}'))
     return results

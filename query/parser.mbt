@@ -809,6 +809,17 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   if !errors.is_empty() {
     return PqError(errors[0])
   }
+  for expr in groups {
+    let kind = expression_type(expr, source, [])
+    if ["dict", "list", "set", "inventory"].contains(kind) {
+      return PqError("compilation query.invalid_group: non-hashable " + kind)
+    }
+    if kind == "frozenset" || kind == "generic_set" {
+      return PqError(
+        "query.oracle_type_error: TypeError oracle generic group type",
+      )
+    }
+  }
   PqSelect({
     projections,
     distinct,

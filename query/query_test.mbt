@@ -640,14 +640,30 @@ test "signed zero input rejects exact object and fingerprint projections" {
 }
 
 ///|
-test "structural operations fail explicitly and set grouping ignores member order" {
+test "nonhashable groups and structural comparisons fail explicitly" {
   let r = queried(ledger_source(), "SELECT meta FROM #entries GROUP BY meta")
-  assert_true(r.failure() is Some(@query.Unsupported(_)))
+  assert_true(r.failure() is Some(@query.Compilation(_)))
   let r = queried(ledger_source(), "SELECT meta FROM #entries WHERE meta=meta")
   assert_true(r.failure() is Some(@query.Unsupported(_)))
   let source = "2024-01-01 open Assets:A USD\n2024-01-01 open Equity:A USD\n2024-01-02 * \"one\" #a #b\n  Assets:A 1 USD\n  Equity:A -1 USD\n2024-01-03 * \"two\" #b #a\n  Assets:A 1 USD\n  Equity:A -1 USD\n"
   let r = queried(source, "SELECT count(*) GROUP BY tags")
+  assert_true(r.failure() is Some(@query.Compilation(_)))
+}
+
+///|
+test "signed zero numeric results reject exact representation" {
+  for expression in ["round(-0.1)", "0.0/-1", "safediv(0.0,-1)", "0.0*-1"] {
+    let r = queried(ledger_source(), "SELECT repr(" + expression + ") LIMIT 1")
+    assert_true(r.failure() is Some(@query.Unsupported(_)))
+  }
+}
+
+///|
+test "legacy multi currency inventory HAVING does not become an object error" {
+  let source = "2024-01-01 open Assets:A\n2024-01-01 open Equity:A\n2024-01-02 * \"USD\"\n  Assets:A 1 USD\n  Equity:A -1 USD\n2024-01-03 * \"EUR\"\n  Assets:A 1 EUR\n  Equity:A -1 EUR\n"
+  let r = queried(
+    source, "SELECT account,sum(units) GROUP BY account HAVING sum(units)>0",
+  )
   assert_true(r.is_ok())
-  assert_eq(r.rows.length(), 1)
-  assert_eq(r.rows[0][0].to_text(), "4")
+  assert_eq(r.rows.length(), 0)
 }
