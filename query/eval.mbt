@@ -11,6 +11,8 @@ priv struct BqlRow {
   tags : Array[String]
   links : Array[String]
   meta : @ast.Meta
+  entry_meta : @ast.Meta
+  accounts : Array[String]
   account : String
   units : @ast.Amount
   cost : @ast.Cost?
@@ -104,6 +106,8 @@ fn posting_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
                 tags: txn.tags,
                 links: txn.links,
                 meta: posting.meta,
+                entry_meta: entry.meta,
+                accounts: transaction_accounts(txn),
                 account: posting.account,
                 units,
                 cost,
@@ -141,6 +145,8 @@ fn balance_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
         tags: [],
         links: [],
         meta: @ast.Meta::new(),
+        entry_meta: @ast.Meta::new(),
+        accounts: [],
         account,
         units: position.units,
         cost: position.cost,
@@ -182,6 +188,7 @@ fn eval_column(row : BqlRow, name : String) -> QueryValue {
     "narration" => QText(row.narration)
     "tags" => QSet(row.tags)
     "links" => QSet(row.links)
+    "accounts" => QSet(row.accounts)
     "account" => QText(row.account)
     "root" => QText(@ast.account_root(row.account))
     "parent" => QText(@ast.account_parent(row.account))
@@ -230,8 +237,11 @@ fn eval_expr(expr : Expr, row : BqlRow) -> QueryValue {
       }
     ECall(name, args) =>
       match (name, args) {
-        ("meta", [EStr(key)]) =>
-          match row.meta.get(key) {
+        ("meta" | "entry_meta", [EStr(key)]) =>
+          match
+            (if name == "entry_meta" { row.entry_meta } else { row.meta }).get(
+              key,
+            ) {
             Some(@ast.MString(s))
             | Some(@ast.MAccount(s))
             | Some(@ast.MCurrency(s))
@@ -430,7 +440,16 @@ fn sum_numbers(values : Array[@decimal.Decimal]) -> QueryValue {
 ///|
 fn eval_aggregate(expr : Expr, rows : Array[BqlRow]) -> QueryValue {
   match expr {
-    ECall("count", _) => QNumber(@decimal.Decimal::from_int(rows.length()))
+    ECall("count", args) => {
+      let count = if args is [EStar] {
+        rows.length()
+      } else if args is [arg] {
+        rows.filter(fn(row) { !(eval_expr(arg, row) is QNull) }).length()
+      } else {
+        0
+      }
+      QNumber(@decimal.Decimal::from_int(count))
+    }
     ECall("sum", [arg]) =>
       match arg {
         ECol("position") => {
@@ -637,6 +656,21 @@ fn run_select(
     grouped_cond(query.having, output.group)
   })
   sort_outputs(outputs, query.orders)
+  if query.distinct {
+    let unique : Array[OutputRow] = []
+    for output in outputs {
+      if !unique.any(fn(prev) {
+          prev.values.length() == output.values.length() &&
+          prev.values
+          .iter()
+          .zip(output.values.iter())
+          .all(fn(pair) { distinct_equal(pair.0, pair.1) })
+        }) {
+        unique.push(output)
+      }
+    }
+    outputs = unique
+  }
   match query.limit {
     Some(limit) =>
       if outputs.length() > limit {
@@ -685,6 +719,8 @@ fn journal_row(entry : @ast.Entry, posting : @ast.Posting) -> BqlRow? {
         tags: [],
         links: [],
         meta: @ast.Meta::new(),
+        entry_meta: @ast.Meta::new(),
+        accounts: [],
         account: posting.account,
         units,
         cost,
@@ -869,6 +905,8 @@ fn opening_rows(
         tags: [],
         links: [],
         meta: @ast.Meta::new(),
+        entry_meta: @ast.Meta::new(),
+        accounts: [],
         account,
         units: position.units,
         cost: position.cost,
@@ -941,6 +979,8 @@ fn transaction_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
         tags: txn.tags,
         links: txn.links,
         meta: entry.meta,
+        entry_meta: entry.meta,
+        accounts: transaction_accounts(txn),
         account: "",
         units,
         cost: None,
@@ -950,4 +990,47 @@ fn transaction_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
     }
   }
   rows
+}
+
+///|
+fn transaction_accounts(txn : @ast.Transaction) -> Array[String] {
+  let accounts : Array[String] = []
+  for posting in txn.postings {
+    if !accounts.contains(posting.account) {
+      accounts.push(posting.account)
+    }
+  }
+  accounts
+}
+
+///|
+fn distinct_equal(a : QueryValue, b : QueryValue) -> Bool {
+  match (a, b) {
+    (QSet(a), QSet(b)) =>
+      a.length() == b.length() && a.all(fn(s) { b.contains(s) })
+    (QPosition(a), QPosition(b)) => {
+      let cost_equal = match (a.cost, b.cost) {
+        (None, None) => true
+        (Some(a), Some(b)) =>
+          a.number.equal(b.number) &&
+          a.currency == b.currency &&
+          (match (a.date, b.date) {
+            (None, None) => true
+            (Some(a), Some(b)) => a.compare(b) == 0
+            _ => false
+          }) &&
+          a.label == b.label
+        _ => false
+      }
+      a.units.currency == b.units.currency &&
+      a.units.number.equal(b.units.number) &&
+      cost_equal
+    }
+    (QInventory(a), QInventory(b)) =>
+      a.positions.length() == b.positions.length() &&
+      a.positions.all(fn(p) {
+        b.positions.any(fn(q) { distinct_equal(QPosition(p), QPosition(q)) })
+      })
+    _ => value_compare(a, b) == Some(0)
+  }
 }

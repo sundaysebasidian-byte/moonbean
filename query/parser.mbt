@@ -52,6 +52,7 @@ priv enum QuerySource {
 ///|
 priv struct SelectQuery {
   projections : Array[Expr]
+  distinct : Bool
   source : QuerySource
   filter : Cond
   having : Cond
@@ -245,6 +246,13 @@ fn parse_primary(parser : QueryParser) -> Expr? {
           | "sum"
           | "count"
           | "meta" => Some(ECall(lower, args))
+          "entry_meta" =>
+            if args is [EStr(_)] {
+              Some(ECall(lower, args))
+            } else {
+              parser.fail("unsupported query.unsupported.signature")
+              None
+            }
           "length" | "substr" => {
             let valid = match (lower, args) {
               ("length", [arg]) => string_expr(arg)
@@ -287,6 +295,7 @@ fn parse_primary(parser : QueryParser) -> Expr? {
           | "position"
           | "tags"
           | "links"
+          | "accounts"
           | "weight" => Some(ECol(lower))
           _ => {
             parser.fail("unsupported column `" + word + "`")
@@ -569,15 +578,21 @@ fn parse_source(parser : QueryParser) -> QuerySource? {
 
 ///|
 fn parse_select(parser : QueryParser) -> ParsedQuery {
-  let projections = match parse_expr_list(parser) {
-    Some(items) => items
-    None =>
-      return PqError(
-        match parser.error {
-          Some(message) => message
-          None => "expected a projection"
-        },
-      )
+  let distinct = parser.match_keyword("distinct")
+  let star = parser.match_sym("*")
+  let projections = if star {
+    []
+  } else {
+    match parse_expr_list(parser) {
+      Some(items) => items
+      None =>
+        return PqError(
+          match parser.error {
+            Some(message) => message
+            None => "expected a projection"
+          },
+        )
+    }
   }
   let mut source = SrcPostings
   if parser.match_keyword("from") {
@@ -590,6 +605,16 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
             None => "invalid FROM clause"
           },
         )
+    }
+  }
+  if star {
+    let names = if source is SrcTransactions {
+      ["date", "flag", "payee", "narration", "tags", "links", "accounts"]
+    } else {
+      ["date", "flag", "payee", "narration", "position"]
+    }
+    for name in names {
+      projections.push(ECol(name))
     }
   }
   let mut filter = CTrue
@@ -699,7 +724,16 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
       return PqError("unsupported query.unsupported.transaction_column")
     }
   }
-  PqSelect({ projections, source, filter, having, groups, orders, limit, })
+  PqSelect({
+    projections,
+    distinct,
+    source,
+    filter,
+    having,
+    groups,
+    orders,
+    limit,
+  })
 }
 
 ///|
@@ -861,9 +895,17 @@ fn integer_expr(expr : Expr) -> Bool {
 ///|
 fn transaction_expr(expr : Expr) -> Bool {
   match expr {
-    ECol("date" | "flag" | "payee" | "narration" | "tags" | "links") => true
+    ECol(
+      "date"
+      | "flag"
+      | "payee"
+      | "narration"
+      | "tags"
+      | "links"
+      | "accounts"
+    ) => true
     ECol(_) => false
-    ECall("meta" | "sum", _) => false
+    ECall("sum", _) => false
     ECall(_, args) => args.all(transaction_expr)
     EBinary(a, _, b) => transaction_expr(a) && transaction_expr(b)
     _ => true

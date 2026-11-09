@@ -373,16 +373,6 @@
       "oracle_rows": null
     },
     {
-      "query": "SELECT meta('x') FROM transactions LIMIT 1",
-      "kind": "transaction_column",
-      "oracle_supported": true,
-      "oracle_rows": [
-        [
-          ""
-        ]
-      ]
-    },
-    {
       "query": "SELECT narration WHERE narration ~ '['",
       "kind": "regex",
       "oracle_supported": false,

@@ -5,8 +5,33 @@ import json
 import subprocess
 from pathlib import Path
 import conformance as c
+import report_differential as reports
+
+
+def compare_bql(ours, oracle):
+    if oracle is None or len(ours['rows']) != len(oracle) - 1:
+        return False, 'oracle failed or row count differs'
+    normalized = dict(ours, rows=[list(row) for row in ours['rows']])
+    expected = [list(row) for row in oracle]
+    for i, row in enumerate(normalized['rows']):
+        for j, cell in enumerate(row):
+            if isinstance(cell, dict) and 'units' in cell:
+                if reports.our_position(cell) != reports.oracle_position(expected[i+1][j]):
+                    return False, 'position differs'
+                row[j] = expected[i+1][j]
+    return c.compare_scalar_query(normalized, expected)
+
 
 queries = [
+    'SELECT DISTINCT account ORDER BY account LIMIT 3',
+    'SELECT DISTINCT date ORDER BY date DESC LIMIT 2',
+    'SELECT DISTINCT position WHERE account = "Assets:Cash"',
+    'SELECT DISTINCT tags, links FROM transactions',
+    'SELECT DISTINCT payee FROM transactions ORDER BY payee',
+    'SELECT count(payee), count(*) FROM transactions',
+    'SELECT accounts FROM transactions ORDER BY date LIMIT 3',
+    "SELECT meta('absent') FROM transactions LIMIT 2",
+    "SELECT entry_meta('absent') LIMIT 2",
     'SELECT account, count(*) GROUP BY account HAVING count(*) > 1 ORDER BY account',
     'SELECT account, count(*) * 2 + 1 GROUP BY account HAVING count(*) >= 1 ORDER BY account',
     "SELECT account WHERE account ~ '^assets:' ORDER BY account LIMIT 3",
@@ -35,14 +60,14 @@ def main():
         ledger = 'tests/ledgers/015-tags-links.beancount' if 'tags, links' in query else 'tests/ledgers/019-posting-metadata.beancount' if 'meta(' in query else 'examples/full-year-2024.beancount'
         ours = c.ours_query(args.ours, ledger, query)
         oracle = c.oracle_query(args.oracle, ledger, query)
-        ok, detail = c.compare_scalar_query(ours, oracle) if ours else (False, 'moonbean failed')
+        ok, detail = compare_bql(ours, oracle) if ours else (False, 'moonbean failed')
         results.append(dict(query=query, ok=ok, detail=detail))
     fixture = json.loads((Path(__file__).resolve().parent.parent / 'tests/bql-strings.json').read_text(encoding='utf-8'))
     for case in fixture['cases']:
         query = case['query']
         oracle = c.oracle_query(args.oracle, fixture['ledger'], query)
         ours = c.ours_query(args.ours, fixture['ledger'], query)
-        ok, detail = c.compare_scalar_query(ours, oracle) if ours else (False, 'moonbean failed')
+        ok, detail = compare_bql(ours, oracle) if ours else (False, 'moonbean failed')
         if oracle is None or oracle[1:] != case['expected']:
             ok, detail = False, 'oracle output differs from checked-in expectation'
         results.append(dict(query=query, ok=ok, detail=detail))
@@ -68,7 +93,7 @@ def main():
             ok = ok and proc.returncode == 1 and code in output and 'BQL:' in output
         else:
             ours = json.loads(proc.stdout) if proc.returncode == 0 else None
-            equal, _ = c.compare_scalar_query(ours, oracle) if ours else (False, '')
+            equal, _ = compare_bql(ours, oracle) if ours else (False, '')
             ok = ok and equal
             if 'tags, links' in query:
                 text = subprocess.run([args.ours, 'query', ledger, query], capture_output=True, text=True)

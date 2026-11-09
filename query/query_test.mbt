@@ -437,8 +437,6 @@ test "hash sources and star reject ambiguous results" {
   for
     q in [
       "SELECT date FROM #balances", "SELECT count(*) FROM #entries", "SELECT count(*) FROM #Transactions",
-      "SELECT * FROM transactions", "SELECT * FROM #transactions", "SELECT * FROM postings",
-      "SELECT *",
     ] {
     let r = queried(ledger_source(), q)
     assert_true(r.failure() is Some(@query.Unsupported(_)))
@@ -471,7 +469,7 @@ test "only count accepts a star argument on either source" {
   for source in ["postings", "transactions"] {
     for
       expr in [
-        "*", "sum(*)", "year(*)", "meta(*)", "root(*)", "unknown(*)", "sum(year(*))",
+        "sum(*)", "year(*)", "meta(*)", "root(*)", "unknown(*)", "sum(year(*))",
       ] {
       let r = queried(ledger_source(), "SELECT " + expr + " FROM " + source)
       assert_true(r.failure() is Some(@query.Unsupported(_)))
@@ -493,4 +491,26 @@ test "only count accepts a star argument on either source" {
     queried(ledger_source(), "SELECT\n  sum(*) FROM postings").error,
     Some("unsupported query.unsupported.star at BQL:2:7"),
   )
+}
+
+///|
+test "distinct star and nullable transaction counts" {
+  let result = queried(
+    ledger_source(),
+    "SELECT DISTINCT account ORDER BY account LIMIT 2",
+  )
+  assert_true(result.is_ok())
+  assert_eq(result.rows.length(), 2)
+  assert_eq(result.rows[0][0].to_text(), "Assets:Cash")
+  let star = queried(ledger_source(), "SELECT * FROM transactions")
+  assert_true(star.is_ok())
+  assert_eq(star.columns.length(), 7)
+  assert_eq(star.rows.length(), 2)
+  let counts = queried(
+    ledger_source(),
+    "SELECT count(payee), count(*), meta('absent') FROM transactions",
+  )
+  assert_true(counts.is_ok())
+  assert_eq(counts.rows[0][0].to_text(), "0")
+  assert_eq(counts.rows[0][1].to_text(), "2")
 }

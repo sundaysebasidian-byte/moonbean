@@ -93,6 +93,264 @@
           "1"
         ]
       ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT * FROM transactions",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "tags",
+          "links",
+          "accounts"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "cafe,shop",
+          "alpha,zulu",
+          "Assets:Cash,Equity:Opening"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT * FROM #transactions",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "tags",
+          "links",
+          "accounts"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "cafe,shop",
+          "alpha,zulu",
+          "Assets:Cash,Equity:Opening"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT * FROM postings",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "position"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          " 10 USD"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "-10 USD"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT * FROM #postings",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "position"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          " 10 USD"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "-10 USD"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/empty.beancount",
+      "query": "SELECT *",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "position"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          " 10 USD"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "-10 USD"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/assertion.beancount",
+      "query": "SELECT * FROM transactions",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "tags",
+          "links",
+          "accounts"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "cafe,shop",
+          "alpha,zulu",
+          "Assets:Cash,Equity:Opening"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/assertion.beancount",
+      "query": "SELECT * FROM #transactions",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "tags",
+          "links",
+          "accounts"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "cafe,shop",
+          "alpha,zulu",
+          "Assets:Cash,Equity:Opening"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/assertion.beancount",
+      "query": "SELECT * FROM postings",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "position"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          " 10 USD"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "-10 USD"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/assertion.beancount",
+      "query": "SELECT * FROM #postings",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "position"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          " 10 USD"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "-10 USD"
+        ]
+      ]
+    },
+    {
+      "ledger": "tests/bql-sources/assertion.beancount",
+      "query": "SELECT *",
+      "oracle": [
+        [
+          "date",
+          "flag",
+          "payee",
+          "narration",
+          "position"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          " 10 USD"
+        ],
+        [
+          "2024-01-02",
+          "*",
+          "",
+          "sets",
+          "-10 USD"
+        ]
+      ]
     }
   ],
   "boundaries": [
@@ -108,140 +366,6 @@
       ]
     },
     {
-      "ledger": "tests/bql-sources/empty.beancount",
-      "query": "SELECT * FROM transactions",
-      "kind": "star",
-      "oracle": [
-        [
-          "date",
-          "flag",
-          "payee",
-          "narration",
-          "tags",
-          "links",
-          "accounts"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          "cafe,shop",
-          "alpha,zulu",
-          "Assets:Cash,Equity:Opening"
-        ]
-      ]
-    },
-    {
-      "ledger": "tests/bql-sources/empty.beancount",
-      "query": "SELECT * FROM #transactions",
-      "kind": "star",
-      "oracle": [
-        [
-          "date",
-          "flag",
-          "payee",
-          "narration",
-          "tags",
-          "links",
-          "accounts"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          "cafe,shop",
-          "alpha,zulu",
-          "Assets:Cash,Equity:Opening"
-        ]
-      ]
-    },
-    {
-      "ledger": "tests/bql-sources/empty.beancount",
-      "query": "SELECT * FROM postings",
-      "kind": "star",
-      "oracle": [
-        [
-          "date",
-          "flag",
-          "payee",
-          "narration",
-          "position"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          " 10 USD"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          "-10 USD"
-        ]
-      ]
-    },
-    {
-      "ledger": "tests/bql-sources/empty.beancount",
-      "query": "SELECT * FROM #postings",
-      "kind": "star",
-      "oracle": [
-        [
-          "date",
-          "flag",
-          "payee",
-          "narration",
-          "position"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          " 10 USD"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          "-10 USD"
-        ]
-      ]
-    },
-    {
-      "ledger": "tests/bql-sources/empty.beancount",
-      "query": "SELECT *",
-      "kind": "star",
-      "oracle": [
-        [
-          "date",
-          "flag",
-          "payee",
-          "narration",
-          "position"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          " 10 USD"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          "-10 USD"
-        ]
-      ]
-    },
-    {
       "ledger": "tests/bql-sources/assertion.beancount",
       "query": "SELECT date, account FROM #balances",
       "kind": "source",
@@ -253,140 +377,6 @@
         [
           "2024-01-31",
           "Assets:Cash"
-        ]
-      ]
-    },
-    {
-      "ledger": "tests/bql-sources/assertion.beancount",
-      "query": "SELECT * FROM transactions",
-      "kind": "star",
-      "oracle": [
-        [
-          "date",
-          "flag",
-          "payee",
-          "narration",
-          "tags",
-          "links",
-          "accounts"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          "cafe,shop",
-          "alpha,zulu",
-          "Assets:Cash,Equity:Opening"
-        ]
-      ]
-    },
-    {
-      "ledger": "tests/bql-sources/assertion.beancount",
-      "query": "SELECT * FROM #transactions",
-      "kind": "star",
-      "oracle": [
-        [
-          "date",
-          "flag",
-          "payee",
-          "narration",
-          "tags",
-          "links",
-          "accounts"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          "cafe,shop",
-          "alpha,zulu",
-          "Assets:Cash,Equity:Opening"
-        ]
-      ]
-    },
-    {
-      "ledger": "tests/bql-sources/assertion.beancount",
-      "query": "SELECT * FROM postings",
-      "kind": "star",
-      "oracle": [
-        [
-          "date",
-          "flag",
-          "payee",
-          "narration",
-          "position"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          " 10 USD"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          "-10 USD"
-        ]
-      ]
-    },
-    {
-      "ledger": "tests/bql-sources/assertion.beancount",
-      "query": "SELECT * FROM #postings",
-      "kind": "star",
-      "oracle": [
-        [
-          "date",
-          "flag",
-          "payee",
-          "narration",
-          "position"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          " 10 USD"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          "-10 USD"
-        ]
-      ]
-    },
-    {
-      "ledger": "tests/bql-sources/assertion.beancount",
-      "query": "SELECT *",
-      "kind": "star",
-      "oracle": [
-        [
-          "date",
-          "flag",
-          "payee",
-          "narration",
-          "position"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          " 10 USD"
-        ],
-        [
-          "2024-01-02",
-          "*",
-          "",
-          "sets",
-          "-10 USD"
         ]
       ]
     },
