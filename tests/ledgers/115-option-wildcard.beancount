@@ -1,0 +1,8 @@
+option "inferred_tolerance_default" "*:0.02"
+option "infer_tolerance_from_cost" "True"
+option "render_commas" "yes"
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Equity:Opening USD
+2024-01-02 * "Wildcard default"
+  Assets:Cash 1 USD
+  Equity:Opening -1.01 USD

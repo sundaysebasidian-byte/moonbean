@@ -1627,7 +1627,7 @@ fn apply_option(
     for part in parts {
       pair.push(view_to_string(part))
     }
-    if pair.length() == 2 && is_valid_currency(pair[0]) {
+    if pair.length() == 2 && (is_valid_currency(pair[0]) || pair[0] == "*") {
       match @decimal.Decimal::parse(pair[1]) {
         Some(n) => options.inferred_tolerance_default.set(pair[0], n)
         None =>
@@ -1643,7 +1643,7 @@ fn apply_option(
       )
     }
   } else if name == "infer_tolerance_from_cost" {
-    options.infer_tolerance_from_cost = value == "TRUE" || value == "true"
+    options.infer_tolerance_from_cost = ["true", "1"].contains(value.to_lower())
   } else if name == "account_rounding" {
     options.account_rounding = Some(value)
   } else if name == "operating_currency" {
@@ -1651,7 +1651,7 @@ fn apply_option(
   } else if name == "documents" {
     options.documents.push(value)
   } else if name == "render_commas" {
-    options.render_commas = value == "TRUE" || value == "true"
+    options.render_commas = ["true", "1", "yes"].contains(value.to_lower())
   } else if name == "display_precision" {
     let parts = value.split(":")
     let pair = []

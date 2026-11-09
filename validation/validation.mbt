@@ -940,7 +940,11 @@ fn posting_tolerance(
   }
   match ctx.options.inferred_tolerance_default.get(currency) {
     Some(default) => larger(tolerance, default)
-    None => tolerance
+    None =>
+      match ctx.options.inferred_tolerance_default.get("*") {
+        Some(default) => larger(tolerance, default)
+        None => tolerance
+      }
   }
 }
 

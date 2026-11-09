@@ -159,3 +159,14 @@ test "metadata lines outside a directive are rejected" {
   inspect(ledger.errors.length(), content="1")
   inspect(ledger.errors[0].code, content="parse.indent")
 }
+
+///|
+test "oracle option boolean spellings and wildcard tolerance" {
+  let ledger = @syntax.parse_source(
+    "options.bean", "option \"infer_tolerance_from_cost\" \"True\"\noption \"render_commas\" \"yes\"\noption \"inferred_tolerance_default\" \"*:0.01\"\n",
+  )
+  assert_eq(ledger.errors.length(), 0)
+  assert_true(ledger.options.infer_tolerance_from_cost)
+  assert_true(ledger.options.render_commas)
+  assert_true(ledger.options.inferred_tolerance_default.contains("*"))
+}
