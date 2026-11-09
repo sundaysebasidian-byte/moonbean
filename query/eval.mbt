@@ -5,6 +5,7 @@
 ///|
 priv struct BqlRow {
   date : @ast.Date
+  entry : @ast.Entry?
   flag : String
   payee : String?
   narration : String
@@ -99,6 +100,7 @@ fn posting_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
             Some(units) => {
               let cost = posting_cost(posting, units)
               rows.push({
+                entry: None,
                 date: entry.date,
                 flag: txn.flag,
                 payee: txn.payee,
@@ -138,6 +140,7 @@ fn balance_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
   for account in realized.account_names() {
     for position in realized.inventory(account).positions {
       rows.push({
+        entry: None,
         date,
         flag: "",
         payee: None,
@@ -167,6 +170,7 @@ fn source_rows(
     SrcPostings => posting_rows(realized)
     SrcTransactions => transaction_rows(realized)
     SrcBalances => balance_rows(realized)
+    SrcDirectives(table) => directive_rows(realized, table)
     SrcOpen(start, close) => opening_rows(realized, start, close)
     SrcClose(date) =>
       posting_rows(realized).filter(fn(row) { row.date.less_than(date) })
@@ -175,10 +179,14 @@ fn source_rows(
 
 ///|
 fn eval_column(row : BqlRow, name : String) -> QueryValue {
+  if row.entry is Some(entry) {
+    return directive_column(entry, name, row.flag)
+  }
   match name {
     "date" => QDate(row.date)
     "year" => QNumber(@decimal.Decimal::from_int(row.date.year))
     "month" => QNumber(@decimal.Decimal::from_int(row.date.month))
+    "day" => QNumber(@decimal.Decimal::from_int(row.date.day))
     "flag" => QText(row.flag)
     "payee" =>
       match row.payee {
@@ -221,6 +229,7 @@ fn eval_column(row : BqlRow, name : String) -> QueryValue {
 ///|
 fn eval_expr(expr : Expr, row : BqlRow) -> QueryValue {
   match expr {
+    EValue(value) => value
     EBinary(left, op, right) =>
       arithmetic(eval_expr(left, row), op, eval_expr(right, row))
     ECol(name) => eval_column(row, name)
@@ -229,28 +238,33 @@ fn eval_expr(expr : Expr, row : BqlRow) -> QueryValue {
     EDate(date) => QDate(date)
     ENull => QNull
     EStar => QNull
-    EBool(value) =>
-      if value {
-        QNumber(@decimal.Decimal::one())
-      } else {
-        QNumber(@decimal.Decimal::zero())
-      }
+    EBool(value) => QBool(value)
     ECall(name, args) =>
       match (name, args) {
         ("meta" | "entry_meta", [EStr(key)]) =>
           match
-            (if name == "entry_meta" { row.entry_meta } else { row.meta }).get(
-              key,
-            ) {
+            (match (row.entry, key) {
+              (Some(entry), "filename") => Some(@ast.MString(entry.loc.file))
+              (Some(entry), "lineno") =>
+                Some(@ast.MNumber(@decimal.Decimal::from_int(entry.loc.line)))
+              _ =>
+                (if name == "entry_meta" { row.entry_meta } else { row.meta }).get(
+                  key,
+                )
+            }) {
             Some(@ast.MString(s))
             | Some(@ast.MAccount(s))
             | Some(@ast.MCurrency(s))
             | Some(@ast.MTag(s)) => QText(s)
             Some(@ast.MNumber(n)) => QNumber(n)
             Some(@ast.MDate(d)) => QDate(d)
-            Some(@ast.MBool(b)) =>
-              QNumber(@decimal.Decimal::from_int(if b { 1 } else { 0 }))
+            Some(@ast.MBool(b)) => QBool(b)
             None => QNull
+          }
+        ("upper" | "lower", [arg]) =>
+          match eval_expr(arg, row) {
+            QText(s) => QText(unicode_case(s, name == "upper"))
+            _ => QNull
           }
         ("length", [arg]) =>
           match eval_expr(arg, row) {
@@ -324,13 +338,14 @@ fn cond_holds(cond : Cond, row : BqlRow) -> Bool {
     }
     CTruthy(expr) =>
       match eval_expr(expr, row) {
-        QSet(values) => values.length() > 0
+        QSet(values) | QFrozenSet(values) => values.length() > 0
         QNull => false
         QText(text) => text != ""
         QNumber(number) => !number.is_zero()
         QAmount(amount) => !amount.number.is_zero()
         QPosition(position) => !position.units.number.is_zero()
         QInventory(inventory) => !inventory.is_empty()
+        QBool(b) => b
         QDate(_) => true
       }
     CCmp(left, op, right) => {
@@ -356,6 +371,7 @@ fn cond_holds(cond : Cond, row : BqlRow) -> Bool {
 ///|
 fn expr_label(expr : Expr) -> String {
   match expr {
+    EValue(value) => value.to_text()
     EBinary(left, op, right) => expr_label(left) + op + expr_label(right)
     ECol(name) => name
     EStr(text) => "\"" + text + "\""
@@ -380,7 +396,7 @@ fn expr_label(expr : Expr) -> String {
 fn contains_sum(expr : Expr) -> Bool {
   match expr {
     EBinary(left, _, right) => contains_sum(left) || contains_sum(right)
-    ECall("sum", _) | ECall("count", _) => true
+    ECall("sum" | "count" | "first" | "last" | "min" | "max", _) => true
     ECall(_, args) => {
       for arg in args {
         if contains_sum(arg) {
@@ -428,7 +444,7 @@ fn sum_amounts(values : Array[@ast.Amount]) -> QueryValue {
 ///|
 fn sum_numbers(values : Array[@decimal.Decimal]) -> QueryValue {
   if values.length() == 0 {
-    return QNull
+    return QNumber(@decimal.Decimal::zero())
   }
   let mut total = @decimal.Decimal::zero()
   for value in values {
@@ -440,6 +456,35 @@ fn sum_numbers(values : Array[@decimal.Decimal]) -> QueryValue {
 ///|
 fn eval_aggregate(expr : Expr, rows : Array[BqlRow]) -> QueryValue {
   match expr {
+    ECall("first" | "last" | "min" | "max", [arg]) => {
+      let mut result = QNull
+      for row in rows {
+        let value = eval_expr(arg, row)
+        if expr is ECall("last", _) {
+          result = value
+          continue
+        }
+        if value is QNull {
+          continue
+        }
+        if result is QNull {
+          result = value
+          continue
+        }
+        match expr {
+          ECall("last", _) => result = value
+          ECall("min" | "max", _) => {
+            let order = value_compare(value, result)
+            if (expr is ECall("min", _) && order is Some(n) && n < 0) ||
+              (expr is ECall("max", _) && order is Some(n) && n > 0) {
+              result = value
+            }
+          }
+          _ => ()
+        }
+      }
+      result
+    }
     ECall("count", args) => {
       let count = if args is [EStar] {
         rows.length()
@@ -452,6 +497,15 @@ fn eval_aggregate(expr : Expr, rows : Array[BqlRow]) -> QueryValue {
     }
     ECall("sum", [arg]) =>
       match arg {
+        ECol("amount") => {
+          let inventory = @booking.Inventory::new()
+          for row in rows {
+            if eval_expr(arg, row) is QAmount(amount) {
+              inventory.add_amount(amount)
+            }
+          }
+          QInventory(inventory)
+        }
         ECol("position") => {
           let inventory = @booking.Inventory::new()
           for row in rows {
@@ -515,8 +569,26 @@ fn eval_aggregate(expr : Expr, rows : Array[BqlRow]) -> QueryValue {
 fn eval_grouped(expr : Expr, rows : Array[BqlRow]) -> QueryValue {
   if expr is EBinary(left, op, right) {
     arithmetic(eval_grouped(left, rows), op, eval_grouped(right, rows))
-  } else if contains_sum(expr) {
-    eval_aggregate(expr, rows)
+  } else if expr is ECall(name, args) && contains_sum(expr) {
+    if ["sum", "count", "first", "last", "min", "max"].contains(name) {
+      eval_aggregate(expr, rows)
+    } else if !rows.is_empty() {
+      eval_expr(
+        ECall(
+          name,
+          args.map(fn(arg) {
+            if contains_sum(arg) {
+              EValue(eval_grouped(arg, rows))
+            } else {
+              arg
+            }
+          }),
+        ),
+        rows[0],
+      )
+    } else {
+      QNull
+    }
   } else if rows.length() > 0 {
     eval_expr(expr, rows[0])
   } else {
@@ -534,7 +606,15 @@ priv struct OutputRow {
 fn group_key(exprs : Array[Expr], row : BqlRow) -> String {
   let sb = StringBuilder()
   for expr in exprs {
-    sb.write_string(eval_expr(expr, row).to_json())
+    let value = eval_expr(expr, row)
+    sb.write_string(
+      match value {
+        QBool(b) => if b { "1" } else { "0" }
+        QNumber(n) => decimal_group_key(n)
+        QAmount(a) => "amount:" + a.currency + ":" + decimal_group_key(a.number)
+        _ => value.to_json()
+      },
+    )
     sb.write_string("\u{1f}")
   }
   sb.to_string()
@@ -565,6 +645,9 @@ fn build_output(query : SelectQuery, rows : Array[BqlRow]) -> Array[OutputRow] {
       }
       outputs.push({ values, group: [row], })
     }
+    return outputs
+  }
+  if rows.is_empty() {
     return outputs
   }
   let groups : Map[String, Array[BqlRow]] = Map([])
@@ -712,6 +795,7 @@ fn journal_row(entry : @ast.Entry, posting : @ast.Posting) -> BqlRow? {
     Some(units) => {
       let cost = posting_cost(posting, units)
       Some({
+        entry: None,
         date: entry.date,
         flag: "",
         payee: None,
@@ -824,6 +908,7 @@ fn grouped_cond(cond : Cond, rows : Array[BqlRow]) -> Bool {
     CIsNull(e, negated) => (eval_grouped(e, rows) is QNull) != negated
     CTruthy(e) =>
       match eval_grouped(e, rows) {
+        QBool(b) => b
         QNumber(n) => !n.is_zero()
         QNull => false
         _ => true
@@ -898,6 +983,7 @@ fn opening_rows(
     for position in inventory.positions {
       let narration = "Opening balance for '" + account + "' (Summarization)"
       let row : BqlRow = {
+        entry: None,
         date,
         flag: "S",
         payee: None,
@@ -972,6 +1058,7 @@ fn transaction_rows(realized : @realization.RealizedLedger) -> Array[BqlRow] {
       // Posting-only columns are rejected before evaluation for this source.
       let units = @ast.Amount::new(@decimal.Decimal::zero(), "")
       rows.push({
+        entry: None,
         date: entry.date,
         flag: txn.flag,
         payee: txn.payee,
@@ -1006,8 +1093,230 @@ fn transaction_accounts(postings : Array[@ast.Posting]) -> Array[String] {
 ///|
 fn distinct_equal(a : QueryValue, b : QueryValue) -> Bool {
   match (a, b) {
-    (QSet(a), QSet(b)) =>
+    (QSet(a) | QFrozenSet(a), QSet(b) | QFrozenSet(b)) =>
       a.length() == b.length() && a.all(fn(s) { b.contains(s) })
     _ => value_compare(a, b) == Some(0)
   }
+}
+
+///|
+fn directive_type(entry : @ast.Entry) -> String {
+  match entry.directive {
+    DOpen(_) => "open"
+    DClose(_) => "close"
+    DCommodity(_) => "commodity"
+    DBalance(_) => "balance"
+    DPad(_) => "pad"
+    DPrice(_) => "price"
+    DTransaction(_) => "transaction"
+    DNote(_) => "note"
+    DDocument(_) => "document"
+    DEvent(_) => "event"
+    DQuery(_) => "query"
+    DCustom(_) => "custom"
+  }
+}
+
+///|
+fn directive_rows(
+  realized : @realization.RealizedLedger,
+  table : String,
+) -> Array[BqlRow] {
+  let result : Array[BqlRow] = []
+  let seen : Map[String, Bool] = Map([])
+  for entry in realized.entries {
+    let kind = directive_type(entry)
+    let selected = if table == "accounts" {
+      kind == "open"
+    } else {
+      table == "entries" ||
+      table == kind + "s" ||
+      (table == "commodities" && kind == "commodity")
+    }
+    if !selected {
+      continue
+    }
+    if table == "accounts" && entry.directive is DOpen(open) {
+      if seen.contains(open.account) {
+        continue
+      }
+      seen.set(open.account, true)
+    }
+    let units = @ast.Amount::new(@decimal.Decimal::zero(), "")
+    result.push({
+      entry: Some(entry),
+      date: entry.date,
+      flag: table,
+      payee: None,
+      narration: "",
+      tags: [],
+      links: [],
+      meta: entry.meta,
+      entry_meta: entry.meta,
+      accounts: [],
+      account: "",
+      units,
+      cost: None,
+      value: None,
+      position: @booking.Position::new(units, None),
+    })
+  }
+  result
+}
+
+///|
+fn directive_column(
+  entry : @ast.Entry,
+  name : String,
+  table : String,
+) -> QueryValue {
+  match name {
+    "date" => return QDate(entry.date)
+    "year" => return QNumber(@decimal.Decimal::from_int(entry.date.year))
+    "month" => return QNumber(@decimal.Decimal::from_int(entry.date.month))
+    "day" => return QNumber(@decimal.Decimal::from_int(entry.date.day))
+    "lineno" => return QNumber(@decimal.Decimal::from_int(entry.loc.line))
+    "filename" =>
+      match entry.directive {
+        DDocument(document) =>
+          if table == "documents" {
+            let file = @path.Path(document.filename)
+            return QText(
+              if file.is_absolute() {
+                file.normalize().to_string()
+              } else {
+                @path.Path(entry.loc.file)
+                .dirname()
+                .join(file)
+                .normalize()
+                .to_string()
+              },
+            )
+          } else {
+            return QText(entry.loc.file)
+          }
+        _ => return QText(entry.loc.file)
+      }
+    "type" =>
+      return QText(
+        match entry.directive {
+          DEvent(e) => if table == "events" { e.event_type } else { "event" }
+          _ => directive_type(entry)
+        },
+      )
+    "accounts" => {
+      let accounts = match entry.directive {
+        DTransaction(txn) => transaction_accounts(txn.postings)
+        DOpen(e) => [e.account]
+        DClose(e) => [e.account]
+        DBalance(e) => [e.account]
+        DPad(e) => [e.account, e.source_account]
+        DNote(e) => [e.account]
+        DDocument(e) => [e.account]
+        DCustom(_) => []
+        _ => []
+      }
+      return QSet(accounts)
+    }
+    _ => ()
+  }
+  match entry.directive {
+    DTransaction(txn) =>
+      match name {
+        "flag" => QText(txn.flag)
+        "payee" =>
+          match txn.payee {
+            Some(p) => QText(p)
+            None => QNull
+          }
+        "narration" => QText(txn.narration)
+        "description" =>
+          QText(
+            match txn.payee {
+              Some(p) =>
+                if p == "" {
+                  txn.narration
+                } else {
+                  p + " | " + txn.narration
+                }
+              None => txn.narration
+            },
+          )
+        "tags" => QSet(txn.tags)
+        "links" => QSet(txn.links)
+        _ => QNull
+      }
+    DOpen(e) => if name == "account" { QText(e.account) } else { QNull }
+    DClose(e) => if name == "account" { QText(e.account) } else { QNull }
+    DCommodity(e) => if name == "name" { QText(e.currency) } else { QNull }
+    DPrice(e) =>
+      match name {
+        "currency" => QText(e.currency)
+        "amount" => QAmount(e.amount)
+        _ => QNull
+      }
+    DBalance(e) =>
+      match name {
+        "account" => QText(e.account)
+        "amount" => QAmount(e.amount)
+        "tolerance" =>
+          match e.tolerance {
+            Some(n) => QNumber(n)
+            None => QNull
+          }
+        _ => QNull
+      }
+    DEvent(e) =>
+      if name == "description" && table == "events" {
+        QText(e.description)
+      } else {
+        QNull
+      }
+    DNote(e) =>
+      match name {
+        "account" => QText(e.account)
+        "comment" => QText(e.comment)
+        "tags" | "links" =>
+          if table == "notes" {
+            QFrozenSet([])
+          } else {
+            QSet([])
+          }
+        _ => QNull
+      }
+    DDocument(e) =>
+      match name {
+        "account" => QText(e.account)
+        "tags" =>
+          if table == "documents" {
+            QFrozenSet(e.tags)
+          } else {
+            QSet(e.tags)
+          }
+        "links" =>
+          if table == "documents" {
+            QFrozenSet(e.links)
+          } else {
+            QSet(e.links)
+          }
+        _ => QNull
+      }
+    _ => QNull
+  }
+}
+
+///|
+fn decimal_group_key(number : @decimal.Decimal) -> String {
+  let text = number.to_string()
+  if !text.contains(".") {
+    return text
+  }
+  let mut end = text.length()
+  while end > 0 && text.get_char(end - 1) is Some('0') {
+    end = end - 1
+  }
+  if end > 0 && text.get_char(end - 1) is Some('.') {
+    end = end - 1
+  }
+  String::from_iter(text[:end].iter())
 }

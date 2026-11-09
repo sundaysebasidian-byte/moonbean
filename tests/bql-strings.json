@@ -263,6 +263,22 @@
           "1"
         ]
       ]
+    },
+    {
+      "query": "SELECT upper('Ab') LIMIT 1",
+      "expected": [
+        [
+          "AB"
+        ]
+      ]
+    },
+    {
+      "query": "SELECT lower('Ab') LIMIT 1",
+      "expected": [
+        [
+          "ab"
+        ]
+      ]
     }
   ],
   "boundaries": [
@@ -271,26 +287,6 @@
       "kind": "like",
       "oracle_supported": false,
       "oracle_rows": null
-    },
-    {
-      "query": "SELECT upper('Ab') LIMIT 1",
-      "kind": "function",
-      "oracle_supported": true,
-      "oracle_rows": [
-        [
-          "AB"
-        ]
-      ]
-    },
-    {
-      "query": "SELECT lower('Ab') LIMIT 1",
-      "kind": "function",
-      "oracle_supported": true,
-      "oracle_rows": [
-        [
-          "ab"
-        ]
-      ]
     },
     {
       "query": "SELECT startswith('Ab','A') LIMIT 1",

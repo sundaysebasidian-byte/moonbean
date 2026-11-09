@@ -4,12 +4,14 @@
 pub(all) enum QueryValue {
   QText(String)
   QSet(Array[String])
+  QFrozenSet(Array[String])
   QNumber(@decimal.Decimal)
   QDate(@ast.Date)
   QAmount(@ast.Amount)
   QPosition(@booking.Position)
   QInventory(@booking.Inventory)
   QNull
+  QBool(Bool)
 }
 
 ///|
@@ -47,6 +49,22 @@ fn query_json_escape(text : String) -> String {
 ///|
 pub fn QueryValue::to_text(self : QueryValue) -> String {
   match self {
+    QFrozenSet(values) =>
+      if values.is_empty() {
+        "frozenset()"
+      } else {
+        let sorted = values.copy()
+        sorted.sort_by(fn(a, b) { a.lexical_compare(b) })
+        "frozenset({" +
+        sorted
+        .map(fn(s) {
+          "'" +
+          s.replace_all(old="\\", new="\\\\").replace_all(old="'", new="\\'") +
+          "'"
+        })
+        .join(", ") +
+        "})"
+      }
     QSet(values) => {
       let sorted = values.copy()
       sorted.sort_by(fn(a, b) { a.lexical_compare(b) })
@@ -69,6 +87,7 @@ pub fn QueryValue::to_text(self : QueryValue) -> String {
       }
       sb.to_string()
     }
+    QBool(b) => if b { "TRUE" } else { "FALSE" }
     QNull => ""
   }
 }
@@ -117,7 +136,7 @@ fn query_position_json(position : @booking.Position) -> String {
 ///|
 pub fn QueryValue::to_json(self : QueryValue) -> String {
   match self {
-    QSet(values) =>
+    QSet(values) | QFrozenSet(values) =>
       "[" +
       values.map(fn(s) { "\"" + query_json_escape(s) + "\"" }).join(",") +
       "]"
@@ -140,6 +159,7 @@ pub fn QueryValue::to_json(self : QueryValue) -> String {
       sb.write_string("]")
       sb.to_string()
     }
+    QBool(b) => if b { "true" } else { "false" }
     QNull => "null"
   }
 }
@@ -147,6 +167,7 @@ pub fn QueryValue::to_json(self : QueryValue) -> String {
 ///|
 fn value_number(value : QueryValue) -> @decimal.Decimal? {
   match value {
+    QBool(b) => Some(@decimal.Decimal::from_int(if b { 1 } else { 0 }))
     QNumber(number) => Some(number)
     QAmount(amount) => Some(amount.number)
     QPosition(position) => Some(position.units.number)

@@ -272,7 +272,13 @@ async fn cmd_query(args : Array[String]) -> Unit {
   if options.bql == "" {
     fail("query needs a BQL statement")
   }
-  match check_file(options.file) {
+  let query_file = @path.Path(options.file).resolve() catch {
+    _ => {
+      fail("cannot resolve query filename")
+      return
+    }
+  }
+  match check_file(query_file.to_string()) {
     None => exit(1)
     Some(ledger) => {
       print_warnings(ledger)

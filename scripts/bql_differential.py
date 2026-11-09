@@ -6,6 +6,8 @@ import subprocess
 from pathlib import Path
 import conformance as c
 import report_differential as reports
+import bql_table_differential as tables
+import bql_unicode_differential as unicode_cases
 
 
 def compare_bql(ours, oracle):
@@ -23,6 +25,10 @@ def compare_bql(ours, oracle):
 
 
 queries = [
+    'SELECT first(payee),last(payee),min(payee),max(payee) FROM transactions',
+    'SELECT upper(first(payee)),lower(last(payee)) FROM transactions',
+    'SELECT min(true),max(false),first(true),last(false) FROM transactions',
+    'SELECT first(NULL),last(NULL),min(NULL),max(NULL) FROM transactions',
     'SELECT DISTINCT account ORDER BY account LIMIT 3',
     'SELECT DISTINCT date ORDER BY date DESC LIMIT 2',
     'SELECT DISTINCT tags, links FROM transactions',
@@ -111,6 +117,8 @@ def main():
             ok, detail = compare_bql(ours, oracle) if ours else (False, 'moonbean failed')
         ok = ok and oracle == case['oracle']
         results.append(dict(query=case['query'], ledger=case['ledger'], ok=ok, detail=detail))
+    results.extend(tables.run(args.ours, args.oracle))
+    results.extend(unicode_cases.run(args.ours, args.oracle))
     print(json.dumps(results, indent=2))
     return int(any(not r['ok'] for r in results))
 

@@ -351,13 +351,10 @@
           "-10 USD"
         ]
       ]
-    }
-  ],
-  "boundaries": [
+    },
     {
       "ledger": "tests/bql-sources/empty.beancount",
       "query": "SELECT date, account FROM #balances",
-      "kind": "source",
       "oracle": [
         [
           "date",
@@ -368,7 +365,6 @@
     {
       "ledger": "tests/bql-sources/assertion.beancount",
       "query": "SELECT date, account FROM #balances",
-      "kind": "source",
       "oracle": [
         [
           "date",
@@ -383,7 +379,6 @@
     {
       "ledger": "tests/bql-sources/empty.beancount",
       "query": "SELECT count(*) FROM #entries",
-      "kind": "source",
       "oracle": [
         [
           "count(*)"
@@ -396,7 +391,6 @@
     {
       "ledger": "tests/bql-sources/empty.beancount",
       "query": "SELECT count(*) FROM #accounts",
-      "kind": "source",
       "oracle": [
         [
           "count(*)"
@@ -409,7 +403,6 @@
     {
       "ledger": "tests/bql-sources/empty.beancount",
       "query": "SELECT count(*) FROM #commodities",
-      "kind": "source",
       "oracle": [
         [
           "count(*)"
@@ -419,7 +412,6 @@
     {
       "ledger": "tests/bql-sources/empty.beancount",
       "query": "SELECT count(*) FROM #prices",
-      "kind": "source",
       "oracle": [
         [
           "count(*)"
@@ -429,7 +421,6 @@
     {
       "ledger": "tests/bql-sources/empty.beancount",
       "query": "SELECT count(*) FROM #documents",
-      "kind": "source",
       "oracle": [
         [
           "count(*)"
@@ -439,7 +430,6 @@
     {
       "ledger": "tests/bql-sources/empty.beancount",
       "query": "SELECT count(*) FROM #events",
-      "kind": "source",
       "oracle": [
         [
           "count(*)"
@@ -449,13 +439,14 @@
     {
       "ledger": "tests/bql-sources/empty.beancount",
       "query": "SELECT count(*) FROM #notes",
-      "kind": "source",
       "oracle": [
         [
           "count(*)"
         ]
       ]
-    },
+    }
+  ],
+  "boundaries": [
     {
       "ledger": "tests/bql-sources/empty.beancount",
       "query": "SELECT count(*) FROM #customs",

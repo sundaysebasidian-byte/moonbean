@@ -11,6 +11,7 @@
 
 ///|
 priv enum Expr {
+  EValue(QueryValue)
   ECol(String)
   EStr(String)
   ENum(@decimal.Decimal)
@@ -45,6 +46,7 @@ priv enum QuerySource {
   SrcPostings
   SrcTransactions
   SrcBalances
+  SrcDirectives(String)
   SrcClose(@ast.Date)
   SrcOpen(@ast.Date, @ast.Date?)
 }
@@ -237,15 +239,58 @@ fn parse_primary(parser : QueryParser) -> Expr? {
             return None
           }
         }
+        if [
+            "sum", "count", "first", "last", "min", "max", "upper", "lower", "length",
+            "substr", "root", "parent", "leaf", "year", "month", "meta", "entry_meta",
+          ].contains(lower) &&
+          args.any(fn(arg) { arg is ECol("accounts") }) {
+          parser.fail(
+            "query.oracle_type_error: generic accounts type fails in beanquery 0.2.0 functions",
+          )
+          return None
+        }
+        if ["sum", "count", "first", "last", "min", "max"].contains(lower) &&
+          args.any(contains_sum) {
+          parser.fail("compilation query.invalid_aggregate")
+          return None
+        }
         match lower {
-          "year"
-          | "month"
-          | "root"
-          | "parent"
-          | "leaf"
-          | "sum"
-          | "count"
-          | "meta" => Some(ECall(lower, args))
+          "year" | "month" | "root" | "parent" | "leaf" | "meta" =>
+            Some(ECall(lower, args))
+          "sum" =>
+            if args is [arg] && sum_expr(arg) {
+              Some(ECall(lower, args))
+            } else {
+              parser.fail("compilation query.invalid_signature")
+              None
+            }
+          "first" | "last" =>
+            if args is [_] {
+              Some(ECall(lower, args))
+            } else {
+              parser.fail("compilation query.invalid_signature")
+              None
+            }
+          "min" | "max" =>
+            if args is [arg] && scalar_order_expr(arg) {
+              Some(ECall(lower, args))
+            } else {
+              parser.fail(
+                if args.length() != 1 {
+                  "compilation query.invalid_signature"
+                } else {
+                  "unsupported query.unsupported.aggregate_type"
+                },
+              )
+              None
+            }
+          "count" =>
+            if args is [_] {
+              Some(ECall(lower, args))
+            } else {
+              parser.fail("compilation query.invalid_signature")
+              None
+            }
           "entry_meta" =>
             if args is [EStr(_)] {
               Some(ECall(lower, args))
@@ -253,9 +298,9 @@ fn parse_primary(parser : QueryParser) -> Expr? {
               parser.fail("unsupported query.unsupported.signature")
               None
             }
-          "length" | "substr" => {
+          "upper" | "lower" | "length" | "substr" => {
             let valid = match (lower, args) {
-              ("length", [arg]) => string_expr(arg)
+              ("upper" | "lower" | "length", [arg]) => string_expr(arg)
               ("substr", [arg, start, end]) =>
                 string_expr(arg) && integer_expr(start) && integer_expr(end)
               _ => false
@@ -263,7 +308,13 @@ fn parse_primary(parser : QueryParser) -> Expr? {
             if valid {
               Some(ECall(lower, args))
             } else {
-              parser.fail("unsupported query.unsupported.signature")
+              parser.fail(
+                if lower == "upper" || lower == "lower" {
+                  "compilation query.invalid_signature"
+                } else {
+                  "unsupported query.unsupported.signature"
+                },
+              )
               None
             }
           }
@@ -296,7 +347,23 @@ fn parse_primary(parser : QueryParser) -> Expr? {
           | "tags"
           | "links"
           | "accounts"
-          | "weight" => Some(ECol(lower))
+          | "weight"
+          | "type"
+          | "id"
+          | "filename"
+          | "lineno"
+          | "year"
+          | "month"
+          | "day"
+          | "name"
+          | "amount"
+          | "tolerance"
+          | "discrepancy"
+          | "description"
+          | "comment"
+          | "meta"
+          | "open"
+          | "close" => Some(ECol(lower))
           _ => {
             parser.fail("unsupported column `" + word + "`")
             None
@@ -555,14 +622,36 @@ fn parse_source(parser : QueryParser) -> QuerySource? {
   let hashed = parser.match_sym("#")
   match parser.take_word() {
     Some(word) => {
-      if hashed && word != "postings" && word != "transactions" {
+      if hashed &&
+        ![
+          "postings", "transactions", "entries", "accounts", "balances", "commodities",
+          "documents", "events", "notes", "prices",
+        ].contains(word) {
         parser.fail("unsupported query.unsupported.source `#" + word + "`")
+        return None
+      }
+      if !hashed && word.to_lower() == "accounts" {
+        parser.fail(
+          "unsupported query.unsupported.source_filter: bare accounts is a transaction filter",
+        )
         return None
       }
       match word.to_lower() {
         "postings" => Some(SrcPostings)
         "transactions" => Some(SrcTransactions)
-        "balances" => Some(SrcBalances)
+        "balances" =>
+          if hashed {
+            Some(SrcDirectives("balances"))
+          } else {
+            Some(SrcBalances)
+          }
+        "entries"
+        | "accounts"
+        | "commodities"
+        | "documents"
+        | "events"
+        | "notes"
+        | "prices" => Some(SrcDirectives(word.to_lower()))
         _ => {
           parser.fail("unknown FROM source `" + word + "`")
           None
@@ -608,7 +697,9 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
     }
   }
   if star {
-    let names = if source is SrcTransactions {
+    let names = if source is SrcDirectives(table) {
+      table_star(table)
+    } else if source is SrcTransactions {
       ["date", "flag", "payee", "narration", "tags", "links", "accounts"]
     } else {
       ["date", "flag", "payee", "narration", "position"]
@@ -715,6 +806,10 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   if !parser.at_end() {
     return PqError("unexpected input after query")
   }
+  if groups.any(contains_sum) || !aggregate_free_cond(filter) {
+    return PqError("compilation query.invalid_aggregate")
+  }
+
   // Opening summary rows do not retain the synthetic transaction's account set.
   if source is SrcOpen(_, _) &&
     parser.tokens.any(fn(token) {
@@ -727,6 +822,34 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   }
   if distinct && !projections.all(distinct_expr) {
     return PqError("unsupported query.unsupported.distinct_type")
+  }
+  if source is SrcDirectives(table) {
+    let check = fn(expr) { table_expr(expr, table) }
+    if !projections.all(check) ||
+      !groups.all(check) ||
+      !orders.all(fn(o) { check(o.expr) }) ||
+      !table_cond(filter, table) ||
+      !table_cond(having, table) {
+      return PqError("compilation query.invalid_column")
+    }
+    // Object columns need typed values; never manufacture strings or NULLs.
+    if projections.any(table_object) ||
+      groups.any(table_object) ||
+      orders.any(fn(o) { table_object(o.expr) }) ||
+      table_object_cond(filter) ||
+      table_object_cond(having) {
+      return PqError("unsupported query.unsupported.object_column")
+    }
+  }
+  if !(source is SrcDirectives(_)) && !(source is SrcTransactions) {
+    let valid = fn(expr) { posting_expr(expr) }
+    if !projections.all(valid) ||
+      !groups.all(valid) ||
+      !orders.all(fn(o) { valid(o.expr) }) ||
+      !posting_cond(filter) ||
+      !posting_cond(having) {
+      return PqError("unsupported query.unsupported.column")
+    }
   }
   if source is SrcTransactions {
     if !projections.all(transaction_expr) ||
@@ -798,6 +921,24 @@ fn parse_query(text : String) -> ParsedQuery {
     if tokens[i] is BSym("#") && positions[i + 1] != positions[i] + 1 {
       return PqError(
         "syntax query.invalid_source" +
+        bql_lex_error(text, positions[i]).replace(
+          old="lexical query.invalid_character",
+          new="",
+        ),
+      )
+    }
+  }
+  for i in 0..<tokens.length() {
+    if tokens[i] is BStr(value) &&
+      text.get_char(positions[i]) is Some('"') &&
+      (table_columns("entries") +
+      table_columns("prices") +
+      table_columns("notes") +
+      table_columns("accounts") +
+      table_columns("balances") +
+      table_columns("commodities")).contains(value.to_lower()) {
+      return PqError(
+        "unsupported query.unsupported.quoted_identifier" +
         bql_lex_error(text, positions[i]).replace(
           old="lexical query.invalid_character",
           new="",
@@ -890,8 +1031,14 @@ fn string_expr(expr : Expr) -> Bool {
       | "root"
       | "parent"
       | "leaf"
+      | "type"
+      | "filename"
+      | "comment"
+      | "description"
+      | "name"
     ) => true
-    ECall("substr" | "root" | "parent" | "leaf", _) => true
+    ECall("first" | "last" | "min" | "max", [arg]) => string_expr(arg)
+    ECall("upper" | "lower" | "substr" | "root" | "parent" | "leaf", _) => true
     _ => false
   }
 }
@@ -944,5 +1091,184 @@ fn distinct_expr(expr : Expr) -> Bool {
     ECall(_, args) => args.all(distinct_expr)
     EBinary(a, _, b) => distinct_expr(a) && distinct_expr(b)
     _ => true
+  }
+}
+
+///|
+fn table_columns(table : String) -> Array[String] {
+  match table {
+    "entries" =>
+      [
+        "id", "type", "filename", "lineno", "date", "year", "month", "day", "flag",
+        "payee", "narration", "description", "tags", "links", "meta", "accounts",
+      ]
+    "accounts" => ["account", "open", "close"]
+    "balances" =>
+      ["meta", "date", "account", "amount", "tolerance", "discrepancy"]
+    "commodities" => ["meta", "date", "name"]
+    "documents" => ["meta", "date", "account", "filename", "tags", "links"]
+    "events" => ["meta", "date", "type", "description"]
+    "notes" => ["meta", "date", "account", "comment", "tags", "links"]
+    "prices" => ["meta", "date", "currency", "amount"]
+    _ => []
+  }
+}
+
+///|
+fn table_star(table : String) -> Array[String] {
+  match table {
+    "entries" => table_columns(table)
+    "prices" => ["date", "currency", "amount"]
+    "events" => ["date", "type", "description"]
+    "documents" => ["date", "account", "filename", "tags", "links"]
+    "balances" => ["date", "account", "amount", "tolerance", "discrepancy"]
+    "notes" => ["date", "account", "comment", "tags", "links"]
+    _ => table_columns(table)
+  }
+}
+
+///|
+fn table_expr(expr : Expr, table : String) -> Bool {
+  match expr {
+    ECol(name) => table_columns(table).contains(name)
+    ECall(_, args) => args.all(fn(arg) { table_expr(arg, table) })
+    EBinary(a, _, b) => table_expr(a, table) && table_expr(b, table)
+    _ => true
+  }
+}
+
+///|
+fn table_cond(cond : Cond, table : String) -> Bool {
+  match cond {
+    CTrue => true
+    CNot(c) => table_cond(c, table)
+    CAnd(a, b) | COr(a, b) => table_cond(a, table) && table_cond(b, table)
+    CCmp(a, _, b) => table_expr(a, table) && table_expr(b, table)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => table_expr(e, table)
+  }
+}
+
+///|
+fn table_object(expr : Expr) -> Bool {
+  match expr {
+    ECol("meta" | "id" | "open" | "close" | "discrepancy") => true
+    ECall(_, args) => args.any(table_object)
+    EBinary(a, _, b) => table_object(a) || table_object(b)
+    _ => false
+  }
+}
+
+///|
+fn table_object_cond(cond : Cond) -> Bool {
+  match cond {
+    CTrue => false
+    CNot(c) => table_object_cond(c)
+    CAnd(a, b) | COr(a, b) => table_object_cond(a) || table_object_cond(b)
+    CCmp(a, _, b) => table_object(a) || table_object(b)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => table_object(e)
+  }
+}
+
+///|
+fn posting_expr(expr : Expr) -> Bool {
+  match expr {
+    ECol(
+      "id"
+      | "filename"
+      | "lineno"
+      | "name"
+      | "amount"
+      | "tolerance"
+      | "discrepancy"
+      | "description"
+      | "comment"
+      | "meta"
+      | "open"
+      | "close"
+      | "type"
+    ) => false
+    ECall(_, args) => args.all(posting_expr)
+    EBinary(a, _, b) => posting_expr(a) && posting_expr(b)
+    _ => true
+  }
+}
+
+///|
+fn posting_cond(cond : Cond) -> Bool {
+  match cond {
+    CTrue => true
+    CNot(c) => posting_cond(c)
+    CAnd(a, b) | COr(a, b) => posting_cond(a) && posting_cond(b)
+    CCmp(a, _, b) => posting_expr(a) && posting_expr(b)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => posting_expr(e)
+  }
+}
+
+///|
+fn scalar_order_expr(expr : Expr) -> Bool {
+  match expr {
+    ECol(
+      "date"
+      | "year"
+      | "month"
+      | "day"
+      | "lineno"
+      | "flag"
+      | "payee"
+      | "narration"
+      | "account"
+      | "currency"
+      | "type"
+      | "name"
+      | "filename"
+      | "comment"
+      | "description"
+      | "tolerance"
+    ) => true
+    EStr(_) | ENum(_) | EDate(_) | EBool(_) | ENull => true
+    EBinary(a, _, b) => scalar_order_expr(a) && scalar_order_expr(b)
+    ECall(
+      "upper"
+      | "lower"
+      | "substr"
+      | "length"
+      | "root"
+      | "parent"
+      | "leaf"
+      | "year"
+      | "month",
+      _
+    ) => true
+    _ => false
+  }
+}
+
+///|
+fn aggregate_free_cond(cond : Cond) -> Bool {
+  match cond {
+    CTrue => true
+    CNot(c) => aggregate_free_cond(c)
+    CAnd(a, b) | COr(a, b) => aggregate_free_cond(a) && aggregate_free_cond(b)
+    CCmp(a, _, b) => !contains_sum(a) && !contains_sum(b)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => !contains_sum(e)
+  }
+}
+
+///|
+fn numeric_expr(expr : Expr) -> Bool {
+  match expr {
+    ENum(_) | EBool(_) => true
+    ECol("year" | "month" | "day" | "lineno" | "tolerance") => true
+    ECall("year" | "month" | "length", _) => true
+    EBinary(a, _, b) => numeric_expr(a) && numeric_expr(b)
+    _ => false
+  }
+}
+
+///|
+fn sum_expr(expr : Expr) -> Bool {
+  match expr {
+    ECol("amount" | "position" | "units" | "weight" | "cost" | "value") => true
+    _ => numeric_expr(expr)
   }
 }

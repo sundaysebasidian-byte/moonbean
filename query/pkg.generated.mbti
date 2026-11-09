@@ -32,12 +32,14 @@ pub fn QueryResult::to_text(Self) -> String
 pub(all) enum QueryValue {
   QText(String)
   QSet(Array[String])
+  QFrozenSet(Array[String])
   QNumber(@decimal.Decimal)
   QDate(@ast.Date)
   QAmount(@ast.Amount)
   QPosition(@booking.Position)
   QInventory(@booking.Inventory)
   QNull
+  QBool(Bool)
 }
 pub fn QueryValue::to_json(Self) -> String
 pub fn QueryValue::to_text(Self) -> String

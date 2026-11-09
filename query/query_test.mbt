@@ -415,7 +415,6 @@ test "new unsupported boundaries preserve positions" {
   for
     (q, code) in [
       ("SELECT account WHERE account LIKE 'A%'", "like"),
-      ("SELECT upper('a')", "function"),
       ("SELECT length(NULL)", "signature"),
       ("SELECT account FROM transactions", "transaction_column"),
     ] {
@@ -434,10 +433,7 @@ test "new unsupported boundaries preserve positions" {
 
 ///|
 test "hash sources and star reject ambiguous results" {
-  for
-    q in [
-      "SELECT date FROM #balances", "SELECT count(*) FROM #entries", "SELECT count(*) FROM #Transactions",
-    ] {
+  for q in ["SELECT count(*) FROM #Transactions"] {
     let r = queried(ledger_source(), q)
     assert_true(r.failure() is Some(@query.Unsupported(_)))
     assert_true(r.error.unwrap().contains("BQL:1:"))
@@ -527,4 +523,56 @@ test "opening summaries reject unavailable transaction account sets" {
   let r = queried(ledger_source(), "SELECT accounts FROM OPEN ON 2024-03-01")
   assert_true(r.failure() is Some(@query.Unsupported(_)))
   assert_true(r.error.unwrap().contains("query.unsupported.period_column"))
+}
+
+///|
+test "directive tables preserve NULLs and validate schemas" {
+  let r = queried(
+    ledger_source(),
+    "SELECT type, flag FROM entries ORDER BY date",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows.length(), 5)
+  assert_eq(r.rows[0][0].to_text(), "open")
+  assert_eq(r.rows[0][1].to_json(), "null")
+  assert_true(
+    queried(ledger_source(), "SELECT account FROM prices").error
+    .unwrap()
+    .contains("query.invalid_column"),
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT meta FROM entries").error
+    .unwrap()
+    .contains("query.unsupported.object_column"),
+  )
+  let empty = queried(ledger_source(), "SELECT count(*) FROM prices")
+  assert_true(empty.is_ok())
+  assert_eq(empty.rows.length(), 0)
+}
+
+///|
+test "Unicode casing expands codepoints and handles contextual final sigma" {
+  let r = queried(
+    ledger_source(),
+    "SELECT upper('ßıﬃ𐐨'), lower('ΟΣ ΟΣΑ İ𐐀') LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0][0].to_text(), "SSIFFI𐐀")
+  assert_eq(r.rows[0][1].to_text(), "ος οσα i̇𐐨")
+}
+
+///|
+test "last preserves final NULL and boolean results retain their type" {
+  let source = ledger_source().replace(
+    old="\"salary\"",
+    new="\"Shop\" \"salary\"",
+  )
+  let r = queried(
+    source, "SELECT first(payee),last(payee),min(true),max(false) FROM transactions",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0][0].to_text(), "Shop")
+  assert_eq(r.rows[0][1].to_json(), "null")
+  assert_eq(r.rows[0][2].to_json(), "true")
+  assert_eq(r.rows[0][3].to_text(), "FALSE")
 }

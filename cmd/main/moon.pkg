@@ -1,4 +1,5 @@
 import {
+  "moonbitlang/core/path",
   "sundaysebasidian-byte/moonbean",
   "sundaysebasidian-byte/moonbean/ast",
   "sundaysebasidian-byte/moonbean/realization",

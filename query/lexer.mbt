@@ -212,9 +212,7 @@ fn lex_bql(
           }
         }
         "like" => "like"
-        "upper"
-        | "lower"
-        | "startswith"
+        "startswith"
         | "endswith"
         | "findfirst"
         | "findlast"
