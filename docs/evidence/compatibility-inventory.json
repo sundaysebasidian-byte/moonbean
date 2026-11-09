@@ -1,0 +1,494 @@
+{
+  "versions": {
+    "beancount": "3.2.3",
+    "beanquery": "0.2.0"
+  },
+  "options": [
+    {
+      "name": "include",
+      "type": "list",
+      "default": "[]",
+      "repeatable": true,
+      "alias": null,
+      "example": "some-other-file.beancount",
+      "deprecated": ""
+    },
+    {
+      "name": "input_hash",
+      "type": "str",
+      "default": "",
+      "repeatable": false,
+      "alias": null,
+      "example": "841ee3be9acef165feba2342",
+      "deprecated": ""
+    },
+    {
+      "name": "dcontext",
+      "type": "DisplayContext",
+      "default": "__default__     : sign=1   integer_max=1   fractional_common=_   fractional_max=_   \"-0.*\" \"-0.*\"\n",
+      "repeatable": false,
+      "alias": null,
+      "example": "__default__     : sign=1   integer_max=1   fractional_common=_   fractional_max=_   \"-0.*\" \"-0.*\"\n",
+      "deprecated": ""
+    },
+    {
+      "name": "commodities",
+      "type": "set",
+      "default": "set()",
+      "repeatable": true,
+      "alias": null,
+      "example": "set()",
+      "deprecated": ""
+    },
+    {
+      "name": "title",
+      "type": "str",
+      "default": "Beancount",
+      "repeatable": false,
+      "alias": null,
+      "example": "Joe Smith's Personal Ledger",
+      "deprecated": ""
+    },
+    {
+      "name": "name_assets",
+      "type": "str",
+      "default": "Assets",
+      "repeatable": false,
+      "alias": null,
+      "example": "Assets",
+      "deprecated": ""
+    },
+    {
+      "name": "name_liabilities",
+      "type": "str",
+      "default": "Liabilities",
+      "repeatable": false,
+      "alias": null,
+      "example": "Liabilities",
+      "deprecated": ""
+    },
+    {
+      "name": "name_equity",
+      "type": "str",
+      "default": "Equity",
+      "repeatable": false,
+      "alias": null,
+      "example": "Equity",
+      "deprecated": ""
+    },
+    {
+      "name": "name_income",
+      "type": "str",
+      "default": "Income",
+      "repeatable": false,
+      "alias": null,
+      "example": "Income",
+      "deprecated": ""
+    },
+    {
+      "name": "name_expenses",
+      "type": "str",
+      "default": "Expenses",
+      "repeatable": false,
+      "alias": null,
+      "example": "Expenses",
+      "deprecated": ""
+    },
+    {
+      "name": "account_previous_balances",
+      "type": "str",
+      "default": "Opening-Balances",
+      "repeatable": false,
+      "alias": null,
+      "example": "Opening-Balances",
+      "deprecated": ""
+    },
+    {
+      "name": "account_previous_earnings",
+      "type": "str",
+      "default": "Earnings:Previous",
+      "repeatable": false,
+      "alias": null,
+      "example": "Earnings:Previous",
+      "deprecated": ""
+    },
+    {
+      "name": "account_previous_conversions",
+      "type": "str",
+      "default": "Conversions:Previous",
+      "repeatable": false,
+      "alias": null,
+      "example": "Conversions:Previous",
+      "deprecated": ""
+    },
+    {
+      "name": "account_current_earnings",
+      "type": "str",
+      "default": "Earnings:Current",
+      "repeatable": false,
+      "alias": null,
+      "example": "Earnings:Current",
+      "deprecated": ""
+    },
+    {
+      "name": "account_current_conversions",
+      "type": "str",
+      "default": "Conversions:Current",
+      "repeatable": false,
+      "alias": null,
+      "example": "Conversions:Current",
+      "deprecated": ""
+    },
+    {
+      "name": "account_unrealized_gains",
+      "type": "str",
+      "default": "Earnings:Unrealized",
+      "repeatable": false,
+      "alias": null,
+      "example": "Earnings:Unrealized",
+      "deprecated": ""
+    },
+    {
+      "name": "account_rounding",
+      "type": "NoneType",
+      "default": "None",
+      "repeatable": false,
+      "alias": null,
+      "example": "Rounding",
+      "deprecated": ""
+    },
+    {
+      "name": "conversion_currency",
+      "type": "str",
+      "default": "NOTHING",
+      "repeatable": false,
+      "alias": null,
+      "example": "NOTHING",
+      "deprecated": ""
+    },
+    {
+      "name": "display_precision",
+      "type": "dict",
+      "default": "{}",
+      "repeatable": true,
+      "alias": null,
+      "example": "CHF:0.01",
+      "deprecated": ""
+    },
+    {
+      "name": "inferred_tolerance_default",
+      "type": "dict",
+      "default": "{}",
+      "repeatable": true,
+      "alias": null,
+      "example": "CHF:0.005",
+      "deprecated": ""
+    },
+    {
+      "name": "tolerance_multiplier",
+      "type": "Decimal",
+      "default": "0.5",
+      "repeatable": false,
+      "alias": null,
+      "example": "0.5",
+      "deprecated": ""
+    },
+    {
+      "name": "inferred_tolerance_multiplier",
+      "type": "Decimal",
+      "default": "0.5",
+      "repeatable": false,
+      "alias": "tolerance_multiplier",
+      "example": "0.5",
+      "deprecated": "Renamed to 'tolerance_multiplier'."
+    },
+    {
+      "name": "infer_tolerance_from_cost",
+      "type": "bool",
+      "default": "False",
+      "repeatable": false,
+      "alias": null,
+      "example": "True",
+      "deprecated": ""
+    },
+    {
+      "name": "documents",
+      "type": "list",
+      "default": "[]",
+      "repeatable": true,
+      "alias": null,
+      "example": "/path/to/your/documents/archive",
+      "deprecated": ""
+    },
+    {
+      "name": "operating_currency",
+      "type": "list",
+      "default": "[]",
+      "repeatable": true,
+      "alias": null,
+      "example": "USD",
+      "deprecated": ""
+    },
+    {
+      "name": "render_commas",
+      "type": "bool",
+      "default": "False",
+      "repeatable": false,
+      "alias": null,
+      "example": "TRUE",
+      "deprecated": ""
+    },
+    {
+      "name": "plugin_processing_mode",
+      "type": "str",
+      "default": "default",
+      "repeatable": false,
+      "alias": null,
+      "example": "raw",
+      "deprecated": ""
+    },
+    {
+      "name": "long_string_maxlines",
+      "type": "int",
+      "default": "64",
+      "repeatable": false,
+      "alias": null,
+      "example": "64",
+      "deprecated": ""
+    },
+    {
+      "name": "booking_method",
+      "type": "Booking",
+      "default": "Booking.STRICT",
+      "repeatable": false,
+      "alias": null,
+      "example": "STRICT",
+      "deprecated": ""
+    },
+    {
+      "name": "allow_pipe_separator",
+      "type": "bool",
+      "default": "False",
+      "repeatable": false,
+      "alias": null,
+      "example": "TRUE",
+      "deprecated": "Allowing pipe separator temporarily; this will go away eventually."
+    },
+    {
+      "name": "allow_deprecated_none_for_tags_and_links",
+      "type": "bool",
+      "default": "False",
+      "repeatable": false,
+      "alias": null,
+      "example": "TRUE",
+      "deprecated": "Allowing None for tags and link will go away eventually."
+    },
+    {
+      "name": "use_precise_interpolation",
+      "type": "bool",
+      "default": "False",
+      "repeatable": false,
+      "alias": null,
+      "example": "TRUE",
+      "deprecated": ""
+    },
+    {
+      "name": "insert_pythonpath",
+      "type": "bool",
+      "default": "False",
+      "repeatable": false,
+      "alias": null,
+      "example": "TRUE",
+      "deprecated": ""
+    }
+  ],
+  "tables": {
+    "accounts": "table accounts:\n  account (str)\n  open (open)\n  close (close)\n",
+    "balances": "table balances:\n  meta (metadata)\n  date (date)\n  account (str)\n  amount (amount)\n  tolerance (decimal)\n  discrepancy (amount)\n",
+    "commodities": "table commodities:\n  meta (metadata)\n  date (date)\n  name (str)\n",
+    "documents": "table documents:\n  meta (metadata)\n  date (date)\n  account (str)\n  filename (str)\n  tags (frozenset)\n  links (frozenset)\n",
+    "entries": "table entries:\n  id (str)\n  type (str)\n  filename (str)\n  lineno (int)\n  date (date)\n  year (int)\n  month (int)\n  day (int)\n  flag (str)\n  payee (str)\n  narration (str)\n  description (str)\n  tags (set)\n  links (set)\n  meta (dict)\n  accounts (set[str])\n",
+    "events": "table events:\n  meta (metadata)\n  date (date)\n  type (str)\n  description (str)\n",
+    "notes": "table notes:\n  meta (metadata)\n  date (date)\n  account (str)\n  comment (str)\n  tags (frozenset)\n  links (frozenset)\n",
+    "postings": "table postings:\n  type (str)\n  id (str)\n  date (date)\n  year (int)\n  month (int)\n  day (int)\n  filename (str)\n  lineno (int)\n  location (str)\n  flag (str)\n  payee (str)\n  narration (str)\n  description (str)\n  tags (set)\n  links (set)\n  posting_flag (str)\n  account (str)\n  other_accounts (set)\n  number (decimal)\n  currency (str)\n  cost_number (decimal)\n  cost_currency (str)\n  cost_date (date)\n  cost_label (str)\n  position (position)\n  price (amount)\n  weight (amount)\n  balance (inventory)\n  meta (dict)\n  entry (transaction)\n  accounts (set[str])\n",
+    "prices": "table prices:\n  meta (metadata)\n  date (date)\n  currency (str)\n  amount (amount)\n",
+    "transactions": "table transactions:\n  meta (metadata)\n  date (date)\n  flag (str)\n  payee (str)\n  narration (str)\n  tags (set)\n  links (set)\n  accounts (set[str])\n"
+  },
+  "functions": [
+    "abs(decimal)",
+    "abs(inventory)",
+    "abs(position)",
+    "account_sortkey(str)",
+    "any_meta(str)",
+    "bool(any)",
+    "close_date(str)",
+    "commodity(amount)",
+    "commodity_meta(str)",
+    "commodity_meta(str, str)",
+    "convert(amount, str)",
+    "convert(amount, str, date)",
+    "convert(position, str)",
+    "convert(position, str, date)",
+    "convert(inventory, str)",
+    "convert(inventory, str, date)",
+    "cost(position)",
+    "cost(inventory)",
+    "currency(amount)",
+    "currency_meta(str)",
+    "currency_meta(str, str)",
+    "date(date)",
+    "date(object)",
+    "date(str)",
+    "date(int, int, int)",
+    "date_add(date, int)",
+    "date_bin(str, date, date)",
+    "date_bin(relativedelta, date, date)",
+    "date_diff(date, date)",
+    "date_part(str, date)",
+    "date_trunc(str, date)",
+    "day(date)",
+    "decimal(bool)",
+    "decimal(decimal)",
+    "decimal(int)",
+    "decimal(object)",
+    "decimal(str)",
+    "empty(inventory)",
+    "entry_meta(str)",
+    "filter_currency(inventory, str)",
+    "filter_currency(position, str)",
+    "findfirst(str, set)",
+    "getitem(dict, str)",
+    "getitem(dict, str, any)",
+    "getprice(str, str)",
+    "getprice(str, str, date)",
+    "grep(str, str)",
+    "grepn(str, str, int)",
+    "has_account(str)",
+    "int(bool)",
+    "int(decimal)",
+    "int(int)",
+    "int(object)",
+    "int(str)",
+    "interval(str)",
+    "joinstr(set)",
+    "leaf(str)",
+    "length(list)",
+    "length(set)",
+    "length(str)",
+    "lower(str)",
+    "maxwidth(str, int)",
+    "meta(str)",
+    "month(date)",
+    "neg(amount)",
+    "neg(decimal)",
+    "neg(inventory)",
+    "neg(position)",
+    "number(amount)",
+    "only(str, inventory)",
+    "open_date(str)",
+    "open_meta(str)",
+    "open_meta(str, str)",
+    "parent(str)",
+    "parse_date(str)",
+    "parse_date(str, str)",
+    "possign(amount, str)",
+    "possign(decimal, str)",
+    "possign(inventory, str)",
+    "possign(position, str)",
+    "quarter(date)",
+    "repr(any)",
+    "root(str)",
+    "root(str, int)",
+    "round(decimal)",
+    "round(decimal, int)",
+    "round(int)",
+    "round(int, int)",
+    "safediv(decimal, decimal)",
+    "safediv(decimal, int)",
+    "splitcomp(str, str, int)",
+    "str(any)",
+    "subst(str, str, str)",
+    "substr(str, int, int)",
+    "today()",
+    "units(position)",
+    "units(inventory)",
+    "upper(str)",
+    "value(inventory)",
+    "value(inventory, date)",
+    "value(position)",
+    "value(position, date)",
+    "weekday(date)",
+    "year(date)",
+    "yearmonth(date)"
+  ],
+  "aggregates": [
+    "count(*)",
+    "count(any)",
+    "first(any)",
+    "last(any)",
+    "max(any)",
+    "min(any)",
+    "sum(amount)",
+    "sum(inventory)",
+    "sum(decimal)",
+    "sum(int)",
+    "sum(position)"
+  ],
+  "help": {
+    "select": "Extract data from a query on the postings.\n\nThe general form of a SELECT statement loosely follows SQL syntax, with\nsome mild and idiomatic extensions:\n\n   SELECT [DISTINCT] [<targets>|*]\n   [FROM <from_expr> [OPEN ON <date>] [CLOSE [ON <date>]] [CLEAR]]\n   [WHERE <where_expr>]\n   [GROUP BY <groups>]\n   [ORDER BY <groups> [ASC|DESC]]\n   [LIMIT num]\n\nWhere:\n\n  targets: A list of desired output attributes from the postings, and\n    expressions on them. Some of the attributes of the parent transaction\n    directive are made available in this context as well. Simple functions\n    (that return a single value per row) and aggregation functions (that\n    return a single value per group) are available. For the complete\n    list of supported columns and functions, see help on \"targets\".\n    You can also provide a wildcard here, which will select a reasonable\n    default set of columns for rendering a journal.\n\n  from_expr: A logical expression that matches on the attributes of\n    the directives (not postings). This allows you to select a subset of\n    transactions, so the accounting equation is respected for balance\n    reports. For the complete list of supported columns and functions,\n    see help on \"from\".\n\n  where_expr: A logical expression that matches on the attributes of\n    postings. The available columns are similar to those in the targets\n    clause, without the aggregation functions.\n\n  OPEN clause: replace all the transactions before the given date by\n    summarizing entries and transfer Income and Expenses balances to\n    Equity.\n\n  CLOSE clause: Remove all the transactions after the given date and\n\n  CLEAR: Transfer final Income and Expenses balances to Equity.\n",
+    "from": "\n\nA logical expression that consist of columns on directives (mostly\ntransactions) and simple functions.\n\nColumns\n-------\n\nid: str\n  Unique id of a directive.\n\ntype: str\n  The data type of the directive.\n\nfilename: str\n  The filename where the directive was parsed from or created.\n\nlineno: int\n  The line number from the file the directive was parsed from.\n\ndate: date\n  The date of the directive.\n\nyear: int\n  The year of the date year of the directive.\n\nmonth: int\n  The year of the date month of the directive.\n\nday: int\n  The year of the date day of the directive.\n\nflag: str\n  The flag the transaction.\n\npayee: str\n  The payee of the transaction.\n\nnarration: str\n  The narration of the transaction.\n\ndescription: str\n  A combination of the payee + narration of the transaction, if present.\n\ntags: set\n  The set of tags of the transaction.\n\nlinks: set\n  The set of links of the transaction.\n\nmeta: dict\n\n\naccounts: set[str]\n\nFunctions\n---------\n\nabs(decimal)\nabs(inventory)\nabs(position)\n  Absolute value.\n\naccount_sortkey(str)\n  Get a string to sort accounts in order taking into account the types.\n\nany_meta(str)\n  Get metadata from the posting or its parent transaction if not present.\n\nbool(any)\n  Convert to bool value.\n\nclose_date(str)\n  Get the date of the close directive of the account.\n\ncommodity(amount)\n  Extract the currency from an Amount.\n\ncommodity_meta(str)\ncommodity_meta(str, str)\n  Get the metadata dict of the commodity directive of the currency.\n\nconvert(amount, str)\nconvert(amount, str, date)\nconvert(position, str)\nconvert(position, str, date)\n  Coerce an amount to a particular currency.\n\nconvert(inventory, str)\nconvert(inventory, str, date)\n  Coerce an inventory to a particular currency.\n\ncost(position)\n  Get the cost of a position.\n\ncost(inventory)\n  Get the cost of an inventory.\n\ncurrency(amount)\n  Extract the currency from an Amount.\n\ncurrency_meta(str)\ncurrency_meta(str, str)\n  Get the metadata dict of the commodity directive of the currency.\n\ndate(date)\ndate(object)\ndate(str)\n\n\ndate(int, int, int)\n  Construct a date with year, month, day arguments.\n\ndate_add(date, int)\n  Adds/subtracts number of days from the given date.\n\ndate_bin(str, date, date)\n\n\ndate_bin(relativedelta, date, date)\n  Bin a date into the specified stride aligned with the specified origin. As an\n  extension to the the SQL standard ``date_bin()`` function this function also\n  accepts strides containing units of months and years.\n\ndate_diff(date, date)\n  Calculates the difference (in days) between two dates.\n\ndate_part(str, date)\n  Extract the specified field from a date.\n\ndate_trunc(str, date)\n  Truncate a date to the specified precision.\n\nday(date)\n  Extract the day from a date.\n\ndecimal(bool)\ndecimal(decimal)\ndecimal(int)\ndecimal(object)\ndecimal(str)\n\n\nempty(inventory)\n  Determine whether the inventiry is empty.\n\nentry_meta(str)\n  Get some metadata key of the transaction.\n\nfilter_currency(inventory, str)\nfilter_currency(position, str)\n  Filter an inventory to just the specified currency.\n\nfindfirst(str, set)\n  Filter a string sequence by regular expression and return the first match.\n\ngetitem(dict, str)\ngetitem(dict, str, any)\n\n\ngetprice(str, str)\ngetprice(str, str, date)\n  Fetch a price.\n\ngrep(str, str)\n  Match a regular expression against a string and return only the matched\n  portion.\n\ngrepn(str, str, int)\n  Match a pattern with subgroups against a string and return the subgroup at the\n  index.\n\nhas_account(str)\n  True if the transaction has at least one posting matching the regular\n  expression argument.\n\nint(bool)\nint(decimal)\nint(int)\nint(object)\nint(str)\n\n\ninterval(str)\n  Construct a relative time interval.\n\njoinstr(set)\n  Join a sequence of strings to a single comma-separated string.\n\nleaf(str)\n  Get the name of the leaf subaccount.\n\nlength(list)\nlength(set)\nlength(str)\n  Compute the length of the argument. This works on sequences.\n\nlower(str)\n  Convert string to lowercase.\n\nmaxwidth(str, int)\n  Convert the argument to a substring. This can be used to ensure maximum width.\n  This will insert ellipsis ([...]) if necessary.\n\nmeta(str)\n  Get some metadata key of the posting.\n\nmonth(date)\n  Extract the month from a date.\n\nneg(amount)\nneg(decimal)\nneg(inventory)\nneg(position)\n  Negative value.\n\nnumber(amount)\n  Extract the number from an Amount.\n\nonly(str, inventory)\n  Get one currency's amount from the inventory.\n\nopen_date(str)\n  Get the date of the open directive of the account.\n\nopen_meta(str)\nopen_meta(str, str)\n  Get the metadata dict of the open directive of the account.\n\nparent(str)\n  Get the parent name of the account.\n\nparse_date(str)\nparse_date(str, str)\n  Parse date from string.\n\npossign(amount, str)\npossign(decimal, str)\npossign(inventory, str)\npossign(position, str)\n  Correct sign of an Amount based on the usual balance of associated account.\n\nquarter(date)\n  Extract the quarter from a date.\n\nrepr(any)\n  Convert the argument to a string via repr().\n\nroot(str)\nroot(str, int)\n  Get the root name(s) of the account.\n\nround(decimal)\nround(decimal, int)\nround(int)\nround(int, int)\n  Round the argument.\n\nsafediv(decimal, decimal)\nsafediv(decimal, int)\n  A division operation that traps division by zero exceptions and outputs zero\n  instead.\n\nsplitcomp(str, str, int)\n  Split a string and extract one of its components.\n\nstr(any)\n\n\nsubst(str, str, str)\n  Substitute leftmost non-overlapping occurrences of pattern by replacement.\n\nsubstr(str, int, int)\n  Extract a substring of the argument.\n\ntoday()\n  Today's date\n\nunits(position)\n  Get the number of units of a position (stripping cost).\n\nunits(inventory)\n  Get the number of units of an inventory (stripping cost).\n\nupper(str)\n  Convert string to uppercase.\n\nvalue(inventory)\nvalue(inventory, date)\n  Coerce an inventory to its market value.\n\nvalue(position)\nvalue(position, date)\n  Convert a position to its cost currency at the market value.\n\nweekday(date)\n  Extract a 3-letter weekday from a date.\n\nyear(date)\n  Extract the year from a date.\n\nyearmonth(date)\n  Extract the year and month from a date.\n\n\n",
+    "where": "\n\nA logical expression that consist of columns on postings and simple\nfunctions.\n\nColumns\n-------\n\ntype: str\n\n\nid: str\n  Unique id of a directive.\n\ndate: date\n  The date of the directive.\n\nyear: int\n  The year of the date year of the directive.\n\nmonth: int\n  The year of the date month of the directive.\n\nday: int\n  The year of the date day of the directive.\n\nfilename: str\n  The ledger where the posting is defined.\n\nlineno: int\n  The line number in the ledger file where the posting is defined.\n\nlocation: str\n  The filename:lineno location where the posting is defined.\n\nflag: str\n  The flag of the parent transaction for this posting.\n\npayee: str\n  The payee of the parent transaction for this posting.\n\nnarration: str\n  The narration of the parent transaction for this posting.\n\ndescription: str\n  A combination of the payee + narration for the transaction of this posting.\n\ntags: set\n  The set of tags of the parent transaction for this posting.\n\nlinks: set\n  The set of links of the parent transaction for this posting.\n\nposting_flag: str\n  The flag of the posting itself.\n\naccount: str\n  The account of the posting.\n\nother_accounts: set\n  The list of other accounts in the transaction, excluding that of this posting.\n\nnumber: decimal\n  The number of units of the posting.\n\ncurrency: str\n  The currency of the posting.\n\ncost_number: decimal\n  The number of cost units of the posting.\n\ncost_currency: str\n  The cost currency of the posting.\n\ncost_date: date\n  The cost currency of the posting.\n\ncost_label: str\n  The cost currency of the posting.\n\nposition: position\n  The position for the posting. These can be summed into inventories.\n\nprice: amount\n  The price attached to the posting.\n\nweight: amount\n  The computed weight used for this posting.\n\nbalance: inventory\n  The balance for the posting. These can be summed into inventories.\n\nmeta: dict\n\n\nentry: transaction\n\n\naccounts: set[str]\n\nFunctions\n---------\n\nabs(decimal)\nabs(inventory)\nabs(position)\n  Absolute value.\n\naccount_sortkey(str)\n  Get a string to sort accounts in order taking into account the types.\n\nany_meta(str)\n  Get metadata from the posting or its parent transaction if not present.\n\nbool(any)\n  Convert to bool value.\n\nclose_date(str)\n  Get the date of the close directive of the account.\n\ncommodity(amount)\n  Extract the currency from an Amount.\n\ncommodity_meta(str)\ncommodity_meta(str, str)\n  Get the metadata dict of the commodity directive of the currency.\n\nconvert(amount, str)\nconvert(amount, str, date)\nconvert(position, str)\nconvert(position, str, date)\n  Coerce an amount to a particular currency.\n\nconvert(inventory, str)\nconvert(inventory, str, date)\n  Coerce an inventory to a particular currency.\n\ncost(position)\n  Get the cost of a position.\n\ncost(inventory)\n  Get the cost of an inventory.\n\ncurrency(amount)\n  Extract the currency from an Amount.\n\ncurrency_meta(str)\ncurrency_meta(str, str)\n  Get the metadata dict of the commodity directive of the currency.\n\ndate(date)\ndate(object)\ndate(str)\n\n\ndate(int, int, int)\n  Construct a date with year, month, day arguments.\n\ndate_add(date, int)\n  Adds/subtracts number of days from the given date.\n\ndate_bin(str, date, date)\n\n\ndate_bin(relativedelta, date, date)\n  Bin a date into the specified stride aligned with the specified origin. As an\n  extension to the the SQL standard ``date_bin()`` function this function also\n  accepts strides containing units of months and years.\n\ndate_diff(date, date)\n  Calculates the difference (in days) between two dates.\n\ndate_part(str, date)\n  Extract the specified field from a date.\n\ndate_trunc(str, date)\n  Truncate a date to the specified precision.\n\nday(date)\n  Extract the day from a date.\n\ndecimal(bool)\ndecimal(decimal)\ndecimal(int)\ndecimal(object)\ndecimal(str)\n\n\nempty(inventory)\n  Determine whether the inventiry is empty.\n\nentry_meta(str)\n  Get some metadata key of the transaction.\n\nfilter_currency(inventory, str)\nfilter_currency(position, str)\n  Filter an inventory to just the specified currency.\n\nfindfirst(str, set)\n  Filter a string sequence by regular expression and return the first match.\n\ngetitem(dict, str)\ngetitem(dict, str, any)\n\n\ngetprice(str, str)\ngetprice(str, str, date)\n  Fetch a price.\n\ngrep(str, str)\n  Match a regular expression against a string and return only the matched\n  portion.\n\ngrepn(str, str, int)\n  Match a pattern with subgroups against a string and return the subgroup at the\n  index.\n\nhas_account(str)\n  True if the transaction has at least one posting matching the regular\n  expression argument.\n\nint(bool)\nint(decimal)\nint(int)\nint(object)\nint(str)\n\n\ninterval(str)\n  Construct a relative time interval.\n\njoinstr(set)\n  Join a sequence of strings to a single comma-separated string.\n\nleaf(str)\n  Get the name of the leaf subaccount.\n\nlength(list)\nlength(set)\nlength(str)\n  Compute the length of the argument. This works on sequences.\n\nlower(str)\n  Convert string to lowercase.\n\nmaxwidth(str, int)\n  Convert the argument to a substring. This can be used to ensure maximum width.\n  This will insert ellipsis ([...]) if necessary.\n\nmeta(str)\n  Get some metadata key of the posting.\n\nmonth(date)\n  Extract the month from a date.\n\nneg(amount)\nneg(decimal)\nneg(inventory)\nneg(position)\n  Negative value.\n\nnumber(amount)\n  Extract the number from an Amount.\n\nonly(str, inventory)\n  Get one currency's amount from the inventory.\n\nopen_date(str)\n  Get the date of the open directive of the account.\n\nopen_meta(str)\nopen_meta(str, str)\n  Get the metadata dict of the open directive of the account.\n\nparent(str)\n  Get the parent name of the account.\n\nparse_date(str)\nparse_date(str, str)\n  Parse date from string.\n\npossign(amount, str)\npossign(decimal, str)\npossign(inventory, str)\npossign(position, str)\n  Correct sign of an Amount based on the usual balance of associated account.\n\nquarter(date)\n  Extract the quarter from a date.\n\nrepr(any)\n  Convert the argument to a string via repr().\n\nroot(str)\nroot(str, int)\n  Get the root name(s) of the account.\n\nround(decimal)\nround(decimal, int)\nround(int)\nround(int, int)\n  Round the argument.\n\nsafediv(decimal, decimal)\nsafediv(decimal, int)\n  A division operation that traps division by zero exceptions and outputs zero\n  instead.\n\nsplitcomp(str, str, int)\n  Split a string and extract one of its components.\n\nstr(any)\n\n\nsubst(str, str, str)\n  Substitute leftmost non-overlapping occurrences of pattern by replacement.\n\nsubstr(str, int, int)\n  Extract a substring of the argument.\n\ntoday()\n  Today's date\n\nunits(position)\n  Get the number of units of a position (stripping cost).\n\nunits(inventory)\n  Get the number of units of an inventory (stripping cost).\n\nupper(str)\n  Convert string to uppercase.\n\nvalue(inventory)\nvalue(inventory, date)\n  Coerce an inventory to its market value.\n\nvalue(position)\nvalue(position, date)\n  Convert a position to its cost currency at the market value.\n\nweekday(date)\n  Extract a 3-letter weekday from a date.\n\nyear(date)\n  Extract the year from a date.\n\nyearmonth(date)\n  Extract the year and month from a date.\n\n\n",
+    "print": "Print entries in Beancount format.\n\nThe general form of a PRINT statement includes an SQL-like FROM\nselector:\n\n   PRINT [FROM <from_expr> ...]\n\nWhere:\n\n  from_expr: A logical expression that matches on the attributes of\n    the directives. See SELECT command for details (this FROM expression\n    supports all the same expressions including its OPEN, CLOSE and\n    CLEAR operations).\n",
+    "journal": "Select a journal of some subset of postings. This command is a\nconvenience and converts into an equivalent Select statement, designed\nto extract the most sensible list of columns for the register of a list\nof entries as a table.\n\nThe general form of a JOURNAL statement loosely follows SQL syntax:\n\n   JOURNAL <account-regexp> [FROM_CLAUSE]\n\nSee the SELECT query help for more details on the FROM clause.\n",
+    "balances": "Select balances of some subset of postings. This command is a\nconvenience and converts into an equivalent Select statement, designed\nto extract the most sensible list of columns for the register of a list\nof entries as a table.\n\nThe general form of a JOURNAL statement loosely follows SQL syntax:\n\n   BALANCE [FROM_CLAUSE]\n\nSee the SELECT query help for more details on the FROM clause.\n",
+    "explain": "Compile and print a compiled statement for debugging.\n",
+    "run": "Run a named query defined in the Beancount input file.\n"
+  },
+  "probes": {
+    "SELECT narration WHERE narration LIKE 'x'": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 281, in parse\n    return rule()\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 104, in _bql_\n    self._check_eof()\n    ~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 799, in _check_eof\n    self._error(\n    ~~~~~~~~~~~^\n        'Expecting end of text', exclass=FailedExpectingEndOfText,\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedExpectingEndOfText: (1:34) Expecting end of text :\nSELECT narration WHERE narration LIKE 'x'\n                                 ^\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 64, in parse\n    return BQLParser().parse(text, semantics=BQLSemantics())\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 284, in parse\n    raise self._furthest_exception from e  # type: ignore\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 822, in _option\n    yield\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 907, in _primary_\n    self._attribute_()\n    ~~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 924, in _attribute_\n    self._token('.')\n    ~~~~~~~~~~~^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 756, in _token\n    self._error(token, exclass=FailedToken)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedToken: (1:34) expecting '.' :\nSELECT narration WHERE narration LIKE 'x'\n                                 ^\nattribute\nprimary\nunary\nfactor\nterm\nsum\nany\ncomparison\ninversion\nand\nconjunction\nor\ndisjunction\nexpression\nselect\nstatement\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/bin/bean-query\", line 6, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1631, in __call__\n    return self.main(*args, **kwargs)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1552, in main\n    rv = self.invoke(ctx)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1415, in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 910, in invoke\n    return callback(*args, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 815, in main\n    shell.onecmd(query)\n    ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 268, in onecmd\n    return self.execute(line)\n           ~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 395, in execute\n    statement = self.parse(query, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 387, in parse\n    statement = self.context.parse(line)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/__init__.py\", line 57, in parse\n    return parser.parse(query)\n           ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 68, in parse\n    raise ParseError(parseinfo) from exc\nbeanquery.parser.ParseError: syntax error\n"
+    },
+    "SELECT date FROM postings JOIN transactions": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 281, in parse\n    return rule()\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 104, in _bql_\n    self._check_eof()\n    ~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 799, in _check_eof\n    self._error(\n    ~~~~~~~~~~~^\n        'Expecting end of text', exclass=FailedExpectingEndOfText,\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedExpectingEndOfText: (1:27) Expecting end of text :\nSELECT date FROM postings JOIN transactions\n                          ^\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 64, in parse\n    return BQLParser().parse(text, semantics=BQLSemantics())\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 284, in parse\n    raise self._furthest_exception from e  # type: ignore\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 822, in _option\n    yield\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 907, in _primary_\n    self._attribute_()\n    ~~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 924, in _attribute_\n    self._token('.')\n    ~~~~~~~~~~~^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 756, in _token\n    self._error(token, exclass=FailedToken)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedToken: (1:27) expecting '.' :\nSELECT date FROM postings JOIN transactions\n                          ^\nattribute\nprimary\nunary\nfactor\nterm\nsum\nany\ncomparison\ninversion\nand\nconjunction\nor\ndisjunction\nexpression\nfrom\nselect\nstatement\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/bin/bean-query\", line 6, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1631, in __call__\n    return self.main(*args, **kwargs)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1552, in main\n    rv = self.invoke(ctx)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1415, in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 910, in invoke\n    return callback(*args, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 815, in main\n    shell.onecmd(query)\n    ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 268, in onecmd\n    return self.execute(line)\n           ~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 395, in execute\n    statement = self.parse(query, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 387, in parse\n    statement = self.context.parse(line)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/__init__.py\", line 57, in parse\n    return parser.parse(query)\n           ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 68, in parse\n    raise ParseError(parseinfo) from exc\nbeanquery.parser.ParseError: syntax error\n"
+    },
+    "SELECT DISTINCT date": {
+      "exit": 0,
+      "stdout": "   date   \n----------\n2024-01-02\n",
+      "stderr": ""
+    },
+    "SELECT account, sum(position) GROUP BY account FLATTEN": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 281, in parse\n    return rule()\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 104, in _bql_\n    self._check_eof()\n    ~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 799, in _check_eof\n    self._error(\n    ~~~~~~~~~~~^\n        'Expecting end of text', exclass=FailedExpectingEndOfText,\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedExpectingEndOfText: (1:48) Expecting end of text :\nSELECT account, sum(position) GROUP BY account FLATTEN\n                                               ^\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 64, in parse\n    return BQLParser().parse(text, semantics=BQLSemantics())\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 284, in parse\n    raise self._furthest_exception from e  # type: ignore\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 822, in _option\n    yield\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 907, in _primary_\n    self._attribute_()\n    ~~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 924, in _attribute_\n    self._token('.')\n    ~~~~~~~~~~~^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 756, in _token\n    self._error(token, exclass=FailedToken)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedToken: (1:48) expecting '.' :\nSELECT account, sum(position) GROUP BY account FLATTEN\n                                               ^\nattribute\nprimary\nunary\nfactor\nterm\nsum\nany\ncomparison\ninversion\nand\nconjunction\nor\ndisjunction\nexpression\ngroupby\nselect\nstatement\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/bin/bean-query\", line 6, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1631, in __call__\n    return self.main(*args, **kwargs)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1552, in main\n    rv = self.invoke(ctx)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1415, in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 910, in invoke\n    return callback(*args, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 815, in main\n    shell.onecmd(query)\n    ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 268, in onecmd\n    return self.execute(line)\n           ~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 395, in execute\n    statement = self.parse(query, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 387, in parse\n    statement = self.context.parse(line)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/__init__.py\", line 57, in parse\n    return parser.parse(query)\n           ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 68, in parse\n    raise ParseError(parseinfo) from exc\nbeanquery.parser.ParseError: syntax error\n"
+    },
+    "SELECT account, currency, sum(number) GROUP BY account, currency PIVOT BY account, currency": {
+      "exit": 0,
+      "stdout": "account/curren  USD\n--------------  ---\nAssets:Cash      10\nEquity:Opening  -10\n",
+      "stderr": ""
+    },
+    "SELECT date FROM (SELECT date)": {
+      "exit": 0,
+      "stdout": "   date   \n----------\n2024-01-02\n2024-01-02\n",
+      "stderr": ""
+    },
+    "SELECT date FROM OPEN ON 2024-01-01 CLOSE ON 2024-02-01 CLEAR": {
+      "exit": 0,
+      "stdout": "   date   \n----------\n2024-01-02\n2024-01-02\n",
+      "stderr": ""
+    },
+    "PRINT": {
+      "exit": 0,
+      "stdout": "2024-01-01 open Assets:Cash                                     USD\n2024-01-01 open Equity:Opening                                  USD\n\n2024-01-02 * \"sets\" #cafe #shop ^alpha ^zulu\n  Assets:Cash      10 USD\n  Equity:Opening  -10 USD\n",
+      "stderr": ""
+    },
+    "EXPLAIN SELECT date": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 281, in parse\n    return rule()\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 100, in _bql_\n    self._statement_()\n    ~~~~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 121, in _statement_\n    self._error(\n    ~~~~~~~~~~~^\n        'expecting one of: '\n        ^^^^^^^^^^^^^^^^^^^^\n    ...<3 lines>...\n        '<print> <select>'\n        ^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedParse: (1:1) expecting one of: 'BALANCES' 'CREATE' 'INSERT' 'JOURNAL''PRINT' 'SELECT' <balances><create_table> <insert> <journal><print> <select> :\nEXPLAIN SELECT date\n^\nstatement\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 64, in parse\n    return BQLParser().parse(text, semantics=BQLSemantics())\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 284, in parse\n    raise self._furthest_exception from e  # type: ignore\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 822, in _option\n    yield\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 110, in _statement_\n    self._select_()\n    ~~~~~~~~~~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 109, in wrapper\n    return self._call(ruleinfo)\n           ~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 633, in _call\n    result = self._recursive_call(ruleinfo)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 666, in _recursive_call\n    return self._invoke_rule(ruleinfo, key)\n           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 724, in _invoke_rule\n    ruleinfo.impl(self)\n    ~~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/parser.py\", line 131, in _select_\n    self._token('SELECT')\n    ~~~~~~~~~~~^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 756, in _token\n    self._error(token, exclass=FailedToken)\n    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/tatsu/contexts.py\", line 586, in _error\n    raise self._make_exception(item, exclass=exclass)\ntatsu.exceptions.FailedToken: (1:1) expecting 'SELECT' :\nEXPLAIN SELECT date\n^\nselect\nstatement\nbql\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/private/tmp/moonbean-r4-oracle/bin/bean-query\", line 6, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1631, in __call__\n    return self.main(*args, **kwargs)\n           ~~~~~~~~~^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1552, in main\n    rv = self.invoke(ctx)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 1415, in invoke\n    return ctx.invoke(self.callback, **ctx.params)\n           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/click/core.py\", line 910, in invoke\n    return callback(*args, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 815, in main\n    shell.onecmd(query)\n    ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 268, in onecmd\n    return self.execute(line)\n           ~~~~~~~~~~~~^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 395, in execute\n    statement = self.parse(query, **kwargs)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/shell.py\", line 387, in parse\n    statement = self.context.parse(line)\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/__init__.py\", line 57, in parse\n    return parser.parse(query)\n           ~~~~~~~~~~~~^^^^^^^\n  File \"/private/tmp/moonbean-r4-oracle/lib/python3.14/site-packages/beanquery/parser/__init__.py\", line 68, in parse\n    raise ParseError(parseinfo) from exc\nbeanquery.parser.ParseError: syntax error\n"
+    }
+  }
+}
