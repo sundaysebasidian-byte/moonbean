@@ -715,3 +715,26 @@ test "integer arithmetic and aggregates preserve more than 28 digits" {
   )
   assert_eq(r.rows[0][3].to_text(), expected.rows[0][0].to_text())
 }
+
+///|
+test "implicit grouping preserves first key order and NULL groups" {
+  let source = "2024-01-01 open Assets:A USD\n2024-01-01 open Equity:A USD\n2024-01-02 * \"one\"\n  Assets:A 1 USD\n  Equity:A -1 USD\n2024-01-03 * \"Shop\" \"two\"\n  Assets:A 2 USD\n  Equity:A -2 USD\n"
+  let r = queried(source, "SELECT account,count(*)")
+  assert_true(r.is_ok())
+  assert_eq(r.rows.length(), 2)
+  assert_eq(r.rows[0][0].to_text(), "Assets:A")
+  assert_eq(r.rows[0][1].to_text(), "2")
+  assert_eq(
+    queried(source, "SELECT payee,count(*) FROM transactions").rows.length(),
+    2,
+  )
+  assert_eq(queried(source, "SELECT count(*) WHERE false").rows.length(), 0)
+  assert_true(
+    queried(source, "SELECT count(*) WHERE count(*)>0").failure()
+    is Some(@query.Compilation(_)),
+  )
+  assert_true(
+    queried(source, "SELECT bool(balance)").failure()
+    is Some(@query.Evaluation(_)),
+  )
+}

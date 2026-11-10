@@ -1,0 +1,222 @@
+[
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,sum(position) FROM #postings"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,sum(position) FROM #postings WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,sum(position) FROM #postings ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,count(*) FROM #postings"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,count(*) FROM #postings WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,count(*) FROM #postings ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT year(date),count(*) FROM #postings"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT year(date),count(*) FROM #postings WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT year(date),count(*) FROM #postings ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT 1,count(*) FROM #postings"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT 1,count(*) FROM #postings WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT 1,count(*) FROM #postings ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT count(*),sum(number) FROM #postings"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT count(*),sum(number) FROM #postings WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT count(*),sum(number) FROM #postings ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,sum(position) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,sum(position) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,sum(position) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT year(date),count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT year(date),count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT year(date),count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT 1,count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT 1,count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT 1,count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT count(*),sum(number) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT count(*),sum(number) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT count(*),sum(number) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,sum(position) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,sum(position) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,sum(position) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT year(date),count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT year(date),count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT year(date),count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT 1,count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT 1,count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT 1,count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT count(*),sum(number) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT count(*),sum(number) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 WHERE false"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT count(*),sum(number) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT payee,count(*) FROM transactions"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT payee,count(*) FROM transactions ORDER BY payee"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account ORDER BY count(*)"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,count(*) HAVING count(*)>1"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,count(*) GROUP BY account HAVING count(*)>1 ORDER BY count(*) DESC"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,sum(number)+number"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT sum(number) WHERE count(*)>0"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT account,count(*) WHERE sum(number)>0"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT bool(balance)"
+  },
+  {
+    "ledger": "tx.beancount",
+    "query": "SELECT round(125.0,-1)"
+  }
+]

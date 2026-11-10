@@ -290,6 +290,12 @@ fn eval_function(
         },
       )
     ("repr", [v]) => QText(python_repr(v))
+    ("bool", [QInventory(_)]) => {
+      query_error(
+        ctx, "query.oracle_type_error: NotImplementedError inventory truth",
+      )
+      QNull
+    }
     ("bool", [v]) => QBool(truth(v))
     ("int" | "decimal", [QText(s)]) =>
       python_number_string(ctx, s, name == "int")

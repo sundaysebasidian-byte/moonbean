@@ -829,11 +829,6 @@ fn build_output(
         found = true
       }
     }
-    for order in query.orders {
-      if contains_sum(order.expr) {
-        found = true
-      }
-    }
     found
   }
   if query.groups.length() == 0 && !any_aggregate {

@@ -748,6 +748,19 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   if !parser.at_end() {
     return PqError("unexpected input after query")
   }
+  if groups.is_empty() && !(having is CTrue) {
+    return PqError("HAVING requires explicit GROUP BY")
+  }
+  if projections.any(fn(e) { contains_sum(e) && unaggregated_column(e) }) {
+    return PqError("compilation query.invalid_aggregate: mixed expression")
+  }
+  if groups.is_empty() && projections.any(contains_sum) {
+    for projection in projections {
+      if !contains_sum(projection) {
+        groups.push(projection)
+      }
+    }
+  }
   if groups.any(contains_sum) || !aggregate_free_cond(filter) {
     return PqError("compilation query.invalid_aggregate")
   }
@@ -1112,5 +1125,16 @@ fn aggregate_free_cond(cond : Cond) -> Bool {
     CAnd(a, b) | COr(a, b) => aggregate_free_cond(a) && aggregate_free_cond(b)
     CCmp(a, _, b) => !contains_sum(a) && !contains_sum(b)
     CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => !contains_sum(e)
+  }
+}
+
+///|
+fn unaggregated_column(expr : Expr) -> Bool {
+  match expr {
+    ECol(_) => true
+    ECall("sum" | "count" | "first" | "last" | "min" | "max", _) => false
+    ECall(_, args) => args.any(unaggregated_column)
+    EBinary(a, _, b) => unaggregated_column(a) || unaggregated_column(b)
+    _ => false
   }
 }
