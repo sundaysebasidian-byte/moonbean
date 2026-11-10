@@ -1,0 +1,150 @@
+PASS [entries-all-cols] 9 rows
+PASS [postings-entry-nested] 10 rows
+PASS [postings-location] 10 rows
+PASS [postings-other-accounts] 10 rows
+PASS [postings-weight] 10 rows
+PASS [postings-balance] 10 rows
+PASS [postings-cost-cols] 10 rows
+PASS [postings-posting-flag] 10 rows
+PASS [postings-position] 10 rows
+PASS [postings-accounts] 10 rows
+PASS [postings-meta] 10 rows
+PASS [postings-star] 10 rows
+PASS [transactions-star] 5 rows
+PASS [transactions-all] 5 rows
+PASS [meta-fn-posting-src] 10 rows
+PASS [entry-meta-fn] 10 rows
+PASS [meta-fn-txn-src] 5 rows
+PASS [getitem-default] 5 rows
+PASS [any-meta] 10 rows
+PASS [is-null-filter] 1 rows
+PASS [count-null-aware] 1 rows
+PASS [first-last-null] 1 rows
+PASS [entries-null-payee] 9 rows
+PASS [sum-position-inventory] 1 rows
+PASS [sum-decimal] 1 rows
+PASS [sum-amount] 1 rows
+PASS [min-max-decimal] 1 rows
+PASS [min-max-position] 1 rows
+PASS [min-max-str] 1 rows
+PASS [sum-all-null] 0 rows
+PASS [sum-empty] 0 rows
+PASS [decimal-equality] 1 rows
+PASS [date-parts] 10 rows
+PASS [date-add-diff] 10 rows
+PASS [root-parent-leaf] 10 rows
+PASS [root-depth] 10 rows
+SKIP [splitcomp] oracle failed: '{"error_type": "IndexError", "message": "list index out of range"}\n'
+PASS [abs-neg-decimal] 10 rows
+PASS [abs-neg-pos-inv] 10 rows
+SKIP [number-fn] oracle failed: '{"error_type": "CompilationError", "message": "no function matches \\"number(decimal)\\" name and argument types"}\n'
+PASS [currency-commodity] 10 rows
+PASS [units-fn] 10 rows
+PASS [cost-fn] 10 rows
+PASS [only-inventory] 10 rows
+PASS [only-missing] 10 rows
+PASS [filter-currency] 10 rows
+PASS [empty-inventory] 10 rows
+PASS [length-set] 5 rows
+PASS [substr] 5 rows
+PASS [repr-str-amount] 10 rows
+PASS [str-inventory] 10 rows
+PASS [round-decimal] 10 rows
+FAIL [round-neg-digits] ours failed rc=1: '{"error":"unsupported query.unsupported.decimal_representation: signed-zero rounding"}\n'
+PASS [safediv] 10 rows
+SKIP [safediv-zero] oracle failed: '{"error_type": "CompilationError", "message": "no function matches \\"safediv(int, int)\\" name and argument types"}\n'
+PASS [int-decimal] 10 rows
+PASS [int-str] 10 rows
+PASS [int-str-frac] 10 rows
+PASS [decimal-conv] 10 rows
+PASS [decimal-nan] ours rejects, oracle succeeds (documented divergence)
+PASS [bool-fn] 10 rows
+PASS [str-fn] 10 rows
+PASS [upper-lower] 5 rows
+PASS [length-str] 5 rows
+PASS [account-sortkey] 10 rows
+PASS [open-date] 10 rows
+PASS [open-meta] 10 rows
+PASS [close-date-none] 5 rows
+PASS [decimal-arith] 10 rows
+SKIP [arith-null] oracle failed: '{"error_type": "CompilationError", "message": "operator \\"add(decimal, NULL)\\" not supported"}\n'
+PASS [comparisons] ours rejects, oracle succeeds (documented divergence)
+PASS [bool-ops] ours rejects, oracle succeeds (documented divergence)
+PASS [regex-op] ours rejects, oracle succeeds (documented divergence)
+PASS [regex-filter] 1 rows
+PASS [distinct-str] 4 rows
+PASS [distinct-set] 5 rows
+PASS [distinct-date] 2 rows
+PASS [stable-sort] 10 rows
+PASS [sort-nulls] 9 rows
+PASS [sort-nulls-desc] 9 rows
+PASS [group-by] 4 rows
+PASS [having] 3 rows
+PASS [open-close-on] 4 rows
+PASS [open-close-on2] 6 rows
+PASS [bigint-add] 3 rows
+PASS [bigint-mul] 3 rows
+PASS [bigint-sum] 1 rows
+PASS [bigint-minmax] 1 rows
+PASS [bigint-sub] 3 rows
+PASS [bigint-div] 3 rows
+PASS [bigint-div-dec] 3 rows
+PASS [int-arith] 3 rows
+PASS [bigint-cmp] ours rejects, oracle succeeds (documented divergence)
+PASS [unicode-upper-lower] 3 rows
+PASS [unicode-narration] 3 rows
+PASS [unicode-length] 3 rows
+PASS [unicode-sort] 3 rows
+PASS [distinct-position] 8 rows
+PASS [distinct-position-account] 8 rows
+PASS [distinct-decimal] 6 rows
+PASS [interp-posting-nulls] 2 rows
+PASS [interp-empty-balance] 2 rows
+PASS [interp-null-checks] ours rejects, oracle succeeds (documented divergence)
+PASS [notes-all-cols] 3 rows
+PASS [notes-star] 3 rows
+PASS [notes-meta] 3 rows
+PASS [note-tag-stack] 1 rows
+PASS [balances-cols] 3 rows
+PASS [tol-cost-inference] 1 rows
+PASS [accounts-star] 2 rows
+PASS [accounts-open-close] 2 rows
+PASS [open-close-date] 2 rows
+PASS [commodities-star] 1 rows
+PASS [commodities-cols] 1 rows
+PASS [commodity-meta] 1 rows
+PASS [prices-star] 1 rows
+PASS [prices-cols] 1 rows
+PASS [documents-cols] 2 rows
+PASS [documents-star] 2 rows
+PASS [events-star] 3 rows
+PASS [events-cols] 3 rows
+PASS [entries-star] 9 rows
+PASS [balances-star] 0 rows
+PASS [txn-account-col] both reject (ours 1, oracle 1)
+PASS [unknown-col] both reject (ours 1, oracle 1)
+PASS [upper-int] both reject (ours 1, oracle 1)
+PASS [length-dict] both reject (ours 1, oracle 1)
+PASS [bare-accounts] ours rejects as expected: '{"error":"unsupported query.unsupported.source_filter: bare accounts is a transaction filter at BQL:'
+SKIP [convert-unsupported] oracle failed: '{"error_type": "CompilationError", "message": "no function matches \\"convert(decimal, str)\\" name and argument types"}\n'
+PASS [today-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `today` at BQL:1:22"}\n'
+PASS [grep-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `grep` at BQL:1:35"}\n'
+PASS [joinstr-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `joinstr` at BQL:1:28"}\n'
+PASS [value-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `value` at BQL:1:29"}\n'
+PASS [getprice-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `getprice` at BQL:1:37"}\n'
+PASS [maxwidth-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `maxwidth` at BQL:1:33"}\n'
+PASS [possign-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `possign` at BQL:1:35"}\n'
+PASS [subst-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `subst` at BQL:1:37"}\n'
+PASS [findfirst-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `findfirst` at BQL:1:37"}\n'
+PASS [interval-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `interval` at BQL:1:29"}\n'
+PASS [date-trunc-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `date_trunc` at BQL:1:39"}\n'
+PASS [date-part-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `date_part` at BQL:1:38"}\n'
+SKIP [date-bin-unsupported] oracle failed: '{"error_type": "AttributeError", "message": "\'NoneType\' object has no attribute \'months\'"}\n'
+PASS [parse-date-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `parse_date` at BQL:1:39"}\n'
+PASS [has-account-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `has_account` at BQL:1:36"}\n'
+PASS [grepn-unsupported] ours rejects as expected: '{"error":"unsupported query.unsupported.function `grepn` at BQL:1:39"}\n'
+PASS [length-int] both reject (ours 1, oracle 1)
+
+=== passed 139, failed 1, skipped 6 ===
+FAILURES:
+ - round-neg-digits

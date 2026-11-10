@@ -5,10 +5,10 @@
   "version": "0.2.3",
   "original_status": "M docs/proposal.md",
   "original_proposal_sha256": "9b69e6865e6e1ef11bbdca95d582d37c1398ce2194e271148e43cf3b8c9cc245",
-  "current_worktree": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2",
+  "current_worktree": "<repo>",
   "worktrees": [
-    "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean        86137ab [main]",
-    "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2 b84a85f [compat-0.2.3]"
+    "<external>/moonbean        86137ab [main]",
+    "<repo> b84a85f [compat-0.2.3]"
   ],
   "backup_status": "New commits are local only; complete remote backup not verified. All source copies retained; no deletion candidates.",
   "active_task_processes": [],
@@ -21,8 +21,8 @@
   "recovery_mapping": [],
   "trash_destination": null,
   "kept": [
-    "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2",
-    "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean",
+    "<repo>",
+    "<external>/moonbean",
     ".oracle-cache/r2: raw test inputs, failed attempts and benchmark arrays",
     "_build: current build artifacts",
     "/tmp/moon-new: shared toolchain",

@@ -18,16 +18,16 @@ Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experiment
 Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
 Finished. moon: no work to do
 Artifacts:
-  sundaysebasidian-byte/moonbean/bench                  native  /Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/_build/native/debug/build/bench/bench.exe
-  sundaysebasidian-byte/moonbean/cmd/main               native  /Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/_build/native/debug/build/cmd/main/main.exe
-  sundaysebasidian-byte/moonbean/examples/library_demo  native  /Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/_build/native/debug/build/examples/library_demo/library_demo.exe
+  sundaysebasidian-byte/moonbean/bench                  native  <repo>/_build/native/debug/build/bench/bench.exe
+  sundaysebasidian-byte/moonbean/cmd/main               native  <repo>/_build/native/debug/build/cmd/main/main.exe
+  sundaysebasidian-byte/moonbean/examples/library_demo  native  <repo>/_build/native/debug/build/examples/library_demo/library_demo.exe
 
 COMMAND LOG: web-build.log
 Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
 Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
 Finished. moon: ran 4 tasks, now up to date
 Artifacts:
-  sundaysebasidian-byte/moonbean/playground  js  /Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/_build/js/release/build/playground/playground.js
+  sundaysebasidian-byte/moonbean/playground  js  <repo>/_build/js/release/build/playground/playground.js
 built web/dist
 
 COMMAND LOG: web-smoke.log

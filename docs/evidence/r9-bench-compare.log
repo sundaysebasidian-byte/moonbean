@@ -1,0 +1,5 @@
+NOT GATED (incomplete baseline): wasm-gc-1000000-FIFO.json
+js-1000000-FIFO.json/validate_pad_FIFO: p50 1.235, baseline 0.880000s
+js-1000000-FIFO.json/realize: p50 0.188, baseline 0.141000s
+js-1000000-FIFO.json/aggregate: p50 0.579, baseline 0.321000s
+js-1000000-FIFO.json/group: p50 1.03, baseline 0.692000s

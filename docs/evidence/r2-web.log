@@ -3,7 +3,7 @@ Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experiment
 Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
 Finished. moon: ran 4 tasks, now up to date
 Artifacts:
-  sundaysebasidian-byte/moonbean/playground  js  /Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/_build/js/release/build/playground/playground.js
+  sundaysebasidian-byte/moonbean/playground  js  <repo>/_build/js/release/build/playground/playground.js
 built web/dist
 
 COMMAND LOG: web-smoke.log

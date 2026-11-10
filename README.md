@@ -243,7 +243,7 @@ fn analyze(source : String) -> Unit {
 | 试算平衡 / 资产负债表 / 损益表 / register | 支持 | 资产负债表把当期和往期收益结转到 `Equity:Earnings:*`，恒等式按币种精确成立；不折算时按成本，指定折算币种时按市值，市值相对成本的变化列在 `Equity:Earnings:Unrealized`。命令行有 `bal`、`bs`、`is`、`register FILE ACCOUNT`（可加 `--json`）和 `dups FILE` |
 | `SELECT ... FROM postings/balances` | 支持 | 列：`date`、`flag`、`payee`、`narration`、`account`、`root`、`parent`、`leaf`、`units`、`currency`、`cost`、`value`、`position` |
 | `FROM transactions` / `FROM #transactions` | 支持公开列 | 每笔交易一行，含 typed meta、tags/links/accounts；posting 列不属于交易表，返回错误。完整语法边界见 compatibility.md |
-| `#` 表与星号 | 逐列边界 | 十张 oracle 表均已注册；新增表支持列见 [compatibility](docs/compatibility.md)，dict/directive/id/discrepancy 值仍明确拒绝。`#balances` 是断言表，裸 `FROM balances` 保留库存扩展。支持 postings/transactions/events/prices/notes/documents 的默认星号列；其它包含对象列的星号仍拒绝。除 `count(*)` 外，函数星号参数拒绝 |
+| `#` 表与星号 | 逐列边界 | 十张 oracle 表的公开列及默认星号均已接入，含 typed dict/directive/id/discrepancy；值域限制见 [compatibility](docs/compatibility.md)。`#balances` 是断言表，裸 `FROM balances` 保留库存扩展。除 `count(*)` 外，函数星号参数拒绝 |
 | `WHERE` | 部分 | 比较、`is [not] null`、`and/or/not`，支持 `~` 正则字面量；没有 `LIKE` 和子查询 |
 | `HAVING` / 数值算术 | 支持 | `HAVING` 支持聚合条件；Decimal 支持 `+ - * /` 和括号，不含 Amount/Inventory 运算 |
 | tags / links / 元数据 | 支持 | `tags`、`links` 的文本按集合字典序排序；JSON 数组保留账本书写顺序（oracle 返回 frozenset，转 JSON 数组的顺序随 hash seed 变化，无稳定顺序契约）；`meta('key')` 按行源读取 posting 或交易元数据，`entry_meta('key')` 读取父交易元数据 |
@@ -289,7 +289,7 @@ ledgers: 120, compared: 118, passed: 118, failed: 0, extensions: 2
 
 这 142 份不是错误，而是 MoonBean 的扩展：把 oracle 的 `average_unsupported` 诊断去掉后，两边的诊断集合完全相同。CI 用 `--allow-known-extensions` 校验这一点，出现任何其他差异都会失败。每个 seed 的统计和 AVERAGE 账本编号在 [docs/random-differential.json](docs/random-differential.json)。
 
-`tests/regression/` 还有 22 份专门针对报表、跨 lot 减记和价格路径写的账本，`scripts/report_differential.py` 对它们做逐项检查（既有记录为 25 组场景、144 项；本轮未单独重跑该脚本）。本轮 657 项 BQL 输出/边界/错误类别检查通过，另包含 7196 行 Unicode 语料；其中明确拒绝检查不计为功能实现，详见 [最新验收](docs/evidence/r2-final-acceptance.md)。这是基于模板的随机测试，不是穷尽的语法 fuzz。
+`tests/regression/` 还有 22 份专门针对报表、跨 lot 减记和价格路径写的账本，`scripts/report_differential.py` 对它们做逐项检查（既有记录为 25 组场景、144 项；本轮未单独重跑该脚本）。本轮 712 项 BQL 输出/边界/错误类别检查通过，另包含 7196 行 Unicode 语料；其中明确拒绝检查不计为功能实现，详见 [最新验收](docs/evidence/r9-acceptance.md)。这是基于模板的随机测试，不是穷尽的语法 fuzz。
 
 ```sh
 python3 scripts/random_differential.py --seed 7 --out .oracle-cache/differential/seed-7 --allow-known-extensions
@@ -320,7 +320,7 @@ wasm-gc 的 100 万 FIFO 综合场景两轮失败，单独复现确认为默认 
 0.2.3 已改为缓存键、保留同值原顺序的 O(n log n) 排序，并通过 native 10 万 posting 的 oracle 逐行差分；比较门限的驱动仍保留历史大排序跳过项，不把它们计为已测性能。
 内存为包含输入生成、运行时和所有阶段的进程峰值。
 全部原始数组、p50/p95/p99、吞吐、内存和阶段 profile，以及第二轮查询趋势见
-本轮首轮矩阵有 4 个阶段超限；涉及的 3 个场景按预定方案各复测三轮均通过，最终比较采用第三轮，原失败记录保留。[性能证据](docs/performance.md)。历史 CLI 数据与本轮库阶段数据不直接比较。
+R9 在授权的宿主背景负载下测量，按固定三轮采用第三轮后仍有 4 个 JS 百万 FIFO 阶段超限，待空闲复核。[性能证据](docs/performance.md)。历史 CLI 数据与本轮库阶段数据不直接比较。
 
 ```sh
 export MOON_HOME=/tmp/moon-new PATH=/tmp/moon-new/bin:$PATH
@@ -384,4 +384,4 @@ moon info && git diff --exit-code
 
 The endpoint is beancount 3.2.3 plus beanquery 0.2.0 in full; this candidate has not reached it. [The compatibility matrix](docs/compatibility.md) lists every advertised table/column, function signature and option, with evidence, reasons, impact and alternatives for remaining gaps. All ten source schemas now have typed columns, including dict/directive/id/discrepancy values and tagged notes. Position DISTINCT preserves representation differences and uses hash lookup. Source-resolved signatures distinguish int/decimal and set/frozenset; 74 scalar signatures have evaluators, while 31 remain unimplemented. A registered signature is not proof of full value-domain equivalence.
 
-Signed-zero sources reject exact object/fingerprint queries; nonfinite Decimal conversions and hash-seed-dependent multi-member set repr are explicit boundaries. Subqueries, PIVOT, FROM OPEN/CLOSE/CLEAR combinations, PRINT, shell .explain/.run, rounding accounts, document callbacks and oracle presentation remain gaps. LIKE/JOIN and the tested FLATTEN/EXPLAIN keyword forms are rejected by the pinned oracle too. [Current local acceptance](docs/evidence/r2-final-acceptance.md) separates positive comparisons from rejection checks. No full compatibility, new remote CI run or release publication is claimed.
+Signed-zero sources reject exact object/fingerprint queries; nonfinite Decimal conversions and hash-seed-dependent multi-member set repr are explicit boundaries. Subqueries, PIVOT, FROM OPEN/CLOSE/CLEAR combinations, PRINT, shell .explain/.run, rounding accounts, document callbacks and oracle presentation remain gaps. LIKE/JOIN and the tested FLATTEN/EXPLAIN keyword forms are rejected by the pinned oracle too. [Current local acceptance](docs/evidence/r9-acceptance.md) separates positive comparisons from rejection checks. No full compatibility, new remote CI run or release publication is claimed.

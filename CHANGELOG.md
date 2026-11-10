@@ -2,6 +2,9 @@
 
 ## 0.2.3 (local candidate)
 
+- R9 performance remains unverified: the authorized loaded-host third-repeat comparison exceeds four JS 1M FIFO stage limits; retain all measurements for independent idle-host review.
+- R9: fix implicit aggregate grouping and Inventory bool errors; add period/NULL/error regressions and per-signature type probes. Correct star/operator/round/malformed-ledger boundaries and normalize exported evidence paths.
+
 - Preserve arbitrary precision for integer add/subtract/multiply and integer sums; compare seeded 29–60-digit queries with the oracle.
 
 - Cache stable O(n log n) sort keys, distinguish text/date group keys and Unicode scalar ordering; add seeded sort and 100k native posting differentials. Keep row provenance lazy and avoid parser/tolerance hot-path allocations.

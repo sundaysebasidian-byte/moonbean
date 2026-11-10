@@ -3,13 +3,13 @@
   "branch": "compat-0.2.3",
   "code_head": "873fad5d3db6a27adffe6bdb568ae693d91f0d77",
   "version": "0.2.3",
-  "worktree": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2",
+  "worktree": "<repo>",
   "original_main": "86137ab578e5bad621830c0c738f86aed0985f32",
   "original_status": "M docs/proposal.md",
   "original_proposal_sha256": "9b69e6865e6e1ef11bbdca95d582d37c1398ce2194e271148e43cf3b8c9cc245",
   "worktrees": [
-    "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean        86137ab [main]",
-    "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2 b89cf90 [compat-0.2.3]"
+    "<external>/moonbean        86137ab [main]",
+    "<repo> b89cf90 [compat-0.2.3]"
   ],
   "backup_status": "New revisions remain local and unpublished; complete GitHub backup not verified. No source copy was eligible for removal.",
   "candidates": [],
@@ -20,8 +20,8 @@
   "recovery_mapping": [],
   "active_task_processes": [],
   "kept": [
-    "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2",
-    "/Users/sebasidian/.t3/projects/moonbit-nov/moonbean",
+    "<repo>",
+    "<external>/moonbean",
     ".oracle-cache/r2-return: stable final inputs/arrays and interrupted attempt logs",
     "_build: current build/test artifacts",
     "/tmp/moon-new: shared toolchain",

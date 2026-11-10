@@ -1,0 +1,775 @@
+{
+  "utc": "2026-11-10T08:25:23.905404+00:00",
+  "code_commit": "c115e9487cf6fc8e2af5dd4c6053e0960c0b8f3a",
+  "branch": "compat-0.2.3",
+  "commands": [
+    {
+      "command": [
+        "moon",
+        "check",
+        "--deny-warn",
+        "--target",
+        "all"
+      ],
+      "log": "check.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:25:23.954718+00:00",
+      "seconds": 0.332
+    },
+    {
+      "command": [
+        "moon",
+        "fmt",
+        "--check"
+      ],
+      "log": "fmt.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:25:24.287477+00:00",
+      "seconds": 0.252
+    },
+    {
+      "command": [
+        "moon",
+        "info"
+      ],
+      "log": "info.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:25:24.539690+00:00",
+      "seconds": 0.238
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "--",
+        "*.mbti"
+      ],
+      "log": "mbti.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:25:24.778228+00:00",
+      "seconds": 0.014
+    },
+    {
+      "command": [
+        "moon",
+        "test",
+        "--target",
+        "all"
+      ],
+      "log": "test.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:25:24.792546+00:00",
+      "seconds": 0.639
+    },
+    {
+      "command": [
+        "moon",
+        "build",
+        "--target",
+        "native"
+      ],
+      "log": "build.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:25:25.431726+00:00",
+      "seconds": 0.046
+    },
+    {
+      "command": [
+        "bash",
+        "scripts/build-web.sh"
+      ],
+      "log": "web-build.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:25:25.477852+00:00",
+      "seconds": 0.58
+    },
+    {
+      "command": [
+        "node",
+        "web/smoke.mjs"
+      ],
+      "log": "web-smoke.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:25:26.058513+00:00",
+      "seconds": 0.188
+    },
+    {
+      "command": [
+        "node",
+        "web/dom-smoke.mjs"
+      ],
+      "log": "dom-smoke.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:25:26.247342+00:00",
+      "seconds": 12.549
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/conformance.py",
+        "--ours",
+        "_build/native/debug/build/cmd/main/main.exe",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin",
+        "--ledgers",
+        "tests/ledgers",
+        "--oracle-version",
+        "3.2.3",
+        "--json-out",
+        ".oracle-cache/r9/final/conformance.json"
+      ],
+      "log": "conformance.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:25:38.808732+00:00",
+      "seconds": 402.356
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/random_differential.py",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin",
+        "--seed",
+        "7",
+        "--count",
+        "1000",
+        "--allow-known-extensions",
+        "--out",
+        ".oracle-cache/r9/final/random-7"
+      ],
+      "log": "random-7.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:25:38.808854+00:00",
+      "seconds": 486.683
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/random_differential.py",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin",
+        "--seed",
+        "20261101",
+        "--count",
+        "1000",
+        "--allow-known-extensions",
+        "--out",
+        ".oracle-cache/r9/final/random-20261101"
+      ],
+      "log": "random-20261101.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:25:38.808922+00:00",
+      "seconds": 486.974
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bql_differential.py",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin"
+      ],
+      "exit": 0,
+      "log": "bql.json",
+      "seconds": 490.369
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "HEAD",
+        "--",
+        "ast",
+        "syntax",
+        "validation",
+        "query",
+        "booking",
+        "decimal",
+        "realization",
+        "cmd",
+        "moon.mod"
+      ],
+      "log": "source-unchanged.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:33:49.179841+00:00",
+      "seconds": 0.018
+    },
+    {
+      "command": [
+        "uptime"
+      ],
+      "log": "prebench-load.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:33:49.198092+00:00",
+      "seconds": 0.008
+    },
+    {
+      "command": [
+        "ps",
+        "-axo",
+        "pid,pcpu,comm"
+      ],
+      "log": "prebench-processes.log",
+      "exit": 0,
+      "utc": "2026-11-10T08:33:49.206414+00:00",
+      "seconds": 0.03
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/performance"
+      ],
+      "log": "bench-matrix.log",
+      "exit": -15,
+      "utc": "2026-11-10T08:33:49.236959+00:00",
+      "seconds": 85.447
+    },
+    {
+      "command": [
+        "top",
+        "-l",
+        "2",
+        "-s",
+        "2",
+        "-n",
+        "0"
+      ],
+      "log": "authorized-load.log",
+      "exit": 0,
+      "seconds": 2.931
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/performance-authorized"
+      ],
+      "log": "bench-authorized.log",
+      "exit": 0,
+      "seconds": 847.481
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-compare.py",
+        ".oracle-cache/r9/final/performance-authorized"
+      ],
+      "log": "bench-compare-authorized.log",
+      "exit": 1,
+      "seconds": 0.133
+    },
+    {
+      "command": [
+        "top",
+        "-l",
+        "2",
+        "-s",
+        "2",
+        "-n",
+        "0"
+      ],
+      "log": "repeat-1-load.log",
+      "exit": 0,
+      "seconds": 3.116
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-1",
+        "--targets",
+        "js",
+        "--sizes",
+        "1000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-1-js-1000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 5.837
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-1",
+        "--targets",
+        "js",
+        "--sizes",
+        "1000000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-1-js-1000000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 316.377
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-1",
+        "--targets",
+        "native",
+        "--sizes",
+        "100000",
+        "--methods",
+        "STRICT"
+      ],
+      "log": "repeat-1-native-100000-STRICT.json.log",
+      "exit": 0,
+      "seconds": 3.958
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-1",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "1000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-1-wasm-gc-1000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 5.707
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-1",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "1000",
+        "--methods",
+        "STRICT"
+      ],
+      "log": "repeat-1-wasm-gc-1000-STRICT.json.log",
+      "exit": 0,
+      "seconds": 1.07
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-1",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "10000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-1-wasm-gc-10000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 6.231
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-1",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "100000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-1-wasm-gc-100000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 20.023
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-1",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "100000",
+        "--methods",
+        "STRICT"
+      ],
+      "log": "repeat-1-wasm-gc-100000-STRICT.json.log",
+      "exit": 0,
+      "seconds": 3.107
+    },
+    {
+      "command": [
+        "top",
+        "-l",
+        "2",
+        "-s",
+        "2",
+        "-n",
+        "0"
+      ],
+      "log": "repeat-2-load.log",
+      "exit": 0,
+      "seconds": 2.951
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-2",
+        "--targets",
+        "js",
+        "--sizes",
+        "1000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-2-js-1000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 5.768
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-2",
+        "--targets",
+        "js",
+        "--sizes",
+        "1000000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-2-js-1000000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 281.067
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-2",
+        "--targets",
+        "native",
+        "--sizes",
+        "100000",
+        "--methods",
+        "STRICT"
+      ],
+      "log": "repeat-2-native-100000-STRICT.json.log",
+      "exit": 0,
+      "seconds": 3.856
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-2",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "1000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-2-wasm-gc-1000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 5.704
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-2",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "1000",
+        "--methods",
+        "STRICT"
+      ],
+      "log": "repeat-2-wasm-gc-1000-STRICT.json.log",
+      "exit": 0,
+      "seconds": 1.06
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-2",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "10000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-2-wasm-gc-10000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 6.233
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-2",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "100000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-2-wasm-gc-100000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 18.788
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-2",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "100000",
+        "--methods",
+        "STRICT"
+      ],
+      "log": "repeat-2-wasm-gc-100000-STRICT.json.log",
+      "exit": 0,
+      "seconds": 2.688
+    },
+    {
+      "command": [
+        "top",
+        "-l",
+        "2",
+        "-s",
+        "2",
+        "-n",
+        "0"
+      ],
+      "log": "repeat-3-load.log",
+      "exit": 0,
+      "seconds": 2.988
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-3",
+        "--targets",
+        "js",
+        "--sizes",
+        "1000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-3-js-1000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 5.749
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-3",
+        "--targets",
+        "js",
+        "--sizes",
+        "1000000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-3-js-1000000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 328.757
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-3",
+        "--targets",
+        "native",
+        "--sizes",
+        "100000",
+        "--methods",
+        "STRICT"
+      ],
+      "log": "repeat-3-native-100000-STRICT.json.log",
+      "exit": 0,
+      "seconds": 3.882
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-3",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "1000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-3-wasm-gc-1000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 5.699
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-3",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "1000",
+        "--methods",
+        "STRICT"
+      ],
+      "log": "repeat-3-wasm-gc-1000-STRICT.json.log",
+      "exit": 0,
+      "seconds": 1.059
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-3",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "10000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-3-wasm-gc-10000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 6.174
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-3",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "100000",
+        "--methods",
+        "FIFO"
+      ],
+      "log": "repeat-3-wasm-gc-100000-FIFO.json.log",
+      "exit": 0,
+      "seconds": 19.009
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r9/final/repeat-3",
+        "--targets",
+        "wasm-gc",
+        "--sizes",
+        "100000",
+        "--methods",
+        "STRICT"
+      ],
+      "log": "repeat-3-wasm-gc-100000-STRICT.json.log",
+      "exit": 0,
+      "seconds": 3.65
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-compare.py",
+        ".oracle-cache/r9/final/performance-confirmed"
+      ],
+      "log": "bench-compare-final.log",
+      "exit": 1,
+      "seconds": 0.05
+    }
+  ],
+  "cli_sha256_before": "c42466ac55b2a82657b0d6b2715c16cf06aea3eef0fa19a8b7a770f725a53241",
+  "cli_sha256_after_random": "c42466ac55b2a82657b0d6b2715c16cf06aea3eef0fa19a8b7a770f725a53241",
+  "load_authorization": "User authorized measurement under current host load; do not interfere with user apps; fixed three repeats for exceeded scenarios, use third and retain originals.",
+  "first_gate_failures": [
+    "js-1000-FIFO.json: peak RSS regression/missing",
+    "js-1000000-FIFO.json/transactions: p50 0.3, baseline 0.214000s",
+    "native-100000-STRICT.json/validate_pad_STRICT: p50 0.118, baseline 0.084000s",
+    "wasm-gc-1000-FIFO.json/parse: p50 0.0025, baseline 0.001909s",
+    "wasm-gc-1000-STRICT.json/validate_pad_STRICT: p50 0.0009523809523809524, baseline 0.000526s",
+    "wasm-gc-10000-FIFO.json/validate_pad_FIFO: p50 0.011, baseline 0.005750s",
+    "wasm-gc-10000-FIFO.json/realize: p50 0.0023333333333333335, baseline 0.001176s",
+    "wasm-gc-10000-FIFO.json/format: p50 0.0195, baseline 0.012500s",
+    "wasm-gc-10000-FIFO.json/aggregate: p50 0.002625, baseline 0.001750s",
+    "wasm-gc-100000-FIFO.json/validate_pad_FIFO: p50 0.08, baseline 0.061000s",
+    "wasm-gc-100000-FIFO.json/realize: p50 0.022, baseline 0.012500s",
+    "wasm-gc-100000-STRICT.json/booking_STRICT: p50 0.042, baseline 0.032000s",
+    "wasm-gc-100000-STRICT.json/validate_pad_STRICT: p50 0.081, baseline 0.061000s"
+  ],
+  "repeats": [
+    {
+      "round": 1,
+      "failures": [
+        "js-1000-FIFO.json: peak RSS regression/missing",
+        "js-1000000-FIFO.json/format: p50 3.673, baseline 2.771000s",
+        "js-1000000-FIFO.json/regex: p50 0.627, baseline 0.413000s",
+        "js-1000000-FIFO.json/length: p50 0.655, baseline 0.374000s",
+        "js-1000000-FIFO.json/substr: p50 0.862, baseline 0.640000s",
+        "wasm-gc-100000-FIFO.json/substr: p50 0.069, baseline 0.051000s"
+      ]
+    },
+    {
+      "round": 2,
+      "failures": [
+        "js-1000-FIFO.json: peak RSS regression/missing"
+      ]
+    },
+    {
+      "round": 3,
+      "failures": [
+        "js-1000000-FIFO.json/validate_pad_FIFO: p50 1.235, baseline 0.880000s",
+        "js-1000000-FIFO.json/realize: p50 0.188, baseline 0.141000s",
+        "js-1000000-FIFO.json/aggregate: p50 0.579, baseline 0.321000s",
+        "js-1000000-FIFO.json/group: p50 1.03, baseline 0.692000s"
+      ]
+    }
+  ],
+  "final_performance_directory": ".oracle-cache/r9/final/performance-confirmed",
+  "cli_sha256_final": "c42466ac55b2a82657b0d6b2715c16cf06aea3eef0fa19a8b7a770f725a53241",
+  "verification_finished_utc": "2026-11-10T09:14:36.704438+00:00"
+}

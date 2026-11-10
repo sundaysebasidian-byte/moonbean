@@ -1,0 +1,4093 @@
+[
+  {
+    "query": "BALANCES AT units FROM CLOSE ON 2024-03-01",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "BALANCES AT units FROM OPEN ON 2024-02-01 CLOSE ON 2024-06-01",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "BALANCES AT cost FROM CLOSE ON 2024-03-01",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "BALANCES AT cost FROM OPEN ON 2024-02-01 CLOSE ON 2024-06-01",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT first(payee),last(payee),min(payee),max(payee) FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT upper(first(payee)),lower(last(payee)) FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT min(true),max(false),first(true),last(false) FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT first(NULL),last(NULL),min(NULL),max(NULL) FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT account ORDER BY account LIMIT 3",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT date ORDER BY date DESC LIMIT 2",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT tags, links FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT payee FROM transactions ORDER BY payee",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(payee), count(*) FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT accounts FROM transactions ORDER BY date LIMIT 3",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta('absent') FROM transactions LIMIT 2",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT entry_meta('absent') LIMIT 2",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account, count(*) GROUP BY account HAVING count(*) > 1 ORDER BY account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account, count(*) * 2 + 1 GROUP BY account HAVING count(*) >= 1 ORDER BY account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account WHERE account ~ '^assets:' ORDER BY account LIMIT 3",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account WHERE account ~ '(Income|Expenses):' ORDER BY account LIMIT 3",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT tags, links WHERE date = 2024-01-03 ORDER BY account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta('receipt'), meta('note') WHERE date = 2024-01-03 ORDER BY account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT 1+2*3, (1+2)*3, -2+5, 6/4 LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(date)-2000, month(date)*2 ORDER BY date, account LIMIT 4",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date, flag, payee, narration, tags, links FROM transactions ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date, narration FROM #transactions ORDER BY date DESC LIMIT 2",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date, length(payee), length(narration), substr(payee,0,2), substr(narration,0,2) FROM transactions ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT length(''), length('\ud83d\ude00\u4e2dabc'), substr('abcdef',1,3), substr('\ud83d\ude00\u4e2dabc',0,2) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT substr('abcdef',-4,-1), substr('abcdef',4,2), substr('abcdef',-99,99), substr('',0,2) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT substr('abcdef',99,100), substr('abcdef',-100,-99), substr('abcdef',0,0) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT length(substr('abcdef',1,3)), substr(substr('abcdef',1,5),1,3) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE length(payee) IS NULL ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE length(payee) = 0 ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT length(narration), count(*) FROM transactions GROUP BY length(narration) ORDER BY length(narration)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE narration ~ 'a_%' ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE narration ~ '^\ud83d\ude00\u4e2d' ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE narration ~ '' ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE payee ~ 'mixed' ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE payee ~ '^MIXED$' ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT length('a\\tb'), length('a\\nb'), substr('a\\\\b',0,3) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE substr(narration,0,2) = '\ud83d\ude00\u4e2d' ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions GROUP BY date HAVING count(*) > 0 ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT substr('abc',-999999999999,999999999999), length('a''b') LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date FROM transactions WHERE narration ~ '\\\\end$' ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT payee, count(*) FROM transactions GROUP BY payee ORDER BY payee",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT upper('Ab') LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT lower('Ab') LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account WHERE account LIKE 'Assets%'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT startswith('Ab','A') LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT endswith('Ab','b') LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT findfirst('Ab','b') LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account FROM postings JOIN transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account FROM (SELECT account) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date, account, count(*) GROUP BY date,account PIVOT BY 1,2",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT length(NULL) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT substr('abc',1) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT substr('abc',1.5,2) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration WHERE narration ~ '['",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration\nWHERE narration ~ '('",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT tags, links FROM transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT tags, links FROM #transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT tags, links FROM #postings ORDER BY account",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM #transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM #postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT *",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM transactions",
+    "ledger": "tests/bql-sources/assertion.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM #transactions",
+    "ledger": "tests/bql-sources/assertion.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM postings",
+    "ledger": "tests/bql-sources/assertion.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM #postings",
+    "ledger": "tests/bql-sources/assertion.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT *",
+    "ledger": "tests/bql-sources/assertion.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date, account FROM #balances",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT date, account FROM #balances",
+    "ledger": "tests/bql-sources/assertion.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #entries",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #accounts",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #commodities",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #prices",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #documents",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #events",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #notes",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #customs",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #open",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #close",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #unknown",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #Transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #POSTINGS",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM # transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #\npostings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT sum(*) FROM postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(*) FROM postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta(*) FROM postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT root(*) FROM postings",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT sum(*) FROM transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(*) FROM transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta(*) FROM transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT root(*) FROM transactions",
+    "ledger": "tests/bql-sources/empty.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT position WHERE account = \"Assets:Cash\"",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT payee FROM transactions ORDER BY payee",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta('receipt') FROM transactions ORDER BY date",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta('receipt'), entry_meta('receipt') ORDER BY date, account",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(payee), count(*) FROM transactions",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT narration FROM transactions ORDER BY narration LIMIT 1",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM transactions",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM postings",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT position ORDER BY date, account",
+    "ledger": "tests/ledgers/024-cost-per.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT accounts FROM OPEN ON 2024-01-03",
+    "ledger": "tests/bql-sources/metadata.beancount",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT type,date,year,month,day,filename,lineno,flag,payee,narration,description,tags,links,accounts FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #entries WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account FROM #entries",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT account FROM #accounts",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #accounts",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #accounts WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM #accounts",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT date,account,amount,tolerance FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #balances WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM #balances",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT date,name FROM #commodities",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #commodities",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #commodities WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM #commodities",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT date,account,filename,tags,links FROM #documents",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #documents",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #documents WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM #documents",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT date,type,description FROM #events",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #events",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #events WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM #events",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT date,account,comment,tags,links FROM #notes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #notes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #notes WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM #notes",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT date,currency,amount FROM #prices",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #prices",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) FROM #prices WHERE 1 = 0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM #prices",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT year,month,day FROM postings ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM events",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM prices",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM notes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT * FROM documents",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT type,count(*) FROM entries GROUP BY type ORDER BY type",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT meta('filename'),meta('lineno') FROM entries ORDER BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT name FROM commodities WHERE name = \"EUR\"",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(flag),count(narration) FROM entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT first(type),last(type),min(type),max(type) FROM entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT min(date),max(date),first(date),last(date) FROM prices",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(accounts) FROM entries",
+    "ok": true,
+    "detail": "evaluation/evaluation"
+  },
+  {
+    "query": "SELECT count(*) GROUP BY tags",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT count(*) GROUP BY meta",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT count(*) GROUP BY balance",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT count(*) GROUP BY entry",
+    "ok": true,
+    "detail": "evaluation/evaluation"
+  },
+  {
+    "query": "SELECT count(*) FROM #accounts GROUP BY open",
+    "ok": true,
+    "detail": "evaluation/evaluation"
+  },
+  {
+    "query": "SELECT count(*) FROM #notes GROUP BY tags",
+    "ok": true,
+    "detail": "evaluation/evaluation"
+  },
+  {
+    "query": "SELECT first(accounts) FROM entries",
+    "ok": true,
+    "detail": "evaluation/evaluation"
+  },
+  {
+    "query": "SELECT upper(accounts) FROM entries",
+    "ok": true,
+    "detail": "evaluation/evaluation"
+  },
+  {
+    "query": "SELECT sum(date) FROM entries",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT sum(type) FROM entries",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT count() FROM entries",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT first() FROM entries",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT min(date,date) FROM entries",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT sum(count(*)) FROM entries",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT date FROM entries WHERE count(*) > 0",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT count(*) FROM entries GROUP BY count(*)",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT filename,lineno FROM #entries ORDER BY lineno",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT currency,sum(amount) FROM prices GROUP BY currency",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT sum(tolerance) FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*) GROUP BY tags",
+    "ledger": "<repo>/tests/bql-sources/set-groups.beancount",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT upper(narration),lower(narration) FROM transactions",
+    "ok": true,
+    "detail": "",
+    "rows": 7196,
+    "changed_scalars": 2981,
+    "context_scalars": 7060
+  },
+  {
+    "query": "SELECT upper(1) LIMIT 1",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT lower(NULL) LIMIT 1",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT upper(date) LIMIT 1",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT lower(tags) LIMIT 1",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "query": "SELECT upper('x',1) LIMIT 1",
+    "ok": true,
+    "detail": "compilation/compilation"
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT account FROM #accounts",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT open FROM #accounts",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT close FROM #accounts",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT meta FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT date FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT account FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT amount FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT tolerance FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT discrepancy FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT meta FROM #commodities",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT date FROM #commodities",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT name FROM #commodities",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT meta FROM #documents",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT date FROM #documents",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT account FROM #documents",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT filename FROM #documents",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT tags FROM #documents",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT links FROM #documents",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT id FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT type FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT filename FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT lineno FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT date FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT year FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT month FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT day FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT flag FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT payee FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT narration FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT description FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT tags FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT links FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT accounts FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT meta FROM #events",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT date FROM #events",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT type FROM #events",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT description FROM #events",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT meta FROM #notes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT date FROM #notes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT account FROM #notes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT comment FROM #notes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT tags FROM #notes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT links FROM #notes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT type FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT id FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT date FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT year FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT month FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT day FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT filename FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT lineno FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT location FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT flag FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT payee FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT narration FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT description FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT tags FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT links FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT posting_flag FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT account FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT other_accounts FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT number FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT currency FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT cost_number FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT cost_currency FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT cost_date FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT cost_label FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT position FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT price FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT weight FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT balance FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT meta FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT entry FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT accounts FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT meta FROM #prices",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT date FROM #prices",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT currency FROM #prices",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT amount FROM #prices",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT meta FROM #transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT date FROM #transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT flag FROM #transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT payee FROM #transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT narration FROM #transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT tags FROM #transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT links FROM #transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT accounts FROM #transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT * FROM #accounts",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT * FROM #commodities",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT * FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT * FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT DISTINCT position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT DISTINCT first(position) GROUP BY date",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT getitem(meta,'lineno'),getitem(meta,'missing'),getitem(meta,'missing',42) FROM #events",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT meta(lower('SITE')) FROM #events",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
+    "query": "SELECT balance,balance WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/024-cost-per.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/024-cost-per.beancount",
+    "query": "SELECT entry FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/024-cost-per.beancount",
+    "query": "SELECT discrepancy FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/024-cost-per.beancount",
+    "query": "SELECT DISTINCT position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/024-cost-per.beancount",
+    "query": "SELECT DISTINCT position,account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/024-cost-per.beancount",
+    "query": "SELECT repr(position),str(units(position))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
+    "query": "SELECT entry FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
+    "query": "SELECT discrepancy FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
+    "query": "SELECT DISTINCT position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
+    "query": "SELECT DISTINCT position,account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
+    "query": "SELECT repr(position),str(units(position))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/118-note-stacks.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/118-note-stacks.beancount",
+    "query": "SELECT entry FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/118-note-stacks.beancount",
+    "query": "SELECT discrepancy FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/118-note-stacks.beancount",
+    "query": "SELECT DISTINCT position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/118-note-stacks.beancount",
+    "query": "SELECT DISTINCT position,account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/118-note-stacks.beancount",
+    "query": "SELECT repr(position),str(units(position))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/119-cost-tolerance.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/119-cost-tolerance.beancount",
+    "query": "SELECT entry FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/119-cost-tolerance.beancount",
+    "query": "SELECT discrepancy FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/119-cost-tolerance.beancount",
+    "query": "SELECT DISTINCT position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/119-cost-tolerance.beancount",
+    "query": "SELECT DISTINCT position,account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/119-cost-tolerance.beancount",
+    "query": "SELECT repr(position),str(units(position))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/120-numeric-metadata.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/120-numeric-metadata.beancount",
+    "query": "SELECT entry FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/120-numeric-metadata.beancount",
+    "query": "SELECT discrepancy FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/120-numeric-metadata.beancount",
+    "query": "SELECT DISTINCT position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/120-numeric-metadata.beancount",
+    "query": "SELECT DISTINCT position,account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/120-numeric-metadata.beancount",
+    "query": "SELECT repr(position),str(units(position))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/005-balance-fail.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/005-balance-fail.beancount",
+    "query": "SELECT entry FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/005-balance-fail.beancount",
+    "query": "SELECT discrepancy FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/005-balance-fail.beancount",
+    "query": "SELECT DISTINCT position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/005-balance-fail.beancount",
+    "query": "SELECT DISTINCT position,account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/005-balance-fail.beancount",
+    "query": "SELECT repr(position),str(units(position))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/006-pad.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/006-pad.beancount",
+    "query": "SELECT entry FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/006-pad.beancount",
+    "query": "SELECT discrepancy FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/006-pad.beancount",
+    "query": "SELECT DISTINCT position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/006-pad.beancount",
+    "query": "SELECT DISTINCT position,account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/006-pad.beancount",
+    "query": "SELECT repr(position),str(units(position))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/019-posting-metadata.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/019-posting-metadata.beancount",
+    "query": "SELECT entry FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/019-posting-metadata.beancount",
+    "query": "SELECT discrepancy FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/019-posting-metadata.beancount",
+    "query": "SELECT DISTINCT position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/019-posting-metadata.beancount",
+    "query": "SELECT DISTINCT position,account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/019-posting-metadata.beancount",
+    "query": "SELECT repr(position),str(units(position))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
+    "query": "SELECT entry FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
+    "query": "SELECT discrepancy FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
+    "query": "SELECT DISTINCT position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
+    "query": "SELECT DISTINCT position,account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
+    "query": "SELECT repr(position),str(units(position))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/044-tolerance-options.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/044-tolerance-options.beancount",
+    "query": "SELECT entry FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/044-tolerance-options.beancount",
+    "query": "SELECT discrepancy FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/044-tolerance-options.beancount",
+    "query": "SELECT DISTINCT position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/044-tolerance-options.beancount",
+    "query": "SELECT DISTINCT position,account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/044-tolerance-options.beancount",
+    "query": "SELECT repr(position),str(units(position))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/059-plugin-auto-basic.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/059-plugin-auto-basic.beancount",
+    "query": "SELECT entry FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/059-plugin-auto-basic.beancount",
+    "query": "SELECT discrepancy FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/059-plugin-auto-basic.beancount",
+    "query": "SELECT DISTINCT position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/059-plugin-auto-basic.beancount",
+    "query": "SELECT DISTINCT position,account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/059-plugin-auto-basic.beancount",
+    "query": "SELECT repr(position),str(units(position))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/063-plugin-implicit-cost.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/063-plugin-implicit-cost.beancount",
+    "query": "SELECT entry FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/063-plugin-implicit-cost.beancount",
+    "query": "SELECT discrepancy FROM #balances",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/063-plugin-implicit-cost.beancount",
+    "query": "SELECT DISTINCT position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/063-plugin-implicit-cost.beancount",
+    "query": "SELECT DISTINCT position,account",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/063-plugin-implicit-cost.beancount",
+    "query": "SELECT repr(position),str(units(position))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/001-basic.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/002-multi-currency.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/003-commodity-prices.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/004-balance.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/006-pad.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/008-directives.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/009-open-constraints.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/010-close.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/015-tags-links.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/016-push-tags.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/017-pushmeta.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/018-entry-metadata.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/019-posting-metadata.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/020-posting-flags.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/021-arithmetic.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/022-interpolate-missing.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/024-cost-per.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/026-cost-date-label.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/027-price-per.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/028-price-total.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/029-booking-fifo.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/030-booking-lifo.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/031-booking-hifo.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/032-booking-strict.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/033-booking-strict-size.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/034-booking-none.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/041-include.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/042-plugin.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/043-options.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/045-comments.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/046-string-escapes.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/050-query-balances.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/051-query-journal.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/052-query-functions.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/053-query-group-limit.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/054-tolerance-inference.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/056-custom-values.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/057-bql-prices.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/059-plugin-auto-basic.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/060-plugin-auto-existing.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/062-plugin-auto-directives.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/063-plugin-implicit-cost.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/064-plugin-implicit-total.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/065-plugin-implicit-priority.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/066-plugin-implicit-duplicates.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/067-plugin-commodity-valid.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/070-plugin-unique-valid.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/072-plugin-leaf-valid.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/075-plugin-order-unique-first.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/076-plugin-combined-all.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/080-plugin-implicit-short.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/081-pad-interpolated.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/082-balance-interpolated.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/083-auto-pad-interpolated.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/093-short-strict.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/094-short-fifo.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/095-short-lifo.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/096-short-hifo.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/097-short-strict_with_size.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/098-short-average.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/099-implicit-zero.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/102-pad-uncosted.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/104-short-inferred-strict-0.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/105-short-inferred-strict-1.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/106-short-inferred-fifo-0.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/107-short-inferred-fifo-1.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/108-short-inferred-average-0.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/109-short-inferred-average-1.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/110-short-inferred-none-0.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/111-short-inferred-none-1.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/112-round-zero.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/113-round-zero.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/114-bql-strings.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/115-option-wildcard.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/117-bql-tables.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/118-note-stacks.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/119-cost-tolerance.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/ledgers/120-numeric-metadata.beancount",
+    "query": "SELECT id,meta FROM #entries",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/value-order.beancount",
+    "query": "SELECT str(sum(position)),repr(sum(position)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/value-order.beancount",
+    "query": "SELECT min(position),max(position),min(units(position)),max(units(position))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/metadata.beancount",
+    "query": "SELECT position,count(*) WHERE account='Assets:Cash' GROUP BY position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/meta-groups.beancount",
+    "query": "SELECT count(*) FROM #events GROUP BY meta('value')",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "ledger": "<repo>/tests/bql-sources/value-order.beancount",
+    "query": "SELECT position FROM #postings ORDER BY position",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT id,meta FROM #entries",
+    "kind": "explicit signed-zero boundary",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT position",
+    "kind": "explicit signed-zero distinct boundary",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "abs(decimal)",
+    "query": "SELECT repr(abs(-1.25)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "abs(inventory)",
+    "query": "SELECT repr(abs(sum(position))) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "abs(position)",
+    "query": "SELECT repr(abs(position)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "account_sortkey(str)",
+    "query": "SELECT repr(account_sortkey('Assets:Cash')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "any_meta(str)",
+    "query": "SELECT repr(any_meta('lineno')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "bool(any)",
+    "query": "SELECT repr(bool(position)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "close_date(str)",
+    "query": "SELECT repr(close_date('Assets:Cash')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "commodity(amount)",
+    "query": "SELECT repr(commodity(units(position))) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "commodity_meta(str)",
+    "query": "SELECT repr(commodity_meta('USD')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "commodity_meta(str, str)",
+    "query": "SELECT repr(commodity_meta('USD','label')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "cost(position)",
+    "query": "SELECT repr(cost(position)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "cost(inventory)",
+    "query": "SELECT repr(cost(sum(position))) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "currency(amount)",
+    "query": "SELECT repr(currency(units(position))) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "currency_meta(str)",
+    "query": "SELECT repr(currency_meta('USD')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "currency_meta(str, str)",
+    "query": "SELECT repr(currency_meta('USD','label')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "date(date)",
+    "query": "SELECT repr(date(2024-01-02)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "date(object)",
+    "query": "SELECT repr(date(meta('missing'))) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "date(str)",
+    "query": "SELECT repr(date('2024-02-29')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "date(int, int, int)",
+    "query": "SELECT repr(date(2024,2,29)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "date_add(date, int)",
+    "query": "SELECT repr(date_add(2024-02-28,2)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "date_diff(date, date)",
+    "query": "SELECT repr(date_diff(2024-03-01,2024-02-28)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "day(date)",
+    "query": "SELECT repr(day(2024-01-02)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "decimal(bool)",
+    "query": "SELECT repr(decimal(true)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "decimal(decimal)",
+    "query": "SELECT repr(decimal(-1.25)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "decimal(int)",
+    "query": "SELECT repr(decimal(2)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "decimal(object)",
+    "query": "SELECT repr(decimal(meta('missing'))) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "decimal(str)",
+    "query": "SELECT repr(decimal('\uff11\uff12.\uff13')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "empty(inventory)",
+    "query": "SELECT repr(empty(sum(position))) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "entry_meta(str)",
+    "query": "SELECT repr(entry_meta('lineno')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "filter_currency(inventory, str)",
+    "query": "SELECT repr(filter_currency(sum(position),'USD')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "filter_currency(position, str)",
+    "query": "SELECT repr(filter_currency(position,'USD')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "getitem(dict, str)",
+    "query": "SELECT repr(getitem(meta,'USD')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "getitem(dict, str, any)",
+    "query": "SELECT repr(getitem(meta,'lineno',42)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "int(bool)",
+    "query": "SELECT repr(int(true)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "int(decimal)",
+    "query": "SELECT repr(int(-1.25)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "int(int)",
+    "query": "SELECT repr(int(2)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "int(object)",
+    "query": "SELECT repr(int(meta('missing'))) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "int(str)",
+    "query": "SELECT repr(int('\u0661_\u0662\u0663')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "leaf(str)",
+    "query": "SELECT repr(leaf('USD')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "length(set)",
+    "query": "SELECT repr(length(tags)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "length(str)",
+    "query": "SELECT repr(length('USD')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "lower(str)",
+    "query": "SELECT repr(lower('USD')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "meta(str)",
+    "query": "SELECT repr(meta('lineno')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "month(date)",
+    "query": "SELECT repr(month(2024-01-02)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "neg(amount)",
+    "query": "SELECT repr(neg(units(position))) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "neg(decimal)",
+    "query": "SELECT repr(neg(-1.25)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "neg(inventory)",
+    "query": "SELECT repr(neg(sum(position))) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "neg(position)",
+    "query": "SELECT repr(neg(position)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "number(amount)",
+    "query": "SELECT repr(number(units(position))) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "only(str, inventory)",
+    "query": "SELECT repr(only('USD',sum(position))) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "open_date(str)",
+    "query": "SELECT repr(open_date('Assets:Cash')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "open_meta(str)",
+    "query": "SELECT repr(open_meta('USD')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "open_meta(str, str)",
+    "query": "SELECT repr(open_meta('Assets:Cash','lineno')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "parent(str)",
+    "query": "SELECT repr(parent('USD')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "quarter(date)",
+    "query": "SELECT repr(quarter(2024-01-02)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "repr(any)",
+    "query": "SELECT repr(repr(position)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "root(str)",
+    "query": "SELECT repr(root('USD')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "root(str, int)",
+    "query": "SELECT repr(root('Assets:Cash',2)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "round(decimal)",
+    "query": "SELECT repr(round(-1.25)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "round(decimal, int)",
+    "query": "SELECT repr(round(2.55,1)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "round(int)",
+    "query": "SELECT repr(round(125)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "round(int, int)",
+    "query": "SELECT repr(round(125,-1)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "safediv(decimal, decimal)",
+    "query": "SELECT repr(safediv(1.25,0)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "safediv(decimal, int)",
+    "query": "SELECT repr(safediv(1.25,0)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "splitcomp(str, str, int)",
+    "query": "SELECT repr(splitcomp('a:b:c',':',-1)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "str(any)",
+    "query": "SELECT repr(str(position)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "substr(str, int, int)",
+    "query": "SELECT repr(substr('a\ud83d\ude00bc',1,3)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "units(position)",
+    "query": "SELECT repr(units(position)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "units(inventory)",
+    "query": "SELECT repr(units(sum(position))) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "upper(str)",
+    "query": "SELECT repr(upper('USD')) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "weekday(date)",
+    "query": "SELECT repr(weekday(2024-01-02)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "year(date)",
+    "query": "SELECT repr(year(2024-01-02)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "yearmonth(date)",
+    "query": "SELECT repr(yearmonth(2024-01-02)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "count(*)",
+    "query": "SELECT repr(count(*)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "count(any)",
+    "query": "SELECT repr(count(position)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "first(any)",
+    "query": "SELECT repr(first(position)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "last(any)",
+    "query": "SELECT repr(last(position)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "max(any)",
+    "query": "SELECT repr(max(position)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "min(any)",
+    "query": "SELECT repr(min(position)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "sum(amount)",
+    "query": "SELECT repr(sum(units(position))) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "sum(inventory)",
+    "query": "SELECT repr(sum(balance)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "sum(decimal)",
+    "query": "SELECT repr(sum(-1.25)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "sum(int)",
+    "query": "SELECT repr(sum(2)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "sum(position)",
+    "query": "SELECT repr(sum(position)) WHERE account='Assets:Cash'",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(sum(number)),repr(sum(balance)),repr(sum(1)),repr(sum(1.0))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(first(meta)),repr(last(entry)),str(sum(position))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT any_meta('receipt'),entry_meta('receipt'),meta('receipt')",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(decimal('1e-7')),repr(decimal('\u0661.\u0662E+\u0663')),str(decimal('100E+5')),repr(decimal('0E-9'))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT int('\u0661_\u0662\u0663'),decimal('\uff11\uff12.\uff13'),int('1,000'),decimal('1,000'),int('1.5'),int(-1.9)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT date('20240102'),date('2024-W01'),date('2024/01/02'),date(2024,2,30)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT str(tags),repr(tags),length(tags)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT date_add(9999-12-31,1),date_add(0001-01-01,-1),date_add(2000-02-28,1),weekday(0001-01-01)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT decimal(true),int(true),int(meta('missing')),bool(meta('missing'))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT root(account,99999999999999999999),root(account,-99999999999999999999),substr(narration,false,true)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT date_add(date,99999999999999999999)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT root(account,true),date_add(date,false)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT min(tags),max(tags)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT length(tags) FROM #notes",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT min(meta),max(meta)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(round(true)),repr(round(false,-1))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT splitcomp('a:b',':',-1),round(2.5),round(3.5),round(125,-1),repr(round(1.0,-1))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT splitcomp('a:b',':',9)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT splitcomp('abc','',0)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT account_sortkey('Unknown:A')",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT round(1.5,100)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT upper(1)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT length(meta)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT root(1)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT date(1)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT sum(NULL)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT int(position)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT value(1)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT getitem(meta,1)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(1492-02-13,-304)),weekday(1492-02-13),quarter(1492-02-13),repr(int(457852.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(0712-01-21,-141)),weekday(0712-01-21),quarter(0712-01-21),repr(int(-423941.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(5397-03-05,92)),weekday(5397-03-05),quarter(5397-03-05),repr(int(175092.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(8005-02-05,274)),weekday(8005-02-05),quarter(8005-02-05),repr(int(-997171.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(5793-01-16,32)),weekday(5793-01-16),quarter(5793-01-16),repr(int(-783381.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(8127-01-06,335)),weekday(8127-01-06),quarter(8127-01-06),repr(int(642939.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(1785-11-11,-112)),weekday(1785-11-11),quarter(1785-11-11),repr(int(-616180.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(5036-06-25,-336)),weekday(5036-06-25),quarter(5036-06-25),repr(int(-671867.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(3916-07-10,-16)),weekday(3916-07-10),quarter(3916-07-10),repr(int(-478258.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(7526-07-17,-316)),weekday(7526-07-17),quarter(7526-07-17),repr(int(260465.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(1006-08-15,-202)),weekday(1006-08-15),quarter(1006-08-15),repr(int(-299152.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(7978-03-16,103)),weekday(7978-03-16),quarter(7978-03-16),repr(int(-773740.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(6166-03-22,201)),weekday(6166-03-22),quarter(6166-03-22),repr(int(725190.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(7984-08-19,286)),weekday(7984-08-19),quarter(7984-08-19),repr(int(510687.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(0067-12-04,337)),weekday(0067-12-04),quarter(0067-12-04),repr(int(-686568.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(8792-03-19,116)),weekday(8792-03-19),quarter(8792-03-19),repr(int(-560127.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(7925-08-06,-145)),weekday(7925-08-06),quarter(7925-08-06),repr(int(642519.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(8626-01-06,300)),weekday(8626-01-06),quarter(8626-01-06),repr(int(831145.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(4732-07-17,365)),weekday(4732-07-17),quarter(4732-07-17),repr(int(-123508.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(5571-01-04,-178)),weekday(5571-01-04),quarter(5571-01-04),repr(int(-470632.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(4971-12-11,-351)),weekday(4971-12-11),quarter(4971-12-11),repr(int(183115.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(4910-06-26,-12)),weekday(4910-06-26),quarter(4910-06-26),repr(int(-14361.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(7105-03-02,29)),weekday(7105-03-02),quarter(7105-03-02),repr(int(429242.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(5874-04-25,194)),weekday(5874-04-25),quarter(5874-04-25),repr(int(141195.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(7152-03-15,300)),weekday(7152-03-15),quarter(7152-03-15),repr(int(-755666.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(8290-09-27,156)),weekday(8290-09-27),quarter(8290-09-27),repr(int(556137.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(8505-01-06,170)),weekday(8505-01-06),quarter(8505-01-06),repr(int(708248.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(1325-11-21,128)),weekday(1325-11-21),quarter(1325-11-21),repr(int(465471.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(8423-03-21,-295)),weekday(8423-03-21),quarter(8423-03-21),repr(int(280268.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(4793-05-11,-240)),weekday(4793-05-11),quarter(4793-05-11),repr(int(-12143.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(9310-12-06,238)),weekday(9310-12-06),quarter(9310-12-06),repr(int(-614412.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(0061-07-11,-196)),weekday(0061-07-11),quarter(0061-07-11),repr(int(-902021.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(9587-09-26,204)),weekday(9587-09-26),quarter(9587-09-26),repr(int(675497.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(7538-10-16,350)),weekday(7538-10-16),quarter(7538-10-16),repr(int(-454119.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(6939-08-15,136)),weekday(6939-08-15),quarter(6939-08-15),repr(int(80317.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(2540-03-03,297)),weekday(2540-03-03),quarter(2540-03-03),repr(int(-919001.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(0479-07-07,-328)),weekday(0479-07-07),quarter(0479-07-07),repr(int(-178239.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(0529-01-17,341)),weekday(0529-01-17),quarter(0529-01-17),repr(int(683967.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(7664-02-05,300)),weekday(7664-02-05),quarter(7664-02-05),repr(int(715325.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(date_add(7805-09-27,-3)),weekday(7805-09-27),quarter(7805-09-27),repr(int(318952.25)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(8639070331982060013271608183042592936824889644127375698.47482507)),repr(neg(8639070331982060013271608183042592936824889644127375698.47482507)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(4693233609387242237707662123944577690842442177895678127.40486264)),repr(neg(4693233609387242237707662123944577690842442177895678127.40486264)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(7348827497645456377484632130720377882809007564174561291.75180301)),repr(neg(7348827497645456377484632130720377882809007564174561291.75180301)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(1801026059344180136116320209564358153653520682546969387.16979317)),repr(neg(1801026059344180136116320209564358153653520682546969387.16979317)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(2134704896841731127610717363786315814060055547441878568.15109380)),repr(neg(2134704896841731127610717363786315814060055547441878568.15109380)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(9651308706990346449300361545126167495781623201850447245.64847280)),repr(neg(9651308706990346449300361545126167495781623201850447245.64847280)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(9143681811300670669493174298885510268920354835014272631.14842574)),repr(neg(9143681811300670669493174298885510268920354835014272631.14842574)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(6944624013214026398926967173520633554546655409654262844.97166003)),repr(neg(6944624013214026398926967173520633554546655409654262844.97166003)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(698760884152627075309379306949932691427788489050976999.31400917)),repr(neg(698760884152627075309379306949932691427788489050976999.31400917)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(7908465183919548456903711446897373694130683786238906678.68762654)),repr(neg(7908465183919548456903711446897373694130683786238906678.68762654)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(7077374669552473680973474105278909668469955952930152302.46487193)),repr(neg(7077374669552473680973474105278909668469955952930152302.46487193)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(4727852280471984684753527309752216199589529156422708326.69427162)),repr(neg(4727852280471984684753527309752216199589529156422708326.69427162)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(4092103435713892475771122946254112008936915800296449573.52013788)),repr(neg(4092103435713892475771122946254112008936915800296449573.52013788)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(3839771580283239079709790795683164697246783441891477151.18631779)),repr(neg(3839771580283239079709790795683164697246783441891477151.18631779)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(8248422784235817786991338824382922458723361305711522337.93939023)),repr(neg(8248422784235817786991338824382922458723361305711522337.93939023)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(1952201733342500924955387332989658675599644888528604965.54952410)),repr(neg(1952201733342500924955387332989658675599644888528604965.54952410)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(6957146711057255268511283619142941691022133151884246955.56385658)),repr(neg(6957146711057255268511283619142941691022133151884246955.56385658)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(9541940728137614813910463151854732742597855535624484399.30084543)),repr(neg(9541940728137614813910463151854732742597855535624484399.30084543)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(3611963283471503855705460129072397928961872659619812171.37429676)),repr(neg(3611963283471503855705460129072397928961872659619812171.37429676)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(4129957472128341760212810462664445929539197073016302960.31048835)),repr(neg(4129957472128341760212810462664445929539197073016302960.31048835)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(5283670136689403377578206484817032752637751908025766992.64800308)),repr(neg(5283670136689403377578206484817032752637751908025766992.64800308)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(4560520589201837380450977483329528000892318499332920068.62196586)),repr(neg(4560520589201837380450977483329528000892318499332920068.62196586)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(1853716713586870527498967816815293566847097802770044727.82061300)),repr(neg(1853716713586870527498967816815293566847097802770044727.82061300)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(5149186004418076323856088457646353237622456348882997374.51193647)),repr(neg(5149186004418076323856088457646353237622456348882997374.51193647)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(679247832520277288241514468925514903990455156286492872.27148073)),repr(neg(679247832520277288241514468925514903990455156286492872.27148073)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(9680222313046941278873458289432429176335434081484932190.58397152)),repr(neg(9680222313046941278873458289432429176335434081484932190.58397152)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(2924536984434914166188309437966997431687776131885545775.55147599)),repr(neg(2924536984434914166188309437966997431687776131885545775.55147599)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(8307152111487883209984172385136179037727492840327476278.90614661)),repr(neg(8307152111487883209984172385136179037727492840327476278.90614661)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(2835630406515635476785746024407951088930752744587264494.50139387)),repr(neg(2835630406515635476785746024407951088930752744587264494.50139387)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(2212799616889501438219552435750451001879470715493673046.10147212)),repr(neg(2212799616889501438219552435750451001879470715493673046.10147212)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(4473866732759722475596642911262852632224392984199711807.20767246)),repr(neg(4473866732759722475596642911262852632224392984199711807.20767246)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(3068663008990758164334382489048150039867526199974053893.73627466)),repr(neg(3068663008990758164334382489048150039867526199974053893.73627466)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(5134037112658482553800652198699747624933492937990518850.65571686)),repr(neg(5134037112658482553800652198699747624933492937990518850.65571686)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(219498483063997392977854363966994384395097206946036678.55578791)),repr(neg(219498483063997392977854363966994384395097206946036678.55578791)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(8627728550567835436407916036540635097848556893022490849.72551336)),repr(neg(8627728550567835436407916036540635097848556893022490849.72551336)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(1976333500029394944961835450135479505782796382835781727.75867328)),repr(neg(1976333500029394944961835450135479505782796382835781727.75867328)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(7153824550865893416729539480519239605477245989480488101.62021041)),repr(neg(7153824550865893416729539480519239605477245989480488101.62021041)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(8067778022165245604213353075124844857511988032119519332.52317764)),repr(neg(8067778022165245604213353075124844857511988032119519332.52317764)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(861261440754487518303102866982294231409293970262333602.65808169)),repr(neg(861261440754487518303102866982294231409293970262333602.65808169)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(abs(847177806542946251974271083606881718991138160499294385.51016329)),repr(neg(847177806542946251974271083606881718991138160499294385.51016329)) LIMIT 1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(178680093313035035175131229725552481198265865992772971432376+(-52179143557903937533635877973398278)),repr(178680093313035035175131229725552481198265865992772971432376-(-52179143557903937533635877973398278)),repr(178680093313035035175131229725552481198265865992772971432376*(-52179143557903937533635877973398278)),repr(sum(178680093313035035175131229725552481198265865992772971432376)),repr(sum(178680093313035035175131229725552481198265865992772971432376+(-52179143557903937533635877973398278)))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(851793470314166711867795850939459474312414399929004273279753+(9475511031187196421069313719611785)),repr(851793470314166711867795850939459474312414399929004273279753-(9475511031187196421069313719611785)),repr(851793470314166711867795850939459474312414399929004273279753*(9475511031187196421069313719611785)),repr(sum(851793470314166711867795850939459474312414399929004273279753)),repr(sum(851793470314166711867795850939459474312414399929004273279753+(9475511031187196421069313719611785)))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(125654598966015138270289583872351762544521473573633741690714+(48464944081225565703902530346874087)),repr(125654598966015138270289583872351762544521473573633741690714-(48464944081225565703902530346874087)),repr(125654598966015138270289583872351762544521473573633741690714*(48464944081225565703902530346874087)),repr(sum(125654598966015138270289583872351762544521473573633741690714)),repr(sum(125654598966015138270289583872351762544521473573633741690714+(48464944081225565703902530346874087)))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(979880978616797123671326482575187685004583647457254322600590+(34996630183591252141592427148714800)),repr(979880978616797123671326482575187685004583647457254322600590-(34996630183591252141592427148714800)),repr(979880978616797123671326482575187685004583647457254322600590*(34996630183591252141592427148714800)),repr(sum(979880978616797123671326482575187685004583647457254322600590)),repr(sum(979880978616797123671326482575187685004583647457254322600590+(34996630183591252141592427148714800)))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(258690229265917706597806677540479560222853896389200243328200+(3146791643681334538473600692766358)),repr(258690229265917706597806677540479560222853896389200243328200-(3146791643681334538473600692766358)),repr(258690229265917706597806677540479560222853896389200243328200*(3146791643681334538473600692766358)),repr(sum(258690229265917706597806677540479560222853896389200243328200)),repr(sum(258690229265917706597806677540479560222853896389200243328200+(3146791643681334538473600692766358)))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(693062352335107519984528017884851407666990800944726825988630+(83351423947211559870787051707212746)),repr(693062352335107519984528017884851407666990800944726825988630-(83351423947211559870787051707212746)),repr(693062352335107519984528017884851407666990800944726825988630*(83351423947211559870787051707212746)),repr(sum(693062352335107519984528017884851407666990800944726825988630)),repr(sum(693062352335107519984528017884851407666990800944726825988630+(83351423947211559870787051707212746)))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(933472857805259674704353834223975515124604871807695346887615+(22257057163709816745582628813180250)),repr(933472857805259674704353834223975515124604871807695346887615-(22257057163709816745582628813180250)),repr(933472857805259674704353834223975515124604871807695346887615*(22257057163709816745582628813180250)),repr(sum(933472857805259674704353834223975515124604871807695346887615)),repr(sum(933472857805259674704353834223975515124604871807695346887615+(22257057163709816745582628813180250)))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(674156511138818181346719263637139577460731696202422180160533+(-18566737662528751614660548587305702)),repr(674156511138818181346719263637139577460731696202422180160533-(-18566737662528751614660548587305702)),repr(674156511138818181346719263637139577460731696202422180160533*(-18566737662528751614660548587305702)),repr(sum(674156511138818181346719263637139577460731696202422180160533)),repr(sum(674156511138818181346719263637139577460731696202422180160533+(-18566737662528751614660548587305702)))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(413589237919256687188174236906007781907907949483771156436964+(47473415128932791551005106402791398)),repr(413589237919256687188174236906007781907907949483771156436964-(47473415128932791551005106402791398)),repr(413589237919256687188174236906007781907907949483771156436964*(47473415128932791551005106402791398)),repr(sum(413589237919256687188174236906007781907907949483771156436964)),repr(sum(413589237919256687188174236906007781907907949483771156436964+(47473415128932791551005106402791398)))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(427665942844734794733282072166506639329701865653833805950168+(-51463903268272628192410788206135150)),repr(427665942844734794733282072166506639329701865653833805950168-(-51463903268272628192410788206135150)),repr(427665942844734794733282072166506639329701865653833805950168*(-51463903268272628192410788206135150)),repr(sum(427665942844734794733282072166506639329701865653833805950168)),repr(sum(427665942844734794733282072166506639329701865653833805950168+(-51463903268272628192410788206135150)))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(865577392343850182281370646803037005712324310961258447283627+(-7243067327212861910446654193458490)),repr(865577392343850182281370646803037005712324310961258447283627-(-7243067327212861910446654193458490)),repr(865577392343850182281370646803037005712324310961258447283627*(-7243067327212861910446654193458490)),repr(sum(865577392343850182281370646803037005712324310961258447283627)),repr(sum(865577392343850182281370646803037005712324310961258447283627+(-7243067327212861910446654193458490)))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "signature": "extra",
+    "query": "SELECT repr(334892273284482755446431742445093991409846384863792162984756+(71021343907682993915604402142766409)),repr(334892273284482755446431742445093991409846384863792162984756-(71021343907682993915604402142766409)),repr(334892273284482755446431742445093991409846384863792162984756*(71021343907682993915604402142766409)),repr(sum(334892273284482755446431742445093991409846384863792162984756)),repr(sum(334892273284482755446431742445093991409846384863792162984756+(71021343907682993915604402142766409)))",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT decimal('-0.00')",
+    "kind": "explicit numeric boundary",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT decimal('NaN')",
+    "kind": "explicit numeric boundary",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT round(-0.1)",
+    "kind": "explicit numeric boundary",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT 0.0/-1",
+    "kind": "explicit numeric boundary",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT safediv(0.0,-1)",
+    "kind": "explicit numeric boundary",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT 0.0*-1",
+    "kind": "explicit numeric boundary",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration,payee,date FROM transactions ORDER BY narration,payee,date",
+    "corpus_rows": 648,
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration,date FROM transactions ORDER BY narration DESC,date DESC LIMIT 100",
+    "corpus_rows": 648,
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration,payee FROM transactions ORDER BY length(narration),payee DESC,narration",
+    "corpus_rows": 648,
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT payee,count(*) FROM transactions GROUP BY payee ORDER BY count(*) DESC,payee",
+    "corpus_rows": 648,
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT narration FROM transactions ORDER BY narration LIMIT 20",
+    "corpus_rows": 648,
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT min(narration),max(narration) FROM transactions",
+    "corpus_rows": 648,
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT position,account ORDER BY position",
+    "corpus_rows": 648,
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration FROM transactions ORDER BY length(narration)+year(date),date DESC,narration",
+    "corpus_rows": 648,
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT narration ORDER BY narration",
+    "kind": "large native sort",
+    "postings": 100000,
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,sum(position) FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,sum(position) FROM #postings WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,sum(position) FROM #postings ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,count(*) FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,count(*) FROM #postings WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,count(*) FROM #postings ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(date),count(*) FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(date),count(*) FROM #postings WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(date),count(*) FROM #postings ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT 1,count(*) FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT 1,count(*) FROM #postings WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT 1,count(*) FROM #postings ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*),sum(number) FROM #postings",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*),sum(number) FROM #postings WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*),sum(number) FROM #postings ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,sum(position) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,sum(position) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,sum(position) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(date),count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(date),count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(date),count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT 1,count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT 1,count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT 1,count(*) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*),sum(number) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*),sum(number) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*),sum(number) FROM OPEN ON 2024-01-01 CLOSE ON 2024-01-10 ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,sum(position) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,sum(position) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,sum(position) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(date),count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(date),count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT year(date),count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT 1,count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT 1,count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT 1,count(*) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*),sum(number) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*),sum(number) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 WHERE false",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT count(*),sum(number) FROM OPEN ON 2024-01-06 CLOSE ON 2024-01-31 ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT payee,count(*) FROM transactions",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT payee,count(*) FROM transactions ORDER BY payee",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account ORDER BY count(*)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,count(*) HAVING count(*)>1",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,count(*) GROUP BY account HAVING count(*)>1 ORDER BY count(*) DESC",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,sum(number)+number",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT sum(number) WHERE count(*)>0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT account,count(*) WHERE sum(number)>0",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT bool(balance)",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT round(125.0,-1)",
+    "ok": true,
+    "detail": ""
+  }
+]

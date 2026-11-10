@@ -1,0 +1,4010 @@
+{
+  "oracle": "3.2.3",
+  "results": [
+    {
+      "name": "001-basic.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "002-multi-currency.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "003-commodity-prices.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "004-balance.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "005-balance-fail.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "006-pad.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "007-unused-pad.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "008-directives.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "009-open-constraints.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "010-close.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "011-close-unopened.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "012-inactive-account.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "013-duplicate-open.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "014-duplicate-close.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "015-tags-links.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "016-push-tags.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "017-pushmeta.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "018-entry-metadata.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "019-posting-metadata.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "020-posting-flags.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "021-arithmetic.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "022-interpolate-missing.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "023-multiple-missing.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "024-cost-per.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "025-cost-total.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "026-cost-date-label.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "027-price-per.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "028-price-total.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "029-booking-fifo.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "030-booking-lifo.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "031-booking-hifo.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "032-booking-strict.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "033-booking-strict-size.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "034-booking-none.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "035-booking-average.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": "beancount 3.2.3 reports 'AVERAGE method is not supported'"
+    },
+    {
+      "name": "036-booking-insufficient.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "037-booking-ambiguous.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "038-unbalanced.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "039-currency-constraint.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "040-unknown-account.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "041-include.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "042-plugin.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "043-options.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "044-tolerance-options.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "045-comments.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "046-string-escapes.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "047-syntax-error.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "048-duplicate-balance.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "049-invalid-booking-method.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "050-query-balances.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "051-query-journal.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "052-query-functions.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "053-query-group-limit.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "054-tolerance-inference.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "055-same-day-order.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "056-custom-values.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "057-bql-prices.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "058-cost-merge.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": "beancount 3.2.3 reports 'Cost merging is not supported yet'"
+    },
+    {
+      "name": "059-plugin-auto-basic.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "060-plugin-auto-existing.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "061-plugin-auto-late-open.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "062-plugin-auto-directives.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "063-plugin-implicit-cost.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "064-plugin-implicit-total.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "065-plugin-implicit-priority.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "066-plugin-implicit-duplicates.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "067-plugin-commodity-valid.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "068-plugin-commodity-missing.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "069-plugin-commodity-price.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "070-plugin-unique-valid.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "071-plugin-unique-conflict.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "072-plugin-leaf-valid.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "073-plugin-leaf-invalid.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "074-plugin-order-prices-first.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "075-plugin-order-unique-first.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "076-plugin-combined-all.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "077-plugin-order-leaf-first.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "078-plugin-order-auto-first.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "079-plugin-commodity-exemptions.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "080-plugin-implicit-short.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "081-pad-interpolated.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "082-balance-interpolated.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "083-auto-pad-interpolated.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "084-exempt-before-price.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "085-exempt-after-price.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "086-exempt-other-account.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "087-leaf-note.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "088-leaf-document.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "089-leaf-close.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "090-leaf-pad.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "091-leaf-pad-source.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "092-leaf-custom.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "093-short-strict.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "094-short-fifo.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "095-short-lifo.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "096-short-hifo.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "097-short-strict_with_size.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "098-short-average.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "099-implicit-zero.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "100-pad-costed-sale.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "101-pad-costed-buy.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "102-pad-uncosted.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "103-pad-costed-unused.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "104-short-inferred-strict-0.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "105-short-inferred-strict-1.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "106-short-inferred-fifo-0.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "107-short-inferred-fifo-1.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "108-short-inferred-average-0.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "109-short-inferred-average-1.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "110-short-inferred-none-0.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "111-short-inferred-none-1.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "112-round-zero.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "113-round-zero.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "114-bql-strings.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "115-option-wildcard.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "116-option-wildcard-inferred.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "skip",
+          "ok": true,
+          "detail": "error ledger"
+        },
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "117-bql-tables.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "118-note-stacks.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "119-cost-tolerance.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    },
+    {
+      "name": "120-numeric-metadata.beancount",
+      "diagnostics": true,
+      "queries": [
+        {
+          "name": "prices",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "totals",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "by-date",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "year",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "root",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "limit",
+          "ok": true,
+          "detail": ""
+        },
+        {
+          "name": "balances",
+          "ok": true,
+          "detail": ""
+        }
+      ],
+      "note": ""
+    }
+  ]
+}

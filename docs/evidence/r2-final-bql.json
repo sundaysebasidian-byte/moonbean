@@ -933,7 +933,7 @@
   },
   {
     "query": "SELECT count(*) GROUP BY tags",
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/set-groups.beancount",
+    "ledger": "<repo>/tests/bql-sources/set-groups.beancount",
     "ok": true,
     "detail": "compilation/compilation"
   },
@@ -971,1513 +971,1513 @@
     "detail": "compilation/compilation"
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT account FROM #accounts",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT open FROM #accounts",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT close FROM #accounts",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT meta FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT date FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT account FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT amount FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT tolerance FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT discrepancy FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT meta FROM #commodities",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT date FROM #commodities",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT name FROM #commodities",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT meta FROM #documents",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT date FROM #documents",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT account FROM #documents",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT filename FROM #documents",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT tags FROM #documents",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT links FROM #documents",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT id FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT type FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT filename FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT lineno FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT date FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT year FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT month FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT day FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT flag FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT payee FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT narration FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT description FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT tags FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT links FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT accounts FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT meta FROM #events",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT date FROM #events",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT type FROM #events",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT description FROM #events",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT meta FROM #notes",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT date FROM #notes",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT account FROM #notes",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT comment FROM #notes",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT tags FROM #notes",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT links FROM #notes",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT type FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT id FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT date FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT year FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT month FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT day FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT filename FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT lineno FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT location FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT flag FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT payee FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT narration FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT description FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT tags FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT links FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT posting_flag FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT account FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT other_accounts FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT number FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT currency FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT cost_number FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT cost_currency FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT cost_date FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT cost_label FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT position FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT price FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT weight FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT balance FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT meta FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT entry FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT accounts FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT meta FROM #prices",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT date FROM #prices",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT currency FROM #prices",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT amount FROM #prices",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT meta FROM #transactions",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT date FROM #transactions",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT flag FROM #transactions",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT payee FROM #transactions",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT narration FROM #transactions",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT tags FROM #transactions",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT links FROM #transactions",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT accounts FROM #transactions",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT * FROM #accounts",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT * FROM #commodities",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT * FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT * FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT DISTINCT position",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT DISTINCT first(position) GROUP BY date",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT getitem(meta,'lineno'),getitem(meta,'missing'),getitem(meta,'missing',42) FROM #events",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT meta(lower('SITE')) FROM #events",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/tables.beancount",
+    "ledger": "<repo>/tests/bql-sources/tables.beancount",
     "query": "SELECT balance,balance WHERE account='Assets:Cash'",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/024-cost-per.beancount",
+    "ledger": "<repo>/tests/ledgers/024-cost-per.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/024-cost-per.beancount",
+    "ledger": "<repo>/tests/ledgers/024-cost-per.beancount",
     "query": "SELECT entry FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/024-cost-per.beancount",
+    "ledger": "<repo>/tests/ledgers/024-cost-per.beancount",
     "query": "SELECT discrepancy FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/024-cost-per.beancount",
+    "ledger": "<repo>/tests/ledgers/024-cost-per.beancount",
     "query": "SELECT DISTINCT position",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/024-cost-per.beancount",
+    "ledger": "<repo>/tests/ledgers/024-cost-per.beancount",
     "query": "SELECT DISTINCT position,account",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/024-cost-per.beancount",
+    "ledger": "<repo>/tests/ledgers/024-cost-per.beancount",
     "query": "SELECT repr(position),str(units(position))",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/025-cost-total.beancount",
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/025-cost-total.beancount",
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
     "query": "SELECT entry FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/025-cost-total.beancount",
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
     "query": "SELECT discrepancy FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/025-cost-total.beancount",
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
     "query": "SELECT DISTINCT position",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/025-cost-total.beancount",
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
     "query": "SELECT DISTINCT position,account",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/025-cost-total.beancount",
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
     "query": "SELECT repr(position),str(units(position))",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/118-note-stacks.beancount",
+    "ledger": "<repo>/tests/ledgers/118-note-stacks.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/118-note-stacks.beancount",
+    "ledger": "<repo>/tests/ledgers/118-note-stacks.beancount",
     "query": "SELECT entry FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/118-note-stacks.beancount",
+    "ledger": "<repo>/tests/ledgers/118-note-stacks.beancount",
     "query": "SELECT discrepancy FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/118-note-stacks.beancount",
+    "ledger": "<repo>/tests/ledgers/118-note-stacks.beancount",
     "query": "SELECT DISTINCT position",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/118-note-stacks.beancount",
+    "ledger": "<repo>/tests/ledgers/118-note-stacks.beancount",
     "query": "SELECT DISTINCT position,account",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/118-note-stacks.beancount",
+    "ledger": "<repo>/tests/ledgers/118-note-stacks.beancount",
     "query": "SELECT repr(position),str(units(position))",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/119-cost-tolerance.beancount",
+    "ledger": "<repo>/tests/ledgers/119-cost-tolerance.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/119-cost-tolerance.beancount",
+    "ledger": "<repo>/tests/ledgers/119-cost-tolerance.beancount",
     "query": "SELECT entry FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/119-cost-tolerance.beancount",
+    "ledger": "<repo>/tests/ledgers/119-cost-tolerance.beancount",
     "query": "SELECT discrepancy FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/119-cost-tolerance.beancount",
+    "ledger": "<repo>/tests/ledgers/119-cost-tolerance.beancount",
     "query": "SELECT DISTINCT position",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/119-cost-tolerance.beancount",
+    "ledger": "<repo>/tests/ledgers/119-cost-tolerance.beancount",
     "query": "SELECT DISTINCT position,account",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/119-cost-tolerance.beancount",
+    "ledger": "<repo>/tests/ledgers/119-cost-tolerance.beancount",
     "query": "SELECT repr(position),str(units(position))",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/120-numeric-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/120-numeric-metadata.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/120-numeric-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/120-numeric-metadata.beancount",
     "query": "SELECT entry FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/120-numeric-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/120-numeric-metadata.beancount",
     "query": "SELECT discrepancy FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/120-numeric-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/120-numeric-metadata.beancount",
     "query": "SELECT DISTINCT position",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/120-numeric-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/120-numeric-metadata.beancount",
     "query": "SELECT DISTINCT position,account",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/120-numeric-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/120-numeric-metadata.beancount",
     "query": "SELECT repr(position),str(units(position))",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/005-balance-fail.beancount",
+    "ledger": "<repo>/tests/ledgers/005-balance-fail.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/005-balance-fail.beancount",
+    "ledger": "<repo>/tests/ledgers/005-balance-fail.beancount",
     "query": "SELECT entry FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/005-balance-fail.beancount",
+    "ledger": "<repo>/tests/ledgers/005-balance-fail.beancount",
     "query": "SELECT discrepancy FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/005-balance-fail.beancount",
+    "ledger": "<repo>/tests/ledgers/005-balance-fail.beancount",
     "query": "SELECT DISTINCT position",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/005-balance-fail.beancount",
+    "ledger": "<repo>/tests/ledgers/005-balance-fail.beancount",
     "query": "SELECT DISTINCT position,account",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/005-balance-fail.beancount",
+    "ledger": "<repo>/tests/ledgers/005-balance-fail.beancount",
     "query": "SELECT repr(position),str(units(position))",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/006-pad.beancount",
+    "ledger": "<repo>/tests/ledgers/006-pad.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/006-pad.beancount",
+    "ledger": "<repo>/tests/ledgers/006-pad.beancount",
     "query": "SELECT entry FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/006-pad.beancount",
+    "ledger": "<repo>/tests/ledgers/006-pad.beancount",
     "query": "SELECT discrepancy FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/006-pad.beancount",
+    "ledger": "<repo>/tests/ledgers/006-pad.beancount",
     "query": "SELECT DISTINCT position",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/006-pad.beancount",
+    "ledger": "<repo>/tests/ledgers/006-pad.beancount",
     "query": "SELECT DISTINCT position,account",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/006-pad.beancount",
+    "ledger": "<repo>/tests/ledgers/006-pad.beancount",
     "query": "SELECT repr(position),str(units(position))",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/019-posting-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/019-posting-metadata.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/019-posting-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/019-posting-metadata.beancount",
     "query": "SELECT entry FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/019-posting-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/019-posting-metadata.beancount",
     "query": "SELECT discrepancy FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/019-posting-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/019-posting-metadata.beancount",
     "query": "SELECT DISTINCT position",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/019-posting-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/019-posting-metadata.beancount",
     "query": "SELECT DISTINCT position,account",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/019-posting-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/019-posting-metadata.beancount",
     "query": "SELECT repr(position),str(units(position))",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/025-cost-total.beancount",
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/025-cost-total.beancount",
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
     "query": "SELECT entry FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/025-cost-total.beancount",
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
     "query": "SELECT discrepancy FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/025-cost-total.beancount",
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
     "query": "SELECT DISTINCT position",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/025-cost-total.beancount",
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
     "query": "SELECT DISTINCT position,account",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/025-cost-total.beancount",
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
     "query": "SELECT repr(position),str(units(position))",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/044-tolerance-options.beancount",
+    "ledger": "<repo>/tests/ledgers/044-tolerance-options.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/044-tolerance-options.beancount",
+    "ledger": "<repo>/tests/ledgers/044-tolerance-options.beancount",
     "query": "SELECT entry FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/044-tolerance-options.beancount",
+    "ledger": "<repo>/tests/ledgers/044-tolerance-options.beancount",
     "query": "SELECT discrepancy FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/044-tolerance-options.beancount",
+    "ledger": "<repo>/tests/ledgers/044-tolerance-options.beancount",
     "query": "SELECT DISTINCT position",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/044-tolerance-options.beancount",
+    "ledger": "<repo>/tests/ledgers/044-tolerance-options.beancount",
     "query": "SELECT DISTINCT position,account",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/044-tolerance-options.beancount",
+    "ledger": "<repo>/tests/ledgers/044-tolerance-options.beancount",
     "query": "SELECT repr(position),str(units(position))",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/059-plugin-auto-basic.beancount",
+    "ledger": "<repo>/tests/ledgers/059-plugin-auto-basic.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/059-plugin-auto-basic.beancount",
+    "ledger": "<repo>/tests/ledgers/059-plugin-auto-basic.beancount",
     "query": "SELECT entry FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/059-plugin-auto-basic.beancount",
+    "ledger": "<repo>/tests/ledgers/059-plugin-auto-basic.beancount",
     "query": "SELECT discrepancy FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/059-plugin-auto-basic.beancount",
+    "ledger": "<repo>/tests/ledgers/059-plugin-auto-basic.beancount",
     "query": "SELECT DISTINCT position",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/059-plugin-auto-basic.beancount",
+    "ledger": "<repo>/tests/ledgers/059-plugin-auto-basic.beancount",
     "query": "SELECT DISTINCT position,account",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/059-plugin-auto-basic.beancount",
+    "ledger": "<repo>/tests/ledgers/059-plugin-auto-basic.beancount",
     "query": "SELECT repr(position),str(units(position))",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/063-plugin-implicit-cost.beancount",
+    "ledger": "<repo>/tests/ledgers/063-plugin-implicit-cost.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/063-plugin-implicit-cost.beancount",
+    "ledger": "<repo>/tests/ledgers/063-plugin-implicit-cost.beancount",
     "query": "SELECT entry FROM #postings",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/063-plugin-implicit-cost.beancount",
+    "ledger": "<repo>/tests/ledgers/063-plugin-implicit-cost.beancount",
     "query": "SELECT discrepancy FROM #balances",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/063-plugin-implicit-cost.beancount",
+    "ledger": "<repo>/tests/ledgers/063-plugin-implicit-cost.beancount",
     "query": "SELECT DISTINCT position",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/063-plugin-implicit-cost.beancount",
+    "ledger": "<repo>/tests/ledgers/063-plugin-implicit-cost.beancount",
     "query": "SELECT DISTINCT position,account",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/063-plugin-implicit-cost.beancount",
+    "ledger": "<repo>/tests/ledgers/063-plugin-implicit-cost.beancount",
     "query": "SELECT repr(position),str(units(position))",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/001-basic.beancount",
+    "ledger": "<repo>/tests/ledgers/001-basic.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/002-multi-currency.beancount",
+    "ledger": "<repo>/tests/ledgers/002-multi-currency.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/003-commodity-prices.beancount",
+    "ledger": "<repo>/tests/ledgers/003-commodity-prices.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/004-balance.beancount",
+    "ledger": "<repo>/tests/ledgers/004-balance.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/006-pad.beancount",
+    "ledger": "<repo>/tests/ledgers/006-pad.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/008-directives.beancount",
+    "ledger": "<repo>/tests/ledgers/008-directives.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/009-open-constraints.beancount",
+    "ledger": "<repo>/tests/ledgers/009-open-constraints.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/010-close.beancount",
+    "ledger": "<repo>/tests/ledgers/010-close.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/015-tags-links.beancount",
+    "ledger": "<repo>/tests/ledgers/015-tags-links.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/016-push-tags.beancount",
+    "ledger": "<repo>/tests/ledgers/016-push-tags.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/017-pushmeta.beancount",
+    "ledger": "<repo>/tests/ledgers/017-pushmeta.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/018-entry-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/018-entry-metadata.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/019-posting-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/019-posting-metadata.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/020-posting-flags.beancount",
+    "ledger": "<repo>/tests/ledgers/020-posting-flags.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/021-arithmetic.beancount",
+    "ledger": "<repo>/tests/ledgers/021-arithmetic.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/022-interpolate-missing.beancount",
+    "ledger": "<repo>/tests/ledgers/022-interpolate-missing.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/024-cost-per.beancount",
+    "ledger": "<repo>/tests/ledgers/024-cost-per.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/025-cost-total.beancount",
+    "ledger": "<repo>/tests/ledgers/025-cost-total.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/026-cost-date-label.beancount",
+    "ledger": "<repo>/tests/ledgers/026-cost-date-label.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/027-price-per.beancount",
+    "ledger": "<repo>/tests/ledgers/027-price-per.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/028-price-total.beancount",
+    "ledger": "<repo>/tests/ledgers/028-price-total.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/029-booking-fifo.beancount",
+    "ledger": "<repo>/tests/ledgers/029-booking-fifo.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/030-booking-lifo.beancount",
+    "ledger": "<repo>/tests/ledgers/030-booking-lifo.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/031-booking-hifo.beancount",
+    "ledger": "<repo>/tests/ledgers/031-booking-hifo.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/032-booking-strict.beancount",
+    "ledger": "<repo>/tests/ledgers/032-booking-strict.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/033-booking-strict-size.beancount",
+    "ledger": "<repo>/tests/ledgers/033-booking-strict-size.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/034-booking-none.beancount",
+    "ledger": "<repo>/tests/ledgers/034-booking-none.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/041-include.beancount",
+    "ledger": "<repo>/tests/ledgers/041-include.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/042-plugin.beancount",
+    "ledger": "<repo>/tests/ledgers/042-plugin.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/043-options.beancount",
+    "ledger": "<repo>/tests/ledgers/043-options.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/045-comments.beancount",
+    "ledger": "<repo>/tests/ledgers/045-comments.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/046-string-escapes.beancount",
+    "ledger": "<repo>/tests/ledgers/046-string-escapes.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/050-query-balances.beancount",
+    "ledger": "<repo>/tests/ledgers/050-query-balances.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/051-query-journal.beancount",
+    "ledger": "<repo>/tests/ledgers/051-query-journal.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/052-query-functions.beancount",
+    "ledger": "<repo>/tests/ledgers/052-query-functions.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/053-query-group-limit.beancount",
+    "ledger": "<repo>/tests/ledgers/053-query-group-limit.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/054-tolerance-inference.beancount",
+    "ledger": "<repo>/tests/ledgers/054-tolerance-inference.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/056-custom-values.beancount",
+    "ledger": "<repo>/tests/ledgers/056-custom-values.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/057-bql-prices.beancount",
+    "ledger": "<repo>/tests/ledgers/057-bql-prices.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/059-plugin-auto-basic.beancount",
+    "ledger": "<repo>/tests/ledgers/059-plugin-auto-basic.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/060-plugin-auto-existing.beancount",
+    "ledger": "<repo>/tests/ledgers/060-plugin-auto-existing.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/062-plugin-auto-directives.beancount",
+    "ledger": "<repo>/tests/ledgers/062-plugin-auto-directives.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/063-plugin-implicit-cost.beancount",
+    "ledger": "<repo>/tests/ledgers/063-plugin-implicit-cost.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/064-plugin-implicit-total.beancount",
+    "ledger": "<repo>/tests/ledgers/064-plugin-implicit-total.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/065-plugin-implicit-priority.beancount",
+    "ledger": "<repo>/tests/ledgers/065-plugin-implicit-priority.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/066-plugin-implicit-duplicates.beancount",
+    "ledger": "<repo>/tests/ledgers/066-plugin-implicit-duplicates.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/067-plugin-commodity-valid.beancount",
+    "ledger": "<repo>/tests/ledgers/067-plugin-commodity-valid.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/070-plugin-unique-valid.beancount",
+    "ledger": "<repo>/tests/ledgers/070-plugin-unique-valid.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/072-plugin-leaf-valid.beancount",
+    "ledger": "<repo>/tests/ledgers/072-plugin-leaf-valid.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/075-plugin-order-unique-first.beancount",
+    "ledger": "<repo>/tests/ledgers/075-plugin-order-unique-first.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/076-plugin-combined-all.beancount",
+    "ledger": "<repo>/tests/ledgers/076-plugin-combined-all.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/080-plugin-implicit-short.beancount",
+    "ledger": "<repo>/tests/ledgers/080-plugin-implicit-short.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/081-pad-interpolated.beancount",
+    "ledger": "<repo>/tests/ledgers/081-pad-interpolated.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/082-balance-interpolated.beancount",
+    "ledger": "<repo>/tests/ledgers/082-balance-interpolated.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/083-auto-pad-interpolated.beancount",
+    "ledger": "<repo>/tests/ledgers/083-auto-pad-interpolated.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/093-short-strict.beancount",
+    "ledger": "<repo>/tests/ledgers/093-short-strict.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/094-short-fifo.beancount",
+    "ledger": "<repo>/tests/ledgers/094-short-fifo.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/095-short-lifo.beancount",
+    "ledger": "<repo>/tests/ledgers/095-short-lifo.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/096-short-hifo.beancount",
+    "ledger": "<repo>/tests/ledgers/096-short-hifo.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/097-short-strict_with_size.beancount",
+    "ledger": "<repo>/tests/ledgers/097-short-strict_with_size.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/098-short-average.beancount",
+    "ledger": "<repo>/tests/ledgers/098-short-average.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/099-implicit-zero.beancount",
+    "ledger": "<repo>/tests/ledgers/099-implicit-zero.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/102-pad-uncosted.beancount",
+    "ledger": "<repo>/tests/ledgers/102-pad-uncosted.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/104-short-inferred-strict-0.beancount",
+    "ledger": "<repo>/tests/ledgers/104-short-inferred-strict-0.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/105-short-inferred-strict-1.beancount",
+    "ledger": "<repo>/tests/ledgers/105-short-inferred-strict-1.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/106-short-inferred-fifo-0.beancount",
+    "ledger": "<repo>/tests/ledgers/106-short-inferred-fifo-0.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/107-short-inferred-fifo-1.beancount",
+    "ledger": "<repo>/tests/ledgers/107-short-inferred-fifo-1.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/108-short-inferred-average-0.beancount",
+    "ledger": "<repo>/tests/ledgers/108-short-inferred-average-0.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/109-short-inferred-average-1.beancount",
+    "ledger": "<repo>/tests/ledgers/109-short-inferred-average-1.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/110-short-inferred-none-0.beancount",
+    "ledger": "<repo>/tests/ledgers/110-short-inferred-none-0.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/111-short-inferred-none-1.beancount",
+    "ledger": "<repo>/tests/ledgers/111-short-inferred-none-1.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/112-round-zero.beancount",
+    "ledger": "<repo>/tests/ledgers/112-round-zero.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/113-round-zero.beancount",
+    "ledger": "<repo>/tests/ledgers/113-round-zero.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/114-bql-strings.beancount",
+    "ledger": "<repo>/tests/ledgers/114-bql-strings.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/115-option-wildcard.beancount",
+    "ledger": "<repo>/tests/ledgers/115-option-wildcard.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/117-bql-tables.beancount",
+    "ledger": "<repo>/tests/ledgers/117-bql-tables.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/118-note-stacks.beancount",
+    "ledger": "<repo>/tests/ledgers/118-note-stacks.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/119-cost-tolerance.beancount",
+    "ledger": "<repo>/tests/ledgers/119-cost-tolerance.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/ledgers/120-numeric-metadata.beancount",
+    "ledger": "<repo>/tests/ledgers/120-numeric-metadata.beancount",
     "query": "SELECT id,meta FROM #entries",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/value-order.beancount",
+    "ledger": "<repo>/tests/bql-sources/value-order.beancount",
     "query": "SELECT str(sum(position)),repr(sum(position)) WHERE account='Assets:Cash'",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/value-order.beancount",
+    "ledger": "<repo>/tests/bql-sources/value-order.beancount",
     "query": "SELECT min(position),max(position),min(units(position)),max(units(position))",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/metadata.beancount",
+    "ledger": "<repo>/tests/bql-sources/metadata.beancount",
     "query": "SELECT position,count(*) WHERE account='Assets:Cash' GROUP BY position",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/meta-groups.beancount",
+    "ledger": "<repo>/tests/bql-sources/meta-groups.beancount",
     "query": "SELECT count(*) FROM #events GROUP BY meta('value')",
     "ok": true,
     "detail": ""
   },
   {
-    "ledger": "/Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/tests/bql-sources/value-order.beancount",
+    "ledger": "<repo>/tests/bql-sources/value-order.beancount",
     "query": "SELECT position FROM #postings ORDER BY position",
     "ok": true,
     "detail": ""

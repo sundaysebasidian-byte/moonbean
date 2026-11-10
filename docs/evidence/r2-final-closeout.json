@@ -42,20 +42,20 @@
     {
       "path": "/tmp/generate-moonbean-md5.py",
       "reason": "Trash destination could not be verified; no move attempted",
-      "error": "PermissionError: [Errno 1] Operation not permitted: '/Users/sebasidian/.Trash'"
+      "error": "PermissionError: [Errno 1] Operation not permitted: '<external>/.Trash'"
     },
     {
       "path": "/tmp/moonbean-generate-types.py",
       "reason": "Trash destination could not be verified; no move attempted",
-      "error": "PermissionError: [Errno 1] Operation not permitted: '/Users/sebasidian/.Trash'"
+      "error": "PermissionError: [Errno 1] Operation not permitted: '<external>/.Trash'"
     }
   ],
   "trash_preflight": {
     "utc": "2026-11-09T18:51:26.837037+00:00",
-    "trash": "/Users/sebasidian/.Trash",
+    "trash": "<external>/.Trash",
     "attempt": "read-only destination verification",
     "verified": false,
-    "error": "PermissionError: [Errno 1] Operation not permitted: '/Users/sebasidian/.Trash'",
+    "error": "PermissionError: [Errno 1] Operation not permitted: '<external>/.Trash'",
     "no_retry": true
   },
   "final_code_commit": "5f0bec90c88aeb48a3ab0825181649d65956d930",
