@@ -1,0 +1,246 @@
+{
+  "utc": "2026-11-11T17:10:21.546312+00:00",
+  "code_commit": "52c76962258f6e7e99a15038c51eb657541a8193",
+  "branch": "compat-0.2.3",
+  "commands": [
+    {
+      "command": [
+        "moon",
+        "check",
+        "--deny-warn",
+        "--target",
+        "all"
+      ],
+      "log": "check.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:10:21.595707+00:00",
+      "seconds": 0.284
+    },
+    {
+      "command": [
+        "moon",
+        "fmt",
+        "--check"
+      ],
+      "log": "fmt.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:10:21.880025+00:00",
+      "seconds": 0.2
+    },
+    {
+      "command": [
+        "moon",
+        "info"
+      ],
+      "log": "info.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:10:22.080046+00:00",
+      "seconds": 0.232
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "--",
+        "*.mbti"
+      ],
+      "log": "mbti.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:10:22.311969+00:00",
+      "seconds": 0.008
+    },
+    {
+      "command": [
+        "moon",
+        "test",
+        "--target",
+        "all"
+      ],
+      "log": "test.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:10:22.320117+00:00",
+      "seconds": 0.443
+    },
+    {
+      "command": [
+        "moon",
+        "build",
+        "--target",
+        "native"
+      ],
+      "log": "build.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:10:22.763023+00:00",
+      "seconds": 0.045
+    },
+    {
+      "command": [
+        "bash",
+        "scripts/build-web.sh"
+      ],
+      "log": "web-build.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:10:22.808603+00:00",
+      "seconds": 0.664
+    },
+    {
+      "command": [
+        "node",
+        "web/smoke.mjs"
+      ],
+      "log": "web-smoke.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:10:23.472892+00:00",
+      "seconds": 0.178
+    },
+    {
+      "command": [
+        "node",
+        "web/dom-smoke.mjs"
+      ],
+      "log": "dom-smoke.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:10:23.651525+00:00",
+      "seconds": 8.374
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/conformance.py",
+        "--ours",
+        "_build/native/debug/build/cmd/main/main.exe",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin",
+        "--ledgers",
+        "tests/ledgers",
+        "--oracle-version",
+        "3.2.3",
+        "--json-out",
+        ".oracle-cache/r10/final/conformance.json"
+      ],
+      "log": "conformance.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:10:32.029271+00:00",
+      "seconds": 362.379
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/random_differential.py",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin",
+        "--seed",
+        "7",
+        "--count",
+        "1000",
+        "--allow-known-extensions",
+        "--out",
+        ".oracle-cache/r10/final/random-7"
+      ],
+      "log": "random-7.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:10:32.029479+00:00",
+      "seconds": 462.845
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/random_differential.py",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin",
+        "--seed",
+        "20261101",
+        "--count",
+        "1000",
+        "--allow-known-extensions",
+        "--out",
+        ".oracle-cache/r10/final/random-20261101"
+      ],
+      "log": "random-20261101.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:10:32.029634+00:00",
+      "seconds": 462.931
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bql_differential.py",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin"
+      ],
+      "exit": 0,
+      "log": "bql.json",
+      "seconds": 499.691
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "HEAD",
+        "--",
+        "ast",
+        "syntax",
+        "validation",
+        "query",
+        "booking",
+        "decimal",
+        "realization",
+        "cmd",
+        "moon.mod"
+      ],
+      "log": "source-unchanged.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:18:51.724551+00:00",
+      "seconds": 0.018
+    },
+    {
+      "command": [
+        "uptime"
+      ],
+      "log": "prebench-load.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:18:51.742546+00:00",
+      "seconds": 0.007
+    },
+    {
+      "command": [
+        "ps",
+        "-axo",
+        "pid,pcpu,comm"
+      ],
+      "log": "prebench-processes.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:18:51.749345+00:00",
+      "seconds": 0.024
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r10/final/performance"
+      ],
+      "log": "bench-matrix.log",
+      "exit": 0,
+      "utc": "2026-11-11T17:18:51.773353+00:00",
+      "seconds": 801.085
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-compare.py",
+        ".oracle-cache/r10/final/performance"
+      ],
+      "log": "bench-compare.log",
+      "exit": 1,
+      "utc": "2026-11-11T17:32:12.859054+00:00",
+      "seconds": 0.064
+    }
+  ],
+  "cli_sha256_before": "3c773cd4c22f9df34973174215a3b580010971239b7e96bc4d6bb67e036fd0f7",
+  "cli_sha256_after_random": "3c773cd4c22f9df34973174215a3b580010971239b7e96bc4d6bb67e036fd0f7",
+  "verification_finished_utc": "2026-11-11T17:33:18.992287+00:00",
+  "cli_sha256_final": "3c773cd4c22f9df34973174215a3b580010971239b7e96bc4d6bb67e036fd0f7"
+}

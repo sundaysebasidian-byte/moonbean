@@ -1,0 +1,8 @@
+{
+  "previous_head": "f24a65ce7e641c397785625231f718a7dd4ea33e",
+  "target": "b61fdc314050dc3f7c7645b6b150f50a310f2763",
+  "verified_identical_files": 454,
+  "staged_changes_before_switch": false,
+  "procedure": "Saved pre-switch status/patch; verified every target blob matched disk; aligned index with read-tree, then git switch compat-0.2.3. No worktree file rewrite, stash or reset.",
+  "status_after_switch": "clean"
+}

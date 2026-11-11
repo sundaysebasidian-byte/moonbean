@@ -262,3 +262,7 @@ The final source full matrix attempted all 36 cases (35 complete), but initially
 ## R9 defect repair measurement
 
 The latest [R9 acceptance](evidence/r9-acceptance.md) supersedes the earlier candidate result. After an overloaded attempt was stopped, the user authorized measurement under background load. The full matrix had 13 limit violations in eight scenarios. All eight were remeasured for three fixed rounds; the confirmed directory uses the third, not the fastest. The final unchanged comparator **fails four JS 1M FIFO stages**. All samples/repeats and pre-run CPU snapshots remain available. This is not a performance PASS or proof of no regression; idle-host independent review is still required. The prior wasm-gc 1M FIFO heap exclusion remains unchanged.
+
+## R10 aggregate-clause repair
+
+The [latest R10 acceptance](evidence/r10-acceptance.md) records one full default matrix after all task correctness processes exited: 36 attempted, 35 complete. The unchanged comparator fails seven wasm-gc stage limits; native/JS have no exceeded limits. Pre-run load was 35.22 (one minute), and a during-run snapshot showed about 27–50% CPU busy including the benchmark. No load-driven repeat or threshold/baseline change was made. This is not a performance PASS; the existing wasm-gc 1M FIFO heap exclusion is unchanged. The raw matrix and load snapshots are retained for idle-host independent review.

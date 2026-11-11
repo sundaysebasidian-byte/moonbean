@@ -513,3 +513,7 @@ Sorting regression coverage adds seeded mixed Unicode/NULL/duplicate keys, group
 ## R9 repairs
 
 `bql_r9_differential.py` adds implicit grouping, period, NULL, empty-input, HAVING/ORDER BY and WHERE-error cases to the main runner. `bql_type_matrix.py` separately audits success/failure classifications for all scalar signatures; known restrictive gaps are reported, not counted as successful feature implementations. Evidence exports run through `normalize_evidence.py` after comparisons. See [R9 acceptance](evidence/r9-acceptance.md).
+
+## R10 aggregate-clause audit
+
+The main BQL runner includes `bql_r10_differential.py`: 2444 Cartesian/targeted calls over SELECT, grouping, HAVING, ORDER BY, DISTINCT, WHERE, LIMIT and OFFSET, plus note/transaction set grouping. Values and error categories are compared; eleven documented rejection boundaries are labeled separately. Group output order is compared; set member order is normalized because the oracle returns frozensets. The classifier follows the public failure() contract, rather than guessing Evaluation for unprefixed parse diagnostics. [Current acceptance](evidence/r10-acceptance.md) records actual final commands; earlier records are historical.

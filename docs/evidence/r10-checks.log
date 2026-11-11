@@ -1,0 +1,65 @@
+check.log
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 19 tasks, now up to date
+
+fmt.log
+Finished. moon: ran 61 tasks, now up to date
+
+info.log
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 12 tasks, now up to date
+
+mbti.log
+
+web-build.log
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 11 tasks, now up to date
+Artifacts:
+  sundaysebasidian-byte/moonbean/playground  js  <repo>/_build/js/release/build/playground/playground.js
+built web/dist
+
+web-smoke.log
+ok   bundle has no node: imports
+ok   check: the example ledger is valid
+ok   check: errors carry line numbers
+ok   check: include is reported on its own line
+ok   balance_sheet: converts to the operating currency by default
+ok   balance_sheet: includes the earnings accounts and balances
+ok   balance_sheet: unconverted amounts are reported and totals split by currency
+ok   balance_sheet: balanced is null without totals and only the balance sheet reports it
+ok   balance_sheet: empty convert keeps original currencies
+ok   balance_sheet: at limits the report to a date
+ok   income_statement: totals and period start
+ok   trial_balance: every account and no ledger errors
+ok   register: running balance ends at the account balance
+ok   register: subtree includes child accounts
+ok   query: aggregate, HAVING and period balances
+ok   query: engine errors come back as JSON
+ok   reports and queries refuse a ledger with errors
+ok   format: aligns amounts, is idempotent and keeps the ledger
+ok   xss: hostile operating_currency is data, not markup
+ok   xss: hostile narration, payee and metadata survive only as text
+ok   xss: hostile account names and BQL cells escape to text
+ok   bad requests are JSON errors, never exceptions
+ok   odd input does not throw
+ok   lib: exact decimal sums and grouping
+ok   lib: account tree sums children per currency
+ok   lib: display precision rounds half to even and keeps grouping
+ok   income_statement: totals come from the engine
+ok   lib: highlighter keeps the text and marks tokens
+ok   lib: query cells
+29 checks passed
+
+dom-smoke.log
+ok   the first screen shows the verdict, counts and report totals
+ok   a broken ledger keeps its error path on the default report tab
+ok   no horizontal overflow at 390px
+ok   engine messages that echo ledger text stay text in the diagnostics list
+ok   hostile operating_currency is only an option value
+ok   register shows hostile payee and narration as text
+ok   query cells and the format preview stay text
+ok   the page raised no exceptions
+

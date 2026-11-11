@@ -2,6 +2,9 @@
 
 ## 0.2.3 (local candidate)
 
+- R10 performance: one full loaded-host matrix exceeds seven wasm-gc stage limits; native/JS remain within limits. Retain original records, with no load retries or performance PASS claim.
+- R10: validate aggregate SELECT/ORDER BY group coverage and aggregate HAVING; support implicit tags/links set grouping while retaining explicit GROUP BY errors. Reject mixed row/aggregate clause expressions explicitly. Add 2444 clause-combination probes, correct COUNT DISTINCT syntax errors and align the audit classifier with the public failure API.
+
 - R9 performance remains unverified: the authorized loaded-host third-repeat comparison exceeds four JS 1M FIFO stage limits; retain all measurements for independent idle-host review.
 - R9: fix implicit aggregate grouping and Inventory bool errors; add period/NULL/error regressions and per-signature type probes. Correct star/operator/round/malformed-ledger boundaries and normalize exported evidence paths.
 

@@ -1,0 +1,26 @@
+{
+  "code_commit": "52c76962258f6e7e99a15038c51eb657541a8193",
+  "utc": "2026-11-11T17:33:19.025591+00:00",
+  "original_proposal_sha256": "9b69e6865e6e1ef11bbdca95d582d37c1398ce2194e271148e43cf3b8c9cc245",
+  "original_status": " M docs/proposal.md\n",
+  "df_before": "Filesystem   1024-blocks      Used Available Capacity iused      ifree %iused  Mounted on\n/dev/disk3s5   482797652 305935056 137829068    69% 4166920 1378290680    0%   /System/Volumes/Data\n",
+  "df_after": "Filesystem   1024-blocks      Used Available Capacity iused      ifree %iused  Mounted on\n/dev/disk3s5   482797652 305936464 137827660    69% 4167105 1378276600    0%   /System/Volumes/Data\n",
+  "candidates": [
+    {
+      "path": "/tmp/generate-moonbean-md5.py",
+      "exists": false,
+      "status": "absent on this run; not removed by this task"
+    },
+    {
+      "path": "/tmp/moonbean-generate-types.py",
+      "exists": false,
+      "status": "absent on this run; not removed by this task"
+    }
+  ],
+  "moved": [],
+  "restore_map": [],
+  "moved_bytes": 0,
+  "cleanup_released_bytes": 0,
+  "known_task_processes_remaining": [],
+  "retained": "Current checkout, all raw evidence and failed/provisional probes, shared/new toolchains, installer recipe, prior backups and unknown files. No user app/service stopped. No Trash retry."
+}
