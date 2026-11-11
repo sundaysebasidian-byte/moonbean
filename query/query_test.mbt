@@ -738,3 +738,39 @@ test "implicit grouping preserves first key order and NULL groups" {
     is Some(@query.Evaluation(_)),
   )
 }
+
+///|
+test "aggregate clauses validate grouping targets and HAVING" {
+  for
+    text in [
+      "SELECT account,count(*) ORDER BY payee", "SELECT account,count(*) ORDER BY account_sortkey(account)",
+      "SELECT count(*) ORDER BY number", "SELECT account,count(*) GROUP BY account HAVING account ~ 'Assets'",
+      "SELECT account,count(*) GROUP BY account HAVING true",
+    ] {
+    assert_true(
+      queried(ledger_source(), text).failure() is Some(@query.Compilation(_)),
+    )
+  }
+  for
+    text in [
+      "SELECT count(DISTINCT number)", "SELECT account,count(*) LIMIT -1",
+    ] {
+    assert_true(
+      queried(ledger_source(), text).failure() is Some(@query.Syntax(_)),
+    )
+  }
+}
+
+///|
+test "implicit set groups use membership equality and preserve first encounter" {
+  let source = "2024-01-01 open Assets:A USD\n2024-01-01 open Equity:A USD\n2024-01-02 * \"one\" #b #a ^x\n  Assets:A 1 USD\n  Equity:A -1 USD\n2024-01-03 * \"two\" #a #b ^x\n  Assets:A 2 USD\n  Equity:A -2 USD\n2024-01-04 * \"empty\"\n  Assets:A 3 USD\n  Equity:A -3 USD\n"
+  let r = queried(source, "SELECT tags,links,count(*) FROM transactions")
+  assert_true(r.is_ok())
+  assert_eq(r.rows.length(), 2)
+  assert_eq(r.rows[0][2].to_text(), "2")
+  assert_eq(r.rows[1][2].to_text(), "1")
+  assert_true(
+    queried(source, "SELECT tags,count(*) FROM transactions GROUP BY tags").failure()
+    is Some(@query.Compilation(_)),
+  )
+}

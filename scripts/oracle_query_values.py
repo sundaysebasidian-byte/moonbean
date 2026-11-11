@@ -18,9 +18,10 @@ def encode(v):
     if isinstance(v,(list,tuple)):return [encode(x) for x in v]
     raise TypeError('unhandled public value '+type(v).__name__)
 
-try:
-    cur=connect('beancount:'+sys.argv[1]).execute(sys.argv[2])
-    print(json.dumps([[encode(v) for v in row] for row in cur.fetchall()],ensure_ascii=False))
-except Exception as e:
-    print(json.dumps({'error_type':type(e).__name__,'message':str(e)}))
-    sys.exit(1)
+if __name__ == '__main__':
+    try:
+        cur=connect('beancount:'+sys.argv[1]).execute(sys.argv[2])
+        print(json.dumps([[encode(v) for v in row] for row in cur.fetchall()],ensure_ascii=False))
+    except Exception as e:
+        print(json.dumps({'error_type':type(e).__name__,'message':str(e)}))
+        sys.exit(1)

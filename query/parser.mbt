@@ -214,6 +214,10 @@ fn parse_primary(parser : QueryParser) -> Expr? {
       parser.advance() |> ignore
       let lower = word.to_lower()
       if parser.match_sym("(") {
+        if lower == "count" && parser.match_keyword("distinct") {
+          parser.fail("DISTINCT is not valid in COUNT arguments")
+          return None
+        }
         let args : Array[Expr] = []
         if !parser.match_sym(")") {
           let mut done = false
@@ -688,7 +692,8 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
     }
   }
   let mut having = CTrue
-  if parser.match_keyword("having") {
+  let has_having = parser.match_keyword("having")
+  if has_having {
     match parse_cond_or(parser) {
       Some(cond) => having = cond
       None => return PqError("invalid HAVING clause")
@@ -748,8 +753,14 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   if !parser.at_end() {
     return PqError("unexpected input after query")
   }
-  if groups.is_empty() && !(having is CTrue) {
+  let implicit_groups = groups.is_empty()
+  if implicit_groups && has_having {
     return PqError("HAVING requires explicit GROUP BY")
+  }
+  if has_having && aggregate_free_cond(having) {
+    return PqError(
+      "compilation query.invalid_aggregate: HAVING must be aggregate",
+    )
   }
   if projections.any(fn(e) { contains_sum(e) && unaggregated_column(e) }) {
     return PqError("compilation query.invalid_aggregate: mixed expression")
@@ -758,6 +769,31 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
     for projection in projections {
       if !contains_sum(projection) {
         groups.push(projection)
+      }
+    }
+  }
+  if has_having && unaggregated_condition(having) {
+    return PqError(
+      "unsupported query.unsupported.mixed_having: aggregate and row expression",
+    )
+  }
+  let aggregate_query = projections.any(contains_sum) || !groups.is_empty()
+  if aggregate_query {
+    for projection in projections {
+      if !contains_sum(projection) &&
+        !groups.any(fn(g) { same_expr(g, projection) }) {
+        return PqError("compilation query.invalid_group: uncovered projection")
+      }
+    }
+    for order in orders {
+      if contains_sum(order.expr) {
+        if unaggregated_column(order.expr) {
+          return PqError(
+            "unsupported query.unsupported.mixed_order: aggregate and row expression",
+          )
+        }
+      } else if !groups.any(fn(g) { same_expr(g, order.expr) }) {
+        return PqError("compilation query.invalid_group: uncovered ORDER BY")
       }
     }
   }
@@ -824,6 +860,9 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   }
   for expr in groups {
     let kind = expression_type(expr, source, [])
+    if implicit_groups && (kind == "set" || kind == "frozenset") {
+      continue
+    }
     if ["dict", "list", "set", "inventory"].contains(kind) {
       return PqError("compilation query.invalid_group: non-hashable " + kind)
     }
@@ -1136,5 +1175,36 @@ fn unaggregated_column(expr : Expr) -> Bool {
     ECall(_, args) => args.any(unaggregated_column)
     EBinary(a, _, b) => unaggregated_column(a) || unaggregated_column(b)
     _ => false
+  }
+}
+
+///|
+fn same_expr(a : Expr, b : Expr) -> Bool {
+  match (a, b) {
+    (ECol(a), ECol(b)) | (EStr(a), EStr(b)) => a == b
+    (EValue(a), EValue(b)) => a.to_json() == b.to_json()
+    (ENum(a), ENum(b)) => a.to_string() == b.to_string()
+    (EDate(a), EDate(b)) => a.to_string() == b.to_string()
+    (EBool(a), EBool(b)) => a == b
+    (ENull, ENull) | (EStar, EStar) => true
+    (EBinary(a, op, b), EBinary(c, other, d)) =>
+      op == other && same_expr(a, c) && same_expr(b, d)
+    (ECall(name, args), ECall(other, values)) =>
+      name == other &&
+      args.length() == values.length() &&
+      args.iter().zip(values.iter()).all(fn(pair) { same_expr(pair.0, pair.1) })
+    _ => false
+  }
+}
+
+///|
+fn unaggregated_condition(cond : Cond) -> Bool {
+  match cond {
+    CTrue => false
+    CNot(c) => unaggregated_condition(c)
+    CAnd(a, b) | COr(a, b) =>
+      unaggregated_condition(a) || unaggregated_condition(b)
+    CCmp(a, _, b) => unaggregated_column(a) || unaggregated_column(b)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => unaggregated_column(e)
   }
 }

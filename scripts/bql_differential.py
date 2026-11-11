@@ -12,6 +12,7 @@ import bql_object_differential as object_cases
 import bql_function_differential as function_cases
 import bql_sort_differential as sort_cases
 import bql_r9_differential as r9_cases
+import bql_r10_differential as r10_cases
 
 
 def compare_bql(ours, oracle):
@@ -128,6 +129,7 @@ def main():
     results.extend(function_cases.run(args.ours,args.oracle))
     results.extend(sort_cases.run(args.ours,args.oracle))
     results.extend(r9_cases.run(args.ours,args.oracle))
+    results.extend(r10_cases.run(args.ours,args.oracle))
     print(json.dumps(results, indent=2))
     return int(any(not r['ok'] for r in results))
 

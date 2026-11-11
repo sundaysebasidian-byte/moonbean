@@ -1,5 +1,6 @@
 """Black-box directive-table comparisons, including shared compilation errors."""
 import ast
+import json
 from decimal import Decimal
 from pathlib import Path
 import re
@@ -8,6 +9,14 @@ import conformance as c
 
 
 def error_category(text, ours=False):
+    if ours:
+        try:
+            message=json.JSONDecoder().raw_decode(text.lstrip())[0]['error']
+            if message.startswith('compilation '): return 'compilation'
+            if message.startswith('query.oracle_type_error'): return 'evaluation'
+            if message.startswith(('unsupported ', 'unknown function ', 'unknown FROM source ', 'BALANCES AT supports ')): return 'unsupported'
+            return 'syntax'
+        except (ValueError,KeyError,TypeError): pass
     if ours and 'query.oracle_type_error' in text: return 'evaluation'
     if 'CompilationError' in text or (ours and ('compilation ' in text or 'query.invalid_column' in text or 'query.invalid_signature' in text or 'query.invalid_aggregate' in text or 'unsupported column' in text)):
         return 'compilation'

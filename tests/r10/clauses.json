@@ -1,0 +1,118 @@
+[
+  {
+    "query": "SELECT account,count(*) FROM #postings ORDER BY number DESC LIMIT 1",
+    "ledger": "tests/r9/tx.beancount"
+  },
+  {
+    "query": "SELECT account,count(*) FROM #postings GROUP BY account HAVING count(*)>0 ORDER BY number DESC LIMIT 1",
+    "ledger": "tests/r9/tx.beancount"
+  },
+  {
+    "query": "SELECT account,count(*) FROM #postings ORDER BY bool(account)",
+    "ledger": "tests/r9/tx.beancount"
+  },
+  {
+    "query": "SELECT account,count(*) FROM #postings GROUP BY account HAVING count(*)>0 ORDER BY bool(account)",
+    "ledger": "tests/r9/tx.beancount"
+  },
+  {
+    "query": "SELECT tags,count(*) FROM #notes",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,count(*) FROM #notes LIMIT 1",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,count(*) FROM #notes WHERE false",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,count(*) FROM #notes GROUP BY tags",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT links,count(*) FROM #notes",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT links,count(*) FROM #notes LIMIT 1",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT links,count(*) FROM #notes WHERE false",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT links,count(*) FROM #notes GROUP BY links",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,links,count(*) FROM #notes",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,links,count(*) FROM #notes LIMIT 1",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,links,count(*) FROM #notes WHERE false",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,links,count(*) FROM #notes GROUP BY tags,links",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,count(*) FROM #transactions",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,count(*) FROM #transactions LIMIT 1",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,count(*) FROM #transactions WHERE false",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,count(*) FROM #transactions GROUP BY tags",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT links,count(*) FROM #transactions",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT links,count(*) FROM #transactions LIMIT 1",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT links,count(*) FROM #transactions WHERE false",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT links,count(*) FROM #transactions GROUP BY links",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,links,count(*) FROM #transactions",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,links,count(*) FROM #transactions LIMIT 1",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,links,count(*) FROM #transactions WHERE false",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT tags,links,count(*) FROM #transactions GROUP BY tags,links",
+    "ledger": "tests/r10/sets.beancount"
+  },
+  {
+    "query": "SELECT account,count(*) GROUP BY account HAVING account=first(account)",
+    "ledger": "tests/r9/tx.beancount"
+  }
+]
