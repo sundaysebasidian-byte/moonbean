@@ -1,0 +1,79 @@
+[
+  {
+    "command": [
+      "moon",
+      "info"
+    ],
+    "exit": 0,
+    "log": "moon-info.log"
+  },
+  {
+    "command": [
+      "moon",
+      "check",
+      "--deny-warn"
+    ],
+    "exit": 0,
+    "log": "moon-check---deny-warn.log"
+  },
+  {
+    "command": [
+      "moon",
+      "fmt",
+      "--check"
+    ],
+    "exit": 0,
+    "log": "moon-fmt---check.log"
+  },
+  {
+    "command": [
+      "moon",
+      "test",
+      "--target",
+      "native"
+    ],
+    "exit": 0,
+    "log": "moon-test---target-native.log"
+  },
+  {
+    "command": [
+      "moon",
+      "test",
+      "--target",
+      "wasm-gc"
+    ],
+    "exit": 0,
+    "log": "moon-test---target-wasm-gc.log"
+  },
+  {
+    "command": [
+      "moon",
+      "test",
+      "--target",
+      "js"
+    ],
+    "exit": 0,
+    "log": "moon-test---target-js.log"
+  },
+  {
+    "command": [
+      "moon",
+      "build",
+      "--target",
+      "native",
+      "cmd/main"
+    ],
+    "exit": 0,
+    "log": "moon-build---target-native-cmd-main.log"
+  },
+  {
+    "command": [
+      "python3",
+      "scripts/bql_differential.py",
+      "--oracle",
+      "/tmp/moonbean-r4-oracle/bin"
+    ],
+    "exit": 0,
+    "log": "bql.log"
+  }
+]
