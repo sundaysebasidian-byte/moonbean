@@ -1,0 +1,39 @@
+{
+  "code_commit": "3a86c51517e92191418c68b890fdb32f098708e9",
+  "working_branch": "compat-0.2.6",
+  "actions": [],
+  "moved_items": 0,
+  "moved_bytes": 0,
+  "blocked": [],
+  "restore_map": [],
+  "freed_space_claim_bytes": 0,
+  "retained": [
+    "Current tracked tree and all local commits",
+    "Original fixtures and input materials",
+    "All R12 raw evidence, cancelled attempts and frozen reference sources/artifacts",
+    "Current build outputs and unknown files",
+    "Shared /tmp/moon-new toolchain and /tmp/moonbean-r4-oracle environment"
+  ],
+  "task_resources": {
+    "browser_tabs_started": 0,
+    "services_started": 0,
+    "benchmarks": "Completed; exact PID/status snapshots in local receipt",
+    "tests": "Completed"
+  },
+  "backups": {
+    "directory": ".oracle-cache/r12-closeout",
+    "branch_history": "moonbean.bundle",
+    "tracked_tree": "tracked-tree.tar.gz",
+    "native_cli": "moonbean-native-cli.exe",
+    "task_evidence": "r12-evidence.tar.gz",
+    "verification": "receipt.json",
+    "manifest": "manifest.json",
+    "restore_map": "restore-map.json",
+    "execution_log": "execution.jsonl"
+  },
+  "space": {
+    "before": ".oracle-cache/r12-closeout/df-before.txt",
+    "after": ".oracle-cache/r12-closeout/df-after.txt",
+    "interpretation": "No cleanup moves. Available-space changes include backup writes and other host activity."
+  }
+}

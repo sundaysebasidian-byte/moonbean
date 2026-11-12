@@ -17,7 +17,7 @@ Commands use `MOON_HOME=/tmp/moon-new PATH=/tmp/moon-new/bin:$PATH`. The black-b
 
 ## Required commands and real results
 
-All listed commands exited 0. Full logs are retained in [r12-checks.log](r12-checks.log), with command statuses in [r12-execution.json](r12-execution.json).
+All listed commands exited 0. Complete logs and command statuses are retained. [Logs](r12-checks.log), [execution](r12-execution.json).
 
 ```text
 moon info
@@ -55,8 +55,24 @@ Evidence is normalized after comparison. Source-dependent fingerprints retain va
 
 ## Performance
 
-The interleaved matrix for frozen code `3a86c51` and main `992eaa2` is running. Earlier matrices are provisional. Final comparison and low-load rerun results will be recorded here before delivery.
+The unchanged `scripts/bench-matrix.py` runs all 36 target/size/method cases for main `992eaa2` and frozen implementation `3a86c51`, alternating baseline/candidate order. Each invocation uses 15 measurements, two warmups, a 20 ms minimum batch and the existing 30% median/RSS gate. The runner and benchmark-driver hashes are retained with the pinned source-archive hashes.
+
+The initial matrix has 35 complete cases per side. Both wasm-gc 1M FIFO processes exit -5 with `Fatal JavaScript out of memory: Ineffective mark-compacts near heap limit`. That case remains unmeasured. The driver exits 0 while recording an incomplete case, so acceptance also checks each case's status.
+
+Three complete pairs were repeated after selecting every stage/RSS ratio above 1.10, plus the historical JS 1M FIFO case. This selection threshold controls investigation. The acceptance gate stays at 1.30. The repeated cases are JS 100k FIFO, JS 1M FIFO and native 1M FIFO. Pre-run CPU idle is 89.49%–92.48% across the six invocations. Every repeat uses the same artifact hash as its initial run. Entire latest case pairs replace the originals for assessment, with every original sample retained. No best-stage selection is used.
+
+```text
+python3 scripts/bench-compare.py .oracle-cache/r12/performance-3a86c51-assessment/candidate --baseline .oracle-cache/r12/performance-3a86c51-assessment/baseline
+NOT GATED (incomplete baseline): wasm-gc-1000000-FIFO.json
+PASS: all baseline stage medians and RSS within tolerance
+```
+
+All 35 comparable pairs pass after low-load repeats. The largest final stage ratio is 1.074074 for wasm-gc 100k FIFO aggregate. This evidence retains the shared wasm heap gap and the driver's historical large-ORDER BY timing skips. The existing native 100k ORDER BY functional differential passes.
+
+Snapshot directories live inside the working repo. The runner's `environment.commit` records the enclosing documentation/worktree HEAD. Actual measured source commits are pinned separately in `sources`, with archive hashes. The archived main checkout was never modified. Earlier cancelled matrices remain provisional evidence. [Complete samples and execution metadata](r12-performance.json), [final gate output](r12-bench-compare.log).
 
 ## Closeout
 
-Project closeout and the complete branch/evidence backup will be recorded after the performance run and final documentation commit. Source, fixtures, test evidence, frozen references and shared toolchain/oracle environments are retained throughout.
+No files were moved to Trash and no permanent deletion was performed. Moved bytes are 0. Current source, fixtures, original inputs, all evidence and provisional runs, frozen references, build outputs, shared toolchain/oracle environments and unknown files are retained. No disposable candidate was selected. Task-owned benchmark and test processes completed, and no browser or service was started.
+
+The retention manifest and empty restore map are recorded in the closeout summary. Complete branch/history, current tracked-tree, native CLI and task-evidence backups are verified under `.oracle-cache/r12-closeout/` after the final documentation commit. Its `receipt.json` records the delivery commit, clean Git status, backup hashes, verification and df snapshots. Observed disk changes are recorded separately from moved bytes, with no freed-space claim. [Closeout summary](r12-closeout.json).
