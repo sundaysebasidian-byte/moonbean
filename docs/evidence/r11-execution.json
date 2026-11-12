@@ -1,0 +1,159 @@
+{
+  "implementation": "e01667e",
+  "matrix": [
+    {
+      "command": [
+        "python3",
+        "scripts/bql_differential.py",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin"
+      ],
+      "start": "2026-11-12T06:12:18.198290+00:00",
+      "load": "22:12  up 1 day, 11:27, 1 user, load averages: 4.62 4.40 3.87",
+      "revision": "e01667e30e88822b2f7241de45d7496c65035ce2",
+      "exit": 0,
+      "stderr": "",
+      "end": "2026-11-12T06:14:37.360249+00:00"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bench-matrix.py",
+        "--out",
+        ".oracle-cache/r11/performance-release",
+        "--runs",
+        "21"
+      ],
+      "start": "2026-11-12T06:14:37.364227+00:00",
+      "load": "22:14  up 1 day, 11:29, 1 user, load averages: 4.70 4.41 3.94",
+      "revision": "e01667e30e88822b2f7241de45d7496c65035ce2",
+      "exit": 0,
+      "stderr": "Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options(\"allow-experimental-packages\": [\"moonbitlang/core/async\"])` in the importing package's moon.pkg to acknowledge this dependency.\nWarning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options(\"allow-experimental-packages\": [\"moonbitlang/core/async/fs\"])` in the importing package's moon.pkg to acknowledge this dependency.\nFinished. moon: ran 6 tasks, now up to date\nWarning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options(\"allow-experimental-packages\": [\"moonbitlang/core/async\"])` in the importing package's moon.pkg to acknowledge this dependency.\nWarning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options(\"allow-experimental-packages\": [\"moonbitlang/core/async/fs\"])` in the importing package's moon.pkg to acknowledge this dependency.\nFinished. moon: ran 4 tasks, now up to date\nWarning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options(\"allow-experimental-packages\": [\"moonbitlang/core/async\"])` in the importing package's moon.pkg to acknowledge this dependency.\nWarning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options(\"allow-experimental-packages\": [\"moonbitlang/core/async/fs\"])` in the importing package's moon.pkg to acknowledge this dependency.\nFinished. moon: ran 4 tasks, now up to date\n",
+      "end": "2026-11-12T06:28:32.272623+00:00"
+    }
+  ],
+  "idle_retest": {
+    "command": [
+      "python3",
+      "scripts/bench-matrix.py",
+      "--out",
+      ".oracle-cache/r11/performance-idle-retest",
+      "--targets",
+      "js",
+      "--sizes",
+      "1000000",
+      "--methods",
+      "FIFO",
+      "--runs",
+      "21"
+    ],
+    "start": "2026-11-12T06:30:26.291967+00:00",
+    "uptime": "22:30  up 1 day, 11:45, 1 user, load averages: 2.80 3.53 3.73",
+    "top": "Processes: 633 total, 3 running, 630 sleeping, 4582 threads \n2026/11/11 22:30:26\nLoad Avg: 2.80, 3.53, 3.73 \nCPU usage: 13.85% user, 14.78% sys, 71.36% idle \nSharedLibs: 467M resident, 93M data, 75M linkedit.\nMemRegions: 708395 total, 3744M resident, 140M private, 2035M shared.\nPhysMem: 15G used (3323M wired, 4828M compressor), 129M unused.\nVM: 345T vsize, 57G framework vsize, 357004(0) swapins, 686084(0) swapouts.\nNetworks: packets: 34991596/26G in, 22772305/14G out.\nDisks: 22211353/472G read, 7390071/130G written.\n\n\n",
+    "exit": 0,
+    "end": "2026-11-12T06:34:53.693222+00:00"
+  },
+  "main_reference": {
+    "command": [
+      "python3",
+      "scripts/bench-matrix.py",
+      "--out",
+      "<repo>/.oracle-cache/r11/main-reference-d53b8b5/results",
+      "--targets",
+      "js",
+      "--sizes",
+      "1000000",
+      "--methods",
+      "FIFO",
+      "--runs",
+      "21"
+    ],
+    "source_revision": "d53b8b5ac96fe2fb440adb793b2473b80456e79d",
+    "source_tree": "04b6ab883874ec5dd784574e0eb7e4495b76d1e4",
+    "archive_sha256": "2ea1e48d103497d4200d880cf91b0f76b192515b26dfdc786fe401a979204300",
+    "note": "Source is a git archive, not another checkout. Runner git metadata observes enclosing worktree HEAD; source_revision/tree above identify the measured source.",
+    "start": "2026-11-12T06:36:10.201028+00:00",
+    "uptime": "22:36  up 1 day, 11:51, 1 user, load averages: 2.61 3.31 3.58",
+    "top": "Processes: 557 total, 4 running, 553 sleeping, 4452 threads \n2026/11/11 22:36:10\nLoad Avg: 2.61, 3.31, 3.58 \nCPU usage: 8.63% user, 12.70% sys, 78.65% idle \nSharedLibs: 444M resident, 109M data, 78M linkedit.\nMemRegions: 699676 total, 3449M resident, 127M private, 1955M shared.\nPhysMem: 14G used (3035M wired, 4880M compressor), 1171M unused.\nVM: 311T vsize, 57G framework vsize, 357555(0) swapins, 686084(0) swapouts.\nNetworks: packets: 35045532/26G in, 22809103/14G out.\nDisks: 22284257/474G read, 7408598/130G written.\n\n\n",
+    "exit": 0,
+    "end": "2026-11-12T06:40:30.006591+00:00"
+  },
+  "final_retest": {
+    "command": [
+      "python3",
+      "scripts/bench-matrix.py",
+      "--out",
+      ".oracle-cache/r11/performance-final-retest",
+      "--targets",
+      "js",
+      "--sizes",
+      "1000000",
+      "--methods",
+      "FIFO",
+      "--runs",
+      "21"
+    ],
+    "policy": "Third and final candidate measurement; use whole latest case, never per-stage best values.",
+    "start": "2026-11-12T06:43:23.355274+00:00",
+    "uptime": "22:43  up 1 day, 11:58, 1 user, load averages: 2.97 3.48 3.62",
+    "top": "Processes: 600 total, 2 running, 598 sleeping, 4634 threads \n2026/11/11 22:43:23\nLoad Avg: 2.97, 3.48, 3.62 \nCPU usage: 12.71% user, 14.40% sys, 72.88% idle \nSharedLibs: 440M resident, 80M data, 80M linkedit.\nMemRegions: 765492 total, 4272M resident, 189M private, 2076M shared.\nPhysMem: 15G used (3274M wired, 4451M compressor), 569M unused.\nVM: 336T vsize, 57G framework vsize, 358652(0) swapins, 704772(0) swapouts.\nNetworks: packets: 35135442/26G in, 22873359/14G out.\nDisks: 22450622/477G read, 7447241/131G written.\n\n\n",
+    "exit": 0,
+    "end": "2026-11-12T06:48:01.435394+00:00"
+  },
+  "source": {
+    "implementation": "e01667e30e88822b2f7241de45d7496c65035ce2",
+    "files": {
+      "query/value.mbt": "bc78ee52c4249b46a938e84ee955a149da28d6f7b9764b46f80b5f5da934be85",
+      "query/unicode_numbers.mbt": "c320e3e060d49d4185d4ab1d904769b7db31fd7ffdc9f1fb547692416e18032c",
+      "query/predicate.mbt": "d51b0117c64bd93b41121926e440ee569413f9b6f8112d250f0a9f285dff0970",
+      "query/parser.mbt": "35882b8967448f851f22862450845ac861637a3a2a311c1b737ea549c6428545",
+      "query/eval.mbt": "f6e9a4d3b24ed7e3caca81f89bac9aa7e4e51b3f3dc16ff004dcfd94190b5218",
+      "query/functions.mbt": "ba2c2590fb059b98af91bd89e57a536faa497e7e2b883692a819b92308f9c61f",
+      "query/relation.mbt": "cb430a0bcbb1ccf4ccddcf5488fe51c0c5bfbfc481d52712b8f17068aa581b96",
+      "query/unicode_case.mbt": "22873d84a8896272d15ac15a0582cfd2c5025217f25fc51dafbc063e10c1f1a1",
+      "query/calendar_functions.mbt": "a547be6a5624ab11d614467b7be7c363930603d58baaaef4fa92b683563eed3b",
+      "query/aggregate_order.mbt": "813b8f1e593356f2739e064fde5a976e573a8d8454e57937a7b8c1b537bb752b",
+      "query/query_test.mbt": "8c32190a3b0f2e75549f08883a84f47c7c0979b3e137302fd6a384d00f093c81",
+      "query/signatures.mbt": "6a8f510328b068c9574db9117cd413b43719cd0e117d434bf6bd9541cedc6856",
+      "query/numeric_conversion.mbt": "a51e9bea652dc719ad41b15481a5fe71622e13468238472a5b078da159a02072",
+      "query/decimal_text.mbt": "ae6e9bbb75c4776a2dbf45d7dbbcc8589ead620e6481d02ebf11d5846046b1a9",
+      "query/unicode_repr_data.mbt": "a6d7438ee2514d15fe8e044c36f7fb28035617fd6cf4377d4f937085b337adca",
+      "query/types.mbt": "3c54e53061e5b7d84acc725f545f49ff3d2d418f2623796bc035bd1f29ccaafb",
+      "query/lexer.mbt": "0eb6a5cb7a59e0b36e7549aa6dd51fcb44d71fa654f0dfd6b06e9c1e79ac4078",
+      "query/string_functions.mbt": "72bc7643e8287a02b25626f754d3cd999ff39f09bfc8b9d8852bdc9d56372f28",
+      "query/identity.mbt": "e16d83594abddb29a2960d9aa0d9b5d59ede5377b4cc51e6ce417e4e763ce36c",
+      "query/prices.mbt": "5cc6e932ffb50bcfa7005b9981a25c50b47eb37212781e30170a1d7684364bb7",
+      "query/context.mbt": "ef854532fcfabfb8fa51f95bc2f79c137cbcaa2b3bdefac7d57cf13208274b39",
+      "query/position_order.mbt": "dde7218eba829bcb2882303d419eb57d5120ba74706602d84b916d1661e6b8de",
+      "query/unicode_data.mbt": "b8881e4ce81f36b7e37511850edef1382192bc1ce234ee9a8357aa8f956d8ff1",
+      "query/object_values.mbt": "dca6a2437d999ac188f59ad30556eeafb7a9ddea109a8c68ae9ca6367aa0b38f",
+      "bench/main.mbt": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
+      "decimal/decimal.mbt": "a10516683cc8263cd733c097fd497d2a1e2bbe36e75484eddb4b9122118637b1",
+      "decimal/decimal_test.mbt": "8401769d45b8d0516fab62df5cb6398206c0388b90d1d3b70ac5ac5421eec568"
+    }
+  },
+  "comparisons": [
+    {
+      "label": "historical",
+      "command": [
+        "python3",
+        "scripts/bench-compare.py",
+        ".oracle-cache/r11/performance-selected"
+      ],
+      "exit": 1,
+      "output": "NOT GATED (incomplete baseline): wasm-gc-1000000-FIFO.json\njs-1000000-FIFO.json/format: p50 3.708, baseline 2.771000s\njs-1000000-FIFO.json/aggregate: p50 0.509, baseline 0.321000s\n"
+    },
+    {
+      "label": "same_machine_main",
+      "command": [
+        "python3",
+        "scripts/bench-compare.py",
+        ".oracle-cache/r11/performance-final-retest",
+        "--baseline",
+        ".oracle-cache/r11/main-reference-d53b8b5/results"
+      ],
+      "exit": 1,
+      "output": "js-1000000-FIFO.json/aggregate: p50 0.509, baseline 0.356000s\n"
+    }
+  ]
+}

@@ -1,0 +1,184 @@
+{
+  "pivot_before": [
+    {
+      "query": "SELECT currency,number,count(*) PIVOT BY 1,2",
+      "ledger": "tests/r11/pivot-repr.beancount",
+      "feature": "pivot-representation",
+      "schema": true,
+      "ok": false,
+      "conformant": false,
+      "boundary": null,
+      "ours": "success",
+      "oracle": "success",
+      "detail": {
+        "actual": {
+          "columns": [
+            "currency/number",
+            "-1.0",
+            "1.0"
+          ],
+          "rows": [
+            [
+              "EUR",
+              1,
+              1
+            ],
+            [
+              "USD",
+              1,
+              1
+            ]
+          ]
+        },
+        "expected": {
+          "category": "success",
+          "columns": [
+            "currency/number",
+            "-1.00",
+            "1.00"
+          ],
+          "rows": [
+            [
+              "EUR",
+              1,
+              1
+            ],
+            [
+              "USD",
+              1,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "query": "SELECT currency,number,count(*) ORDER BY 1 PIVOT BY 1,2",
+      "ledger": "tests/r11/pivot-repr.beancount",
+      "feature": "pivot-representation",
+      "schema": true,
+      "ok": false,
+      "conformant": false,
+      "boundary": null,
+      "ours": "success",
+      "oracle": "success",
+      "detail": {
+        "actual": {
+          "columns": [
+            "currency/number",
+            "-1.00",
+            "1.00"
+          ],
+          "rows": [
+            [
+              "EUR",
+              1,
+              1
+            ],
+            [
+              "USD",
+              1,
+              1
+            ]
+          ]
+        },
+        "expected": {
+          "category": "success",
+          "columns": [
+            "currency/number",
+            "-1.0",
+            "1.0"
+          ],
+          "rows": [
+            [
+              "EUR",
+              1,
+              1
+            ],
+            [
+              "USD",
+              1,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "query": "SELECT currency,number,count(*) ORDER BY 1 DESC PIVOT BY 1,2",
+      "ledger": "tests/r11/pivot-repr.beancount",
+      "feature": "pivot-representation",
+      "schema": true,
+      "ok": false,
+      "conformant": false,
+      "boundary": null,
+      "ours": "success",
+      "oracle": "success",
+      "detail": {
+        "actual": {
+          "columns": [
+            "currency/number",
+            "-1.0",
+            "1.0"
+          ],
+          "rows": [
+            [
+              "EUR",
+              1,
+              1
+            ],
+            [
+              "USD",
+              1,
+              1
+            ]
+          ]
+        },
+        "expected": {
+          "category": "success",
+          "columns": [
+            "currency/number",
+            "-1.00",
+            "1.00"
+          ],
+          "rows": [
+            [
+              "EUR",
+              1,
+              1
+            ],
+            [
+              "USD",
+              1,
+              1
+            ]
+          ]
+        }
+      }
+    }
+  ],
+  "relation_metadata_before": [
+    {
+      "query": "SELECT any_meta('lineno') FROM (SELECT entry)",
+      "ours_status": 0,
+      "ours": "{\"columns\":[\"any_meta_\\\"lineno\\\"\"],\"rows\":[[null],[null],[null],[null],[null],[null],[null],[null],[null],[null]]}\n",
+      "oracle_status": 1,
+      "oracle": "{\"error_type\": \"CompilationError\", \"message\": \"column \\\"meta\\\" not found in table \\\"\\\"\"}\n"
+    },
+    {
+      "query": "SELECT any_meta('lineno') FROM (SELECT entry,meta) LIMIT 1",
+      "ours_status": 0,
+      "ours": "{\"columns\":[\"any_meta_\\\"lineno\\\"\"],\"rows\":[[null]]}\n",
+      "oracle_status": 0,
+      "oracle": "[[10]]\n"
+    },
+    {
+      "query": "SELECT entry_meta('lineno') FROM (SELECT entry) LIMIT 1",
+      "ours_status": 0,
+      "ours": "{\"columns\":[\"entry_meta_\\\"lineno\\\"\"],\"rows\":[[null]]}\n",
+      "oracle_status": 0,
+      "oracle": "[[8]]\n"
+    }
+  ],
+  "after": "All corresponding cases pass in r11-probes.json; four-backend regressions committed."
+}

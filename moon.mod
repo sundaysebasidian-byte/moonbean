@@ -3,7 +3,7 @@
 
 name = "sundaysebasidian-byte/moonbean"
 
-version = "0.2.3"
+version = "0.2.5"
 
 readme = "README.md"
 
