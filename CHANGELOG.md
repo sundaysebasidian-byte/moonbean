@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.4
+
+- Republish the 0.2.3 contents without personal contact details in the packaged docs. No code changes.
+
 ## 0.2.3 (local candidate)
 
 - R10 performance: one full loaded-host matrix exceeds seven wasm-gc stage limits; native/JS remain within limits. Retain original records, with no load retries or performance PASS claim.
