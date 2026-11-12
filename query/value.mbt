@@ -13,6 +13,7 @@ pub(all) enum QueryValue {
   QFrozenSet(Array[String])
   QNumber(@decimal.Decimal)
   QNegativeZero(Int32)
+  QInterval(String, @bigint.BigInt)
   QDate(@ast.Date)
   QAmount(@ast.Amount)
   QPosition(@booking.Position)
@@ -61,6 +62,7 @@ fn query_json_escape(text : String) -> String {
 ///|
 pub fn QueryValue::to_text(self : QueryValue) -> String {
   match self {
+    QInterval(unit, n) => interval_repr(unit, n)
     QInt(n) => n.to_string()
     QDict(_) | QList(_) | QRecord(_, _) => python_repr(self)
     QEnum(name, value) => name + "." + value
@@ -153,6 +155,7 @@ fn query_position_json(position : @booking.Position) -> String {
 ///|
 pub fn QueryValue::to_json(self : QueryValue) -> String {
   match self {
+    QInterval(_, _) => nested_json(self)
     QInt(n) => n.to_string()
     QDict(_) | QList(_) | QRecord(_, _) | QEnum(_, _) | QPythonType(_) =>
       nested_json(self)

@@ -1012,3 +1012,53 @@ test "scalar aggregate DISTINCT uses computed grouping keys" {
   assert_true(r.rows.length() > 0)
 }
 
+
+///|
+test "calendar scalar evaluators preserve types NULLs and interval boundaries" {
+  let r = queried(
+    ledger_source(),
+    "SELECT repr(interval('14 months')),interval('invalid'),date_bin('1 month',2024-02-29,2024-01-31),date_bin(interval('1 month'),2024-03-31,2024-01-31),date_bin('2 days',2024-01-01,2024-01-04) LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "relativedelta(years=+1, months=+2)", "", "2024-01-31", "2024-03-29", "2023-12-31",
+  ])
+  assert_true(
+    queried(ledger_source(), "SELECT date_bin('0 days',2024-01-01,2024-01-01)").failure()
+    is Some(@query.Evaluation(_)),
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT interval(NULL)").failure()
+    is Some(@query.Compilation(_)),
+  )
+  let r = queried(
+    ledger_source(),
+    "SELECT today(),parse_date('March 2024'),parse_date('Feb 29, 2024'),parse_date('29/02/2024','%d/%m/%Y'),parse_date('2024-060','%Y-%j') LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_true(r.rows[0][0] is @query.QDate(_))
+  if @env.get_env_var("MOONBEAN_ORACLE_TODAY") is Some(expected) {
+    assert_eq(r.rows[0][0].to_text(), expected)
+  }
+  assert_eq(r.rows[0][2].to_text(), "2024-02-29")
+  assert_eq(r.rows[0][3].to_text(), "2024-02-29")
+  assert_eq(r.rows[0][4].to_text(), "2024-02-29")
+  assert_true(
+    queried(ledger_source(), "SELECT parse_date('2024-02-30')").failure()
+    is Some(@query.Evaluation(_)),
+  )
+}
+
+
+///|
+test "NULL object conversions and signed interval parsing" {
+  let r = queried(
+    ledger_source(),
+    "SELECT date(NULL),int(NULL),decimal(NULL),repr(interval('+2 days')),repr(round(-1,-2)) LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "", "", "", "relativedelta(days=+2)", "0",
+  ])
+}
+

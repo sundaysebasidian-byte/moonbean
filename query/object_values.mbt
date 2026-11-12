@@ -126,8 +126,11 @@ fn nested_json(value : QueryValue) -> String {
       ",\"value\":" +
       QText(v).to_json() +
       "}"
-    QNegativeZero(_) => "{\"_decimal\":" + QText(value.to_text()).to_json() + "}"
+    QNegativeZero(_) =>
+      "{\"_decimal\":" + QText(value.to_text()).to_json() + "}"
     QNumber(n) => "{\"_decimal\":" + QText(python_decimal(n)).to_json() + "}"
+    QInterval(_, _) =>
+      "{\"_relativedelta\":" + QText(value.to_text()).to_json() + "}"
     QDate(d) => "{\"_date\":" + QText(d.to_string()).to_json() + "}"
     _ => value.to_json()
   }

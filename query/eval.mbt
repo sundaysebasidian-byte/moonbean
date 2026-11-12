@@ -524,6 +524,7 @@ fn cond_holds(ctx : QueryContext, cond : Cond, row : BqlRow) -> Bool {
         QDict(v) | QRecord(_, v) => !v.is_empty()
         QList(v) => !v.is_empty()
         QEnum(_, _) | QPythonType(_) => true
+        QInterval(_, n) => n != @bigint.BigInt::from_int(0)
         QDate(_) => true
       }
     CCmp(left, op, right) => {

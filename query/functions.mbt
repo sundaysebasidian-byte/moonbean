@@ -26,6 +26,7 @@ fn truth(value : QueryValue) -> Bool {
     QNull => false
     QBool(b) => b
     QText(s) => s != ""
+    QInterval(_, n) => n != @bigint.BigInt::from_int(0)
     QNegativeZero(_) => false
     QNumber(n) => !n.is_zero()
     QInt(n) => n != @bigint.BigInt::from_int(0)
@@ -185,6 +186,13 @@ fn eval_function(
     return QNull
   }
   match (name, values) {
+    ("parse_date", [QText(text)]) => flexible_date(ctx, text)
+    ("parse_date", [QText(text), QText(format)]) =>
+      strptime_date(ctx, text, format)
+    ("today", []) => query_today(ctx)
+    ("interval", [QText(s)]) => query_interval(s)
+    ("date_bin", [interval, QDate(date), QDate(origin)]) =>
+      query_date_bin(ctx, interval, date, origin)
     ("subst", [QText(pattern), QText(replacement), QText(text)]) =>
       query_substitute(ctx, pattern, replacement, text)
     ("grep" | "grepn" | "findfirst" | "has_account", _) =>
@@ -340,7 +348,9 @@ fn eval_function(
           } else {
             n.quantize(digits)
           }
-          if (v is QNumber(_) || v is QNegativeZero(_)) && rounded.is_zero() && (n.is_negative() || v is QNegativeZero(_)) {
+          if (v is QNumber(_) || v is QNegativeZero(_)) &&
+            rounded.is_zero() &&
+            (n.is_negative() || v is QNegativeZero(_)) {
             QNegativeZero(digits)
           } else if v is QInt(_) || v is QBool(_) {
             QInt(
@@ -387,7 +397,11 @@ fn eval_function(
       match n {
         Some(n) =>
           if name == "decimal" {
-            if v is QNegativeZero(scale) { QNegativeZero(scale) } else { QNumber(n) }
+            if v is QNegativeZero(scale) {
+              QNegativeZero(scale)
+            } else {
+              QNumber(n)
+            }
           } else {
             QInt(
               @decimal.Decimal::parse(
@@ -521,7 +535,8 @@ fn eval_function(
       QAmount(
         @ast.Amount::new(a.number.neg().round_to_significant(28), a.currency),
       )
-    ("neg" | "abs", [QNegativeZero(scale)]) => QNumber(@decimal.Decimal::zero_scaled(scale))
+    ("neg" | "abs", [QNegativeZero(scale)]) =>
+      QNumber(@decimal.Decimal::zero_scaled(scale))
     ("neg" | "abs", [QNumber(n)]) =>
       QNumber(
         (if name == "neg" { n.neg() } else { n.abs() }).round_to_significant(28),

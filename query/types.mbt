@@ -1,6 +1,7 @@
 ///|
 fn type_argument(actual : String, expected : String) -> Bool {
   actual == expected ||
+  (actual == "nonetype" && expected == "object") ||
   expected == "any" ||
   (actual == "bool" && expected == "int")
 }
@@ -15,7 +16,8 @@ fn function_implemented(name : String) -> Bool {
     "neg", "units", "cost", "currency", "commodity", "number", "empty", "only", "filter_currency",
     "safediv", "sum", "count", "first", "last", "min", "max", "round", "splitcomp",
     "account_sortkey", "getprice", "convert", "value", "possign", "date_part", "date_trunc",
-    "joinstr", "maxwidth", "grep", "grepn", "findfirst", "has_account", "subst",
+    "date_bin", "interval", "today", "parse_date", "joinstr", "maxwidth", "grep",
+    "grepn", "findfirst", "has_account", "subst",
   ].contains(name)
 }
 
@@ -41,6 +43,7 @@ fn expression_type(
       match value {
         QInt(_) => "int"
         QNumber(_) | QNegativeZero(_) => "decimal"
+        QInterval(_, _) => "relativedelta"
         QText(_) => "str"
         QNull => "nonetype"
         _ => "object"
@@ -110,6 +113,8 @@ fn expression_type(
         return "unknown"
       }
       match name {
+        "interval" => "relativedelta"
+        "date_bin" | "today" | "parse_date" => "date"
         "date_part" => "int"
         "date_trunc" => "date"
         "joinstr" | "maxwidth" | "grep" | "grepn" | "findfirst" | "subst" =>

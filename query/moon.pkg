@@ -1,5 +1,6 @@
 import {
   "moonbitlang/core/bigint",
+  "moonbitlang/core/env",
   "moonbitlang/core/path",
   "moonbitlang/core/string",
   "sundaysebasidian-byte/moonbean/ast",
@@ -9,6 +10,16 @@ import {
 }
 
 import {
+  "moonbitlang/core/env",
   "sundaysebasidian-byte/moonbean/syntax",
   "sundaysebasidian-byte/moonbean/validation",
 } for "test"
+
+options(
+  targets: {
+    "clock_native.mbt": [ "native", "llvm" ],
+    "clock_js.mbt": [ "js" ],
+    "clock_wasm.mbt": [ "wasm", "wasm-gc" ],
+  },
+  "native-stub": [ "clock.c" ],
+)
