@@ -14,6 +14,8 @@ pub fn account_parts(String) -> Array[String]
 
 pub fn account_root(String) -> String
 
+pub fn valid_account_name(String) -> Bool
+
 // Errors
 
 // Types and methods

@@ -339,6 +339,24 @@ fn check_currency(
 
 ///|
 fn process_open(ctx : Context, entry : @ast.Entry, open : @ast.Open) -> Unit {
+  let roots = ["Assets", "Liabilities", "Equity", "Income", "Expenses"]
+  let keys = [
+    "name_assets", "name_liabilities", "name_equity", "name_income", "name_expenses",
+  ]
+  for (key, value) in ctx.options.raw {
+    if keys.search(key) is Some(index) {
+      roots[index] = value
+    }
+  }
+  if !@ast.valid_account_name(open.account) ||
+    !roots.contains(@ast.account_root(open.account)) {
+    error(
+      ctx,
+      "validation.account_name",
+      "Invalid account name: " + open.account,
+      entry.loc,
+    )
+  }
   match open.booking {
     Some(booking) =>
       if !is_booking_method(booking) {
@@ -551,7 +569,11 @@ fn process_balance(
       }
     None => ()
   }
-  let key = balance.account + "@" + entry.date.to_string()
+  let key = balance.account +
+    "@" +
+    entry.date.to_string() +
+    "@" +
+    balance.amount.currency
   match ctx.balance_seen.get(key) {
     Some(previous) =>
       if previous.currency != balance.amount.currency ||

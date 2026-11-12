@@ -171,7 +171,7 @@ fn tokenize_guarded(text : String, signed_zero : Array[Bool]?) -> Array[Token] {
         if is_delimiter(d) {
           break
         }
-        j = j + 1
+        j = j + (if d.to_int() > 0xFFFF { 2 } else { 1 })
       }
       let value = if start < j {
         text.unsafe_substring(start~, end=j)
@@ -227,12 +227,12 @@ fn tokenize_guarded(text : String, signed_zero : Array[Bool]?) -> Array[Token] {
       if is_delimiter(d) {
         break
       }
-      j = j + 1
+      j = j + (if d.to_int() > 0xFFFF { 2 } else { 1 })
     }
     if j == start {
       // Unknown punctuation: consume it as a one character word so that the
       // parser can report a precise error instead of looping forever.
-      j = j + 1
+      j = j + (if c.to_int() > 0xFFFF { 2 } else { 1 })
     }
     let word = text.unsafe_substring(start~, end=j)
     if signed_zero is Some(flag) &&

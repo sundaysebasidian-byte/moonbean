@@ -711,3 +711,18 @@ test "zero automatic residual postings are omitted in either round trip order" {
     assert_eq(find_transaction(v, "round").unwrap().postings.length(), 2)
   }
 }
+
+///|
+test "same day balances distinguish currencies and Unicode names validate" {
+  let ledger = @validation.validate_ledger(
+    @syntax.parse_source(
+      "balances.bean", "2024-01-01 open Assets:A USD,EUR\n2024-01-01 open Equity:O\n2024-01-02 pad Assets:A Equity:O\n2024-01-03 balance Assets:A 10 USD\n2024-01-03 balance Assets:A 0 EUR\n",
+    ),
+  )
+  assert_false(ledger.has_errors())
+  let invalid = @validation.validate_ledger(
+    @syntax.parse_source("unicode.bean", "2024-01-01 open Assets:日本\n"),
+  )
+  assert_true(invalid.has_errors())
+  assert_eq(invalid.entries.length(), 1)
+}

@@ -33,32 +33,31 @@ fn is_blank_line(text : String) -> Bool {
 
 ///|
 pub fn is_valid_account(account : String) -> Bool {
+  @ast.valid_account_name(account)
+}
+
+///|
+fn lexical_account(account : String) -> Bool {
   let parts = @ast.account_parts(account)
   if parts.length() < 2 {
     return false
   }
-  for part in parts {
-    if part.length() == 0 {
-      return false
-    }
-    let first = match part.get_char(0) {
-      Some(c) => c
-      None => return false
-    }
-    if !(first >= 'A' && first <= 'Z') {
+  for index in 0..<parts.length() {
+    let part = parts[index]
+    guard part.get_char(0) is Some(first) else { return false }
+    if !((first >= 'A' && first <= 'Z') ||
+      first.to_int() >= 128 ||
+      (index > 0 && first.is_ascii_digit())) {
       return false
     }
     for i in 1..<part.length() {
-      let c = match part.get_char(i) {
-        Some(c) => c
-        None => return false
-      }
-      let ok = (c >= 'A' && c <= 'Z') ||
-        (c >= 'a' && c <= 'z') ||
-        (c >= '0' && c <= '9') ||
-        c == '-'
-      if !ok {
-        return false
+      if part.get_char(i) is Some(c) {
+        if !(c.is_ascii_alphabetic() ||
+          c.is_ascii_digit() ||
+          c == '-' ||
+          c.to_int() >= 128) {
+          return false
+        }
       }
     }
   }
@@ -108,7 +107,7 @@ fn is_booking_method(booking : String) -> Bool {
 
 ///|
 fn meta_key_from_word(word : String) -> String? {
-  if word.length() > 1 && word.get_char(word.length() - 1) == Some(':') {
+  if word.length() > 2 && word.get_char(word.length() - 1) == Some(':') {
     Some(word.unsafe_substring(start=0, end=word.length() - 1))
   } else {
     None
@@ -132,7 +131,7 @@ fn meta_value(tok : Token) -> @ast.MetaValue? {
             match @decimal.Decimal::parse(w) {
               Some(n) => Some(@ast.MNumber(n))
               None =>
-                if w.contains(":") && is_valid_account(w) {
+                if w.contains(":") && lexical_account(w) {
                   Some(@ast.MAccount(w))
                 } else if is_valid_currency(w) {
                   Some(@ast.MCurrency(w))
@@ -765,7 +764,7 @@ fn parse_posting(
       return None
     }
   }
-  if !is_valid_account(account) {
+  if !lexical_account(account) {
     parser.error(
       line,
       "parse.account",
@@ -907,6 +906,10 @@ fn parse_transaction(
       continue
     }
     let line_tokens = parser.tokens(text)
+    if line_tokens[0].kind is Word(w) && w.length() == 2 && w.has_suffix(":") {
+      parser.error(meta_line, "parse.meta", "invalid metadata key")
+      return None
+    }
     let mut handled = false
     match line_tokens[0].kind {
       Word(w) =>
@@ -976,7 +979,7 @@ fn parse_open(
       return None
     }
   }
-  if !is_valid_account(account) {
+  if !lexical_account(account) {
     parser.error(
       line,
       "parse.account",
@@ -1046,7 +1049,7 @@ fn parse_close(
       return None
     }
   }
-  if !is_valid_account(account) {
+  if !lexical_account(account) {
     parser.error(
       line,
       "parse.account",
@@ -1139,7 +1142,7 @@ fn parse_pad(
       return None
     }
   }
-  if !is_valid_account(account) || !is_valid_account(source) {
+  if !lexical_account(account) || !lexical_account(source) {
     parser.error(line, "parse.account", "invalid account name in pad directive")
     return None
   }
@@ -1179,7 +1182,7 @@ fn parse_balance(
       return None
     }
   }
-  if !is_valid_account(account) {
+  if !lexical_account(account) {
     parser.error(
       line,
       "parse.account",
@@ -1400,7 +1403,7 @@ fn parse_note(
       return None
     }
   }
-  if !is_valid_account(account) {
+  if !lexical_account(account) {
     parser.error(
       line,
       "parse.account",
@@ -1456,7 +1459,7 @@ fn parse_document(
       return None
     }
   }
-  if !is_valid_account(account) {
+  if !lexical_account(account) {
     parser.error(
       line,
       "parse.account",
@@ -1546,7 +1549,7 @@ fn parse_custom(
                   }
                 }
                 None =>
-                  if w.contains(":") && is_valid_account(w) {
+                  if w.contains(":") && lexical_account(w) {
                     values.push(@ast.CustomValue::CAccount(w))
                     cursor.advance() |> ignore
                   } else if is_valid_currency(w) {
@@ -1923,9 +1926,10 @@ fn attach_continuation_meta(
   parser : Parser,
   entry : @ast.Entry,
   line : Int32,
-) -> Unit {
+) -> Bool {
   let continuations = collect_indented(parser)
   let own_meta = @ast.Meta::new()
+  let mut lexical_error = false
   for pair in continuations {
     let text = pair.0
     let meta_line = pair.1
@@ -1933,6 +1937,9 @@ fn attach_continuation_meta(
       continue
     }
     let tokens = parser.tokens(text)
+    if tokens[0].kind is Word(w) && w.length() == 2 && w.has_suffix(":") {
+      lexical_error = true
+    }
     match parse_meta_line(tokens) {
       Some((key, value)) => own_meta.set(key, value)
       None => parser.error(meta_line, "parse.meta", "invalid metadata line")
@@ -1941,6 +1948,7 @@ fn attach_continuation_meta(
   let merged = merge_meta(entry.meta, own_meta)
   entry.meta = merged
   let _ = line
+  !lexical_error
 }
 
 ///|
@@ -1966,10 +1974,10 @@ fn parse_toplevel(parser : Parser, tokens : Array[Token], line : Int32) -> Unit 
         parse_push_meta(parser, tokens, line, false)
       } else {
         match parse_dated_directive(parser, tokens, line) {
-          Some(entry) => {
-            attach_continuation_meta(parser, entry, line)
-            parser.ledger.entries.push(entry)
-          }
+          Some(entry) =>
+            if attach_continuation_meta(parser, entry, line) {
+              parser.ledger.entries.push(entry)
+            }
           None => {
             // Still consume indented lines so that the rest of the file can
             // be parsed and reported.
@@ -1979,10 +1987,10 @@ fn parse_toplevel(parser : Parser, tokens : Array[Token], line : Int32) -> Unit 
       }
     _ =>
       match parse_dated_directive(parser, tokens, line) {
-        Some(entry) => {
-          attach_continuation_meta(parser, entry, line)
-          parser.ledger.entries.push(entry)
-        }
+        Some(entry) =>
+          if attach_continuation_meta(parser, entry, line) {
+            parser.ledger.entries.push(entry)
+          }
         None => {
           let _ = collect_indented(parser)
         }

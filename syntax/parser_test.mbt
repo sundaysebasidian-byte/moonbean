@@ -170,3 +170,23 @@ test "oracle option boolean spellings and wildcard tolerance" {
   assert_true(ledger.options.render_commas)
   assert_true(ledger.options.inferred_tolerance_default.contains("*"))
 }
+
+///|
+test "Unicode accounts retain lexer accepted semantic errors" {
+  assert_true(@syntax.is_valid_account("Assets:Café"))
+  assert_true(@syntax.is_valid_account("Assets:𐐀"))
+  let astral = parse_ok("2024-01-01 open Assets:𐐀 USD\n")
+  assert_eq(astral.entries.length(), 1)
+  assert_true(@syntax.is_valid_account("Assets:Ünïcode-1"))
+  assert_true(@syntax.is_valid_account("Assets:١abc"))
+  assert_false(@syntax.is_valid_account("Assets:日本"))
+  let ledger = @syntax.parse_source(
+    "unicode.bean", "2024-01-01 open Assets:Café\n2024-01-01 open Assets:日本\n2024-01-01 open Assets:Ünïcode-1\n",
+  )
+  assert_eq(ledger.entries.length(), 3)
+  let single = @syntax.parse_source(
+    "meta.bean", "2024-01-01 open Assets:A\n  s: \"bad\"\n",
+  )
+  assert_eq(single.entries.length(), 0)
+  assert_true(single.errors.length() > 0)
+}
