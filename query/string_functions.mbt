@@ -132,16 +132,60 @@ fn query_regex(
   pattern : String,
   insensitive : Bool,
 ) -> @string.Regex? {
-  // Do not silently reinterpret Python-only constructs in the portable engine.
-  if pattern.contains("(?") ||
-    pattern.contains("\\") ||
-    pattern.contains("{") ||
-    pattern.contains("}") {
-    query_error(
-      ctx, "unsupported query.unsupported.regex: Python regex dialect at BQL:1:1",
-    )
-    return None
+  let portable = StringBuilder()
+  let chars = pattern.iter().to_array()
+  let mut in_class = false
+  let mut index = 0
+  while index < chars.length() {
+    let c = chars[index]
+    if c == '\\' {
+      index = index + 1
+      if index >= chars.length() {
+        query_error(
+          ctx, "query.oracle_type_error: PatternError trailing escape",
+        )
+        return None
+      }
+      let escaped = chars[index]
+      if "dDsSwWbBAZ0123456789NxU".contains(escaped.to_string()) {
+        query_error(
+          ctx, "unsupported query.unsupported.regex: Python Unicode classes or assertions",
+        )
+        return None
+      }
+      portable.write_char('\\')
+      portable.write_char(escaped)
+    } else {
+      if c == '[' {
+        in_class = true
+      }
+      if c == ']' {
+        in_class = false
+      }
+      if c == '(' &&
+        !in_class &&
+        index + 1 < chars.length() &&
+        chars[index + 1] == '?' &&
+        !((index + 2 < chars.length() && chars[index + 2] == ':') ||
+        (
+          index + 3 < chars.length() &&
+          chars[index + 2] == 'i' &&
+          chars[index + 3] == ':'
+        )) {
+        query_error(
+          ctx, "unsupported query.unsupported.regex: Python lookaround, backreferences or flags",
+        )
+        return None
+      }
+      if c == '.' && !in_class {
+        portable.write_string("[^\n]")
+      } else {
+        portable.write_char(c)
+      }
+    }
+    index = index + 1
   }
+  let pattern = portable.to_string()
   Some(
     @string.Regex(if insensitive { "(?i:" + pattern + ")" } else { pattern }),
   ) catch {
@@ -202,20 +246,7 @@ fn regex_function(
     return QText(matched.content().to_owned())
   }
   let index = query_integer(values[2]).unwrap_or(-1)
-  // Count capturing parentheses in the accepted dialect, ignoring character classes.
-  let mut groups = 0
-  let mut in_class = false
-  for c in pattern.iter() {
-    if c == '[' {
-      in_class = true
-    }
-    if c == ']' {
-      in_class = false
-    }
-    if c == '(' && !in_class {
-      groups = groups + 1
-    }
-  }
+  let groups = regex_group_count(pattern)
   if index < 0 || index > groups {
     query_error(
       ctx, "query.oracle_type_error: IndexError no such group at BQL:1:1",
@@ -235,10 +266,9 @@ fn query_substitute(
   replacement : String,
   text : String,
 ) -> QueryValue {
-  if replacement.contains("\\") {
-    query_error(
-      ctx, "unsupported query.unsupported.regex: Python replacement escapes at BQL:1:1",
-    )
+  let groups = regex_group_count(pattern)
+  regex_replacement(ctx, replacement, groups, None) |> ignore
+  if ctx.error is Some(_) {
     return QNull
   }
   match query_regex(ctx, pattern, false) {
@@ -251,8 +281,160 @@ fn query_substitute(
         )
         QNull
       } else {
-        QText(regex.replace_by(text, fn(_) { replacement[:] }).to_owned())
+        QText(
+          regex
+          .replace_by(text, fn(m) {
+            regex_replacement(ctx, replacement, groups, Some(m))[:]
+          })
+          .to_owned(),
+        )
       }
     None => QNull
   }
+}
+
+///|
+fn regex_group_count(pattern : String) -> Int32 {
+  let chars = pattern.iter().to_array()
+  let mut groups = 0
+  let mut in_class = false
+  let mut escaped = false
+  for i in 0..<chars.length() {
+    let c = chars[i]
+    if escaped {
+      escaped = false
+      continue
+    }
+    if c == '\\' {
+      escaped = true
+      continue
+    }
+    if c == '[' {
+      in_class = true
+    }
+    if c == ']' {
+      in_class = false
+    }
+    if c == '(' && !in_class && !(i + 1 < chars.length() && chars[i + 1] == '?') {
+      groups = groups + 1
+    }
+  }
+  groups
+}
+
+///|
+fn regex_replacement(
+  ctx : QueryContext,
+  replacement : String,
+  groups : Int32,
+  matched : @string.MatchResult?,
+) -> String {
+  let chars = replacement.iter().to_array()
+  let out = StringBuilder()
+  let mut i = 0
+  while i < chars.length() {
+    let c = chars[i]
+    i = i + 1
+    if c != '\\' {
+      out.write_char(c)
+      continue
+    }
+    if i == chars.length() {
+      query_error(
+        ctx, "query.oracle_type_error: PatternError trailing replacement escape",
+      )
+      return ""
+    }
+    let c = chars[i]
+    i = i + 1
+    let mut group = -1
+    if c == 'g' && i < chars.length() && chars[i] == '<' {
+      i = i + 1
+      let name = StringBuilder()
+      while i < chars.length() && chars[i] != '>' {
+        name.write_char(chars[i])
+        i = i + 1
+      }
+      if i == chars.length() ||
+        name.to_string() == "" ||
+        !name.to_string().iter().all(fn(c) { c >= '0' && c <= '9' }) {
+        query_error(
+          ctx, "query.oracle_type_error: PatternError invalid replacement group",
+        )
+        return ""
+      }
+      i = i + 1
+      group = bql_parse_int(name.to_string())
+    } else if c >= '0' && c <= '9' {
+      let octal = c == '0' ||
+        (
+          c <= '7' &&
+          i + 1 < chars.length() &&
+          chars[i] >= '0' &&
+          chars[i] <= '7' &&
+          chars[i + 1] >= '0' &&
+          chars[i + 1] <= '7'
+        )
+      let mut value = c.to_int() - 48
+      let mut digits = 1
+      while i < chars.length() &&
+            digits < (if octal { 3 } else { 2 }) &&
+            chars[i] >= '0' &&
+            chars[i] <= (if octal { '7' } else { '9' }) {
+        value = value * (if octal { 8 } else { 10 }) + chars[i].to_int() - 48
+        i = i + 1
+        digits = digits + 1
+      }
+      if octal {
+        if value > 255 {
+          query_error(
+            ctx, "query.oracle_type_error: PatternError octal escape out of range",
+          )
+          return ""
+        }
+        out.write_char(value.unsafe_to_char())
+      } else {
+        group = value
+      }
+    } else {
+      match c {
+        '\\' => out.write_char('\\')
+        'n' => out.write_char('\n')
+        'r' => out.write_char('\r')
+        't' => out.write_char('\t')
+        'a' => out.write_char((7).unsafe_to_char())
+        'b' => out.write_char((8).unsafe_to_char())
+        'f' => out.write_char((12).unsafe_to_char())
+        'v' => out.write_char((11).unsafe_to_char())
+        _ => {
+          if (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') {
+            query_error(
+              ctx, "query.oracle_type_error: PatternError bad replacement escape",
+            )
+            return ""
+          }
+          out.write_char('\\')
+          out.write_char(c)
+        }
+      }
+    }
+    if group >= 0 {
+      if group > groups {
+        query_error(
+          ctx, "query.oracle_type_error: PatternError invalid group reference",
+        )
+        return ""
+      }
+      if matched is Some(m) {
+        out.write_string(
+          if group == 0 {
+            m.content().to_owned()
+          } else {
+            m.group(group).map(fn(s) { s.to_owned() }).unwrap_or("")
+          },
+        )
+      }
+    }
+  }
+  out.to_string()
 }

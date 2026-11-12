@@ -82,6 +82,11 @@ def cases():
         'BALANCES', 'BALANCES AT cost', "BALANCES FROM account='Assets:Cash'",
     ]:
         out.append(dict(query=query, feature="r12-language", ledger="tests/r9/tx.beancount", schema=False))
+    for pattern in ["a{2}", "(?:a)(b)", "(?i:a)", "a.b", r"\.", r"(a)(b)?"]:
+        for text in ["aaab", "a.b", "a\nb"]:
+            add("repr(grep(" + ("'" + pattern + "'") + "," + ("'" + text + "'") + "))", "r12-regex")
+            for replacement in [r"\1", r"\g<0>", r"\n", r"\g<2>", r"\100", r"\777", r"\q", r"\&"]:
+                add("repr(subst(" + ("'" + pattern + "'") + "," + ("'" + replacement + "'") + "," + ("'" + text + "'") + "))", "r12-regex-replacement")
     for expression in ["meta", "entry", "balance", "(1,2)", "units(position)", "position", "tags", "accounts"]:
         for op in ["=", "!=", "<", "<=", ">", ">="]:
             add(expression + op + expression, "r12-comparison-types")

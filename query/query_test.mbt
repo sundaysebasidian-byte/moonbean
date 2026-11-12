@@ -1237,6 +1237,23 @@ test "canonical JOURNAL BALANCES and structural DISTINCT share the select plan" 
 }
 
 ///|
+test "portable regex captures quantifiers and Python replacement escapes" {
+  let result = queried(
+    ledger_source(),
+    "SELECT subst('(a)(b)?','\\2-\\1-\\g<0>','a'),grep('a{2}','aaab'),grep('(?:a)(b)','ab'),grep('a.b','a\nb') LIMIT 1",
+  )
+  assert_true(result.is_ok())
+  assert_eq(result.rows[0][0].to_text(), "-a-a")
+  assert_eq(result.rows[0][1].to_text(), "aa")
+  assert_eq(result.rows[0][2].to_text(), "ab")
+  assert_eq(result.rows[0][3].to_json(), "null")
+  assert_true(
+    queried(ledger_source(), "SELECT subst('(a)','\\2','a')").failure()
+    is Some(@query.Evaluation(_)),
+  )
+}
+
+///|
 test "structural comparison signatures match compilation and dynamic values" {
   for expr in ["meta", "entry", "balance", "position", "tags", "(1,2)"] {
     assert_true(
