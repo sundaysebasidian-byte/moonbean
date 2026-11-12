@@ -122,6 +122,16 @@ let oracle_signatures : Array[(String, Array[String])] = [
 
 ///|
 fn column_type(source : QuerySource, name : String) -> String {
+  if source is SrcRelation(query) {
+    // Duplicate names resolve to the last column, as in the oracle relation.
+    let mut found = "unknown"
+    for i in 0..<query.names.length() {
+      if query.names[i] == name {
+        found = expression_type(query.projections[i], query.source, [])
+      }
+    }
+    return found
+  }
   let table = match source {
     SrcDirectives(t) => t
     SrcTransactions => "entries"

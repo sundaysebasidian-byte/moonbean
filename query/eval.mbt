@@ -192,11 +192,15 @@ fn source_rows(
     SrcOpen(start, close) => opening_rows(realized, start, close)
     SrcClose(date) =>
       posting_rows(realized, origin).filter(fn(row) { row.date.less_than(date) })
+    SrcRelation(_) => [] // Materialized by run_select, with error propagation.
   }
 }
 
 ///|
 fn eval_column(ctx : QueryContext, row : BqlRow, name : String) -> QueryValue {
+  if row.extra is Some(extra) && extra.cells is Some(cells) {
+    return cells.get(name).unwrap_or(QNull)
+  }
   if row.extra is Some(extra) &&
     extra.entry is Some(entry) &&
     extra.source is Some(table) {
@@ -377,6 +381,16 @@ fn eval_expr(ctx : QueryContext, expr : Expr, row : BqlRow) -> QueryValue {
         ("meta" | "entry_meta", [arg]) =>
           match eval_expr(ctx, arg, row) {
             QText(key) => {
+              if row.extra is Some(extra) && extra.cells is Some(cells) {
+                let metadata = if name == "meta" {
+                  cells.get("meta").unwrap_or(QNull)
+                } else {
+                  dict_get(cells.get("entry").unwrap_or(QNull), "meta").unwrap_or(
+                    QNull,
+                  )
+                }
+                return dict_get(metadata, key).unwrap_or(QNull)
+              }
               let metadata = if name == "meta" && row_posting(row) is Some(p) {
                 QDict(source_metadata(p.loc, p.meta))
               } else {
@@ -994,7 +1008,24 @@ fn run_select(
   let ctx = QueryContext::new(realized, query.source)
   let origin = query_any(query, origin_expr)
   let running = query_any(query, fn(e) { e is ECol("balance") })
-  let all_rows = source_rows(realized, query.source, origin)
+  let all_rows = if query.source is SrcRelation(inner) {
+    if inner.pivot is Some(_) {
+      return {
+        columns: [],
+        rows: [],
+        error: Some(
+          "query.oracle_type_error: AttributeError pivot relation schema at BQL:1:1",
+        ),
+      }
+    }
+    let relation = run_select(realized, inner)
+    if relation.error is Some(_) {
+      return relation
+    }
+    relation_rows(inner.names, relation.rows)
+  } else {
+    source_rows(realized, query.source, origin)
+  }
   let rows : Array[BqlRow] = []
   for row in all_rows {
     if cond_holds(ctx, query.filter, row) {
@@ -1034,15 +1065,17 @@ fn run_select(
       }
     None => ()
   }
-  let columns : Array[String] = []
-  for projection in query.projections {
-    columns.push(expr_label(projection))
-  }
+  let columns = query.labels
   let result_rows : Array[Array[QueryValue]] = []
   for output in outputs {
     result_rows.push(output.values)
   }
-  { columns, rows: result_rows, error: ctx.error, }
+  let result = { columns, rows: result_rows, error: ctx.error, }
+  if query.pivot is Some((row, column)) && ctx.error is None {
+    pivot_result(ctx, query, result_rows, row, column)
+  } else {
+    result
+  }
 }
 
 ///|

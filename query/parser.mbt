@@ -49,11 +49,15 @@ priv enum QuerySource {
   SrcDirectives(String)
   SrcClose(@ast.Date)
   SrcOpen(@ast.Date, @ast.Date?)
+  SrcRelation(SelectQuery)
 }
 
 ///|
 priv struct SelectQuery {
   projections : Array[Expr]
+  names : Array[String]
+  labels : Array[String]
+  pivot : (Int32, Int32)?
   distinct : Bool
   source : QuerySource
   filter : Cond
@@ -310,10 +314,7 @@ fn parse_primary(parser : QueryParser) -> Expr? {
           | "meta"
           | "open"
           | "close" => Some(ECol(lower))
-          _ => {
-            parser.fail("unsupported column `" + word + "`")
-            None
-          }
+          _ => Some(ECol(lower))
         }
       }
     }
@@ -523,6 +524,24 @@ fn parse_expr_list(parser : QueryParser) -> Array[Expr]? {
 
 ///|
 fn parse_source(parser : QueryParser) -> QuerySource? {
+  if parser.match_sym("(") {
+    if !parser.expect_keyword("select") {
+      return None
+    }
+    match parse_select(parser) {
+      PqSelect(query) => {
+        if !parser.expect_sym(")") {
+          return None
+        }
+        return Some(SrcRelation(query))
+      }
+      PqError(message) => {
+        parser.fail(message)
+        return None
+      }
+      _ => return None
+    }
+  }
   if parser.match_keyword("open") {
     if !parser.expect_keyword("on") {
       return None
@@ -615,18 +634,26 @@ fn parse_source(parser : QueryParser) -> QuerySource? {
 fn parse_select(parser : QueryParser) -> ParsedQuery {
   let distinct = parser.match_keyword("distinct")
   let star = parser.match_sym("*")
-  let projections = if star {
-    []
-  } else {
-    match parse_expr_list(parser) {
-      Some(items) => items
-      None =>
-        return PqError(
-          match parser.error {
-            Some(message) => message
-            None => "expected a projection"
-          },
-        )
+  let projections : Array[Expr] = []
+  let aliases : Array[String?] = []
+  if !star {
+    while true {
+      match parse_expr(parser) {
+        Some(expr) => projections.push(expr)
+        None => return PqError(parser.error.unwrap_or("expected a projection"))
+      }
+      let column_alias = if parser.match_keyword("as") {
+        match parser.take_word() {
+          Some(name) => Some(name.to_lower())
+          None => return PqError("expected a column alias")
+        }
+      } else {
+        None
+      }
+      aliases.push(column_alias)
+      if !parser.match_sym(",") {
+        break
+      }
     }
   }
   let mut source = SrcPostings
@@ -643,7 +670,9 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
     }
   }
   if star {
-    let names = if source is SrcDirectives(table) {
+    let names = if source is SrcRelation(inner) {
+      inner.names
+    } else if source is SrcDirectives(table) {
       table_star(table)
     } else if source is SrcTransactions {
       ["date", "flag", "payee", "narration", "tags", "links", "accounts"]
@@ -652,8 +681,13 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
     }
     for name in names {
       projections.push(ECol(name))
+      aliases.push(None)
     }
   }
+  let names = projections.mapi(fn(i, e) {
+    aliases[i].unwrap_or(oracle_expr_label(e))
+  })
+  let labels = projections.mapi(fn(i, e) { aliases[i].unwrap_or(expr_label(e)) })
   let mut filter = CTrue
   if parser.match_keyword("where") {
     match parse_cond_or(parser) {
@@ -680,7 +714,9 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
     match parse_expr_list(parser) {
       Some(items) =>
         for item in items {
-          groups.push(item)
+          groups.push(
+            resolve_reference(parser, item, projections, names, "GROUP-BY"),
+          )
         }
       None =>
         return PqError(
@@ -719,6 +755,9 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
           } else {
             parser.match_keyword("asc") |> ignore
           }
+          let expr = resolve_reference(
+            parser, expr, projections, names, "ORDER-BY",
+          )
           orders.push({ expr, descending, })
         }
         None =>
@@ -733,6 +772,23 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
     }
   }
   let mut limit = None
+  let mut pivot = None
+  if parser.match_keyword("pivot") {
+    if !parser.expect_keyword("by") {
+      return PqError("expected BY")
+    }
+    let first = parse_pivot_reference(parser, projections, names)
+    if !parser.expect_sym(",") {
+      return PqError("PIVOT BY requires two columns")
+    }
+    let second = parse_pivot_reference(parser, projections, names)
+    if first == second && parser.error is None {
+      return PqError(
+        "compilation query.invalid_reference: the two PIVOT BY columns cannot be the same column",
+      )
+    }
+    pivot = Some((first, second))
+  }
   if parser.match_keyword("limit") {
     match parser.take_int() {
       Some(value) => {
@@ -750,8 +806,11 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
         )
     }
   }
-  if !parser.at_end() {
+  if !parser.at_end() && parser.peek_sym() != Some(")") {
     return PqError("unexpected input after query")
+  }
+  if parser.error is Some(message) {
+    return PqError(message)
   }
   let implicit_groups = groups.is_empty()
   if implicit_groups && has_having {
@@ -824,7 +883,9 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
       return PqError("compilation query.invalid_column")
     }
   }
-  if !(source is SrcDirectives(_)) && !(source is SrcTransactions) {
+  if !(source is SrcDirectives(_)) &&
+    !(source is SrcTransactions) &&
+    !(source is SrcRelation(_)) {
     let valid = fn(expr) { posting_expr(expr) }
     if !projections.all(valid) ||
       !groups.all(valid) ||
@@ -874,6 +935,9 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   }
   PqSelect({
     projections,
+    names,
+    labels,
+    pivot,
     distinct,
     source,
     filter,
@@ -976,6 +1040,11 @@ fn parse_query(text : String) -> ParsedQuery {
         _ => PqError("unknown statement `" + word + "`")
       }
     None => PqError("query must start with SELECT, BALANCES or JOURNAL")
+  }
+  let result = if !(result is PqError(_)) && tokens[0] is BWord(word) && word.to_lower() == "select" && !parser.at_end() {
+    PqError("unexpected input after query")
+  } else {
+    result
   }
   match result {
     PqError(message) => {

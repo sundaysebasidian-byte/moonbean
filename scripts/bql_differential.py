@@ -13,6 +13,7 @@ import bql_function_differential as function_cases
 import bql_sort_differential as sort_cases
 import bql_r9_differential as r9_cases
 import bql_r10_differential as r10_cases
+import bql_r11_differential as r11_cases
 
 
 def compare_bql(ours, oracle):
@@ -89,6 +90,11 @@ def main():
         ok = (oracle is not None) == case['oracle_supported']
         if case['oracle_supported']:
             ok = ok and oracle[1:] == case['oracle_rows']
+        if case['kind'] in ['subquery', 'pivot']:
+            ours = json.loads(proc.stdout) if proc.returncode == 0 else None
+            equal, detail = compare_bql(ours, oracle) if ours else (False, 'moonbean failed')
+            results.append(dict(query=query, ok=ok and equal, detail=detail))
+            continue
         code = 'query.invalid_signature' if case['kind']=='compilation' else 'query.unsupported.'+case['kind']
         ok = ok and proc.returncode != 0 and code in output and 'BQL:' in output
         results.append(dict(query=query, ok=ok, detail='' if ok else 'boundary or oracle capability changed'))
@@ -130,6 +136,7 @@ def main():
     results.extend(sort_cases.run(args.ours,args.oracle))
     results.extend(r9_cases.run(args.ours,args.oracle))
     results.extend(r10_cases.run(args.ours,args.oracle))
+    results.extend(r11_cases.run(args.ours,args.oracle))
     print(json.dumps(results, indent=2))
     return int(any(not r['ok'] for r in results))
 

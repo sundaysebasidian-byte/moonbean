@@ -280,7 +280,7 @@ test "OPEN ON carries assets and clears earlier earnings" {
 ///|
 test "hosts can match query failure categories" {
   let result = queried(ledger_source(), "SELECT unknown_column")
-  inspect(result.failure() is Some(@query.Unsupported(_)), content="true")
+  inspect(result.failure() is Some(@query.Compilation(_)), content="true")
   inspect(
     queried(ledger_source(), "SELECT").failure() is Some(@query.Syntax(_)),
     content="true",
@@ -317,16 +317,7 @@ test "migration BQL boundaries carry codes and query locations" {
   for
     (text, expected) in [
       (
-        "SELECT account FROM (SELECT account)", "unsupported query.unsupported.subquery at BQL:1:22",
-      ),
-      (
         "SELECT account FROM postings JOIN postings", "unsupported query.unsupported.join at BQL:1:30",
-      ),
-      (
-        "SELECT account PIVOT currency", "unsupported query.unsupported.pivot at BQL:1:16",
-      ),
-      (
-        "SELECT account\nPIVOT currency", "unsupported query.unsupported.pivot at BQL:2:1",
       ),
     ] {
     let result = queried(ledger_source(), text)
@@ -771,6 +762,63 @@ test "implicit set groups use membership equality and preserve first encounter" 
   assert_eq(r.rows[1][2].to_text(), "1")
   assert_true(
     queried(source, "SELECT tags,count(*) FROM transactions GROUP BY tags").failure()
+    is Some(@query.Compilation(_)),
+  )
+}
+
+///|
+test "relation schema aliases positions and nested aggregation" {
+  let r = queried(
+    ledger_source(),
+    "SELECT a,sum(n) AS total FROM (SELECT account AS a,number AS n WHERE number>0) GROUP BY 1 ORDER BY 2 DESC",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.columns, ["a", "total"])
+  assert_eq(r.rows.length(), 2)
+  assert_eq(r.rows[0][0].to_text(), "Assets:Cash")
+  assert_eq(r.rows[0][1].to_text(), "1000")
+  let nested = queried(
+    ledger_source(),
+    "SELECT * FROM (SELECT * FROM (SELECT account AS a LIMIT 1))",
+  )
+  assert_eq(nested.columns, ["a"])
+  assert_eq(nested.rows.length(), 1)
+  for
+    q in [
+      "SELECT account AS a WHERE a='x'", "SELECT account ORDER BY 0", "SELECT account ORDER BY 2",
+      "SELECT missing FROM (SELECT account)", "SELECT meta('x') FROM (SELECT account)",
+    ] {
+    assert_true(
+      queried(ledger_source(), q).failure() is Some(@query.Compilation(_)),
+    )
+  }
+}
+
+///|
+test "pivot creates sorted schema after limit and fills missing cells" {
+  let r = queried(
+    ledger_source(),
+    "SELECT account AS a,currency AS c,sum(number) AS n,count(*) AS k PIVOT BY a,c",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.columns, ["a/c", "USD/n", "USD/k"])
+  assert_eq(r.rows.length(), 3)
+  assert_eq(r.rows[0][0].to_text(), "Assets:Cash")
+  assert_eq(r.rows[0][1].to_text(), "980")
+  let empty = queried(
+    ledger_source(),
+    "SELECT account,currency,count(*) WHERE false PIVOT BY 1,2",
+  )
+  assert_eq(empty.columns, ["account/currency"])
+  assert_eq(empty.rows.length(), 0)
+  let limited = queried(
+    ledger_source(),
+    "SELECT account,currency,count(*) PIVOT BY 1,2 LIMIT 1",
+  )
+  assert_eq(limited.rows.length(), 1)
+  assert_eq(limited.rows[0][0].to_text(), "Assets:Cash")
+  assert_true(
+    queried(ledger_source(), "SELECT account,currency,count(*) PIVOT BY 1,1").failure()
     is Some(@query.Compilation(_)),
   )
 }

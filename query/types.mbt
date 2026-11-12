@@ -25,7 +25,13 @@ fn expression_type(
   errors : Array[String],
 ) -> String {
   match expr {
-    ECol(name) => column_type(source, name)
+    ECol(name) => {
+      let kind = column_type(source, name)
+      if kind == "unknown" {
+        errors.push("compilation query.invalid_column: " + name)
+      }
+      kind
+    }
     EValue(value) =>
       match value {
         QInt(_) => "int"
@@ -57,6 +63,16 @@ fn expression_type(
       }
     }
     ECall(name, args) => {
+      if source is SrcRelation(_) {
+        let dependency = match name {
+          "meta" => "meta"
+          "entry_meta" | "any_meta" | "has_account" => "entry"
+          _ => ""
+        }
+        if dependency != "" && column_type(source, dependency) == "unknown" {
+          errors.push("compilation query.invalid_column: " + dependency)
+        }
+      }
       let ts = args.map(fn(e) { expression_type(e, source, errors) })
       if ts.contains("generic_set") {
         errors.push("query.oracle_type_error: generic accounts type")

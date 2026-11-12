@@ -152,7 +152,6 @@ fn lex_bql(
   unsupported~ : Array[String] = [],
   positions~ : Array[Int32] = [],
 ) -> Array[BTok] {
-  let mut selects = 0
   let tokens : Array[BTok] = []
   let mut i = 0
   let len = text.length()
@@ -203,17 +202,8 @@ fn lex_bql(
       }
       let word = sb.to_string()
       let kind = match word.to_lower() {
-        "select" => {
-          selects = selects + 1
-          if selects > 1 {
-            "subquery"
-          } else {
-            ""
-          }
-        }
         "like" => "like"
         "join" => "join"
-        "pivot" => "pivot"
         _ => ""
       }
       if kind != "" {

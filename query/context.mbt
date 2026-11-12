@@ -461,6 +461,7 @@ priv struct RowExtra {
   source : String?
   posting : @ast.Posting?
   mut running : @booking.Inventory?
+  mut cells : Map[String, QueryValue]?
 }
 
 ///|
@@ -469,7 +470,7 @@ fn new_row_extra(
   source : String?,
   posting : @ast.Posting?,
 ) -> RowExtra {
-  { entry, source, posting, running: None, }
+  { entry, source, posting, running: None, cells: None, }
 }
 
 ///|
