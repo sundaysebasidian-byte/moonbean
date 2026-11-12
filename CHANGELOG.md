@@ -2,6 +2,10 @@
 
 ## 0.2.6
 
+- Repair independent R12 A/B findings: date/interval arithmetic, two-digit years, Decimal round overflow, unknown-source errors and typed coalesce.
+- Preserve Unicode account names and supplementary-plane letters; validate account character rules and distinguish same-day balance assertions by currency.
+- Correct OPEN order/cost summaries, CLEAR dates, post-transform PRINT filters, grouping, code-point tag order, empty narration and field/metadata quoting.
+- Track the independent review probes and widened 84-statement PRINT matrix; return a portable depth-limit diagnostic for excessive query recursion. Exact coverage and remaining boundaries are in R12 acceptance.
 - Evaluate interval, both date_bin and parse_date overloads, and today with target clocks. Date parsing is bounded by the oracle corpus; wasm dates use UTC.
 - Add a distinct PRINT directive-text result and native renderer, including FROM predicates and shared OPEN/CLOSE/CLEAR transformations.
 - Preserve rounded negative zero through representation and tested numeric consumers without changing the accounting Decimal core.

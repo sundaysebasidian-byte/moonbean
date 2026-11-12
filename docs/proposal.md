@@ -15,18 +15,18 @@ Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运
 | 范围 | 当前可核对边界 |
 | --- | --- |
 | 记账与指令 | open/close/commodity/balance/pad/price/transaction、include 与元数据栈有差分证据；document 仅校验账户并警告未检查文件；note/event/query/custom 保留语法与数据，未证明所有错误类别一致。query 存储后由调用方显式执行 |
-| BQL | 10 张 oracle 表的全部公开列已接入类型值模型；105 个标量签名均有完整或受限求值器。0.2.6 补入 interval、date_bin、parse_date、today，增加独立 PRINT 指令文本结果、FROM 过滤与 OPEN/CLOSE/CLEAR 变换、规范 JOURNAL/BALANCES、IN/BETWEEN/取模、引号查列与混合聚合引用，并修复 round 负零、空匹配替换、连字符截断、标量聚合 DISTINCT 与 transactions 未知列错误类别。CPython 随机集合顺序、移植正则引擎以外的 Python 特性、有限 Decimal 与尚未穷尽的语法/对象组合和 shell .explain/.run 仍有缺口；wasm 当前日期使用 UTC，host 本地时区服务缺失。日期解析覆盖以差分语料为界，未证明全部 dateutil/locale 行为。LIKE/JOIN 及已探测 FLATTEN/EXPLAIN 关键字形式被 oracle 拒绝 |
+| BQL | 10 张 oracle 表的全部公开列已接入类型值模型；105 个标量签名均有完整或受限求值器。0.2.6 补入 interval、date_bin、parse_date、today，增加独立 PRINT 指令文本结果、FROM 过滤与 OPEN/CLOSE/CLEAR 变换、规范 JOURNAL/BALANCES、IN/BETWEEN/取模、引号查列与混合聚合引用，并修复 round 负零/精度溢出、两位年份、日期及 interval 算术、coalesce、空匹配替换、连字符截断、标量聚合 DISTINCT 与未知列/表错误类别。独立复审还修复 Unicode 账户、按币种 balance 判重、OPEN 顺序及成本汇总、CLEAR 日期和 PRINT 分组/引号/过滤顺序。PRINT 证据仅覆盖指定的 84 条语句 × 142 份账本及旧有语料，不声明任意输出等价；interval−date 与 oracle 一样报 Evaluation，其余所列 interval 算术有差分。CPython 随机集合顺序、移植正则引擎以外的 Python 特性、有限 Decimal 与尚未穷尽的语法/对象组合和 shell .explain/.run 仍有缺口；wasm 当前日期使用 UTC，host 本地时区服务缺失。日期解析覆盖以差分语料为界，未证明全部 dateutil/locale 行为。LIKE/JOIN 及已探测 FLATTEN/EXPLAIN 关键字形式被 oracle 拒绝 |
 | option | booking、容差推断、按币种和通配符默认容差有证据；operating_currency 仅单币种报表转换；account_rounding、render_commas、documents 等未实现的效果逐项披露，不能仅凭解析成功计为兼容 |
 | plugin 与扩展 | 五个内置插件有差分证据，其余 Python 插件警告且不执行；AVERAGE、{*}、裸 FROM balances 库存语义均为扩展 |
 
 ## 一致性证据
 
 - 历史 R10 验收：120 份自编账本对 beancount 3.2.3 与 beanquery 0.2.0：118 份可比较账本全部通过；另 2 份使用扩展，不计为 oracle 一致。
-- R12 保留 4030 项既有检查，并接入独立 R11 审查用例、日期、负零和 PRINT 逐字节差分；实际数量、共享错误类别与剩余拒绝分类见[本轮验收](evidence/r12-acceptance.md)。拒绝检查单独计数。
+- R12 保留 4030 项既有检查，并接入独立 R11/R12 A/B 审查用例、日期、负零和 PRINT 逐字节差分；解析健壮性和 256 层/递归运算符资源限制单独计数；实际数量、共享错误类别与剩余拒绝分类见[本轮验收](evidence/r12-acceptance.md)。拒绝检查单独计数。
 - 历史 R10 验收：两个 seed 各 1000 份随机账本：858 份完全一致，142 份仅因 AVERAGE 扩展不同，其余差异为 0。
 - 既有版本的 22 份报表和 lot 回归账本共 144 项检查、5 份迁移边界账本证据保留，未将其计为本轮重跑。
 - R12 native、wasm-gc、JS 单元测试结果见本轮验收；today 与 oracle 当天日期比较。Playground 历史证据为 29 项 node 和 8 项无头浏览器检查，本轮未重跑；本候选未推送、未运行远端 CI。
-- 0.2.2 历史性能基线：固定种子、100 万 source posting 的 native release 库阶段中位数：解析 1.931 s、FIFO booking 0.505 s、校验含 pad 1.017 s、BQL GROUP BY 0.812 s（Apple M4 / 16 GiB / MoonBit 0.1.20261104；2 次预热、21 次测量）。[原始数组、阶段 profile 与本地趋势检查](performance.md)均可复现；阶段并非互斥，不可相加。旧基线未完成 10 万/100 万 ORDER BY；本轮改为缓存键的稳定 O(n log n) 排序，native 10 万 posting 排序已通过逐行差分，历史门限仍保留大排序跳过项；wasm-gc 的 100 万 FIFO 综合场景因默认 moonrun 堆耗尽未完成。R10 的高负载矩阵未通过，不能作为当前性能结论；R11 曾未通过 JS 百万 FIFO 门限。R12 对 main 992eaa2 与冻结候选源码交错运行相同矩阵，35 组可比较配对在三组低负载复测后通过原 30% 中位数/RSS 门限；wasm-gc 百万 FIFO 双方均因堆耗尽未完成。结果和原始值详见[本轮结果](evidence/r12-acceptance.md)，按实际结果披露性能限制。
+- 0.2.2 历史性能基线：固定种子、100 万 source posting 的 native release 库阶段中位数：解析 1.931 s、FIFO booking 0.505 s、校验含 pad 1.017 s、BQL GROUP BY 0.812 s（Apple M4 / 16 GiB / MoonBit 0.1.20261104；2 次预热、21 次测量）。[原始数组、阶段 profile 与本地趋势检查](performance.md)均可复现；阶段并非互斥，不可相加。旧基线未完成 10 万/100 万 ORDER BY；本轮改为缓存键的稳定 O(n log n) 排序，native 10 万 posting 排序已通过逐行差分，历史门限仍保留大排序跳过项；wasm-gc 的 100 万 FIFO 综合场景因默认 moonrun 堆耗尽未完成。R10 的高负载矩阵未通过，不能作为当前性能结论；R11 曾未通过 JS 百万 FIFO 门限。R12 独立复审修复后的源码冻结于 ed31935，与 main 992eaa2 交错运行相同矩阵，35 组可比较配对在三组完整配对低负载复测后通过原 30% 中位数/RSS 门限；wasm-gc 百万 FIFO 双方均因堆耗尽未完成。结果和原始值详见[本轮结果](evidence/r12-acceptance.md)，按实际结果披露性能限制。
 
 ## 基础与本期工作
 
