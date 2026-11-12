@@ -6,6 +6,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
+from decimal import Decimal
 from bql_object_differential import equivalent
 from bql_table_differential import error_category
 
@@ -129,6 +130,17 @@ def cases():
                                          ['ab','b','aba','BACD','😀','']):
         for expression in [f"grep('{pattern}','{text}')", f"grepn('{pattern}','{text}',1)", f"subst('{pattern}','X','{text}')"]:
             add('SELECT '+expression+' LIMIT 1', 'regex')
+    for expr in ["getprice(payee,'USD')", "getprice('USD',payee)", "getprice('USD','EUR',cost_date)",
+                 "convert(price,'USD')", 'convert(position,payee)', "convert(position,'USD',cost_date)",
+                 "convert(sum(position),first(payee))", "value(position,cost_date)",
+                 "value(sum(position),first(cost_date))", "possign(price,'Income:X')", "possign(cost_number,'Income:X')",
+                 "date_part(payee,date)", "date_part('year',cost_date)", 'date_trunc(payee,date)',
+                 'maxwidth(payee,5)', 'joinstr(tags)', "findfirst(payee,tags)", "grep('a',payee)",
+                 "grepn('a',payee,1)", "subst('a','b',payee)", 'has_account(payee)']:
+        add('SELECT '+expr, 'typed-null', ledger='tests/r11/prices.beancount')
+    for expr in ['sum(position) AND true','NOT sum(position)','position AND true','units(position) AND true',
+                 'tags AND true','meta AND true','sum(position) IS NULL','balance AND true']:
+        add('SELECT '+expr+' AS result LIMIT 1', 'predicate-type', True)
     return out
 
 
@@ -140,7 +152,7 @@ def run(ours, oracle):
     for case, expected in zip(probes, json.loads(p.stdout)):
         proc = subprocess.run([ours, 'query', case['ledger'], case['query'], '--json'],
                               capture_output=True, text=True)
-        actual = json.loads(proc.stdout) if proc.returncode == 0 else None
+        actual = json.loads(proc.stdout, parse_float=Decimal) if proc.returncode == 0 else None
         category = 'success' if actual is not None else error_category(proc.stdout+proc.stderr, True)
         boundary = None
         if category == 'unsupported':
@@ -188,5 +200,5 @@ if __name__ == '__main__':
         print(json.dumps(results))
     else:
         results = run('_build/native/debug/build/cmd/main/main.exe', '/tmp/moonbean-r4-oracle/bin')
-        print(json.dumps(results, indent=2))
+        print(json.dumps(results, indent=2, default=str))
         sys.exit(any(not case['ok'] for case in results))

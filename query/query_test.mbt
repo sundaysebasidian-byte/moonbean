@@ -917,6 +917,11 @@ test "predicate projections preserve NULL and group through the relation schema"
       queried(ledger_source(), q).failure() is Some(@query.Compilation(_)),
     )
   }
+  for q in ["SELECT sum(position) AND true", "SELECT NOT sum(position)"] {
+    assert_true(
+      queried(ledger_source(), q).failure() is Some(@query.Evaluation(_)),
+    )
+  }
 }
 
 ///|

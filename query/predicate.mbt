@@ -8,6 +8,12 @@ fn eval_predicate(
     CTrue => QBool(true)
     CTruthy(e) => {
       let v = evaluate(e)
+      if v is QInventory(_) {
+        query_error(
+          ctx, "query.oracle_type_error: NotImplementedError inventory truth",
+        )
+        return QNull
+      }
       if v is QNull {
         QNull
       } else {
