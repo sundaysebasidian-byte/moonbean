@@ -1,0 +1,5 @@
+2024-01-01 open Assets:A USD,EUR
+2024-01-01 open Equity:O
+2024-01-02 pad Assets:A Equity:O
+2024-01-03 balance Assets:A 10 USD
+2024-01-03 balance Assets:A 0 EUR

@@ -16,6 +16,9 @@ import bql_r9_differential as r9_cases
 import bql_r10_differential as r10_cases
 import bql_r11_differential as r11_cases
 import bql_r12_differential as r12_cases
+import bql_r12a_review_differential as review_a
+import bql_r12b_print_differential as review_b
+import bql_r12b_regression_differential as review_regressions
 
 
 def compare_bql(ours, oracle):
@@ -108,7 +111,7 @@ def main():
         ok = oracle == case['oracle']
         if 'kind' in case:
             output = proc.stdout + proc.stderr
-            code = ('query.invalid_source' if case['kind'] == 'syntax' else 'unexpected star' if case['kind'] == 'star' else 'query.unsupported.' + case['kind'])
+            code = ('query.invalid_source' if case['kind'] == 'syntax' else 'unexpected star' if case['kind'] == 'star' else 'query.invalid_source' if case['kind'] == 'source' else 'query.unsupported.' + case['kind'])
             ok = ok and proc.returncode == 1 and code in output and 'BQL:' in output
         else:
             ours = json.loads(proc.stdout) if proc.returncode == 0 else None
@@ -140,6 +143,9 @@ def main():
     results.extend(r10_cases.run(args.ours,args.oracle))
     results.extend(r11_cases.run(args.ours,args.oracle))
     results.extend(r12_cases.run(args.ours,args.oracle))
+    results.extend(review_a.run(args.ours,args.oracle))
+    results.extend(review_b.run_corpus(args.ours,args.oracle))
+    results.extend(review_regressions.run(args.ours,args.oracle))
     print(json.dumps(results, indent=2))
     print(f"BQL differential: {sum(r['ok'] for r in results)}/{len(results)} checks passed", file=sys.stderr)
     return int(any(not r['ok'] for r in results))

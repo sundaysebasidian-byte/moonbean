@@ -1,0 +1,6 @@
+2024-01-01 open Assets:A
+2024-01-02 note Assets:A "a \"q\" \\ b"
+2024-01-03 event "a \"q\"" "b \"q\" \\ c"
+2024-01-04 query "a \"q\"" "SELECT \"date\""
+2024-01-05 custom "a \"q\"" "b \"q\""
+2024-01-06 document Assets:A "a\"b"

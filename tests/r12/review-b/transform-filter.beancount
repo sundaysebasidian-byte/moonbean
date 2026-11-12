@@ -1,0 +1,6 @@
+2024-01-01 open Assets:A
+2024-01-01 open Income:A
+2024-01-02 * "One"
+  Assets:A 10 USD
+  Income:A -10 USD
+2024-01-10 balance Assets:A 10 USD
