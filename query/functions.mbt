@@ -177,29 +177,74 @@ fn eval_function(
     return QNull
   }
   match (name, values) {
-    ("grep" | "grepn" | "findfirst" | "has_account", _) => regex_function(ctx, name, values, row)
-    ("date_part" | "date_trunc", [QText(part), QDate(date)]) => calendar_function(ctx, name, part, date)
-    ("joinstr", [QSet(items)]) | ("joinstr", [QFrozenSet(items)]) => {
+    ("subst", [QText(pattern), QText(replacement), QText(text)]) =>
+      query_substitute(ctx, pattern, replacement, text)
+    ("grep" | "grepn" | "findfirst" | "has_account", _) =>
+      regex_function(ctx, name, values, row)
+    ("date_part" | "date_trunc", [QText(part), QDate(date)]) =>
+      calendar_function(ctx, name, part, date)
+    ("joinstr", [QSet(items)]) | ("joinstr", [QFrozenSet(items)]) =>
       if items.length() > 1 {
-        query_error(ctx, "unsupported query.unsupported.set_representation: joinstr depends on CPython hash seed")
+        query_error(
+          ctx, "unsupported query.unsupported.set_representation: joinstr depends on CPython hash seed",
+        )
         QNull
-      } else { QText(items.join(",")) }
-    }
+      } else {
+        QText(items.join(","))
+      }
     ("maxwidth", [QText(text), width]) => query_maxwidth(ctx, text, width)
-    ("getprice", [QText(base), QText(quote)]) | ("getprice", [QText(base), QText(quote), _]) =>
-      match query_price(ctx, base, quote, if values.length() == 3 && values[2] is QDate(d) { Some(d) } else { None }) {
+    ("getprice", [QText(base), QText(quote)])
+    | ("getprice", [QText(base), QText(quote), _]) =>
+      match
+        query_price(
+          ctx,
+          base,
+          quote,
+          if values.length() == 3 && values[2] is QDate(d) {
+            Some(d)
+          } else {
+            None
+          },
+        ) {
         Some(n) => QNumber(n)
         None => QNull
       }
-    ("convert", [value, QText(target)]) | ("convert", [value, QText(target), _]) =>
-      query_conversion(ctx, value, Some(target), if values.length() == 3 && values[2] is QDate(d) { Some(d) } else { None })
+    ("convert", [value, QText(target)])
+    | ("convert", [value, QText(target), _]) =>
+      query_conversion(
+        ctx,
+        value,
+        Some(target),
+        if values.length() == 3 && values[2] is QDate(d) {
+          Some(d)
+        } else {
+          None
+        },
+      )
     ("value", [value]) | ("value", [value, _]) =>
-      query_conversion(ctx, value, None, if values.length() == 2 && values[1] is QDate(d) { Some(d) } else { None })
+      query_conversion(
+        ctx,
+        value,
+        None,
+        if values.length() == 2 && values[1] is QDate(d) {
+          Some(d)
+        } else {
+          None
+        },
+      )
     ("possign", [value, QText(account)]) => {
       let root = @ast.account_root(account)
-      if root == "Assets" || root == "Expenses" { value } else {
+      if root == "Assets" || root == "Expenses" {
+        value
+      } else {
         match value {
-          QAmount(a) => QAmount(@ast.Amount::new(a.number.neg().round_to_significant(28), a.currency))
+          QAmount(a) =>
+            QAmount(
+              @ast.Amount::new(
+                a.number.neg().round_to_significant(28),
+                a.currency,
+              ),
+            )
           _ => eval_function(ctx, "neg", [value], row)
         }
       }

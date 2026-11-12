@@ -367,6 +367,7 @@ fn expr_any(expr : Expr, predicate : (Expr) -> Bool) -> Bool {
     return true
   }
   match expr {
+    EPredicate(c) => cond_any(c, predicate)
     ECall(_, args) => args.any(fn(e) { expr_any(e, predicate) })
     EBinary(a, _, b) => expr_any(a, predicate) || expr_any(b, predicate)
     _ => false
@@ -380,7 +381,7 @@ fn cond_any(cond : Cond, predicate : (Expr) -> Bool) -> Bool {
     CNot(c) => cond_any(c, predicate)
     CAnd(a, b) | COr(a, b) => cond_any(a, predicate) || cond_any(b, predicate)
     CCmp(a, _, b) => expr_any(a, predicate) || expr_any(b, predicate)
-    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => expr_any(e, predicate)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) => expr_any(e, predicate)
   }
 }
 

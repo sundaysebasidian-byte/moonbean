@@ -109,6 +109,26 @@ def cases():
         args = [samples[t] for t in types]
         for values in [args, ['NULL' for _ in args], ['true' for _ in args]]:
             add('SELECT '+name+'('+','.join(values)+')', 'signature:'+sig, ledger='tests/r11/prices.beancount')
+    for expr in ['number>0','payee IS NULL','payee IS NOT NULL',"payee~'acme'",'NOT payee',
+                 'number>0 AND account=account', 'NULL AND true','NULL OR true','NOT NULL',
+                 'false AND NULL','false OR NULL', 'true AND NULL','NULL AND false',
+                 "meta('missing')=1", 'NULL=1','true=true',"1~'a'", "'x'=1",
+                 '(number>0) OR NOT (number>0)', 'sum(number)>0','count(*)=count(*)']:
+        add('SELECT '+expr+' AS result', 'predicate', True)
+        if 'sum(' not in expr and 'count(' not in expr:
+            add('SELECT '+expr+' AS result,count(*) AS n ORDER BY 1', 'predicate', True)
+    for expr in ['number>0','payee IS NULL',"payee~'acme'",'NOT payee']:
+        add('SELECT * FROM (SELECT '+expr+' AS result) WHERE result ORDER BY 1', 'predicate', True)
+    for query in ['SELECT * FROM (SELECT 1 + 2, UPPER( account ),account AS "A B" LIMIT 1)',
+                  'SELECT * FROM (SELECT ACCOUNT LIMIT 1)', 'SELECT account AS "account" LIMIT 1',
+                  "SELECT account AS 'a' LIMIT 1", "SELECT findfirst('.',tags)",
+                  "SELECT has_account('Assets') FROM #transactions", "SELECT has_account('Assets') FROM #entries",
+                  "SELECT has_account('Assets') FROM #prices", "SELECT has_account('Assets') FROM (SELECT accounts)"]:
+        add(query, 'edge', not any(x in query for x in ['findfirst','has_account']), ledger='tests/r11/prices.beancount')
+    for pattern, text in itertools.product(['a(.)','(a)?b','a|ab','(a|ab)+','a*?','a+','^a','$','[a-z]+', '.', '[', '(a)(b)'],
+                                         ['ab','b','aba','BACD','😀','']):
+        for expression in [f"grep('{pattern}','{text}')", f"grepn('{pattern}','{text}',1)", f"subst('{pattern}','X','{text}')"]:
+            add('SELECT '+expression+' LIMIT 1', 'regex')
     return out
 
 
@@ -126,6 +146,8 @@ def run(ours, oracle):
         if category == 'unsupported':
             if case['query'].startswith(('SELECT date_bin(', 'SELECT interval(', 'SELECT parse_date(', 'SELECT subst(', 'SELECT today(')):
                 boundary = 'calendar parser, Python replacement, or clock remains unimplemented'
+        if category == 'unsupported' and 'query.unsupported.regex' in proc.stdout:
+            boundary = 'Python-only regex/replacement or empty replacement match'
         if category == 'unsupported' and ('query.unsupported.set_representation' in proc.stdout or 'query.unsupported.maxwidth' in proc.stdout):
             boundary = 'Python set iteration or hyphen wrapping remains unsupported'
         ok = category == expected['category']

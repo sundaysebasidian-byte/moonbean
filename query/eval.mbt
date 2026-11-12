@@ -361,6 +361,8 @@ fn eval_column(ctx : QueryContext, row : BqlRow, name : String) -> QueryValue {
 ///|
 fn eval_expr(ctx : QueryContext, expr : Expr, row : BqlRow) -> QueryValue {
   match expr {
+    EPredicate(cond) =>
+      eval_predicate(ctx, cond, fn(e) { eval_expr(ctx, e, row) })
     EValue(value) => value
     EBinary(left, op, right) =>
       arithmetic(ctx, eval_expr(ctx, left, row), op, eval_expr(ctx, right, row))
@@ -490,7 +492,7 @@ fn eval_expr(ctx : QueryContext, expr : Expr, row : BqlRow) -> QueryValue {
 ///|
 fn cond_holds(ctx : QueryContext, cond : Cond, row : BqlRow) -> Bool {
   match cond {
-    CRegex(e, regex) =>
+    CRegex(e, _, regex) =>
       match eval_expr(ctx, e, row) {
         QText(s) => regex.execute(s) is Some(_)
         _ => false
@@ -548,6 +550,7 @@ fn cond_holds(ctx : QueryContext, cond : Cond, row : BqlRow) -> Bool {
 ///|
 fn expr_label(expr : Expr) -> String {
   match expr {
+    EPredicate(c) => condition_label(c)
     EValue(value) => value.to_text()
     EBinary(left, op, right) => expr_label(left) + op + expr_label(right)
     ECol(name) => name
@@ -572,6 +575,7 @@ fn expr_label(expr : Expr) -> String {
 ///|
 fn contains_sum(expr : Expr) -> Bool {
   match expr {
+    EPredicate(c) => !aggregate_free_cond(c)
     EBinary(left, _, right) => contains_sum(left) || contains_sum(right)
     ECall("sum" | "count" | "first" | "last" | "min" | "max", _) => true
     ECall(_, args) => {
@@ -756,7 +760,9 @@ fn eval_grouped(
   expr : Expr,
   rows : Array[BqlRow],
 ) -> QueryValue {
-  if expr is EBinary(left, op, right) {
+  if expr is EPredicate(cond) {
+    eval_predicate(ctx, cond, fn(e) { eval_grouped(ctx, e, rows) })
+  } else if expr is EBinary(left, op, right) {
     arithmetic(
       ctx,
       eval_grouped(ctx, left, rows),
@@ -1225,7 +1231,7 @@ fn arithmetic(
 ///|
 fn grouped_cond(ctx : QueryContext, cond : Cond, rows : Array[BqlRow]) -> Bool {
   match cond {
-    CRegex(e, regex) =>
+    CRegex(e, _, regex) =>
       match eval_grouped(ctx, e, rows) {
         QText(s) => regex.execute(s) is Some(_)
         _ => false

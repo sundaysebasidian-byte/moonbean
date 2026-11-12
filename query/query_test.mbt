@@ -825,8 +825,11 @@ test "pivot creates sorted schema after limit and fills missing cells" {
 
 ///|
 test "query prices preserve inverse precision dates and cost-currency conversion" {
-  let source = ledger_source() + "2024-01-01 price EUR 2 USD\n2024-01-02 price USD 0.6 EUR\n"
-  let r = queried(source, "SELECT repr(getprice('USD','EUR')),repr(getprice('EUR','USD')),getprice('USD','USD'),getprice('USD','JPY') LIMIT 1")
+  let source = ledger_source() +
+    "2024-01-01 price EUR 2 USD\n2024-01-02 price USD 0.6 EUR\n"
+  let r = queried(
+    source, "SELECT repr(getprice('USD','EUR')),repr(getprice('EUR','USD')),getprice('USD','USD'),getprice('USD','JPY') LIMIT 1",
+  )
   assert_true(r.is_ok())
   assert_eq(r.rows[0][0].to_text(), "Decimal('0.5999999999999999999999999999')")
   assert_eq(r.rows[0][1].to_text(), "Decimal('1.666666666666666666666666667')")
@@ -834,7 +837,9 @@ test "query prices preserve inverse precision dates and cost-currency conversion
   assert_true(r.rows[0][3] is @query.QNull)
   let old = queried(source, "SELECT getprice('EUR','USD',2024-01-01) LIMIT 1")
   assert_eq(old.rows[0][0].to_text(), "2")
-  let converted = queried(source, "SELECT convert(units(position),'EUR'),possign(number,'Income:X') WHERE account='Assets:Cash' LIMIT 1")
+  let converted = queried(
+    source, "SELECT convert(units(position),'EUR'),possign(number,'Income:X') WHERE account='Assets:Cash' LIMIT 1",
+  )
   assert_true(converted.is_ok())
   assert_eq(converted.rows[0][0].to_text(), "599.9999999999999999999999999 EUR")
   assert_eq(converted.rows[0][1].to_text(), "-1000")
@@ -842,20 +847,88 @@ test "query prices preserve inverse precision dates and cost-currency conversion
 
 ///|
 test "date parts ISO week boundaries and truncation errors" {
-  let r = queried(ledger_source(), "SELECT date_part('week',2021-01-01),date_part('dow',2024-02-29),date_part('epoch',0001-01-01),date_trunc('week',2024-02-29),date_part('day',date) LIMIT 1")
+  let r = queried(
+    ledger_source(),
+    "SELECT date_part('week',2021-01-01),date_part('dow',2024-02-29),date_part('epoch',0001-01-01),date_trunc('week',2024-02-29),date_part('day',date) LIMIT 1",
+  )
   assert_true(r.is_ok())
-  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), ["53", "3", "-62135596800", "2024-02-26", ""])
-  assert_true(queried(ledger_source(), "SELECT date_trunc('decade',0001-01-01)").failure() is Some(@query.Evaluation(_)))
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "53", "3", "-62135596800", "2024-02-26", "",
+  ])
+  assert_true(
+    queried(ledger_source(), "SELECT date_trunc('decade',0001-01-01)").failure()
+    is Some(@query.Evaluation(_)),
+  )
 }
 
 ///|
 test "string functions preserve declared unsupported boundaries" {
-  let r = queried(ledger_source(), "SELECT maxwidth(' a  b cdef ghi ',10),grep('a(.)','bacd'),grepn('a(.)','bacd',1),has_account('assets'),joinstr(tags) LIMIT 1")
+  let r = queried(
+    ledger_source(),
+    "SELECT maxwidth(' a  b cdef ghi ',10),grep('a(.)','bacd'),grepn('a(.)','bacd',1),has_account('assets'),joinstr(tags) LIMIT 1",
+  )
   assert_true(r.is_ok())
-  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), ["a b [...]", "ac", "c", "TRUE", ""])
-  for q in ["SELECT maxwidth('a-b-c-d-e-f',10)","SELECT grep('(?=a)','a')"] {
-    assert_true(queried(ledger_source(),q).failure() is Some(@query.Unsupported(_)))
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "a b [...]", "ac", "c", "TRUE", "",
+  ])
+  for q in ["SELECT maxwidth('a-b-c-d-e-f',10)", "SELECT grep('(?=a)','a')"] {
+    assert_true(
+      queried(ledger_source(), q).failure() is Some(@query.Unsupported(_)),
+    )
   }
-  assert_true(queried(ledger_source(), "SELECT grepn('a','a',1)").failure() is Some(@query.Evaluation(_)))
-  assert_true(queried(ledger_source(), "SELECT maxwidth('',4)").failure() is Some(@query.Evaluation(_)))
+  assert_true(
+    queried(ledger_source(), "SELECT grepn('a','a',1)").failure()
+    is Some(@query.Evaluation(_)),
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT maxwidth('',4)").failure()
+    is Some(@query.Evaluation(_)),
+  )
+}
+
+///|
+test "predicate projections preserve NULL and group through the relation schema" {
+  let r = queried(
+    ledger_source(),
+    "SELECT number>0 AS positive,payee IS NULL AS missing,payee~'x' AS matches,NULL AND true AS a,NULL OR true AS b,NOT NULL AS c LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.columns, ["positive", "missing", "matches", "a", "b", "c"])
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "TRUE", "TRUE", "", "", "TRUE", "TRUE",
+  ])
+  let grouped = queried(
+    ledger_source(),
+    "SELECT number>0 AS positive,count(*) AS n ORDER BY 1",
+  )
+  assert_true(grouped.is_ok())
+  assert_eq(grouped.rows.map(fn(r) { r.map(fn(v) { v.to_text() }) }), [
+    ["FALSE", "2"],
+    ["TRUE", "2"],
+  ])
+  let nested = queried(
+    ledger_source(),
+    "SELECT count(*)>0 AS nonempty FROM (SELECT number>0 AS positive) WHERE positive",
+  )
+  assert_true(nested.is_ok())
+  assert_eq(nested.rows[0][0].to_text(), "TRUE")
+  for q in ["SELECT NULL=1", "SELECT true=true", "SELECT 1~'x'"] {
+    assert_true(
+      queried(ledger_source(), q).failure() is Some(@query.Compilation(_)),
+    )
+  }
+}
+
+///|
+test "relation names retain expression spelling and quoted aliases" {
+  let r = queried(
+    ledger_source(),
+    "SELECT * FROM (SELECT 1 + 2, UPPER( account ),account AS \"A B\" LIMIT 1)",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.columns, ["1 + 2", "UPPER( account )", "A B"])
+  assert_eq(r.rows[0][0].to_text(), "3")
+  let sub = queried(ledger_source(), "SELECT subst('(a)','x','banana') LIMIT 1")
+  assert_true(sub.is_ok())
+  assert_eq(sub.rows[0][0].to_text(), "bxnxnx")
 }

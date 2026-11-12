@@ -14,10 +14,8 @@ fn function_implemented(name : String) -> Bool {
     "commodity_meta", "currency_meta", "str", "repr", "bool", "int", "decimal", "abs",
     "neg", "units", "cost", "currency", "commodity", "number", "empty", "only", "filter_currency",
     "safediv", "sum", "count", "first", "last", "min", "max", "round", "splitcomp",
-    "account_sortkey",
-    "getprice", "convert", "value", "possign",
-    "date_part", "date_trunc", "joinstr", "maxwidth",
-    "grep", "grepn", "findfirst", "has_account",
+    "account_sortkey", "getprice", "convert", "value", "possign", "date_part", "date_trunc",
+    "joinstr", "maxwidth", "grep", "grepn", "findfirst", "has_account", "subst",
   ].contains(name)
 }
 
@@ -28,6 +26,10 @@ fn expression_type(
   errors : Array[String],
 ) -> String {
   match expr {
+    EPredicate(cond) => {
+      projection_condition_types(cond, source, errors)
+      "bool"
+    }
     ECol(name) => {
       let kind = column_type(source, name)
       if kind == "unknown" {
@@ -69,12 +71,16 @@ fn expression_type(
       if source is SrcRelation(_) {
         let dependency = match name {
           "meta" => "meta"
-          "entry_meta" | "any_meta" | "has_account" => "entry"
+          "entry_meta" | "any_meta" => "entry"
+          "has_account" => "accounts"
           _ => ""
         }
         if dependency != "" && column_type(source, dependency) == "unknown" {
           errors.push("compilation query.invalid_column: " + dependency)
         }
+      }
+      if name == "has_account" && column_type(source, "accounts") == "unknown" {
+        errors.push("compilation query.invalid_column: accounts")
       }
       let ts = args.map(fn(e) { expression_type(e, source, errors) })
       if ts.contains("generic_set") {
@@ -103,10 +109,16 @@ fn expression_type(
       match name {
         "date_part" => "int"
         "date_trunc" => "date"
-        "joinstr" | "maxwidth" | "grep" | "grepn" | "findfirst" => "str"
+        "joinstr" | "maxwidth" | "grep" | "grepn" | "findfirst" | "subst" =>
+          "str"
         "has_account" => "bool"
         "getprice" => "decimal"
-        "convert" | "value" => if ts[0] == "inventory" { "inventory" } else { "amount" }
+        "convert" | "value" =>
+          if ts[0] == "inventory" {
+            "inventory"
+          } else {
+            "amount"
+          }
         "possign" => ts[0]
         "first" | "last" | "min" | "max" | "round" => ts[0]
         "sum" =>
@@ -173,7 +185,7 @@ fn condition_types(
       expression_type(a, source, errors) |> ignore
       expression_type(b, source, errors) |> ignore
     }
-    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) =>
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) =>
       expression_type(e, source, errors) |> ignore
   }
 }

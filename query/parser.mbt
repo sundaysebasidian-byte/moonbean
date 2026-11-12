@@ -11,6 +11,7 @@
 
 ///|
 priv enum Expr {
+  EPredicate(Cond)
   EValue(QueryValue)
   ECol(String)
   EStr(String)
@@ -32,7 +33,7 @@ priv enum Cond {
   CCmp(Expr, String, Expr)
   CIsNull(Expr, Bool)
   CTruthy(Expr)
-  CRegex(Expr, @string.Regex)
+  CRegex(Expr, String, @string.Regex)
 }
 
 ///|
@@ -78,13 +79,19 @@ priv enum ParsedQuery {
 ///|
 priv struct QueryParser {
   tokens : Array[BTok]
+  text : String
+  positions : Array[Int32]
   mut index : Int32
   mut error : String?
 }
 
 ///|
-fn QueryParser::new(tokens : Array[BTok]) -> QueryParser {
-  { tokens, index: 0, error: None, }
+fn QueryParser::new(
+  tokens : Array[BTok],
+  text~ : String = "",
+  positions~ : Array[Int32] = [],
+) -> QueryParser {
+  { tokens, text, positions, index: 0, error: None, }
 }
 
 ///|
@@ -395,68 +402,65 @@ fn parse_binary(parser : QueryParser, min_prec : Int32) -> Expr? {
 
 ///|
 fn parse_expr(parser : QueryParser) -> Expr? {
-  parse_binary(parser, 1)
+  match parse_cond_or(parser) {
+    Some(CTruthy(expr)) => Some(expr)
+    Some(cond) => Some(EPredicate(cond))
+    None => None
+  }
 }
 
 ///|
 fn parse_cond_atom(parser : QueryParser) -> Cond? {
-  if parser.match_sym("(") {
-    match parse_cond_or(parser) {
-      Some(cond) => if parser.expect_sym(")") { Some(cond) } else { None }
-      None => None
-    }
-  } else {
-    match parse_expr(parser) {
-      Some(left) =>
-        if parser.match_sym("~") {
-          match parser.advance() {
-            BStr(pattern) => {
-              let regex = @string.Regex("(?i:" + pattern + ")") catch {
-                _ => {
-                  parser.fail(
-                    "unsupported query.unsupported.regex: invalid or unsupported regular expression",
-                  )
-                  return None
-                }
+  match parse_binary(parser, 1) {
+    Some(left) =>
+      if parser.match_sym("~") {
+        match parser.advance() {
+          BStr(pattern) => {
+            let regex = @string.Regex("(?i:" + pattern + ")") catch {
+              _ => {
+                parser.fail(
+                  "unsupported query.unsupported.regex: invalid or unsupported regular expression",
+                )
+                return None
               }
-              Some(CRegex(left, regex))
             }
-            _ => {
-              parser.fail("regex requires a literal pattern")
-              None
-            }
+            Some(CRegex(left, pattern, regex))
           }
-        } else if parser.match_keyword("is") {
-          let negated = parser.match_keyword("not")
-          if parser.expect_keyword("null") {
-            Some(CIsNull(left, negated))
-          } else {
+          _ => {
+            parser.fail("regex requires a literal pattern")
             None
           }
-        } else {
-          match parser.peek_sym() {
-            Some(symbol) =>
-              if symbol == "=" ||
-                symbol == "==" ||
-                symbol == "!=" ||
-                symbol == "<>" ||
-                symbol == "<" ||
-                symbol == "<=" ||
-                symbol == ">" ||
-                symbol == ">=" {
-                parser.advance() |> ignore
-                match parse_expr(parser) {
-                  Some(right) => Some(CCmp(left, symbol, right))
-                  None => None
-                }
-              } else {
-                Some(CTruthy(left))
-              }
-            None => Some(CTruthy(left))
-          }
         }
-      None => None
-    }
+      } else if parser.match_keyword("is") {
+        let negated = parser.match_keyword("not")
+        if parser.expect_keyword("null") {
+          Some(CIsNull(left, negated))
+        } else {
+          None
+        }
+      } else {
+        match parser.peek_sym() {
+          Some(symbol) =>
+            if symbol == "=" ||
+              symbol == "==" ||
+              symbol == "!=" ||
+              symbol == "<>" ||
+              symbol == "<" ||
+              symbol == "<=" ||
+              symbol == ">" ||
+              symbol == ">=" {
+              parser.advance() |> ignore
+              match parse_binary(parser, 1) {
+                Some(right) => Some(CCmp(left, symbol, right))
+                None => None
+              }
+            } else {
+              Some(CTruthy(left))
+            }
+          None => Some(CTruthy(left))
+        }
+      }
+    None => None
   }
 }
 
@@ -636,16 +640,37 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   let star = parser.match_sym("*")
   let projections : Array[Expr] = []
   let aliases : Array[String?] = []
+  let expressions : Array[String] = []
   if !star {
     while true {
+      let start = parser.index
       match parse_expr(parser) {
         Some(expr) => projections.push(expr)
         None => return PqError(parser.error.unwrap_or("expected a projection"))
       }
+      expressions.push(
+        if projections.last().unwrap() is ECol(name) {
+          name
+        } else if parser.positions.is_empty() {
+          oracle_expr_label(projections.last().unwrap())
+        } else {
+          parser.text[parser.positions[start]:parser.positions[parser.index]]
+          .trim()
+          .to_owned()
+        },
+      )
       let column_alias = if parser.match_keyword("as") {
-        match parser.take_word() {
-          Some(name) => Some(name.to_lower())
-          None => return PqError("expected a column alias")
+        match parser.advance() {
+          BWord(name) => Some(name.to_lower())
+          BStr(name) => {
+            if parser.positions.is_empty() ||
+              parser.text.get_char(parser.positions[parser.index - 1]) !=
+              Some('"') {
+              return PqError("expected a column alias")
+            }
+            Some(name)
+          }
+          _ => return PqError("expected a column alias")
         }
       } else {
         None
@@ -682,11 +707,10 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
     for name in names {
       projections.push(ECol(name))
       aliases.push(None)
+      expressions.push(name)
     }
   }
-  let names = projections.mapi(fn(i, e) {
-    aliases[i].unwrap_or(oracle_expr_label(e))
-  })
+  let names = projections.mapi(fn(i, _) { aliases[i].unwrap_or(expressions[i]) })
   let labels = projections.mapi(fn(i, e) { aliases[i].unwrap_or(expr_label(e)) })
   let mut filter = CTrue
   if parser.match_keyword("where") {
@@ -1007,6 +1031,7 @@ fn parse_query(text : String) -> ParsedQuery {
   for i in 0..<tokens.length() {
     if tokens[i] is BStr(value) &&
       text.get_char(positions[i]) is Some('"') &&
+      !(i > 0 && tokens[i - 1] is BWord(previous) && previous.to_lower() == "as") &&
       (table_columns("entries") +
       table_columns("prices") +
       table_columns("notes") +
@@ -1022,7 +1047,7 @@ fn parse_query(text : String) -> ParsedQuery {
       )
     }
   }
-  let parser = QueryParser::new(tokens)
+  let parser = QueryParser::new(tokens, text~, positions~)
   if parser.at_end() {
     return PqError("empty query")
   }
@@ -1041,7 +1066,10 @@ fn parse_query(text : String) -> ParsedQuery {
       }
     None => PqError("query must start with SELECT, BALANCES or JOURNAL")
   }
-  let result = if !(result is PqError(_)) && tokens[0] is BWord(word) && word.to_lower() == "select" && !parser.at_end() {
+  let result = if !(result is PqError(_)) &&
+    tokens[0] is BWord(word) &&
+    word.to_lower() == "select" &&
+    !parser.at_end() {
     PqError("unexpected input after query")
   } else {
     result
@@ -1102,6 +1130,7 @@ fn parse_balances(parser : QueryParser) -> ParsedQuery {
 ///|
 fn transaction_expr(expr : Expr) -> Bool {
   match expr {
+    EPredicate(c) => transaction_cond(c)
     ECol(
       "date"
       | "flag"
@@ -1127,13 +1156,14 @@ fn transaction_cond(cond : Cond) -> Bool {
     CNot(c) => transaction_cond(c)
     CAnd(a, b) | COr(a, b) => transaction_cond(a) && transaction_cond(b)
     CCmp(a, _, b) => transaction_expr(a) && transaction_expr(b)
-    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => transaction_expr(e)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) => transaction_expr(e)
   }
 }
 
 ///|
 fn distinct_expr(expr : Expr) -> Bool {
   match expr {
+    EPredicate(c) => !cond_any(c, fn(e) { !distinct_expr(e) })
     ECol("meta" | "entry" | "open" | "close") => false
     ECall("sum", _) => false
     ECall(_, args) => args.all(distinct_expr)
@@ -1178,6 +1208,7 @@ fn table_star(table : String) -> Array[String] {
 ///|
 fn table_expr(expr : Expr, table : String) -> Bool {
   match expr {
+    EPredicate(c) => table_cond(c, table)
     ECol(name) => table_columns(table).contains(name)
     ECall(_, args) => args.all(fn(arg) { table_expr(arg, table) })
     EBinary(a, _, b) => table_expr(a, table) && table_expr(b, table)
@@ -1192,13 +1223,14 @@ fn table_cond(cond : Cond, table : String) -> Bool {
     CNot(c) => table_cond(c, table)
     CAnd(a, b) | COr(a, b) => table_cond(a, table) && table_cond(b, table)
     CCmp(a, _, b) => table_expr(a, table) && table_expr(b, table)
-    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => table_expr(e, table)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) => table_expr(e, table)
   }
 }
 
 ///|
 fn posting_expr(expr : Expr) -> Bool {
   match expr {
+    EPredicate(c) => posting_cond(c)
     ECol(
       "name"
       | "amount"
@@ -1221,7 +1253,7 @@ fn posting_cond(cond : Cond) -> Bool {
     CNot(c) => posting_cond(c)
     CAnd(a, b) | COr(a, b) => posting_cond(a) && posting_cond(b)
     CCmp(a, _, b) => posting_expr(a) && posting_expr(b)
-    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => posting_expr(e)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) => posting_expr(e)
   }
 }
 
@@ -1232,13 +1264,14 @@ fn aggregate_free_cond(cond : Cond) -> Bool {
     CNot(c) => aggregate_free_cond(c)
     CAnd(a, b) | COr(a, b) => aggregate_free_cond(a) && aggregate_free_cond(b)
     CCmp(a, _, b) => !contains_sum(a) && !contains_sum(b)
-    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => !contains_sum(e)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) => !contains_sum(e)
   }
 }
 
 ///|
 fn unaggregated_column(expr : Expr) -> Bool {
   match expr {
+    EPredicate(c) => unaggregated_condition(c)
     ECol(_) => true
     ECall("sum" | "count" | "first" | "last" | "min" | "max", _) => false
     ECall(_, args) => args.any(unaggregated_column)
@@ -1250,6 +1283,7 @@ fn unaggregated_column(expr : Expr) -> Bool {
 ///|
 fn same_expr(a : Expr, b : Expr) -> Bool {
   match (a, b) {
+    (EPredicate(a), EPredicate(b)) => same_condition(a, b)
     (ECol(a), ECol(b)) | (EStr(a), EStr(b)) => a == b
     (EValue(a), EValue(b)) => a.to_json() == b.to_json()
     (ENum(a), ENum(b)) => a.to_string() == b.to_string()
@@ -1274,6 +1308,6 @@ fn unaggregated_condition(cond : Cond) -> Bool {
     CAnd(a, b) | COr(a, b) =>
       unaggregated_condition(a) || unaggregated_condition(b)
     CCmp(a, _, b) => unaggregated_column(a) || unaggregated_column(b)
-    CIsNull(e, _) | CTruthy(e) | CRegex(e, _) => unaggregated_column(e)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) => unaggregated_column(e)
   }
 }
