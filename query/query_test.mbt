@@ -949,3 +949,18 @@ test "pivot retains first equal axis representation and last cell" {
   )
   assert_eq(sorted.columns, ["currency/number", "-1.0", "1.0"])
 }
+
+///|
+test "relation metadata functions bind schema columns instead of ledger row state" {
+  let r = queried(
+    ledger_source(),
+    "SELECT any_meta('lineno'),entry_meta('lineno') FROM (SELECT entry,meta) LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_true(r.rows[0][0].to_text() != "")
+  assert_true(r.rows[0][1].to_text() != "")
+  assert_true(
+    queried(ledger_source(), "SELECT any_meta('lineno') FROM (SELECT entry)").failure()
+    is Some(@query.Compilation(_)),
+  )
+}

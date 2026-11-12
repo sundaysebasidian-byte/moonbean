@@ -78,6 +78,9 @@ fn expression_type(
         if dependency != "" && column_type(source, dependency) == "unknown" {
           errors.push("compilation query.invalid_column: " + dependency)
         }
+        if name == "any_meta" && column_type(source, "meta") == "unknown" {
+          errors.push("compilation query.invalid_column: meta")
+        }
       }
       if name == "has_account" && column_type(source, "accounts") == "unknown" {
         errors.push("compilation query.invalid_column: accounts")

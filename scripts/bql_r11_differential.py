@@ -147,6 +147,11 @@ def cases():
     for projection in ['currency,number,count(*)','number,currency,count(*)']:
         for order in ['', ' ORDER BY 1', ' ORDER BY 1 DESC']:
             add('SELECT '+projection+order+' PIVOT BY 1,2', 'pivot-representation', True, ledger='tests/r11/pivot-repr.beancount')
+    for query in ["SELECT any_meta('lineno') FROM (SELECT entry)",
+                  "SELECT any_meta('lineno') FROM (SELECT entry,meta) LIMIT 1",
+                  "SELECT any_meta('income') FROM (SELECT entry,meta) LIMIT 1",
+                  "SELECT entry_meta('lineno') FROM (SELECT entry) LIMIT 1"]:
+        add(query, 'relation-metadata')
     return out
 
 

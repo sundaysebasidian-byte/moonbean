@@ -415,6 +415,19 @@ fn dict_get(value : QueryValue, key : String) -> QueryValue? {
 }
 
 ///|
+fn record_metadata(ctx : QueryContext, value : QueryValue) -> QueryValue {
+  if value is QRecord(_, fields) {
+    for (name, field) in fields {
+      if name == "meta" {
+        return field
+      }
+    }
+  }
+  query_error(ctx, "query.oracle_type_error: AttributeError directive metadata")
+  QNull
+}
+
+///|
 fn representation_expr(expr : Expr) -> Bool {
   match expr {
     ECol("id" | "meta" | "entry" | "open" | "close") => true

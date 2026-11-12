@@ -84,6 +84,13 @@ fn metadata_function(
     _ => return QNull
   }
   if name == "any_meta" {
+    if row.extra is Some(extra) && extra.cells is Some(cells) {
+      if dict_get(cells.get("meta").unwrap_or(QNull), key) is Some(value) {
+        return value
+      }
+      let entry_meta = record_metadata(ctx, cells.get("entry").unwrap_or(QNull))
+      return dict_get(entry_meta, key).unwrap_or(QNull)
+    }
     if row_posting(row) is Some(p) {
       for (k, v) in source_metadata(p.loc, p.meta) {
         if k == key {

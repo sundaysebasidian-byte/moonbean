@@ -387,9 +387,7 @@ fn eval_expr(ctx : QueryContext, expr : Expr, row : BqlRow) -> QueryValue {
                 let metadata = if name == "meta" {
                   cells.get("meta").unwrap_or(QNull)
                 } else {
-                  dict_get(cells.get("entry").unwrap_or(QNull), "meta").unwrap_or(
-                    QNull,
-                  )
+                  record_metadata(ctx, cells.get("entry").unwrap_or(QNull))
                 }
                 return dict_get(metadata, key).unwrap_or(QNull)
               }
