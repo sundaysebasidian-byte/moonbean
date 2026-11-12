@@ -1,0 +1,45 @@
+$ moon info
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 12 tasks, now up to date
+
+$ moon check --deny-warn
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 13 tasks, now up to date
+
+$ moon fmt --check
+exit 0
+Finished. moon: ran 73 tasks, now up to date
+
+$ moon test --target native
+exit 0
+Total tests: 181, passed: 181, failed: 0.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+
+$ moon test --target wasm-gc
+exit 0
+Total tests: 181, passed: 181, failed: 0.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+
+$ moon test --target js
+exit 0
+Total tests: 181, passed: 181, failed: 0.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+
+$ moon build --target native cmd/main
+exit 0
+Artifacts:
+  sundaysebasidian-byte/moonbean/cmd/main  native  <repo>/_build/native/debug/build/cmd/main/main.exe
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: no work to do
+
+$ python3 scripts/bql_differential.py --oracle /tmp/moonbean-r4-oracle/bin
+exit 0
+BQL differential: 7502/7502 checks passed

@@ -1,0 +1,148 @@
+[
+  {
+    "query": "SELECT id,meta FROM #entries",
+    "kind": "explicit signed-zero boundary",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT DISTINCT position",
+    "kind": "explicit signed-zero distinct boundary",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT decimal('NaN')",
+    "kind": "explicit numeric boundary",
+    "ok": true,
+    "detail": ""
+  },
+  {
+    "query": "SELECT joinstr(tags)",
+    "ledger": "tests/r11/prices.beancount",
+    "feature": "regex",
+    "schema": false,
+    "ok": true,
+    "conformant": false,
+    "boundary": "CPython randomized set iteration remains unsupported",
+    "ours": "unsupported",
+    "oracle": "success",
+    "detail": ""
+  },
+  {
+    "query": "SELECT joinstr(tags)",
+    "ledger": "tests/r11/prices.beancount",
+    "feature": "signature:joinstr(set)",
+    "schema": false,
+    "ok": true,
+    "conformant": false,
+    "boundary": "CPython randomized set iteration remains unsupported",
+    "ours": "unsupported",
+    "oracle": "success",
+    "detail": ""
+  },
+  {
+    "query": "SELECT findfirst('.',tags)",
+    "ledger": "tests/r11/prices.beancount",
+    "feature": "edge",
+    "schema": false,
+    "ok": true,
+    "conformant": false,
+    "boundary": "CPython randomized set iteration remains unsupported",
+    "ours": "unsupported",
+    "oracle": "success",
+    "detail": ""
+  },
+  {
+    "query": "SELECT subst('a*?','X','ab') LIMIT 1",
+    "ledger": "tests/r9/tx.beancount",
+    "feature": "regex",
+    "schema": false,
+    "ok": true,
+    "conformant": false,
+    "boundary": "Python-only regex/replacement or adjacent lazy empty/nonempty matches",
+    "ours": "unsupported",
+    "oracle": "success",
+    "detail": ""
+  },
+  {
+    "query": "SELECT subst('a*?','X','b') LIMIT 1",
+    "ledger": "tests/r9/tx.beancount",
+    "feature": "regex",
+    "schema": false,
+    "ok": true,
+    "conformant": false,
+    "boundary": "Python-only regex/replacement or adjacent lazy empty/nonempty matches",
+    "ours": "unsupported",
+    "oracle": "success",
+    "detail": ""
+  },
+  {
+    "query": "SELECT subst('a*?','X','aba') LIMIT 1",
+    "ledger": "tests/r9/tx.beancount",
+    "feature": "regex",
+    "schema": false,
+    "ok": true,
+    "conformant": false,
+    "boundary": "Python-only regex/replacement or adjacent lazy empty/nonempty matches",
+    "ours": "unsupported",
+    "oracle": "success",
+    "detail": ""
+  },
+  {
+    "query": "SELECT subst('a*?','X','BACD') LIMIT 1",
+    "ledger": "tests/r9/tx.beancount",
+    "feature": "regex",
+    "schema": false,
+    "ok": true,
+    "conformant": false,
+    "boundary": "Python-only regex/replacement or adjacent lazy empty/nonempty matches",
+    "ours": "unsupported",
+    "oracle": "success",
+    "detail": ""
+  },
+  {
+    "query": "SELECT subst('a*?','X','\ud83d\ude00') LIMIT 1",
+    "ledger": "tests/r9/tx.beancount",
+    "feature": "regex",
+    "schema": false,
+    "ok": true,
+    "conformant": false,
+    "boundary": "Python-only regex/replacement or adjacent lazy empty/nonempty matches",
+    "ours": "unsupported",
+    "oracle": "success",
+    "detail": ""
+  },
+  {
+    "query": "SELECT joinstr(tags)",
+    "ledger": "tests/r11/prices.beancount",
+    "feature": "typed-null",
+    "schema": false,
+    "ok": true,
+    "conformant": false,
+    "boundary": "CPython randomized set iteration remains unsupported",
+    "ours": "unsupported",
+    "oracle": "success",
+    "detail": ""
+  },
+  {
+    "query": "SELECT findfirst('',tags)",
+    "ledger": "tests/r11/prices.beancount",
+    "feature": "boundary",
+    "schema": false,
+    "ok": true,
+    "conformant": false,
+    "boundary": "CPython randomized set iteration",
+    "detail": ""
+  },
+  {
+    "query": "SELECT joinstr(tags)",
+    "ledger": "tests/r11/prices.beancount",
+    "feature": "boundary",
+    "schema": false,
+    "ok": true,
+    "conformant": false,
+    "boundary": "CPython randomized set iteration",
+    "detail": ""
+  }
+]

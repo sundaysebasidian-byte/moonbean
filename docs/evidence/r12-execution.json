@@ -1,0 +1,114 @@
+{
+  "code_commit": "3a86c51517e92191418c68b890fdb32f098708e9",
+  "baseline_commit": "992eaa2c46c2398a0cb0c456dd6b51e7d142b844",
+  "commands": [
+    {
+      "command": [
+        "moon",
+        "info"
+      ],
+      "exit": 0,
+      "log": "moon-info.log"
+    },
+    {
+      "command": [
+        "moon",
+        "check",
+        "--deny-warn"
+      ],
+      "exit": 0,
+      "log": "moon-check---deny-warn.log"
+    },
+    {
+      "command": [
+        "moon",
+        "fmt",
+        "--check"
+      ],
+      "exit": 0,
+      "log": "moon-fmt---check.log"
+    },
+    {
+      "command": [
+        "moon",
+        "test",
+        "--target",
+        "native"
+      ],
+      "exit": 0,
+      "log": "moon-test---target-native.log"
+    },
+    {
+      "command": [
+        "moon",
+        "test",
+        "--target",
+        "wasm-gc"
+      ],
+      "exit": 0,
+      "log": "moon-test---target-wasm-gc.log"
+    },
+    {
+      "command": [
+        "moon",
+        "test",
+        "--target",
+        "js"
+      ],
+      "exit": 0,
+      "log": "moon-test---target-js.log"
+    },
+    {
+      "command": [
+        "moon",
+        "build",
+        "--target",
+        "native",
+        "cmd/main"
+      ],
+      "exit": 0,
+      "log": "moon-build---target-native-cmd-main.log"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bql_differential.py",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin"
+      ],
+      "exit": 0,
+      "log": "bql.log"
+    }
+  ],
+  "bql": {
+    "checks": 7502,
+    "passed": 7502,
+    "conformant": 7488,
+    "explicit_boundaries": 14,
+    "original_checks_retained": 4030
+  },
+  "review": {
+    "checks": 201,
+    "conformant": 199,
+    "explicit_boundaries": 2
+  },
+  "type_matrix": {
+    "checks": 1822,
+    "permissive": 0,
+    "category_differences": 0
+  },
+  "raw_evidence_sha256": {
+    "moon-check---deny-warn.log": "1d72b440c1527a7be957d38f8a35ecd6acd06d509faab685182b2eadc12af804",
+    "moon-fmt---check.log": "5d3d416da35ef043e4efd6e0052e435225133cff7a45c16fb741c5dc14c4dd45",
+    "moon-test---target-native.log": "c3b69ea6f8a2dfc8e9b462341fd0de84a021769f42f17ca4cf5cc3edd6695a05",
+    "moon-test---target-wasm-gc.log": "c3b69ea6f8a2dfc8e9b462341fd0de84a021769f42f17ca4cf5cc3edd6695a05",
+    "moon-test---target-js.log": "c3b69ea6f8a2dfc8e9b462341fd0de84a021769f42f17ca4cf5cc3edd6695a05",
+    "bql.log": "09bc8f582aa3dc25a1d6489a6156e1321036253f5c37dbadf550bff8e7114d2f",
+    "clock-targets.json": "91108895507b6264927d37b95545c5bc5b5f0162337cdf1975e9eb1667b0ae0a",
+    "bql.json": "a0465e5b34c93f27bb8bba5ad00e3e1b5254ff2ce495e70b70b1062bf717f726",
+    "type-matrix.json": "627df87a5325aabd0f11632cca048b51ebe304348d573bb7c4f3c8fab41f1c7e",
+    "commands.json": "69a9b32b191453921b4685ec717b43956a601dccfcf5b64cb7c983783d696250",
+    "moon-build---target-native-cmd-main.log": "d15942fcafae130491b73597076007acb894bf0aadb3d983a8440fba334fefc7",
+    "moon-info.log": "d75514d7d52566f2b7bb4c50f2f8192a849cff225c4e60f1acdcabd752ab6be8"
+  }
+}

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.6
+
+- Evaluate interval, both date_bin and parse_date overloads, and today with target clocks. Date parsing is bounded by the oracle corpus; wasm dates use UTC.
+- Add a distinct PRINT directive-text result and native renderer, including FROM predicates and shared OPEN/CLOSE/CLEAR transformations.
+- Preserve rounded negative zero through representation and tested numeric consumers without changing the accounting Decimal core.
+- Match transactions unknown-column Compilation errors, empty-match substitution, tested hyphen wrapping, scalar aggregate DISTINCT and NULL object conversions.
+- Add IN/NOT IN, BETWEEN, modulo, source-aware quoted lookup, canonical JOURNAL/BALANCES, structural DISTINCT, mixed aggregate clauses and Inventory getitem overload resolution.
+- Add numbered regex replacement captures, escapes, noncapturing groups and bounded quantifiers.
+- Track the independent R11 review corpus and expanded R12 differential. Remaining Python set/regex, general BQL and non-BQL endpoint exclusions are listed in compatibility.md.
+
 ## 0.2.5
 
 - BQL: FROM (SELECT ...) subqueries with typed relation columns, AS aliases, one-based positional GROUP BY / ORDER BY, PIVOT BY, and Boolean / comparison / IS NULL / regex SELECT expressions.
