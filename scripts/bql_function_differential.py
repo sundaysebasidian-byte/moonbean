@@ -66,12 +66,16 @@ def run(ours,oracle):
                 ok=equivalent(av,bv);detail='' if ok else str((av,bv))[:1000]
         except Exception as e:ok=False;detail=str(e)
         result.append(dict(signature=sig,query=q,ok=ok,detail=detail))
-    for expression in ["decimal('-0.00')","decimal('NaN')","0.0/-1","safediv(0.0,-1)","0.0*-1"]:
+    for expression in ["decimal('-0.00')","decimal('NaN')","round(-0.1)","0.0/-1","safediv(0.0,-1)","0.0*-1"]:
         q='SELECT '+expression
         a=subprocess.run([ours,'query',ledger,q,'--json'],capture_output=True,text=True)
         b=subprocess.run([str(Path(oracle)/'python'),'scripts/oracle_query_values.py',ledger,q],capture_output=True,text=True)
-        ok=a.returncode!=0 and b.returncode==0 and 'query.unsupported.decimal_representation' in a.stdout+a.stderr
-        result.append(dict(query=q,kind='explicit numeric boundary',ok=ok,detail='' if ok else 'numeric rejection changed'))
+        if expression == "round(-0.1)":
+            ok = a.returncode == b.returncode == 0 and equivalent(json.loads(a.stdout)['rows'], json.loads(b.stdout))
+            result.append(dict(query=q,kind='signed-zero round result',ok=ok,detail='' if ok else 'signed-zero round differs'))
+        else:
+            ok=a.returncode!=0 and b.returncode==0 and 'query.unsupported.decimal_representation' in a.stdout+a.stderr
+            result.append(dict(query=q,kind='explicit numeric boundary',ok=ok,detail='' if ok else 'numeric rejection changed'))
     return result
 
 if __name__=='__main__':
