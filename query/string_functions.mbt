@@ -1,4 +1,13 @@
 ///|
+fn scoped_case_pattern(pattern : String) -> String {
+  if pattern.has_prefix("(?i)") {
+    "(?i:" + pattern[4:].to_owned() + ")"
+  } else {
+    pattern
+  }
+}
+
+///|
 fn python_whitespace(c : Char) -> Bool {
   let n = c.to_int()
   (n >= 9 && n <= 13) ||
@@ -132,6 +141,7 @@ fn query_regex(
   pattern : String,
   insensitive : Bool,
 ) -> @string.Regex? {
+  let pattern = scoped_case_pattern(pattern)
   let portable = StringBuilder()
   let chars = pattern.iter().to_array()
   let mut in_class = false

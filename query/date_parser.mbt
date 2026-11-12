@@ -485,8 +485,8 @@ fn flexible_date(ctx : QueryContext, input : String) -> QueryValue {
           explicit_day = true
         }
       3 => {
-        if numbers[0].length() >= 3 {
-          year = bql_parse_int(numbers[0])
+        if numbers[0].length() >= 3 || bql_parse_int(numbers[0]) > 31 {
+          year = expand_year(numbers[0])
           month = bql_parse_int(numbers[1])
           day = bql_parse_int(numbers[2])
         } else {

@@ -61,7 +61,26 @@ fn expression_type(
     EBinary(a, op, b) => {
       let ta = expression_type(a, source, errors)
       let tb = expression_type(b, source, errors)
-      if ["int", "decimal"].contains(ta) && ["int", "decimal"].contains(tb) {
+      if op == "-" && ta == "date" && tb == "date" {
+        "int"
+      } else if (op == "+" || op == "-") &&
+        ta == "relativedelta" &&
+        tb == "relativedelta" {
+        // The pinned oracle declares interval subtraction as date despite returning an interval.
+        if op == "-" {
+          "date"
+        } else {
+          "relativedelta"
+        }
+      } else if (op == "+" || op == "-") &&
+        (
+          (ta == "date" && ["int", "relativedelta"].contains(tb)) ||
+          (tb == "date" && ta == "relativedelta") ||
+          (tb == "date" && ta == "int" && op == "+")
+        ) {
+        "date"
+      } else if ["int", "decimal"].contains(ta) &&
+        ["int", "decimal"].contains(tb) {
         if ta == "int" && tb == "int" && op != "/" {
           "int"
         } else {
@@ -75,6 +94,19 @@ fn expression_type(
       }
     }
     ECall(name, args) => {
+      if name == "coalesce" {
+        let types = args.map(fn(e) { expression_type(e, source, errors) })
+        if !types.is_empty() && !types.all(fn(t) { t == types[0] }) {
+          errors.push(
+            "compilation query.invalid_signature: coalesce requires uniform types",
+          )
+        }
+        return types.get(0).unwrap_or("object")
+      }
+      if ["entry_meta", "any_meta"].contains(name) &&
+        column_type(source, "entry") == "unknown" {
+        errors.push("compilation query.invalid_column: entry")
+      }
       if name == "__in" || name == "__notin" || name == "__between" {
         let ts = args.map(fn(e) { expression_type(e, source, errors) })
         if name == "__between" &&

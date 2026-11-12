@@ -41,30 +41,30 @@ fn query_interval(text : String) -> QueryValue {
       raw
     },
   )
-  QInterval(
-    if unit.has_prefix("day") {
-      "days"
-    } else if unit.has_prefix("month") {
-      "months"
-    } else {
-      "years"
-    },
-    n,
-  )
+  let zero = @bigint.BigInt::from_int(0)
+  if unit.has_prefix("day") {
+    QInterval(zero, n)
+  } else {
+    QInterval(
+      if unit.has_prefix("year") {
+        n.mul(@bigint.BigInt::from_int(12))
+      } else {
+        n
+      },
+      zero,
+    )
+  }
 }
 
 ///|
-fn interval_repr(unit : String, n : @bigint.BigInt) -> String {
+fn interval_repr(months : @bigint.BigInt, days : @bigint.BigInt) -> String {
   let parts : Array[String] = []
-  let values = if unit == "months" {
-    [
-      ("years", n.div(@bigint.BigInt::from_int(12))),
-      ("months", n % @bigint.BigInt::from_int(12)),
-    ]
-  } else {
-    [(unit, n)]
-  }
-  for (name, value) in values {
+  for
+    (name, value) in [
+      ("years", months.div(@bigint.BigInt::from_int(12))),
+      ("months", months % @bigint.BigInt::from_int(12)),
+      ("days", days),
+    ] {
     if value != @bigint.BigInt::from_int(0) {
       parts.push(
         name +
@@ -98,8 +98,8 @@ fn query_date_bin(
     QText(s) => query_interval(s)
     other => other
   }
-  let (unit, amount) = match interval {
-    QInterval(unit, n) => (unit, n)
+  let (months, days) = match interval {
+    QInterval(months, days) => (months, days)
     _ => {
       query_error(
         ctx, "query.oracle_type_error: AttributeError invalid interval",
@@ -107,15 +107,18 @@ fn query_date_bin(
       return QNull
     }
   }
-  if amount < @bigint.BigInt::from_int(0) {
+  let zero = @bigint.BigInt::from_int(0)
+  if (months == zero && days < zero) || (months < zero && days <= zero) {
     return QNull
   }
-  if amount == @bigint.BigInt::from_int(0) {
+  if months == zero && days == zero {
     query_error(
       ctx, "query.oracle_type_error: ZeroDivisionError interval is zero",
     )
     return QNull
   }
+  let unit = if months == zero { "days" } else { "months" }
+  let amount = if months == zero { days } else { months }
   let n = match query_integer(QInt(amount)) {
     Some(n) => n
     None => {
@@ -133,17 +136,7 @@ fn query_date_bin(
       ordinal(origin) + floor_div(ordinal(date) - ordinal(origin), n) * n,
     )
   } else {
-    let months = if unit == "years" {
-      if n > 178956970 {
-        query_error(
-          ctx, "query.oracle_type_error: OverflowError interval out of range",
-        )
-        return QNull
-      }
-      n * 12
-    } else {
-      n
-    }
+    let months = n
     if months > 120000 {
       query_error(ctx, "query.oracle_type_error: ValueError date out of range")
       return QNull
@@ -151,16 +144,27 @@ fn query_date_bin(
     let mut current = origin
     if date.compare(origin) >= 0 {
       while true {
-        let total = current.year * 12 + current.month - 1 + months
-        let y = total / 12
-        let m = total % 12 + 1
-        let next = @ast.Date::new(
-          y,
-          m,
-          current.day.min(@ast.Date::days_in_month(y, m)),
-        )
+        let next = match
+          add_interval_date(
+            ctx,
+            current,
+            QInterval(@bigint.BigInt::from_int(months), days),
+            false,
+          ) {
+          QDate(d) => Some(d)
+          _ => None
+        }
         match next {
           Some(next) => {
+            if next.compare(current) < 0 {
+              return QNull
+            }
+            if next.compare(current) == 0 {
+              query_error(
+                ctx, "query.oracle_type_error: ZeroDivisionError interval does not advance",
+              )
+              return QNull
+            }
             if next.compare(date) >= 0 {
               break
             }
@@ -176,13 +180,20 @@ fn query_date_bin(
       }
     } else {
       while current.compare(date) > 0 {
-        let total = current.year * 12 + current.month - 1 - months
-        let y = floor_div(total, 12)
-        let m = total - y * 12 + 1
         match
-          @ast.Date::new(y, m, current.day.min(@ast.Date::days_in_month(y, m))) {
-          Some(previous) => current = previous
-          None => {
+          add_interval_date(
+            ctx,
+            current,
+            QInterval(@bigint.BigInt::from_int(months), days),
+            true,
+          ) {
+          QDate(previous) => {
+            if previous.compare(current) >= 0 {
+              return QNull
+            }
+            current = previous
+          }
+          _ => {
             query_error(
               ctx, "query.oracle_type_error: ValueError date out of range",
             )
@@ -229,4 +240,59 @@ fn interval_number(value : @bigint.BigInt) -> String {
   "e+" +
   (if exponent < 10 { "0" } else { "" }) +
   exponent.to_string()
+}
+
+///|
+fn add_interval_date(
+  ctx : QueryContext,
+  date : @ast.Date,
+  interval : QueryValue,
+  subtract : Bool,
+) -> QueryValue {
+  guard interval is QInterval(months, days) else { return QNull }
+  let months = if subtract { months.neg() } else { months }
+  let days = if subtract { days.neg() } else { days }
+  let m = match query_integer(QInt(months)) {
+    Some(n) => n
+    None => {
+      query_error(ctx, "query.oracle_type_error: OverflowError interval months")
+      return QNull
+    }
+  }
+  if m > 120000 || m < -120000 {
+    query_error(
+      ctx, "query.oracle_type_error: ValueError interval year out of range",
+    )
+    return QNull
+  }
+  let total = date.year * 12 + date.month - 1 + m
+  let year = floor_div(total, 12)
+  let month = total - year * 12 + 1
+  let shifted = @ast.Date::new(
+    year,
+    month,
+    date.day.min(@ast.Date::days_in_month(year, month)),
+  )
+  guard shifted is Some(shifted) else {
+    query_error(
+      ctx, "query.oracle_type_error: ValueError interval year out of range",
+    )
+    return QNull
+  }
+  add_date_days(ctx, shifted, days)
+}
+
+///|
+fn add_date_days(
+  ctx : QueryContext,
+  date : @ast.Date,
+  days : @bigint.BigInt,
+) -> QueryValue {
+  let ordinal = @bigint.BigInt::from_int(ordinal(date)).add(days)
+  if ordinal < @bigint.BigInt::from_int(1) ||
+    ordinal > @bigint.BigInt::from_int(3652059) {
+    query_error(ctx, "query.oracle_type_error: OverflowError date out of range")
+    return QNull
+  }
+  ordinal_date(query_integer(QInt(ordinal)).unwrap())
 }

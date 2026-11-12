@@ -26,7 +26,8 @@ fn truth(value : QueryValue) -> Bool {
     QNull => false
     QBool(b) => b
     QText(s) => s != ""
-    QInterval(_, n) => n != @bigint.BigInt::from_int(0)
+    QInterval(m, d) =>
+      m != @bigint.BigInt::from_int(0) || d != @bigint.BigInt::from_int(0)
     QNegativeZero(_) => false
     QNumber(n) => !n.is_zero()
     QInt(n) => n != @bigint.BigInt::from_int(0)
@@ -171,6 +172,18 @@ fn eval_function(
   values : Array[QueryValue],
   row : BqlRow,
 ) -> QueryValue {
+  if name == "coalesce" {
+    if values.is_empty() {
+      query_error(ctx, "query.oracle_type_error: IndexError coalesce arguments")
+      return QNull
+    }
+    for value in values {
+      if !(value is QNull) {
+        return value
+      }
+    }
+    return QNull
+  }
   if values.any(fn(v) { v is QNull }) {
     return QNull
   }
@@ -207,6 +220,26 @@ fn eval_function(
       query_substitute(ctx, pattern, replacement, text)
     ("grep" | "grepn" | "findfirst" | "has_account", _) =>
       regex_function(ctx, name, values, row)
+    ("day", [QInterval(_, _)]) => QNull
+    ("quarter" | "weekday" | "yearmonth", [QInterval(_, _)])
+    | ("date_bin", [_, QInterval(_, _), _])
+    | ("date_bin", [_, _, QInterval(_, _)]) => {
+      query_error(
+        ctx, "query.oracle_type_error: TypeError date operation on interval",
+      )
+      QNull
+    }
+    ("date_part" | "date_trunc", [QText(part), QInterval(_, _)]) => {
+      if name == "date_trunc" ||
+        [
+          "quarter", "week", "dow", "doy", "isoyear", "decade", "century", "millennium",
+        ].contains(part) {
+        query_error(
+          ctx, "query.oracle_type_error: TypeError date operation on interval",
+        )
+      }
+      QNull
+    }
     ("date_part" | "date_trunc", [QText(part), QDate(date)]) =>
       calendar_function(ctx, name, part, date)
     ("joinstr", [QSet(items)]) | ("joinstr", [QFrozenSet(items)]) =>
@@ -358,6 +391,15 @@ fn eval_function(
           } else {
             n.quantize(digits)
           }
+          if v is QNumber(_) &&
+            !rounded.is_zero() &&
+            rounded.mantissa().to_string().replace_all(old="-", new="").length() >
+            28 {
+            query_error(
+              ctx, "query.oracle_type_error: InvalidOperation decimal precision",
+            )
+            return QNull
+          }
           if (v is QNumber(_) || v is QNegativeZero(_)) &&
             rounded.is_zero() &&
             (n.is_negative() || v is QNegativeZero(_)) {
@@ -462,6 +504,15 @@ fn eval_function(
       )
     ("yearmonth", [QDate(d)]) =>
       QDate(@ast.Date::new(d.year, d.month, 1).unwrap())
+    ("date_add", [QInterval(m, d), QInt(n)]) =>
+      arithmetic(ctx, QInterval(m, d), "+", QInt(n))
+    ("date_diff", [QInterval(_, a), QInterval(_, b)]) => QInt(a.sub(b))
+    ("date_diff", [QInterval(_, _), _]) | ("date_diff", [_, QInterval(_, _)]) => {
+      query_error(
+        ctx, "query.oracle_type_error: TypeError date difference on interval",
+      )
+      QNull
+    }
     ("date_add", [QDate(d), v]) =>
       match query_integer(v) {
         Some(n) =>

@@ -61,6 +61,15 @@ fn query_comparison(
   if a is QNull || b is QNull {
     return QNull
   }
+  if a is QInterval(am, ad) && b is QInterval(bm, bd) {
+    if ["=", "==", "!=", "<>"].contains(op) {
+      let equal = am == bm && ad == bd
+      return QBool(if op == "!=" || op == "<>" { !equal } else { equal })
+    }
+    query_error(ctx, "query.oracle_type_error: TypeError interval ordering")
+    return QNull
+  }
+
   if ["=", "==", "!=", "<>"].contains(op) &&
     (
       structural_value(a) ||

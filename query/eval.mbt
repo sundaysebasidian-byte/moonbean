@@ -526,7 +526,8 @@ fn cond_holds(ctx : QueryContext, cond : Cond, row : BqlRow) -> Bool {
         QDict(v) | QRecord(_, v) => !v.is_empty()
         QList(v) => !v.is_empty()
         QEnum(_, _) | QPythonType(_) => true
-        QInterval(_, n) => n != @bigint.BigInt::from_int(0)
+        QInterval(m, d) =>
+          m != @bigint.BigInt::from_int(0) || d != @bigint.BigInt::from_int(0)
         QDate(_) => true
       }
     CCmp(left, op, right) =>
@@ -1227,6 +1228,39 @@ fn arithmetic(
       _ => ()
     }
   }
+  match (a, b, op) {
+    (QInterval(m, d), QInt(n), "+" | "-") => {
+      if n < @bigint.BigInt::from_int(-999999999) ||
+        n > @bigint.BigInt::from_int(999999999) {
+        query_error(
+          ctx, "query.oracle_type_error: OverflowError timedelta days",
+        )
+        return QNull
+      }
+      return QInterval(m, if op == "+" { d.add(n) } else { d.sub(n) })
+    }
+    (QInt(n), QInterval(m, d), "+") =>
+      return arithmetic(ctx, QInterval(m, d), "+", QInt(n))
+    (QDate(a), QDate(b), "-") => return query_int(ordinal(a) - ordinal(b))
+    (QDate(d), QInt(n), "+" | "-") =>
+      return add_date_days(ctx, d, if op == "-" { n.neg() } else { n })
+    (QInt(n), QDate(d), "+") => return add_date_days(ctx, d, n)
+    (QDate(d), QInterval(_, _), "+" | "-") =>
+      return add_interval_date(ctx, d, b, op == "-")
+    (QInterval(_, _), QDate(d), "+") =>
+      return add_interval_date(ctx, d, a, false)
+    (QInterval(_, _), QDate(_), "-") => {
+      query_error(ctx, "query.oracle_type_error: TypeError interval minus date")
+      return QNull
+    }
+    (QInterval(am, ad), QInterval(bm, bd), "+" | "-") =>
+      return if op == "+" {
+        QInterval(am.add(bm), ad.add(bd))
+      } else {
+        QInterval(am.sub(bm), ad.sub(bd))
+      }
+    _ => ()
+  }
   match (value_number(a), value_number(b)) {
     (Some(x), Some(y)) => {
       let result = match op {
@@ -1339,7 +1373,20 @@ fn opening_rows(
           i
         }
       }
-      inventory.add(row.position)
+      if root == "Income" || root == "Expenses" {
+        inventory.add_amount(
+          match row.cost {
+            Some(c) =>
+              @ast.Amount::new(
+                row.units.number.mul(c.number).round_to_significant(28),
+                c.currency,
+              )
+            None => row.units
+          },
+        )
+      } else {
+        inventory.add(row.position)
+      }
     } else {
       let in_period = match close {
         Some(date) => row.date.less_than(date)
@@ -1358,7 +1405,7 @@ fn opening_rows(
     @ast.Date::new(year, month, @ast.Date::days_in_month(year, month)).unwrap()
   }
   let summaries : Array[BqlRow] = []
-  names.sort()
+  names.sort_by(python_text_compare)
   for account in names {
     let inventory = inventories.get(account).unwrap()
     for position in inventory.positions {

@@ -193,7 +193,7 @@ fn lex_bql(
           Some(ch) => ch
           None => break
         }
-        if bql_is_word_char(ch) {
+        if bql_is_word_char(ch) && (ch != '-' || text[start:i].contains(":")) {
           sb.write_char(ch)
           i = i + 1
         } else {

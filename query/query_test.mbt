@@ -421,7 +421,7 @@ test "new unsupported boundaries preserve positions" {
 test "hash sources and star reject ambiguous results" {
   for q in ["SELECT count(*) FROM #Transactions"] {
     let r = queried(ledger_source(), q)
-    assert_true(r.failure() is Some(@query.Unsupported(_)))
+    assert_true(r.failure() is Some(@query.Compilation(_)))
     assert_true(r.error.unwrap().contains("BQL:1:"))
   }
   for
@@ -1281,4 +1281,150 @@ test "lazy substitutions execute when no adjacent nonempty retry is needed" {
     queried(ledger_source(), "SELECT subst('a*?','X','ab')").failure()
     is Some(@query.Unsupported(_)),
   )
+}
+
+///|
+test "review date and calendar interval arithmetic" {
+  let r = queried(
+    ledger_source(),
+    "SELECT 2024-01-01+1,1+2024-01-01,2024-01-05-1,2024-01-05-2024-01-01,2024-01-31+interval('1 month'),interval('1 month')+2024-01-31,repr(interval('13 months')+interval('2 days')) LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "2024-01-02", "2024-01-02", "2024-01-04", "4", "2024-02-29", "2024-02-29", "relativedelta(years=+1, months=+1, days=+2)",
+  ])
+  assert_true(
+    queried(ledger_source(), "SELECT count(*) WHERE date>today()-1000").is_ok(),
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT interval('1 day')-2024-01-01").failure()
+    is Some(@query.Evaluation(_)),
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT 9999-12-31+1").failure()
+    is Some(@query.Evaluation(_)),
+  )
+}
+
+///|
+test "review leading two digit years and round carry overflow" {
+  let r = queried(
+    ledger_source(),
+    "SELECT parse_date('99-12-31'),parse_date('99/12/31'),parse_date('50-06-15') LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "1999-12-31", "1999-12-31", "2050-06-15",
+  ])
+  assert_true(
+    queried(ledger_source(), "SELECT round(9999999999999999999999999999.5)").failure()
+    is Some(@query.Evaluation(_)),
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT round(999999999999999999999999999.5)").is_ok(),
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT missing FROM #nope").failure()
+    is Some(@query.Compilation(_)),
+  )
+}
+
+///|
+test "review OPEN preserves source order and CLEAR uses the last retained date" {
+  let source = "2024-01-01 open Assets:A\n2024-01-01 open Equity:A\n2024-01-02 * \"Z\"\n  Assets:A 1 USD\n  Equity:A -1 USD\n2024-01-02 * \"A\"\n  Assets:A 1 USD\n  Equity:A -1 USD\n"
+  let r = queried(source, "SELECT narration FROM OPEN ON 2024-01-01")
+  assert_true(r.is_ok())
+  assert_eq(r.rows.map(fn(row) { row[0].to_text() }), ["Z", "Z", "A", "A"])
+  let cost = "2024-01-01 open Assets:A\n2024-01-01 open Income:Stock XXX \"NONE\"\n2024-01-02 * \"income\"\n  Income:Stock -5 XXX {100 USD}\n  Assets:A 500 USD\n"
+  let clear = queried(
+    cost, "SELECT date FROM CLOSE ON 2024-03-01 CLEAR WHERE flag='T'",
+  )
+  assert_true(clear.is_ok())
+  assert_eq(clear.rows[0][0].to_text(), "2024-01-02")
+  let opening = queried(
+    cost, "SELECT str(position) FROM OPEN ON 2024-01-05 WHERE account='Equity:Earnings:Previous'",
+  )
+  assert_true(opening.is_ok())
+  assert_eq(opening.rows[0][0].to_text(), "-500 USD")
+}
+
+///|
+test "review PRINT preserves narration fields tags and directive grouping" {
+  let source = "2024-01-01 open Assets:A\n2024-01-02 * \"Payee\" \"\" #zulu #alpha ^ref.2 ^receipt-1\n  Assets:A 1 USD\n  Assets:A -1 USD\n2024-01-03 query \"q1\" \"SELECT 1\"\n2024-01-03 query \"q2\" \"SELECT 2\"\n"
+  let printed = queried(source, "PRINT").to_text()
+  assert_true(
+    printed.contains("* \"Payee\" \"\" #alpha #zulu ^receipt-1 ^ref.2"),
+  )
+  assert_true(printed.contains("query \"q1\" \"SELECT 1\"\n2024-01-03 query"))
+  let reparsed = queried(printed, "SELECT payee,narration LIMIT 1")
+  assert_eq(reparsed.rows[0].map(fn(v) { v.to_text() }), ["Payee", ""])
+  assert_true(
+    queried(source, "PRINT FROM entry_meta('bank') IS NOT NULL").failure()
+    is Some(@query.Compilation(_)),
+  )
+  assert_true(
+    queried(source, "PRINT FROM any_meta('bank') IS NOT NULL").failure()
+    is Some(@query.Compilation(_)),
+  )
+}
+
+///|
+test "review coalesce evaluates uniform arguments and scoped global case flags" {
+  let r = queried(
+    ledger_source(),
+    "SELECT coalesce(payee,'x'),coalesce(NULL,NULL),grep('(?i)A','a') LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0][0].to_text(), "x")
+  assert_eq(r.rows[0][1].to_json(), "null")
+  assert_eq(r.rows[0][2].to_text(), "a")
+  assert_true(
+    queried(ledger_source(), "SELECT coalesce(NULL,'x')").failure()
+    is Some(@query.Compilation(_)),
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT coalesce()").failure()
+    is Some(@query.Evaluation(_)),
+  )
+}
+
+///|
+test "review recursion budgets return clean errors on every target" {
+  for
+    q in [
+      "SELECT " + "(".repeat(20000) + "1" + ")".repeat(20000),
+      "SELECT " + "NOT ".repeat(300) + "true",
+      "SELECT " + "1+".repeat(300) + "1",
+      "PRINT FROM " + "(".repeat(300) + "true" + ")".repeat(300),
+    ] {
+    assert_true(queried(ledger_source(), q).failure() is Some(@query.Syntax(_)))
+  }
+  assert_true(
+    queried(
+      ledger_source(),
+      "SELECT " + "(".repeat(256) + "1" + ")".repeat(256),
+    ).is_ok(),
+  )
+}
+
+///|
+test "PRINT applies predicates after complete period transformations" {
+  let source = "2024-01-01 open Assets:A\n2024-01-01 open Income:A\n2024-01-02 * \"One\"\n  Assets:A 10 USD\n  Income:A -10 USD\n2024-01-10 balance Assets:A 10 USD\n"
+  let clear = queried(source, "PRINT FROM narration='One' CLEAR").to_text()
+  assert_false(clear.contains("Transfer balance"))
+  let dates = queried(source, "PRINT FROM date>=2024-01-05 CLEAR").to_text()
+  assert_true(dates.contains("2024-01-10 T"))
+  assert_eq(
+    queried(source, "PRINT FROM narration='One' OPEN ON 2024-01-03").to_text(),
+    "",
+  )
+}
+
+///|
+test "PRINT Unicode account alignment counts complete scalar values" {
+  let source = "2024-01-01 open Assets:𐐀 USD\n2024-01-01 open Equity:A USD\n2024-01-02 * \"unicode\"\n  Assets:𐐀 1 USD\n  Equity:A -1 USD\n"
+  let r = queried(source, "PRINT")
+  assert_true(r.is_ok())
+  assert_true(r.to_text().contains("open Assets:𐐀" + " ".repeat(40) + "USD"))
+  assert_true(r.to_text().contains("Assets:𐐀   1 USD"))
 }

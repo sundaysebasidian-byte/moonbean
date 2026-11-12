@@ -576,3 +576,41 @@ fn booked_postings(postings : Array[@ast.Posting]) -> Array[@ast.Posting] {
   })
   result
 }
+
+///|
+fn constant_query_error(expr : Expr) -> String? {
+  let pure = [
+    "abs", "bool", "coalesce", "date", "date_add", "date_bin", "date_diff", "date_part",
+    "date_trunc", "day", "decimal", "empty", "findfirst", "filter_currency", "getitem",
+    "grep", "grepn", "int", "interval", "joinstr", "leaf", "length", "lower", "maxwidth",
+    "month", "neg", "number", "parent", "parse_date", "quarter", "repr", "root",
+    "round", "safediv", "splitcomp", "str", "subst", "substr", "today", "upper",
+    "weekday", "year", "yearmonth",
+  ]
+  if expr_any(expr, fn(e) {
+      match e {
+        ECol(_) | EStar => true
+        ECall(name, _) => !pure.contains(name)
+        _ => false
+      }
+    }) ||
+    !expr_any(expr, fn(e) { e is ECall(_, _) || e is EBinary(_, _, _) }) {
+    return None
+  }
+  let errors : Array[String] = []
+  expression_type(expr, SrcPostings, errors) |> ignore
+  if !errors.is_empty() {
+    return None
+  }
+  let ledger : @realization.RealizedLedger = {
+    entries: [],
+    at: None,
+    options: @ast.Options::new(),
+    inventories: Map([]),
+    accounts: Map([]),
+    prices: @realization.PriceDb::new(),
+  }
+  let ctx = QueryContext::new(ledger, SrcPostings)
+  eval_expr(ctx, expr, relation_rows([], [[]])[0]) |> ignore
+  ctx.error
+}

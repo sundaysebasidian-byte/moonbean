@@ -19,6 +19,7 @@ fn ledger_metadata(meta : @ast.Meta, indent : String) -> String {
       (match value {
         MString(s) => ledger_quote(s)
         MNumber(n) => python_decimal(n)
+        MCurrency(c) | MAccount(c) | MTag(c) => ledger_quote(c)
         other => other.to_string()
       }) +
       "\n",
@@ -31,8 +32,8 @@ fn ledger_metadata(meta : @ast.Meta, indent : String) -> String {
 fn ledger_tags(tags : Array[String], links : Array[String]) -> String {
   let tags = tags.copy()
   let links = links.copy()
-  tags.sort()
-  links.sort()
+  tags.sort_by(python_text_compare)
+  links.sort_by(python_text_compare)
   tags.map(fn(s) { " #" + s }).join("") + links.map(fn(s) { " ^" + s }).join("")
 }
 
@@ -47,7 +48,7 @@ fn ledger_entry(entry : @ast.Entry) -> String {
         (if o.currencies.is_empty() && o.booking is None {
           o.account
         } else {
-          pad_right(o.account, 47) +
+          ledger_pad_right(o.account, 47) +
           " " +
           o.currencies.join(",") +
           o.booking
@@ -72,7 +73,7 @@ fn ledger_entry(entry : @ast.Entry) -> String {
     DBalance(b) =>
       out.write_string(
         "balance " +
-        pad_right(b.account, 47) +
+        ledger_pad_right(b.account, 47) +
         " " +
         b.amount.number.to_string() +
         b.tolerance.map(fn(n) { " ~ " + python_decimal(n) }).unwrap_or("") +
@@ -85,7 +86,7 @@ fn ledger_entry(entry : @ast.Entry) -> String {
     DPrice(p) =>
       out.write_string(
         "price " +
-        pad_right(p.currency, 22) +
+        ledger_pad_right(p.currency, 22) +
         " " +
         pad_left(p.amount.number.to_string(), 18) +
         " " +
@@ -96,7 +97,9 @@ fn ledger_entry(entry : @ast.Entry) -> String {
         "note " +
         n.account +
         " " +
-        ledger_quote(n.comment) +
+        "\"" +
+        n.comment +
+        "\"" +
         ledger_tags(n.tags, n.links),
       )
     DDocument(d) =>
@@ -104,29 +107,31 @@ fn ledger_entry(entry : @ast.Entry) -> String {
         "document " +
         d.account +
         " " +
-        ledger_quote(document_filename(entry, d)) +
+        ("\"" + document_filename(entry, d) + "\"") +
         ledger_tags(d.tags, d.links),
       )
     DEvent(e) =>
       out.write_string(
         "event " +
-        ledger_quote(e.event_type) +
+        ("\"" + e.event_type + "\"") +
         " " +
-        ledger_quote(e.description),
+        "\"" +
+        e.description +
+        "\"",
       )
     DQuery(q) =>
       out.write_string(
-        "query " + ledger_quote(q.name) + " " + ledger_quote(q.query),
+        "query " + ("\"" + q.name + "\"") + " " + ("\"" + q.query + "\""),
       )
     DCustom(c) =>
       out.write_string(
         "custom " +
-        ledger_quote(c.custom_type) +
+        ("\"" + c.custom_type + "\"") +
         c.values
         .map(fn(v) {
           " " +
           (match v {
-            CString(s) => ledger_quote(s)
+            CString(s) => "\"" + s + "\""
             CNumber(n) => python_decimal(n)
             CAmount(a) => python_decimal(a.number) + " " + a.currency
             other => other.to_string()
@@ -141,7 +146,11 @@ fn ledger_entry(entry : @ast.Entry) -> String {
         t.payee
         .map(fn(s) { if s == "" { "" } else { ledger_quote(s) + " " } })
         .unwrap_or("") +
-        (if t.narration == "" { "" } else { ledger_quote(t.narration) }) +
+        (if t.narration == "" && t.payee.unwrap_or("") == "" {
+          ""
+        } else {
+          ledger_quote(t.narration)
+        }) +
         ledger_tags(t.tags, t.links),
       )
       out.write_string("\n" + ledger_metadata(entry.meta, "  "))
@@ -209,20 +218,24 @@ fn run_print(
     entries: print_recovered_entries(realized.entries, diagnostics),
   }
   let ctx = QueryContext::new(realized, SrcDirectives("entries"))
+  let transformed = {
+    ..realized,
+    entries: print_period(realized, realized.entries, period),
+  }
   let selected : Array[@ast.Entry] = []
-  for row in directive_rows(realized, "entries") {
+  for row in directive_rows(transformed, "entries") {
     if cond_holds(ctx, filter, row) && row_entry(row) is Some(e) {
       selected.push(e)
     }
   }
-  let entries = print_period(realized, selected, period)
+  let entries = selected
   let out = StringBuilder()
   let rows : Array[Array[QueryValue]] = []
   let mut previous = ""
   for e in entries {
     let kind = directive_type(e)
     if (previous != "" && previous != kind) ||
-      !["open", "close", "balance", "note", "event", "price"].contains(kind) {
+      ["transaction", "commodity"].contains(kind) {
       out.write_char('\n')
     }
     out.write_string(ledger_entry(e))
@@ -265,10 +278,7 @@ fn print_period(
         initial
       }
       if clear {
-        let date = match end {
-          Some(end) => ordinal_date(ordinal(end) - 1)
-          None => closed.last().map(fn(e) { QDate(e.date) }).unwrap_or(QNull)
-        }
+        let date = closed.last().map(fn(e) { QDate(e.date) }).unwrap_or(QNull)
         match date {
           QDate(date) => print_clear(realized, closed, date)
           _ => closed
@@ -363,10 +373,8 @@ fn print_period(
           return date
         }
         match (a.directive, b.directive) {
-          (DTransaction(x), DTransaction(y)) =>
-            python_text_compare(x.narration, y.narration)
-          (DTransaction(_), DPrice(_)) => -1
-          (DPrice(_), DTransaction(_)) => 1
+          (DTransaction(_), DPrice(_)) => if a.loc.line == 0 { -1 } else { 0 }
+          (DPrice(_), DTransaction(_)) => if b.loc.line == 0 { 1 } else { 0 }
           _ => 0
         }
       })
@@ -553,4 +561,9 @@ fn print_clear(
     )
   }
   result
+}
+
+///|
+fn ledger_pad_right(text : String, width : Int32) -> String {
+  text + " ".repeat((width - text.iter().count()).max(0))
 }

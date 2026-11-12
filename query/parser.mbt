@@ -260,7 +260,21 @@ fn parse_primary(parser : QueryParser) -> Expr? {
           parser.fail("compilation query.invalid_aggregate")
           return None
         }
-        if oracle_signatures.any(fn(s) { s.0 == lower }) {
+        if lower == "coalesce" {
+          if args.is_empty() {
+            parser.fail(
+              "query.oracle_type_error: IndexError coalesce arguments",
+            )
+            return None
+          }
+          for arg in args {
+            if constant_query_error(arg) is Some(error) {
+              parser.fail(error)
+              return None
+            }
+          }
+        }
+        if lower == "coalesce" || oracle_signatures.any(fn(s) { s.0 == lower }) {
           Some(ECall(lower, args))
         } else {
           parser.fail(
@@ -483,7 +497,9 @@ fn parse_cond_atom(parser : QueryParser) -> Cond? {
       } else if parser.match_sym("~") {
         match parser.advance() {
           BStr(pattern) => {
-            let regex = @string.Regex("(?i:" + pattern + ")") catch {
+            let regex = @string.Regex(
+              "(?i:" + scoped_case_pattern(pattern) + ")",
+            ) catch {
               _ => {
                 parser.fail(
                   "unsupported query.unsupported.regex: invalid or unsupported regular expression",
@@ -621,7 +637,7 @@ fn parse_source_base(parser : QueryParser) -> QuerySource? {
           "postings", "transactions", "entries", "accounts", "balances", "commodities",
           "documents", "events", "notes", "prices",
         ].contains(word) {
-        parser.fail("unsupported query.unsupported.source `#" + word + "`")
+        parser.fail("compilation query.invalid_source `#" + word + "`")
         return None
       }
       match word.to_lower() {
@@ -1032,6 +1048,28 @@ fn parse_query(text : String) -> ParsedQuery {
   if unsupported.length() > 0 {
     return PqError(unsupported[0])
   }
+  if tokens.length() > 256 {
+    let mut nesting = 0
+    let mut operators = 0
+    for token in tokens {
+      match token {
+        BSym("(") => nesting = nesting + 1
+        BSym(")") => nesting = nesting - 1
+        BSym("+" | "-" | "*" | "/" | "%" | "=" | "<" | ">" | "!=" | "<=" | ">=") =>
+          operators = operators + 1
+        BWord(w) =>
+          if ["not", "and", "or"].contains(w.to_lower()) {
+            operators = operators + 1
+          }
+        _ => ()
+      }
+      if nesting > 256 || operators > 256 {
+        return PqError(
+          "syntax query.depth_limit: query exceeds portable recursion budget",
+        )
+      }
+    }
+  }
   for i in 0..<(tokens.length() - 1) {
     if tokens[i] is BSym("#") && positions[i + 1] != positions[i] + 1 {
       return PqError(
@@ -1399,6 +1437,10 @@ fn parse_source(parser : QueryParser) -> QuerySource? {
     }
   }
   let clear = parser.match_keyword("clear")
+  if start is Some(_) && close_all && clear {
+    parser.fail("query.oracle_type_error: TypeError OPEN CLOSE CLEAR end date")
+    return None
+  }
   let errors : Array[String] = []
   filter = resolve_quoted_condition(filter, SrcPostings)
   projection_condition_types(filter, SrcPostings, errors)
@@ -1451,7 +1493,7 @@ fn parse_journal(parser : QueryParser) -> ParsedQuery {
   }
   let filter = match account {
     Some(pattern) => {
-      let regex = @string.Regex("(?i:" + pattern + ")") catch {
+      let regex = @string.Regex("(?i:" + scoped_case_pattern(pattern) + ")") catch {
         _ =>
           return PqError(
             "query.oracle_type_error: PatternError invalid journal regex",
