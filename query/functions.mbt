@@ -557,6 +557,12 @@ fn eval_function(
           ),
         )
       })
+    ("safediv", [QNegativeZero(_), b]) =>
+      if value_number(b).map(fn(n) { n.is_zero() }).unwrap_or(false) {
+        QNumber(@decimal.Decimal::zero())
+      } else {
+        arithmetic(ctx, values[0], "/", b)
+      }
     ("safediv", [a, b]) =>
       match (value_number(a), value_number(b)) {
         (Some(a), Some(b)) =>

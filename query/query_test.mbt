@@ -1089,3 +1089,15 @@ test "dateutil time labels discard validated time components" {
     "2024-02-29", "2024-02-29", "2024-02-29",
   ])
 }
+
+///|
+test "rounded negative zero survives numeric consumers" {
+  let r = queried(
+    ledger_source(),
+    "SELECT repr(round(-0.4)*1),repr(round(-0.4)*-1),repr(round(-0.4)-0),repr(round(-0.4)+0),repr(safediv(round(-0.4),2)) LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "Decimal('-0')", "Decimal('0')", "Decimal('-0')", "Decimal('0')", "Decimal('-0')",
+  ])
+}

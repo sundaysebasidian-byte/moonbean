@@ -1216,7 +1216,21 @@ fn arithmetic(
       }
       match result {
         Some(n) =>
-          if n.is_zero() &&
+          if n.is_zero() && (a is QNegativeZero(_) || b is QNegativeZero(_)) {
+            let negative_a = a is QNegativeZero(_) || x.is_negative()
+            let negative_b = b is QNegativeZero(_) || y.is_negative()
+            let negative = match op {
+              "*" | "/" => negative_a != negative_b
+              "+" => negative_a && negative_b
+              "-" => negative_a && !negative_b
+              _ => false
+            }
+            if negative {
+              QNegativeZero(n.scale())
+            } else {
+              QNumber(n)
+            }
+          } else if n.is_zero() &&
             (op == "*" || op == "/") &&
             x.is_negative() != y.is_negative() &&
             !(a is QInt(_) && b is QInt(_) && op != "/") {
