@@ -894,7 +894,7 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
     }) {
     return PqError("unsupported query.unsupported.period_column")
   }
-  if distinct && !projections.all(distinct_expr) {
+  if distinct && !projections.all(fn(e) { distinct_expr(e, source) }) {
     return PqError("unsupported query.unsupported.distinct_type")
   }
   if source is SrcDirectives(table) {
@@ -1161,13 +1161,14 @@ fn transaction_cond(cond : Cond) -> Bool {
 }
 
 ///|
-fn distinct_expr(expr : Expr) -> Bool {
+fn distinct_expr(expr : Expr, source : QuerySource) -> Bool {
   match expr {
-    EPredicate(c) => !cond_any(c, fn(e) { !distinct_expr(e) })
+    EPredicate(c) => !cond_any(c, fn(e) { !distinct_expr(e, source) })
     ECol("meta" | "entry" | "open" | "close") => false
-    ECall("sum", _) => false
-    ECall(_, args) => args.all(distinct_expr)
-    EBinary(a, _, b) => distinct_expr(a) && distinct_expr(b)
+    ECall("sum", [arg]) =>
+      ["int", "decimal"].contains(expression_type(arg, source, []))
+    ECall(_, args) => args.all(fn(e) { distinct_expr(e, source) })
+    EBinary(a, _, b) => distinct_expr(a, source) && distinct_expr(b, source)
     _ => true
   }
 }

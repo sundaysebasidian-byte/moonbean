@@ -20,12 +20,6 @@ fn query_maxwidth(
   text : String,
   width : QueryValue,
 ) -> QueryValue {
-  if text.contains("-") {
-    query_error(
-      ctx, "unsupported query.unsupported.maxwidth: Python hyphen wrapping",
-    )
-    return QNull
-  }
   let n = match query_integer(width) {
     Some(n) => n
     None => {
@@ -62,18 +56,74 @@ fn query_maxwidth(
   if collapsed.iter().count() <= n {
     return QText(collapsed)
   }
-  let kept : Array[String] = []
-  let mut used = 0
+  let chunks : Array[String] = []
   for word in words {
-    let size = word.iter().count()
-    let next = used + size + (if used > 0 { 1 } else { 0 })
-    if next > n - 6 {
+    if !chunks.is_empty() {
+      chunks.push(" ")
+    }
+    let chars = word.iter().to_array()
+    let word_char = fn(i : Int32) {
+      i >= 0 &&
+      i < chars.length() &&
+      (
+        (chars[i].is_ascii_alphabetic() || chars[i].is_ascii_digit()) ||
+        chars[i] == '_' ||
+        chars[i].to_int() >= 128
+      )
+    }
+    let mut start = 0
+    let mut i = 0
+    while i < chars.length() {
+      if chars[i] == '-' {
+        let mut end = i + 1
+        while end < chars.length() && chars[end] == '-' {
+          end = end + 1
+        }
+        if end - i >= 2 && word_char(i - 1) && word_char(end) {
+          if i > start {
+            chunks.push(String::from_iter(chars[start:i].iter()))
+          }
+          chunks.push(String::from_iter(chars[i:end].iter()))
+          start = end
+        } else if end == i + 1 &&
+          word_char(i - 1) &&
+          word_char(end) &&
+          (
+            word_char(i - 2) ||
+            (i >= 3 && chars[i - 2] == '-' && word_char(i - 3))
+          ) &&
+          (
+            word_char(end + 1) ||
+            (
+              end + 2 < chars.length() &&
+              chars[end + 1] == '-' &&
+              word_char(end + 2)
+            )
+          ) {
+          chunks.push(String::from_iter(chars[start:end].iter()))
+          start = end
+        }
+        i = end
+      } else {
+        i = i + 1
+      }
+    }
+    if start < chars.length() {
+      chunks.push(String::from_iter(chars[start:].iter()))
+    }
+  }
+  let kept = StringBuilder()
+  let mut used = 0
+  for chunk in chunks {
+    let size = chunk.iter().count()
+    if used + size > n - 6 {
       break
     }
-    kept.push(word)
-    used = next
+    kept.write_string(chunk)
+    used = used + size
   }
-  QText(if kept.is_empty() { "[...]" } else { kept.join(" ") + " [...]" })
+  let prefix = kept.to_string().trim_end().to_owned()
+  QText(if prefix == "" { "[...]" } else { prefix + " [...]" })
 }
 
 ///|
@@ -193,9 +243,11 @@ fn query_substitute(
   }
   match query_regex(ctx, pattern, false) {
     Some(regex) =>
-      if regex.execute("") is Some(_) {
+      if pattern.contains("*?") ||
+        pattern.contains("+?") ||
+        pattern.contains("??") {
         query_error(
-          ctx, "unsupported query.unsupported.regex: empty regex replacement matches at BQL:1:1",
+          ctx, "unsupported query.unsupported.regex: adjacent lazy empty and nonempty matches at BQL:1:1",
         )
         QNull
       } else {

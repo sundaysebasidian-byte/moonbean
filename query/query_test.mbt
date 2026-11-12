@@ -870,7 +870,7 @@ test "string functions preserve declared unsupported boundaries" {
   assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
     "a b [...]", "ac", "c", "TRUE", "",
   ])
-  for q in ["SELECT maxwidth('a-b-c-d-e-f',10)", "SELECT grep('(?=a)','a')"] {
+  for q in ["SELECT grep('(?=a)','a')"] {
     assert_true(
       queried(ledger_source(), q).failure() is Some(@query.Unsupported(_)),
     )
@@ -989,5 +989,26 @@ test "round preserves negative zero without changing Decimal arithmetic" {
   assert_eq(r.rows[0][2].to_text(), "Decimal('-0.00')")
   assert_eq(r.rows[0][3].to_text(), "FALSE")
   assert_eq(r.rows[0][4].to_text(), "TRUE")
+}
+
+
+///|
+test "empty substitution and hyphen shortening match oracle" {
+  let r = queried(
+    ledger_source(),
+    "SELECT subst('','X','ab'),subst('a*','X','aba'),maxwidth('abc-def ghi',10),maxwidth('a-b-c-d-e-f',10) LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "XaXbX", "XXbXX", "abc- [...]", "a-b- [...]",
+  ])
+}
+
+
+///|
+test "scalar aggregate DISTINCT uses computed grouping keys" {
+  let r = queried(ledger_source(), "SELECT DISTINCT upper(account),sum(number)")
+  assert_true(r.is_ok())
+  assert_true(r.rows.length() > 0)
 }
 
