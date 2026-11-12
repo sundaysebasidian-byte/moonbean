@@ -1077,3 +1077,15 @@ test "NULL object conversions and signed interval parsing" {
     "", "", "", "relativedelta(days=+2)", "0",
   ])
 }
+
+///|
+test "dateutil time labels discard validated time components" {
+  let r = queried(
+    ledger_source(),
+    "SELECT parse_date('2024-02-29 12h30m'),parse_date('2024-02-29 12:30 UTC+3'),parse_date('2024-02-29 12:30 EST') LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "2024-02-29", "2024-02-29", "2024-02-29",
+  ])
+}
