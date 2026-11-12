@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.5
+
+- BQL: FROM (SELECT ...) subqueries with typed relation columns, AS aliases, one-based positional GROUP BY / ORDER BY, PIVOT BY, and Boolean / comparison / IS NULL / regex SELECT expressions.
+- BQL: 25 more scalar evaluators (convert, getprice, value, possign, date_part, date_trunc, maxwidth, joinstr, grep, grepn, findfirst, has_account, subst, ...). Still unimplemented: date_bin, interval(str), parse_date, today(), PRINT, signed-zero round.
+- Differential suite grows to 4030 checks against the beanquery 0.2.0 oracle.
+
+## 0.2.4
+
+- Republish the 0.2.3 contents without personal contact details in the packaged docs. No code changes.
+
 ## 0.2.3 (local candidate)
 
 - R10 performance: one full loaded-host matrix exceeds seven wasm-gc stage limits; native/JS remain within limits. Retain original records, with no load retries or performance PASS claim.
