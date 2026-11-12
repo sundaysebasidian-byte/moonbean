@@ -406,7 +406,6 @@ test "new unsupported boundaries preserve positions" {
   for
     (q, code) in [
       ("SELECT account WHERE account LIKE 'A%'", "like"),
-      ("SELECT account FROM transactions", "transaction_column"),
     ] {
     let r = queried(ledger_source(), q)
     assert_true(r.failure() is Some(@query.Unsupported(_)))
@@ -964,3 +963,16 @@ test "relation metadata functions bind schema columns instead of ledger row stat
     is Some(@query.Compilation(_)),
   )
 }
+
+///|
+test "transaction unknown columns are compilation errors" {
+  for
+    q in [
+      "SELECT missing FROM #transactions", "SELECT payee AS account,account AS payee FROM #transactions",
+    ] {
+    assert_true(
+      queried(ledger_source(), q).failure() is Some(@query.Compilation(_)),
+    )
+  }
+}
+

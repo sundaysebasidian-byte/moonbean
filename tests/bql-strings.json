@@ -364,7 +364,7 @@
     },
     {
       "query": "SELECT account FROM transactions",
-      "kind": "transaction_column",
+      "kind": "column",
       "oracle_supported": false,
       "oracle_rows": null
     },

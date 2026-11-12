@@ -925,7 +925,7 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
       !orders.all(fn(o) { transaction_expr(o.expr) }) ||
       !transaction_cond(filter) ||
       !transaction_cond(having) {
-      return PqError("unsupported query.unsupported.transaction_column")
+      return PqError("compilation query.invalid_column")
     }
   }
   let errors : Array[String] = []

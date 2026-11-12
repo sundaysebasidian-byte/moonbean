@@ -95,7 +95,7 @@ def main():
             equal, detail = compare_bql(ours, oracle) if ours else (False, 'moonbean failed')
             results.append(dict(query=query, ok=ok and equal, detail=detail))
             continue
-        code = 'query.invalid_signature' if case['kind']=='compilation' else 'query.unsupported.'+case['kind']
+        code = 'query.invalid_column' if case['kind']=='column' else 'query.invalid_signature' if case['kind']=='compilation' else 'query.unsupported.'+case['kind']
         ok = ok and proc.returncode != 0 and code in output and 'BQL:' in output
         results.append(dict(query=query, ok=ok, detail='' if ok else 'boundary or oracle capability changed'))
     sources = json.loads((Path(__file__).resolve().parent.parent / 'tests/bql-sources.json').read_text(encoding='utf-8'))
