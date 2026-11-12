@@ -10,7 +10,7 @@ import {
 }
 
 // Values
-pub fn run_query(@realization.RealizedLedger, String) -> QueryResult
+pub fn run_query(@realization.RealizedLedger, String, diagnostics? : Array[@ast.Diagnostic]) -> QueryResult
 
 // Errors
 

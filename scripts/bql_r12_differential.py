@@ -84,8 +84,6 @@ def run(ours, oracle):
     for ledger in sorted(Path("tests/ledgers").glob("*.beancount")):
         if ledger.name.startswith(("035-", "058-")):
             continue
-        if subprocess.run([str(Path(oracle) / "bean-check"), str(ledger)], capture_output=True).returncode:
-            continue
         for query in ["PRINT", "PRINT FROM date>=2024-01-03", "PRINT FROM type='transaction'", "PRINT FROM false", "PRINT FROM CLOSE ON 2024-01-04", "PRINT FROM OPEN ON 2024-01-04", "PRINT FROM OPEN ON 2024-01-03 CLOSE ON 2024-01-05"]:
             a = subprocess.run([ours, "query", str(ledger), query], capture_output=True)
             b = subprocess.run([str(Path(oracle) / "bean-query"), str(ledger), query], capture_output=True)

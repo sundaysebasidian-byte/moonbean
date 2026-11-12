@@ -1179,12 +1179,13 @@ fn run_journal(
 pub fn run_query(
   realized : @realization.RealizedLedger,
   text : String,
+  diagnostics~ : Array[@ast.Diagnostic] = [],
 ) -> QueryResult {
   match parse_query(text) {
     PqError(message) =>
       { kind: Table, columns: [], rows: [], error: Some(message), }
     PqSelect(query) => run_select(realized, query)
-    PqPrint(filter, period) => run_print(realized, filter, period)
+    PqPrint(filter, period) => run_print(realized, filter, period, diagnostics)
     PqBalances => run_balances(realized)
     PqJournal(account, limit) => run_journal(realized, account, limit)
   }

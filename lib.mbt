@@ -369,7 +369,7 @@ pub fn run_query(
   statement : String,
   at~ : @ast.Date? = None,
 ) -> @query.QueryResult {
-  @query.run_query(realize(ledger, at~), statement)
+  @query.run_query(realize(ledger, at~), statement, diagnostics=ledger.errors)
 }
 
 ///|

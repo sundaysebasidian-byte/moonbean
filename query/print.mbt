@@ -50,7 +50,20 @@ fn ledger_entry(entry : @ast.Entry) -> String {
           pad_right(o.account, 47) +
           " " +
           o.currencies.join(",") +
-          o.booking.map(fn(b) { " " + ledger_quote(b) }).unwrap_or("")
+          o.booking
+          .map(fn(b) {
+            " " +
+            ledger_quote(
+              if [
+                  "STRICT", "STRICT_WITH_SIZE", "FIFO", "LIFO", "HIFO", "NONE", "AVERAGE",
+                ].contains(b) {
+                b
+              } else {
+                "STRICT"
+              },
+            )
+          })
+          .unwrap_or("")
         }),
       )
     DClose(c) => out.write_string("close " + c.account)
@@ -64,7 +77,10 @@ fn ledger_entry(entry : @ast.Entry) -> String {
         b.amount.number.to_string() +
         b.tolerance.map(fn(n) { " ~ " + python_decimal(n) }).unwrap_or("") +
         " " +
-        b.amount.currency,
+        b.amount.currency +
+        entry.balance_discrepancy
+        .map(fn(a) { "   ; Diff: " + a.number.to_string() + " " + a.currency })
+        .unwrap_or(""),
       )
     DPrice(p) =>
       out.write_string(
@@ -213,7 +229,12 @@ fn run_print(
   realized : @realization.RealizedLedger,
   filter : Cond,
   period : QuerySource,
+  diagnostics : Array[@ast.Diagnostic],
 ) -> QueryResult {
+  let realized = {
+    ..realized,
+    entries: print_recovered_entries(realized.entries, diagnostics),
+  }
   let ctx = QueryContext::new(realized, SrcDirectives("entries"))
   let selected : Array[@ast.Entry] = []
   for row in directive_rows(realized, "entries") {
@@ -261,7 +282,10 @@ fn print_period(
       for e in entries {
         if e.date.less_than(start) {
           match e.directive {
-            DOpen(o) => active.set(o.account, e)
+            DOpen(o) =>
+              if !active.contains(o.account) {
+                active.set(o.account, e)
+              }
             DClose(c) => active.remove(c.account) |> ignore
             DPrice(p) => prices.set(p.currency + ":" + p.amount.currency, e)
             _ => ()
@@ -271,7 +295,9 @@ fn print_period(
       for e in entries {
         if e.date.less_than(start) &&
           e.directive is DOpen(o) &&
-          active.get(o.account) is Some(_) {
+          active.get(o.account) is Some(first) &&
+          first.loc.file == e.loc.file &&
+          first.loc.line == e.loc.line {
           result.push(e)
         }
       }
@@ -398,6 +424,46 @@ fn print_close(
     result.push(
       @ast.Entry::new(date, @ast.Loc::new("<conversions>", 0), DTransaction(t)),
     )
+  }
+  result
+}
+
+///|
+fn print_recovered_entries(
+  entries : Array[@ast.Entry],
+  diagnostics : Array[@ast.Diagnostic],
+) -> Array[@ast.Entry] {
+  let result : Array[@ast.Entry] = []
+  for e in entries {
+    if e.directive is DTransaction(t) {
+      let same_location = fn(a : @ast.Loc, b : @ast.Loc) {
+        a.file == b.file && a.line == b.line
+      }
+      if t.postings.filter(fn(p) { p.units is None }).length() > 1 &&
+        diagnostics.any(fn(d) {
+          d.code == "validation.missing" &&
+          (
+            same_location(d.loc, e.loc) ||
+            t.postings.any(fn(p) { same_location(d.loc, p.loc) })
+          )
+        }) {
+        continue
+      }
+      if diagnostics.any(fn(d) {
+          d.code == "validation.booking" && same_location(d.loc, e.loc)
+        }) {
+        let recovered = @ast.Transaction::new(
+          t.flag,
+          t.payee,
+          t.narration,
+          t.tags,
+          t.links,
+        )
+        result.push({ ..e, directive: DTransaction(recovered), })
+        continue
+      }
+    }
+    result.push(e)
   }
   result
 }

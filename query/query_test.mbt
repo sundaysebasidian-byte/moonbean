@@ -4,7 +4,7 @@ fn queried(source : String, statement : String) -> @query.QueryResult {
     @syntax.parse_source("test.beancount", source),
   )
   let realized = @realization.realize(ledger)
-  @query.run_query(realized, statement)
+  @query.run_query(realized, statement, diagnostics=ledger.errors)
 }
 
 ///|
@@ -1117,4 +1117,19 @@ test "PRINT validates entry predicates and period lower bounds" {
     queried(ledger_source(), "PRINT FROM OPEN ON 0001-01-01").failure()
     is Some(@query.Evaluation(_)),
   )
+}
+
+///|
+test "PRINT preserves failed balance discrepancies and recovery" {
+  let source = "2024-01-01 open Assets:A USD\n2024-01-01 open Equity:A USD\n2024-01-02 * \"opening\"\n  Assets:A 10 USD\n  Equity:A -10 USD\n2024-01-03 balance Assets:A 9 USD\n"
+  assert_true(
+    queried(source, "PRINT").to_text().contains("9 USD   ; Diff: 1 USD"),
+  )
+  let source = "2024-01-01 open Assets:A USD\n2024-01-01 open Equity:A USD\n2024-01-02 * \"two missing\"\n  Assets:A\n  Equity:A\n"
+  assert_true(!queried(source, "PRINT").to_text().contains("two missing"))
+  let source = "2024-01-01 open Assets:A USD\n2024-01-02 open Assets:A USD\n"
+  let r = queried(source, "PRINT FROM OPEN ON 2024-01-04")
+  assert_true(r.is_ok())
+  assert_eq(r.rows.length(), 1)
+  assert_true(r.to_text().has_prefix("2024-01-01 open"))
 }
