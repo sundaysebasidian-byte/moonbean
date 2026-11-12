@@ -170,9 +170,9 @@ def run(ours, oracle):
             if case['query'].startswith(('SELECT date_bin(', 'SELECT interval(', 'SELECT parse_date(', 'SELECT subst(', 'SELECT today(')):
                 boundary = 'calendar parser, Python replacement, or clock remains unimplemented'
         if category == 'unsupported' and 'query.unsupported.regex' in proc.stdout:
-            boundary = 'Python-only regex/replacement or empty replacement match'
+            boundary = 'Python-only regex/replacement or adjacent lazy empty/nonempty matches'
         if category == 'unsupported' and ('query.unsupported.set_representation' in proc.stdout or 'query.unsupported.maxwidth' in proc.stdout):
-            boundary = 'Python set iteration or hyphen wrapping remains unsupported'
+            boundary = 'CPython randomized set iteration remains unsupported'
         ok = category == expected['category']
         if category == expected['category'] == 'success':
             ok = equivalent(actual['rows'], expected['rows'])

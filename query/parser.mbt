@@ -1331,7 +1331,16 @@ fn parse_print(parser : QueryParser) -> ParsedQuery {
       ["open", "close"].contains(word.to_lower()) {
       period = match parse_source(parser) {
         Some(s) => s
-        None => return PqError(parser.error.unwrap_or("invalid PRINT period"))
+        None => {
+          let error = parser.error.unwrap_or("invalid PRINT period")
+          return PqError(
+            if error == "OPEN ON requires a date after 0001-01-01" {
+              "query.oracle_type_error: OverflowError date value out of range"
+            } else {
+              error
+            },
+          )
+        }
       }
     }
   }
@@ -1339,7 +1348,10 @@ fn parse_print(parser : QueryParser) -> ParsedQuery {
     return PqError("unexpected input after PRINT")
   }
   let errors : Array[String] = []
-  condition_types(filter, SrcDirectives("entries"), errors)
+  if !aggregate_free_cond(filter) {
+    return PqError("compilation query.invalid_aggregate: FROM clause")
+  }
+  projection_condition_types(filter, SrcDirectives("entries"), errors)
   if !errors.is_empty() {
     return PqError(errors[0])
   }

@@ -1101,3 +1101,20 @@ test "rounded negative zero survives numeric consumers" {
     "Decimal('-0')", "Decimal('0')", "Decimal('-0')", "Decimal('0')", "Decimal('-0')",
   ])
 }
+
+///|
+test "PRINT validates entry predicates and period lower bounds" {
+  for
+    q in [
+      "PRINT FROM count(*)>0", "PRINT FROM sum(1)>0", "PRINT FROM accounts~'Assets'",
+      "PRINT FROM date='2024'",
+    ] {
+    assert_true(
+      queried(ledger_source(), q).failure() is Some(@query.Compilation(_)),
+    )
+  }
+  assert_true(
+    queried(ledger_source(), "PRINT FROM OPEN ON 0001-01-01").failure()
+    is Some(@query.Evaluation(_)),
+  )
+}

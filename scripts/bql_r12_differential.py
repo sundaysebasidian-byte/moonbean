@@ -45,7 +45,7 @@ def cases():
             add(f"subst({pattern!r},'X',{text!r})", "r12-subst")
     for text, width in itertools.product(["abc-def ghi", "ab-cdefgh ij", "a-bcdef gh", "ab-c gh", "abc--def ghi", "foo-bar-baz qux", "a--b cdefghi", "abc---def ghi", "a-b-c-d-e-f"], range(4,14)):
         add(f"maxwidth({text!r},{width})", "r12-maxwidth")
-    for query in ["PRINT WHERE account='Assets:Cash'", "PRINT FROM #transactions", "PRINT LIMIT 1", "PRINT FROM missing=1", "PRINT FROM account='Assets:Cash'"]:
+    for query in ["PRINT FROM count(*)>0", "PRINT FROM sum(1)>0", "PRINT FROM accounts~'Assets'", "PRINT FROM date='2024'", "PRINT FROM OPEN ON 0001-01-01", "PRINT WHERE account='Assets:Cash'", "PRINT FROM #transactions", "PRINT LIMIT 1", "PRINT FROM missing=1", "PRINT FROM account='Assets:Cash'"]:
         out.append(dict(query=query, feature="r12-print-errors", ledger="tests/r11/prices.beancount", schema=False))
     for text in ["2024-02-29 12h30m", "2024-02-29 12:30 UTC+3", "2024-02-29 12:30 EST", "2024-02-29T23:59:60Z", "20240229T123000", "20240229123000", "12:30", "1 PM", "12am", "Monday", "02/2024", "010203", "2024-02-29T12", "2024-02-29 1230"]:
         add("parse_date(" + repr(text) + ")", "r12-dateutil-forms")
