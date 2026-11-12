@@ -175,6 +175,8 @@ test "oracle option boolean spellings and wildcard tolerance" {
 test "Unicode accounts retain lexer accepted semantic errors" {
   assert_true(@syntax.is_valid_account("Assets:Café"))
   assert_true(@syntax.is_valid_account("Assets:𐐀"))
+  assert_true(@syntax.is_valid_account("Assets:꟎"))
+  assert_true(@syntax.is_valid_account("Assets:A՘"))
   let astral = parse_ok("2024-01-01 open Assets:𐐀 USD\n")
   assert_eq(astral.entries.length(), 1)
   assert_true(@syntax.is_valid_account("Assets:Ünïcode-1"))
