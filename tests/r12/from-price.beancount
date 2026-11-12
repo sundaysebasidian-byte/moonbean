@@ -1,0 +1,7 @@
+2024-01-01 open Assets:X
+2024-01-01 open Equity:X
+2024-01-01 price XXX 1 USD
+2024-01-02 * "one"
+  Assets:X 1 XXX
+  Equity:X -1 XXX
+2024-01-05 price XXX 5 USD

@@ -94,6 +94,12 @@ def cases():
         add(expression, "r12-dynamic-comparisons")
     for expression in ["max(position)", "min(position)", "max(units(position))", "min(units(position))"]:
         out.append(dict(query="SELECT repr(" + expression + ") WHERE account='Assets:Stock' AND number=2", feature="r12-cost-order", ledger="tests/regression/cost-date-label.beancount", schema=False))
+    for query, ledger in [
+        ("SELECT account,position FROM CLEAR WHERE flag='T'", "tests/r12/clear-cost.beancount"),
+        ("SELECT repr(entry) FROM CLEAR WHERE flag='T' LIMIT 1", "tests/r12/clear-cost.beancount"),
+        ("SELECT getprice('XXX','USD') FROM CLOSE ON 2024-01-03", "tests/r12/from-price.beancount"),
+    ]:
+        out.append(dict(query=query, feature="r12-transform-context", ledger=ledger, schema=False))
     return out
 
 
