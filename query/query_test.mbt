@@ -1268,3 +1268,17 @@ test "structural comparison signatures match compilation and dynamic values" {
   let value = queried(ledger_source(), "SELECT meta('lineno')=5 LIMIT 1")
   assert_true(value.is_ok())
 }
+
+///|
+test "lazy substitutions execute when no adjacent nonempty retry is needed" {
+  let result = queried(
+    ledger_source(),
+    "SELECT subst('a+?','X','aaab'),subst('a*?','X',''),subst('(a*)+?','X','aaa') LIMIT 1",
+  )
+  assert_true(result.is_ok())
+  assert_eq(result.rows[0].map(fn(v) { v.to_text() }), ["XXXb", "X", "XX"])
+  assert_true(
+    queried(ledger_source(), "SELECT subst('a*?','X','ab')").failure()
+    is Some(@query.Unsupported(_)),
+  )
+}

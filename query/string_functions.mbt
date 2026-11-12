@@ -273,9 +273,15 @@ fn query_substitute(
   }
   match query_regex(ctx, pattern, false) {
     Some(regex) =>
-      if pattern.contains("*?") ||
-        pattern.contains("+?") ||
-        pattern.contains("??") {
+      if (
+          pattern.contains("*?") ||
+          pattern.contains("+?") ||
+          pattern.contains("??") ||
+          pattern.contains("}?")
+        ) &&
+        regex
+        .find(text)
+        .any(fn(m) { m.content().is_empty() && !m.after().is_empty() }) {
         query_error(
           ctx, "unsupported query.unsupported.regex: adjacent lazy empty and nonempty matches at BQL:1:1",
         )

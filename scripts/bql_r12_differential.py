@@ -100,6 +100,8 @@ def cases():
         ("SELECT getprice('XXX','USD') FROM CLOSE ON 2024-01-03", "tests/r12/from-price.beancount"),
     ]:
         out.append(dict(query=query, feature="r12-transform-context", ledger=ledger, schema=False))
+    for expression in ["subst('a+?','X','aaab')", "subst('a+?','X','bbb')", "subst('a*?','X','')", "subst('(a*)+?','X','aaa')", "subst('a{1,2}?','X','aaab')"]:
+        add(expression, "r12-lazy-subst")
     return out
 
 
