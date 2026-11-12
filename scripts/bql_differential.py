@@ -2,6 +2,7 @@
 """Oracle comparisons for extended BQL, using independently authored inputs."""
 import argparse
 import json
+import sys
 import subprocess
 from pathlib import Path
 import conformance as c
@@ -14,6 +15,7 @@ import bql_sort_differential as sort_cases
 import bql_r9_differential as r9_cases
 import bql_r10_differential as r10_cases
 import bql_r11_differential as r11_cases
+import bql_r12_differential as r12_cases
 
 
 def compare_bql(ours, oracle):
@@ -137,7 +139,9 @@ def main():
     results.extend(r9_cases.run(args.ours,args.oracle))
     results.extend(r10_cases.run(args.ours,args.oracle))
     results.extend(r11_cases.run(args.ours,args.oracle))
+    results.extend(r12_cases.run(args.ours,args.oracle))
     print(json.dumps(results, indent=2))
+    print(f"BQL differential: {sum(r['ok'] for r in results)}/{len(results)} checks passed", file=sys.stderr)
     return int(any(not r['ok'] for r in results))
 
 if __name__ == '__main__':
