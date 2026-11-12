@@ -26,6 +26,7 @@ fn truth(value : QueryValue) -> Bool {
     QNull => false
     QBool(b) => b
     QText(s) => s != ""
+    QNegativeZero(_) => false
     QNumber(n) => !n.is_zero()
     QInt(n) => n != @bigint.BigInt::from_int(0)
     QDict(v) | QRecord(_, v) => !v.is_empty()
@@ -339,11 +340,8 @@ fn eval_function(
           } else {
             n.quantize(digits)
           }
-          if v is QNumber(_) && rounded.is_zero() && n.is_negative() {
-            query_error(
-              ctx, "unsupported query.unsupported.decimal_representation: signed-zero rounding",
-            )
-            QNull
+          if (v is QNumber(_) || v is QNegativeZero(_)) && rounded.is_zero() && (n.is_negative() || v is QNegativeZero(_)) {
+            QNegativeZero(digits)
           } else if v is QInt(_) || v is QBool(_) {
             QInt(
               @decimal.Decimal::parse(rounded.to_string()).unwrap().mantissa(),
@@ -381,6 +379,7 @@ fn eval_function(
     ("int" | "decimal", [v]) => {
       let n = match v {
         QInt(n) => Some(@decimal.Decimal::new(n, 0))
+        QNegativeZero(scale) => Some(@decimal.Decimal::zero_scaled(scale))
         QNumber(n) => Some(n)
         QBool(b) => Some(@decimal.Decimal::from_int(if b { 1 } else { 0 }))
         _ => None
@@ -388,7 +387,7 @@ fn eval_function(
       match n {
         Some(n) =>
           if name == "decimal" {
-            QNumber(n)
+            if v is QNegativeZero(scale) { QNegativeZero(scale) } else { QNumber(n) }
           } else {
             QInt(
               @decimal.Decimal::parse(
@@ -522,6 +521,7 @@ fn eval_function(
       QAmount(
         @ast.Amount::new(a.number.neg().round_to_significant(28), a.currency),
       )
+    ("neg" | "abs", [QNegativeZero(scale)]) => QNumber(@decimal.Decimal::zero_scaled(scale))
     ("neg" | "abs", [QNumber(n)]) =>
       QNumber(
         (if name == "neg" { n.neg() } else { n.abs() }).round_to_significant(28),

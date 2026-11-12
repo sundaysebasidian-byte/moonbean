@@ -66,7 +66,7 @@ def run(ours,oracle):
                 ok=equivalent(av,bv);detail='' if ok else str((av,bv))[:1000]
         except Exception as e:ok=False;detail=str(e)
         result.append(dict(signature=sig,query=q,ok=ok,detail=detail))
-    for expression in ["decimal('-0.00')","decimal('NaN')","round(-0.1)","0.0/-1","safediv(0.0,-1)","0.0*-1"]:
+    for expression in ["decimal('-0.00')","decimal('NaN')","0.0/-1","safediv(0.0,-1)","0.0*-1"]:
         q='SELECT '+expression
         a=subprocess.run([ours,'query',ledger,q,'--json'],capture_output=True,text=True)
         b=subprocess.run([str(Path(oracle)/'python'),'scripts/oracle_query_values.py',ledger,q],capture_output=True,text=True)

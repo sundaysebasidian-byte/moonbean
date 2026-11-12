@@ -22,6 +22,5 @@ def run(ours,oracle):
    for tail in ['', ' WHERE false',' ORDER BY count(*) DESC']:
     queries.append(f'SELECT {projection} FROM {source}{tail}')
  queries += ['SELECT payee,count(*) FROM transactions','SELECT payee,count(*) FROM transactions ORDER BY payee','SELECT account ORDER BY count(*)','SELECT account,count(*) HAVING count(*)>1','SELECT account,count(*) GROUP BY account HAVING count(*)>1 ORDER BY count(*) DESC','SELECT account,sum(number)+number','SELECT sum(number) WHERE count(*)>0','SELECT account,count(*) WHERE sum(number)>0','SELECT bool(balance)','SELECT round(125.0,-1)','SELECT round(-0.1,-1)']
- # A negative-zero result is an intentional, separately documented boundary.
- results=[compare(ours,oracle,'tests/r9/tx.beancount',q) for q in queries[:-1]]
+ results=[compare(ours,oracle,'tests/r9/tx.beancount',q) for q in queries]
  return results

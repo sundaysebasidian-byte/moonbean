@@ -43,6 +43,7 @@ pub(all) enum QueryValue {
   QSet(Array[String])
   QFrozenSet(Array[String])
   QNumber(@decimal.Decimal)
+  QNegativeZero(Int)
   QDate(@ast.Date)
   QAmount(@ast.Amount)
   QPosition(@booking.Position)

@@ -642,7 +642,7 @@ test "nonhashable groups and structural comparisons fail explicitly" {
 
 ///|
 test "signed zero numeric results reject exact representation" {
-  for expression in ["round(-0.1)", "0.0/-1", "safediv(0.0,-1)", "0.0*-1"] {
+  for expression in ["0.0/-1", "safediv(0.0,-1)", "0.0*-1"] {
     let r = queried(ledger_source(), "SELECT repr(" + expression + ") LIMIT 1")
     assert_true(r.failure() is Some(@query.Unsupported(_)))
   }
@@ -974,5 +974,20 @@ test "transaction unknown columns are compilation errors" {
       queried(ledger_source(), q).failure() is Some(@query.Compilation(_)),
     )
   }
+}
+
+
+///|
+test "round preserves negative zero without changing Decimal arithmetic" {
+  let r = queried(
+    ledger_source(),
+    "SELECT repr(round(-0.4)),repr(round(-0.04,1)),repr(round(round(-0.4),2)),bool(round(-0.4)),round(-0.4)=0 LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0][0].to_text(), "Decimal('-0')")
+  assert_eq(r.rows[0][1].to_text(), "Decimal('-0.0')")
+  assert_eq(r.rows[0][2].to_text(), "Decimal('-0.00')")
+  assert_eq(r.rows[0][3].to_text(), "FALSE")
+  assert_eq(r.rows[0][4].to_text(), "TRUE")
 }
 

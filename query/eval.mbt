@@ -514,6 +514,7 @@ fn cond_holds(ctx : QueryContext, cond : Cond, row : BqlRow) -> Bool {
         QSet(values) | QFrozenSet(values) => values.length() > 0
         QNull => false
         QText(text) => text != ""
+        QNegativeZero(_) => false
         QNumber(number) => !number.is_zero()
         QAmount(amount) => !amount.number.is_zero()
         QPosition(position) => !position.units.number.is_zero()
@@ -731,6 +732,7 @@ fn eval_aggregate(
                   inventory.add(p)
                 }
               QInt(n) => integer_total = integer_total.add(n)
+              QNegativeZero(scale) => total = total.add(@decimal.Decimal::zero_scaled(scale))
               QNumber(n) => total = total.add(n)
               QBool(b) =>
                 if b {
@@ -823,6 +825,7 @@ fn group_key(ctx : QueryContext, exprs : Array[Expr], row : BqlRow) -> String {
           )
           ""
         }
+        QNegativeZero(scale) => decimal_group_key(@decimal.Decimal::zero_scaled(scale))
         QNumber(n) => decimal_group_key(n)
         QAmount(a) => "amount:" + a.currency + ":" + decimal_group_key(a.number)
         _ => value.to_json()
@@ -1242,6 +1245,7 @@ fn grouped_cond(ctx : QueryContext, cond : Cond, rows : Array[BqlRow]) -> Bool {
     CTruthy(e) =>
       match eval_grouped(ctx, e, rows) {
         QBool(b) => b
+        QNegativeZero(_) => false
         QNumber(n) => !n.is_zero()
         QNull => false
         _ => true
@@ -1448,6 +1452,7 @@ fn transaction_accounts(postings : Array[@ast.Posting]) -> Array[String] {
 fn distinct_key(value : QueryValue) -> String {
   match value {
     QInt(n) => "n:" + n.to_string()
+    QNegativeZero(scale) => "n:" + decimal_group_key(@decimal.Decimal::zero_scaled(scale))
     QNumber(n) => "n:" + decimal_group_key(n)
     QBool(b) => if b { "n:1" } else { "n:0" }
     QSet(s) | QFrozenSet(s) => {

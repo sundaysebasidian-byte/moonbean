@@ -12,6 +12,7 @@ pub(all) enum QueryValue {
   QSet(Array[String])
   QFrozenSet(Array[String])
   QNumber(@decimal.Decimal)
+  QNegativeZero(Int32)
   QDate(@ast.Date)
   QAmount(@ast.Amount)
   QPosition(@booking.Position)
@@ -86,6 +87,7 @@ pub fn QueryValue::to_text(self : QueryValue) -> String {
       sorted.join(",")
     }
     QText(text) => text
+    QNegativeZero(scale) => "-" + python_decimal(@decimal.Decimal::zero_scaled(scale))
     QNumber(number) => python_decimal(number)
     QDate(date) => date.to_string()
     QAmount(amount) => python_amount(amount)
@@ -159,6 +161,7 @@ pub fn QueryValue::to_json(self : QueryValue) -> String {
       values.map(fn(s) { "\"" + query_json_escape(s) + "\"" }).join(",") +
       "]"
     QText(text) => "\"" + query_json_escape(text) + "\""
+    QNegativeZero(scale) => "-" + python_decimal(@decimal.Decimal::zero_scaled(scale))
     QNumber(number) => python_decimal(number)
     QDate(date) => "\"" + date.to_string() + "\""
     QAmount(amount) => query_amount_json(amount)
@@ -187,6 +190,7 @@ fn value_number(value : QueryValue) -> @decimal.Decimal? {
   match value {
     QBool(b) => Some(@decimal.Decimal::from_int(if b { 1 } else { 0 }))
     QInt(n) => Some(@decimal.Decimal::new(n, 0))
+    QNegativeZero(scale) => Some(@decimal.Decimal::zero_scaled(scale))
     QNumber(number) => Some(number)
     QAmount(amount) => Some(amount.number)
     QPosition(position) => Some(position.units.number)

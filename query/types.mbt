@@ -40,7 +40,7 @@ fn expression_type(
     EValue(value) =>
       match value {
         QInt(_) => "int"
-        QNumber(_) => "decimal"
+        QNumber(_) | QNegativeZero(_) => "decimal"
         QText(_) => "str"
         QNull => "nonetype"
         _ => "object"

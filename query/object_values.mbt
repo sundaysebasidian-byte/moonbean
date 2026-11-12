@@ -56,6 +56,7 @@ fn python_string(text : String) -> String {
 fn python_repr(value : QueryValue) -> String {
   match value {
     QText(s) => python_string(s)
+    QNegativeZero(_) => "Decimal(" + python_string(value.to_text()) + ")"
     QNumber(n) => "Decimal(" + python_string(python_decimal(n)) + ")"
     QInt(n) => n.to_string()
     QDate(d) =>
@@ -125,6 +126,7 @@ fn nested_json(value : QueryValue) -> String {
       ",\"value\":" +
       QText(v).to_json() +
       "}"
+    QNegativeZero(_) => "{\"_decimal\":" + QText(value.to_text()).to_json() + "}"
     QNumber(n) => "{\"_decimal\":" + QText(python_decimal(n)).to_json() + "}"
     QDate(d) => "{\"_date\":" + QText(d.to_string()).to_json() + "}"
     _ => value.to_json()
