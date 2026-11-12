@@ -145,34 +145,7 @@ fn ledger_entry(entry : @ast.Entry) -> String {
         ledger_tags(t.tags, t.links),
       )
       out.write_string("\n" + ledger_metadata(entry.meta, "  "))
-      let postings = t.postings.copy()
-      let currencies : Array[String] = []
-      let currency = fn(p : @ast.Posting) {
-        if p.units is Some(a) {
-          if posting_cost(p, a) is Some(c) {
-            c.currency
-          } else if posting_price(p) is QAmount(a) {
-            a.currency
-          } else {
-            a.currency
-          }
-        } else {
-          ""
-        }
-      }
-      for p in postings {
-        if !currencies.contains(currency(p)) {
-          currencies.push(currency(p))
-        }
-      }
-      postings
-      .mut_view()
-      .stable_sort_by(fn(a, b) {
-        currencies
-        .search(currency(a))
-        .unwrap()
-        .compare(currencies.search(currency(b)).unwrap())
-      })
+      let postings = booked_postings(t.postings)
       let mut account_width = 0
       let mut number_width = 0
       for p in postings {
@@ -271,6 +244,39 @@ fn print_period(
   period : QuerySource,
 ) -> Array[@ast.Entry] {
   match period {
+    SrcFrom(_, start, end, close_all, clear) => {
+      let initial = match start {
+        Some(start) => print_period(realized, entries, SrcOpen(start, end))
+        None =>
+          match end {
+            Some(end) => print_period(realized, entries, SrcClose(end))
+            None => entries
+          }
+      }
+      let closed = if close_all && initial.last() is Some(last) {
+        print_close_at(
+          realized,
+          initial,
+          last.date,
+          "account_current_conversions",
+          "Conversions:Current",
+        )
+      } else {
+        initial
+      }
+      if clear {
+        let date = match end {
+          Some(end) => ordinal_date(ordinal(end) - 1)
+          None => closed.last().map(fn(e) { QDate(e.date) }).unwrap_or(QNull)
+        }
+        match date {
+          QDate(date) => print_clear(realized, closed, date)
+          _ => closed
+        }
+      } else {
+        closed
+      }
+    }
     SrcClose(end) =>
       print_close(
         realized, entries, end, "account_current_conversions", "Conversions:Current",
@@ -384,7 +390,22 @@ fn print_close(
   option : String,
   suffix : String,
 ) -> Array[@ast.Entry] {
-  let result = entries.filter(fn(e) { e.date.less_than(end) })
+  let entries = entries.filter(fn(e) { e.date.less_than(end) })
+  match ordinal_date(ordinal(end) - 1) {
+    QDate(date) => print_close_at(realized, entries, date, option, suffix)
+    _ => entries
+  }
+}
+
+///|
+fn print_close_at(
+  realized : @realization.RealizedLedger,
+  entries : Array[@ast.Entry],
+  date : @ast.Date,
+  option : String,
+  suffix : String,
+) -> Array[@ast.Entry] {
+  let result = entries.copy()
   let inventory = @booking.Inventory::new()
   for row in posting_rows({ ..realized, entries: result, }, false) {
     inventory.add(row.position)
@@ -420,11 +441,9 @@ fn print_close(
     )
     t.postings.push(posting)
   }
-  if ordinal_date(ordinal(end) - 1) is QDate(date) {
-    result.push(
-      @ast.Entry::new(date, @ast.Loc::new("<conversions>", 0), DTransaction(t)),
-    )
-  }
+  result.push(
+    @ast.Entry::new(date, @ast.Loc::new("<conversions>", 0), DTransaction(t)),
+  )
   result
 }
 
@@ -464,6 +483,74 @@ fn print_recovered_entries(
       }
     }
     result.push(e)
+  }
+  result
+}
+
+///|
+fn print_clear(
+  realized : @realization.RealizedLedger,
+  entries : Array[@ast.Entry],
+  date : @ast.Date,
+) -> Array[@ast.Entry] {
+  let balances : Map[String, @booking.Inventory] = Map([])
+  for row in posting_rows({ ..realized, entries, }, false) {
+    if ["Income", "Expenses"].contains(@ast.account_root(row.account)) {
+      balances
+      .get_or_init(row.account, fn() { @booking.Inventory::new() })
+      .add(row.position)
+    }
+  }
+  let result = entries.copy()
+  let accounts = balances.keys().to_array()
+  accounts.sort_by(python_text_compare)
+  for account in accounts {
+    let inventory = balances.get(account).unwrap()
+    if inventory.is_empty() {
+      continue
+    }
+    let t = @ast.Transaction::new(
+      "T",
+      None,
+      "Transfer balance for '" + account + "' (Transfer balance)",
+      [],
+      [],
+    )
+    for position in inventory.positions {
+      let p = @ast.Posting::new(account)
+      p.units = Some(
+        @ast.Amount::new(
+          position.units.number.neg().round_to_significant(28),
+          position.units.currency,
+        ),
+      )
+      p.cost = position.cost.map(fn(c) {
+        @ast.CostSpec::new_per(c.number, c.currency, c.date, c.label)
+      })
+      let q = @ast.Posting::new(
+        realized.options.equity_account(
+          "account_current_earnings", "Earnings:Current",
+        ),
+      )
+      q.units = Some(
+        match position.cost {
+          Some(c) =>
+            @ast.Amount::new(
+              position.units.number.mul(c.number).round_to_significant(28),
+              c.currency,
+            )
+          None => position.units
+        },
+      )
+      t.postings.append([p, q])
+    }
+    result.push(
+      @ast.Entry::new(
+        date,
+        @ast.Loc::new("<transfer_balances>", 0),
+        DTransaction(t),
+      ),
+    )
   }
   result
 }

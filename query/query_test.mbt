@@ -454,8 +454,8 @@ test "only count accepts a star argument on either source" {
         "sum(*)", "year(*)", "meta(*)", "root(*)", "unknown(*)", "sum(year(*))",
       ] {
       let r = queried(ledger_source(), "SELECT " + expr + " FROM " + source)
-      assert_true(r.failure() is Some(@query.Unsupported(_)))
-      assert_true(r.error.unwrap().contains("query.unsupported.star"))
+      assert_true(r.failure() is Some(@query.Syntax(_)))
+      assert_true(r.error.unwrap().contains("unexpected star"))
       assert_true(r.error.unwrap().contains("BQL:1:"))
     }
     let r = queried(ledger_source(), "SELECT count(*) FROM " + source)
@@ -471,7 +471,7 @@ test "only count accepts a star argument on either source" {
   }
   assert_eq(
     queried(ledger_source(), "SELECT\n  sum(*) FROM postings").error,
-    Some("unsupported query.unsupported.star at BQL:2:7"),
+    Some("unexpected star at BQL:2:7"),
   )
 }
 
@@ -505,10 +505,11 @@ test "distinct position uses exact oracle representation" {
 }
 
 ///|
-test "opening summaries reject unavailable transaction account sets" {
+test "opening summaries retain transaction account sets" {
   let r = queried(ledger_source(), "SELECT accounts FROM OPEN ON 2024-03-01")
-  assert_true(r.failure() is Some(@query.Unsupported(_)))
-  assert_true(r.error.unwrap().contains("query.unsupported.period_column"))
+  assert_true(r.is_ok())
+  assert_true(r.rows.length() > 0)
+  assert_true(r.rows[0][0].to_text().contains("Equity:Opening-Balances"))
 }
 
 ///|
@@ -631,17 +632,18 @@ test "nonhashable groups and structural comparisons fail explicitly" {
   let r = queried(ledger_source(), "SELECT meta FROM #entries GROUP BY meta")
   assert_true(r.failure() is Some(@query.Compilation(_)))
   let r = queried(ledger_source(), "SELECT meta FROM #entries WHERE meta=meta")
-  assert_true(r.failure() is Some(@query.Unsupported(_)))
+  assert_true(r.failure() is Some(@query.Compilation(_)))
   let source = "2024-01-01 open Assets:A USD\n2024-01-01 open Equity:A USD\n2024-01-02 * \"one\" #a #b\n  Assets:A 1 USD\n  Equity:A -1 USD\n2024-01-03 * \"two\" #b #a\n  Assets:A 1 USD\n  Equity:A -1 USD\n"
   let r = queried(source, "SELECT count(*) GROUP BY tags")
   assert_true(r.failure() is Some(@query.Compilation(_)))
 }
 
 ///|
-test "signed zero numeric results reject exact representation" {
+test "signed zero query arithmetic preserves exact representation" {
   for expression in ["0.0/-1", "safediv(0.0,-1)", "0.0*-1"] {
     let r = queried(ledger_source(), "SELECT repr(" + expression + ") LIMIT 1")
-    assert_true(r.failure() is Some(@query.Unsupported(_)))
+    assert_true(r.is_ok())
+    assert_eq(r.rows[0][0].to_text(), "Decimal('-0.0')")
   }
 }
 
@@ -1132,4 +1134,120 @@ test "PRINT preserves failed balance discrepancies and recovery" {
   assert_true(r.is_ok())
   assert_eq(r.rows.length(), 1)
   assert_true(r.to_text().has_prefix("2024-01-01 open"))
+}
+
+///|
+test "membership lists BETWEEN modulo and inventory getitem" {
+  let r = queried(
+    ledger_source(),
+    "SELECT 1 IN (1,2),1 NOT IN (2,3),NULL IN (1,2),1 BETWEEN 0.0 AND 2,length((1,NULL,true)),repr(-5%3),repr(-5.0%3.0),getitem(balance,'USD'),repr(decimal('-0.00')),repr(-0.0),repr(0.0/decimal('-0.01')) LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "TRUE", "TRUE", "", "TRUE", "2", "1", "Decimal('-2.0')", "", "Decimal('-0.00')",
+    "Decimal('0.0')", "Decimal('-0E+1')",
+  ])
+  assert_true(
+    queried(ledger_source(), "SELECT (account,2)").failure()
+    is Some(@query.Syntax(_)),
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT (-1,2)").failure()
+    is Some(@query.Syntax(_)),
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT 1 BETWEEN NULL AND 2").failure()
+    is Some(@query.Compilation(_)),
+  )
+}
+
+///|
+test "FROM filters and closing clearing transform posting sources" {
+  let filtered = queried(
+    ledger_source(),
+    "SELECT account FROM account='Assets:Cash'",
+  )
+  assert_true(filtered.is_ok())
+  assert_eq(filtered.rows.length(), 2)
+  let cleared = queried(
+    ledger_source(),
+    "SELECT account,number FROM CLEAR WHERE flag='T'",
+  )
+  assert_true(cleared.is_ok())
+  assert_eq(cleared.rows.length(), 4)
+  let closed = queried(
+    ledger_source(),
+    "SELECT account FROM CLOSE ON 2024-03-01",
+  )
+  assert_true(closed.is_ok())
+  assert_eq(closed.rows.length(), 2)
+}
+
+///|
+test "quoted words resolve case sensitively in their source schema" {
+  let rows = queried(
+    ledger_source(),
+    "SELECT \"account\",\"ACCOUNT\",'account' LIMIT 1",
+  )
+  assert_true(rows.is_ok())
+  assert_eq(rows.rows[0][0].to_text(), "Assets:Cash")
+  assert_eq(rows.rows[0][1].to_text(), "ACCOUNT")
+  assert_eq(rows.rows[0][2].to_text(), "account")
+  let transaction = queried(
+    ledger_source(),
+    "SELECT \"account\" FROM #transactions LIMIT 1",
+  )
+  assert_true(transaction.is_ok())
+  assert_eq(transaction.rows[0][0].to_text(), "account")
+}
+
+///|
+test "mixed aggregate clauses bind ordinary columns to the final source row" {
+  let result = queried(
+    ledger_source(),
+    "SELECT account,count(*) GROUP BY account HAVING account=first(account)",
+  )
+  assert_true(result.is_ok())
+  assert_eq(result.rows.length(), 1)
+  assert_eq(result.rows[0][0].to_text(), "Assets:Cash")
+  let ordered = queried(
+    ledger_source(),
+    "SELECT account,sum(number) GROUP BY account ORDER BY sum(number)+number",
+  )
+  assert_true(ordered.is_ok())
+  assert_eq(ordered.rows[0][0].to_text(), "Income:Salary")
+}
+
+///|
+test "canonical JOURNAL BALANCES and structural DISTINCT share the select plan" {
+  let journal = queried(ledger_source(), "JOURNAL")
+  assert_true(journal.is_ok())
+  assert_eq(journal.columns.length(), 7)
+  assert_eq(journal.rows.length(), 4)
+  let balances = queried(ledger_source(), "BALANCES AT cost")
+  assert_true(balances.is_ok())
+  assert_eq(balances.columns[1], "SUM(cost(position))")
+  let inventories = queried(
+    ledger_source(),
+    "SELECT DISTINCT sum(position) GROUP BY date",
+  )
+  assert_true(inventories.is_ok())
+  assert_eq(inventories.rows.length(), 1)
+  assert_true(queried(ledger_source(), "SELECT DISTINCT meta").is_ok())
+}
+
+///|
+test "structural comparison signatures match compilation and dynamic values" {
+  for expr in ["meta", "entry", "balance", "position", "tags", "(1,2)"] {
+    assert_true(
+      queried(ledger_source(), "SELECT " + expr + "=" + expr).failure()
+      is Some(@query.Compilation(_)),
+    )
+    assert_true(
+      queried(ledger_source(), "SELECT account WHERE " + expr + "=" + expr).failure()
+      is Some(@query.Compilation(_)),
+    )
+  }
+  let value = queried(ledger_source(), "SELECT meta('lineno')=5 LIMIT 1")
+  assert_true(value.is_ok())
 }

@@ -70,7 +70,7 @@ def run(ours,oracle):
         q='SELECT '+expression
         a=subprocess.run([ours,'query',ledger,q,'--json'],capture_output=True,text=True)
         b=subprocess.run([str(Path(oracle)/'python'),'scripts/oracle_query_values.py',ledger,q],capture_output=True,text=True)
-        if expression == "round(-0.1)":
+        if expression != "decimal('NaN')":
             ok = a.returncode == b.returncode == 0 and equivalent(json.loads(a.stdout)['rows'], json.loads(b.stdout))
             result.append(dict(query=q,kind='signed-zero round result',ok=ok,detail='' if ok else 'signed-zero round differs'))
         else:

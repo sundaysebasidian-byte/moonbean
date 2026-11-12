@@ -49,8 +49,46 @@ def cases():
         out.append(dict(query=query, feature="r12-print-errors", ledger="tests/r11/prices.beancount", schema=False))
     for text in ["2024-02-29 12h30m", "2024-02-29 12:30 UTC+3", "2024-02-29 12:30 EST", "2024-02-29T23:59:60Z", "20240229T123000", "20240229123000", "12:30", "1 PM", "12am", "Monday", "02/2024", "010203", "2024-02-29T12", "2024-02-29 1230"]:
         add("parse_date(" + repr(text) + ")", "r12-dateutil-forms")
+    for expr in ["(1,2)", "(3,1,2,3)", "(NULL,NULL)", "length((1,NULL,true))", "(account,2)", "(-1,2)", "(+1,2)", "((1,2),(3,4))", "1 IN (1,2)", "1 NOT IN (2,3)", "NULL IN (1,2)", "1 IN (NULL,2)", "1 IN NULL", "1 IN 2", "1 IN '123'", "'a' IN 'abc'", "1 IN tags", "'a' IN meta", "'USD' IN units(position)", "units(position) IN position", "'USD' IN position", "position IN balance", "1 BETWEEN 0.0 AND 2", "1 BETWEEN NULL AND 2", "true BETWEEN false AND true", "'b' BETWEEN 'a' AND 'c'", "getitem(balance,'USD')", "getitem(balance,'USD',position)", "repr(decimal('-0.00'))", "repr(-0.0)", "repr(0.0/decimal('-0.01'))", "repr(decimal('-0E+3'))"]:
+        add(expr, "r12-operators")
+    for a, b in itertools.product(["-6", "-5", "0", "1", "5", "-6.0", "-5.0", "0.0", "1.25", "123456789012345678901234567890123456789.0"], ["-3", "0", "2", "0.2"]):
+        add("repr(" + a + "%" + b + ")", "r12-modulo")
     for query in ["SELECT DISTINCT upper(account),sum(number)", "SELECT DISTINCT sum(number)", "SELECT DISTINCT upper(account),sum(number) GROUP BY upper(account)"]:
         out.append(dict(query=query, feature="r12-distinct", ledger="tests/r9/tx.beancount", schema=False))
+    for query in [
+        'SELECT "account" LIMIT 1', 'SELECT "missing" LIMIT 1',
+        'SELECT "ACCOUNT" LIMIT 1', 'SELECT upper("account") LIMIT 1',
+        'SELECT "account" FROM #transactions LIMIT 1',
+        "SELECT \"date\" FROM #entries WHERE \"type\"='open' LIMIT 1",
+        'SELECT *,account LIMIT 1', 'SELECT account,* LIMIT 1',
+        'SELECT DISTINCT meta LIMIT 3', 'SELECT DISTINCT entry LIMIT 3',
+        'SELECT DISTINCT sum(position) GROUP BY account',
+        'SELECT DISTINCT sum(units(position)) GROUP BY account',
+        'SELECT DISTINCT balance LIMIT 3', 'SELECT DISTINCT (1,2)',
+        'SELECT account,count(*) GROUP BY account HAVING account=first(account)',
+        'SELECT account,count(*) GROUP BY account HAVING count(*)>0 AND account=account',
+        'SELECT account,sum(number) GROUP BY account ORDER BY sum(number)+number',
+        "SELECT account,count(*) WHERE account!='Income:Salary' GROUP BY account HAVING account=last(account)",
+        'SELECT account,number FROM accounts',
+        'SELECT account,number FROM date>=2024-01-08',
+        "SELECT account FROM account='Assets:Cash'",
+        'SELECT account,number FROM CLOSE', 'SELECT account,number FROM CLEAR',
+        'SELECT account,number FROM OPEN ON 2024-01-07 CLOSE ON 2024-02-01 CLEAR',
+        'SELECT meta,accounts FROM OPEN ON 2024-01-07 LIMIT 2',
+        'SELECT filename,lineno,location FROM OPEN ON 2024-01-07 LIMIT 1',
+        'SELECT id FROM OPEN ON 2024-01-07 LIMIT 2',
+        'JOURNAL', 'JOURNAL "Cash"', 'JOURNAL AT units',
+        'JOURNAL FROM CLOSE ON 2024-01-08',
+        'BALANCES', 'BALANCES AT cost', "BALANCES FROM account='Assets:Cash'",
+    ]:
+        out.append(dict(query=query, feature="r12-language", ledger="tests/r9/tx.beancount", schema=False))
+    for expression in ["meta", "entry", "balance", "(1,2)", "units(position)", "position", "tags", "accounts"]:
+        for op in ["=", "!=", "<", "<=", ">", ">="]:
+            add(expression + op + expression, "r12-comparison-types")
+    for expression in ["meta('lineno')=meta('lineno')", "meta('lineno')=10", "entry_meta('__tolerances__')=1", "entry_meta('__tolerances__')<1"]:
+        add(expression, "r12-dynamic-comparisons")
+    for expression in ["max(position)", "min(position)", "max(units(position))", "min(units(position))"]:
+        out.append(dict(query="SELECT repr(" + expression + ") WHERE account='Assets:Stock' AND number=2", feature="r12-cost-order", ledger="tests/regression/cost-date-label.beancount", schema=False))
     return out
 
 
@@ -84,7 +122,7 @@ def run(ours, oracle):
     for ledger in sorted(Path("tests/ledgers").glob("*.beancount")):
         if ledger.name.startswith(("035-", "058-")):
             continue
-        for query in ["PRINT", "PRINT FROM date>=2024-01-03", "PRINT FROM type='transaction'", "PRINT FROM false", "PRINT FROM CLOSE ON 2024-01-04", "PRINT FROM OPEN ON 2024-01-04", "PRINT FROM OPEN ON 2024-01-03 CLOSE ON 2024-01-05"]:
+        for query in ["PRINT", "PRINT FROM date>=2024-01-03", "PRINT FROM type='transaction'", "PRINT FROM false", "PRINT FROM CLOSE ON 2024-01-04", "PRINT FROM OPEN ON 2024-01-04", "PRINT FROM OPEN ON 2024-01-03 CLOSE ON 2024-01-05", "PRINT FROM CLEAR", "PRINT FROM CLOSE"]:
             a = subprocess.run([ours, "query", str(ledger), query], capture_output=True)
             b = subprocess.run([str(Path(oracle) / "bean-query"), str(ledger), query], capture_output=True)
             ok = a.returncode == b.returncode == 0 and a.stdout == b.stdout

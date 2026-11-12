@@ -49,28 +49,7 @@ fn eval_predicate(
           QNull
         }
       }
-    CCmp(a, op, b) => {
-      let x = evaluate(a)
-      let y = evaluate(b)
-      if x is QNull || y is QNull {
-        return QNull
-      }
-      match typed_compare(ctx, x, y) {
-        None => QNull
-        Some(n) =>
-          QBool(
-            match op {
-              "=" | "==" => n == 0
-              "!=" | "<>" => n != 0
-              "<" => n < 0
-              "<=" => n <= 0
-              ">" => n > 0
-              ">=" => n >= 0
-              _ => false
-            },
-          )
-      }
-    }
+    CCmp(a, op, b) => query_comparison(ctx, evaluate(a), op, evaluate(b))
   }
 }
 
@@ -97,16 +76,11 @@ fn projection_condition_types(
     CCmp(a, _, b) => {
       let ta = expression_type(a, source, errors)
       let tb = expression_type(b, source, errors)
-      if ta == "nonetype" ||
-        tb == "nonetype" ||
-        ta == "bool" ||
-        tb == "bool" ||
-        (
-          ta != tb &&
-          ta != "object" &&
-          tb != "object" &&
-          !(["int", "decimal"].contains(ta) && ["int", "decimal"].contains(tb))
-        ) {
+      let primitive = fn(t) { ["int", "decimal", "str", "date"].contains(t) }
+      if !((ta == tb && primitive(ta)) ||
+        (["int", "decimal"].contains(ta) && ["int", "decimal"].contains(tb)) ||
+        (ta == "object" && primitive(tb)) ||
+        (tb == "object" && primitive(ta))) {
         errors.push(
           "compilation query.invalid_signature: comparison " + ta + " " + tb,
         )

@@ -51,6 +51,7 @@ priv enum QuerySource {
   SrcClose(@ast.Date)
   SrcOpen(@ast.Date, @ast.Date?)
   SrcRelation(SelectQuery)
+  SrcFrom(Cond, @ast.Date?, @ast.Date?, Bool, Bool)
 }
 
 ///|
@@ -71,7 +72,6 @@ priv struct SelectQuery {
 ///|
 priv enum ParsedQuery {
   PqSelect(SelectQuery)
-  PqBalances
   PqPrint(Cond, QuerySource)
   PqJournal(String, Int32?)
   PqError(String)
@@ -236,7 +236,7 @@ fn parse_primary(parser : QueryParser) -> Expr? {
           while !done {
             if parser.match_sym("*") {
               if lower != "count" {
-                parser.fail("unsupported query.unsupported.star")
+                parser.fail("unexpected star")
                 return None
               }
               args.push(EStar)
@@ -327,8 +327,10 @@ fn parse_primary(parser : QueryParser) -> Expr? {
       }
     }
     BStr(value) => {
+      let quoted = !parser.positions.is_empty() &&
+        parser.text.get_char(parser.positions[parser.index]) == Some('"')
       parser.advance() |> ignore
-      Some(EStr(value))
+      Some(if quoted { ECall("__quoted", [EStr(value)]) } else { EStr(value) })
     }
     BInt(value) => {
       parser.advance() |> ignore
@@ -345,11 +347,49 @@ fn parse_primary(parser : QueryParser) -> Expr? {
     BSym(symbol) =>
       if symbol == "(" {
         parser.advance() |> ignore
-        let expr = parse_expr(parser)
+        let first = match parse_expr(parser) {
+          Some(e) => e
+          None => return None
+        }
+        if parser.match_sym(",") {
+          let values : Array[QueryValue] = []
+          let mut expr = first
+          let mut first_item = true
+          while true {
+            match literal_value(expr) {
+              Some(v) => if first_item || !(v is QNull) { values.push(v) }
+              None => {
+                parser.fail("list elements must be literals")
+                return None
+              }
+            }
+            first_item = false
+            if parser.match_sym(")") {
+              return Some(EValue(QList(values)))
+            }
+            expr = match parse_expr(parser) {
+              Some(e) => e
+              None => return None
+            }
+            if !parser.match_sym(",") {
+              if !parser.expect_sym(")") {
+                return None
+              }
+              match literal_value(expr) {
+                Some(v) => if !(v is QNull) { values.push(v) }
+                None => {
+                  parser.fail("list elements must be literals")
+                  return None
+                }
+              }
+              return Some(EValue(QList(values)))
+            }
+          }
+        }
         if !parser.expect_sym(")") {
           return None
         }
-        expr
+        Some(first)
       } else if symbol == "-" || symbol == "+" {
         parser.advance() |> ignore
         match parse_primary(parser) {
@@ -359,7 +399,7 @@ fn parse_primary(parser : QueryParser) -> Expr? {
         }
       } else if symbol == "*" {
         parser.advance() |> ignore
-        parser.fail("unsupported query.unsupported.star")
+        parser.fail("unexpected star")
         None
       } else {
         parser.fail("expected an expression")
@@ -385,7 +425,7 @@ fn parse_binary(parser : QueryParser, min_prec : Int32) -> Expr? {
     }
     let prec = match op {
       "+" | "-" => 1
-      "*" | "/" => 2
+      "*" | "/" | "%" => 2
       _ => 0
     }
     if prec < min_prec || prec == 0 {
@@ -414,7 +454,33 @@ fn parse_expr(parser : QueryParser) -> Expr? {
 fn parse_cond_atom(parser : QueryParser) -> Cond? {
   match parse_binary(parser, 1) {
     Some(left) =>
-      if parser.match_sym("~") {
+      if parser.match_keyword("between") {
+        let low = match parse_binary(parser, 1) {
+          Some(e) => e
+          None => return None
+        }
+        if !parser.expect_keyword("and") {
+          return None
+        }
+        let high = match parse_binary(parser, 1) {
+          Some(e) => e
+          None => return None
+        }
+        Some(CTruthy(ECall("__between", [left, low, high])))
+      } else if parser.match_keyword("in") {
+        parse_binary(parser, 1).map(fn(right) {
+          CTruthy(ECall("__in", [left, right]))
+        })
+      } else if parser.peek() is BWord(word) &&
+        word.to_lower() == "not" &&
+        parser.tokens.get(parser.index + 1) is Some(BWord(next)) &&
+        next.to_lower() == "in" {
+        parser.advance() |> ignore
+        parser.advance() |> ignore
+        parse_binary(parser, 1).map(fn(right) {
+          CTruthy(ECall("__notin", [left, right]))
+        })
+      } else if parser.match_sym("~") {
         match parser.advance() {
           BStr(pattern) => {
             let regex = @string.Regex("(?i:" + pattern + ")") catch {
@@ -528,7 +594,7 @@ fn parse_expr_list(parser : QueryParser) -> Array[Expr]? {
 }
 
 ///|
-fn parse_source(parser : QueryParser) -> QuerySource? {
+fn parse_source_base(parser : QueryParser) -> QuerySource? {
   if parser.match_sym("(") {
     if !parser.expect_keyword("select") {
       return None
@@ -547,48 +613,6 @@ fn parse_source(parser : QueryParser) -> QuerySource? {
       _ => return None
     }
   }
-  if parser.match_keyword("open") {
-    if !parser.expect_keyword("on") {
-      return None
-    }
-    let start = match parser.advance() {
-      BDate(date) => date
-      _ => {
-        parser.fail("OPEN ON requires a date")
-        return None
-      }
-    }
-    if start.year == 1 && start.month == 1 && start.day == 1 {
-      parser.fail("OPEN ON requires a date after 0001-01-01")
-      return None
-    }
-    let mut close = None
-    if parser.match_keyword("close") {
-      if !parser.expect_keyword("on") {
-        return None
-      }
-      close = match parser.advance() {
-        BDate(date) => Some(date)
-        _ => {
-          parser.fail("CLOSE ON requires a date")
-          return None
-        }
-      }
-    }
-    return Some(SrcOpen(start, close))
-  }
-  if parser.match_keyword("close") {
-    if !parser.expect_keyword("on") {
-      return None
-    }
-    return match parser.advance() {
-      BDate(date) => Some(SrcClose(date))
-      _ => {
-        parser.fail("CLOSE ON requires a date")
-        None
-      }
-    }
-  }
   let hashed = parser.match_sym("#")
   match parser.take_word() {
     Some(word) => {
@@ -598,12 +622,6 @@ fn parse_source(parser : QueryParser) -> QuerySource? {
           "documents", "events", "notes", "prices",
         ].contains(word) {
         parser.fail("unsupported query.unsupported.source `#" + word + "`")
-        return None
-      }
-      if !hashed && word.to_lower() == "accounts" {
-        parser.fail(
-          "unsupported query.unsupported.source_filter: bare accounts is a transaction filter",
-        )
         return None
       }
       match word.to_lower() {
@@ -712,7 +730,15 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
     }
   }
   let names = projections.mapi(fn(i, _) { aliases[i].unwrap_or(expressions[i]) })
-  let labels = projections.mapi(fn(i, e) { aliases[i].unwrap_or(expr_label(e)) })
+  let labels = projections.mapi(fn(i, e) {
+    aliases[i].unwrap_or(
+      if expr_any(e, fn(e) { e is ECall("__quoted", _) }) {
+        expressions[i]
+      } else {
+        expr_label(e)
+      },
+    )
+  })
   let mut filter = CTrue
   if parser.match_keyword("where") {
     match parse_cond_or(parser) {
@@ -837,6 +863,17 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   if parser.error is Some(message) {
     return PqError(message)
   }
+  for i in 0..<projections.length() {
+    projections[i] = resolve_quoted(projections[i], source)
+  }
+  for i in 0..<groups.length() {
+    groups[i] = resolve_quoted(groups[i], source)
+  }
+  for i in 0..<orders.length() {
+    orders[i] = { ..orders[i], expr: resolve_quoted(orders[i].expr, source), }
+  }
+  filter = resolve_quoted_condition(filter, source)
+  having = resolve_quoted_condition(having, source)
   let implicit_groups = groups.is_empty()
   if implicit_groups && has_having {
     return PqError("HAVING requires explicit GROUP BY")
@@ -856,11 +893,6 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
       }
     }
   }
-  if has_having && unaggregated_condition(having) {
-    return PqError(
-      "unsupported query.unsupported.mixed_having: aggregate and row expression",
-    )
-  }
   let aggregate_query = projections.any(contains_sum) || !groups.is_empty()
   if aggregate_query {
     for projection in projections {
@@ -870,13 +902,8 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
       }
     }
     for order in orders {
-      if contains_sum(order.expr) {
-        if unaggregated_column(order.expr) {
-          return PqError(
-            "unsupported query.unsupported.mixed_order: aggregate and row expression",
-          )
-        }
-      } else if !groups.any(fn(g) { same_expr(g, order.expr) }) {
+      if !contains_sum(order.expr) &&
+        !groups.any(fn(g) { same_expr(g, order.expr) }) {
         return PqError("compilation query.invalid_group: uncovered ORDER BY")
       }
     }
@@ -885,19 +912,6 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
     return PqError("compilation query.invalid_aggregate")
   }
 
-  // Opening summary rows do not retain the synthetic transaction's account set.
-  if source is SrcOpen(_, _) &&
-    parser.tokens.any(fn(token) {
-      match token {
-        BWord(word) => word.to_lower() == "accounts"
-        _ => false
-      }
-    }) {
-    return PqError("unsupported query.unsupported.period_column")
-  }
-  if distinct && !projections.all(fn(e) { distinct_expr(e, source) }) {
-    return PqError("unsupported query.unsupported.distinct_type")
-  }
   if source is SrcDirectives(table) {
     let check = fn(expr) { table_expr(expr, table) }
     if !projections.all(check) ||
@@ -974,7 +988,7 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
 }
 
 ///|
-fn parse_journal(parser : QueryParser) -> ParsedQuery {
+fn parse_legacy_journal(parser : QueryParser) -> ParsedQuery {
   let account = match parser.peek() {
     BWord(word) => {
       parser.advance() |> ignore
@@ -1029,25 +1043,6 @@ fn parse_query(text : String) -> ParsedQuery {
       )
     }
   }
-  for i in 0..<tokens.length() {
-    if tokens[i] is BStr(value) &&
-      text.get_char(positions[i]) is Some('"') &&
-      !(i > 0 && tokens[i - 1] is BWord(previous) && previous.to_lower() == "as") &&
-      (table_columns("entries") +
-      table_columns("prices") +
-      table_columns("notes") +
-      table_columns("accounts") +
-      table_columns("balances") +
-      table_columns("commodities")).contains(value.to_lower()) {
-      return PqError(
-        "unsupported query.unsupported.quoted_identifier" +
-        bql_lex_error(text, positions[i]).replace(
-          old="lexical query.invalid_character",
-          new="",
-        ),
-      )
-    }
-  }
   let parser = QueryParser::new(tokens, text~, positions~)
   if parser.at_end() {
     return PqError("empty query")
@@ -1057,12 +1052,7 @@ fn parse_query(text : String) -> ParsedQuery {
       match word.to_lower() {
         "print" => parse_print(parser)
         "select" => parse_select(parser)
-        "balances" =>
-          if parser.at_end() {
-            PqBalances
-          } else {
-            parse_balances(parser)
-          }
+        "balances" => parse_balances(parser)
         "journal" => parse_journal(parser)
         _ => PqError("unknown statement `" + word + "`")
       }
@@ -1091,42 +1081,47 @@ fn parse_query(text : String) -> ParsedQuery {
 
 ///|
 fn parse_balances(parser : QueryParser) -> ParsedQuery {
-  let mut mode = "position"
+  let mut mode = ""
   if parser.match_keyword("at") {
     mode = match parser.take_word() {
-      Some(word) =>
-        match word.to_lower() {
-          "units" => "units"
-          "cost" => "weight"
-          _ => return PqError("BALANCES AT supports UNITS or COST")
-        }
-      None => return PqError("BALANCES AT expects a function")
+      Some(word) => word
+      None => return PqError("expected valuation function")
     }
   }
-  let tokens = [
-    BWord("account"),
-    BSym(","),
-    BWord("sum"),
-    BSym("("),
-    BWord(mode),
-    BSym(")"),
-  ]
+  let tokens = [BWord("account"), BSym(","), BWord("sum"), BSym("(")]
+  if mode != "" {
+    tokens.append([BWord(mode), BSym("(")])
+  }
+  tokens.push(BWord("position"))
+  if mode != "" {
+    tokens.push(BSym(")"))
+  }
+  tokens.push(BSym(")"))
   for i in parser.index..<(parser.tokens.length() - 1) {
     tokens.push(parser.tokens[i])
   }
-  for
-    token in [
-      BWord("group"),
-      BWord("by"),
-      BWord("account"),
-      BWord("order"),
-      BWord("by"),
-      BWord("account"),
-      BEof,
-    ] {
-    tokens.push(token)
+  tokens.append([BWord("group"), BWord("by"), BWord("account"), BEof])
+  match parse_select(QueryParser::new(tokens)) {
+    PqSelect(query) => {
+      let label = if mode == "" {
+        "SUM((position))"
+      } else {
+        "SUM(" + mode + "(position))"
+      }
+      PqSelect({
+        ..query,
+        labels: ["account", label],
+        names: ["account", label],
+        orders: [
+          {
+            expr: ECall("account_sortkey", [ECol("account")]),
+            descending: false,
+          },
+        ],
+      })
+    }
+    other => other
   }
-  parse_select(QueryParser::new(tokens))
 }
 
 ///|
@@ -1159,19 +1154,6 @@ fn transaction_cond(cond : Cond) -> Bool {
     CAnd(a, b) | COr(a, b) => transaction_cond(a) && transaction_cond(b)
     CCmp(a, _, b) => transaction_expr(a) && transaction_expr(b)
     CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) => transaction_expr(e)
-  }
-}
-
-///|
-fn distinct_expr(expr : Expr, source : QuerySource) -> Bool {
-  match expr {
-    EPredicate(c) => !cond_any(c, fn(e) { !distinct_expr(e, source) })
-    ECol("meta" | "entry" | "open" | "close") => false
-    ECall("sum", [arg]) =>
-      ["int", "decimal"].contains(expression_type(arg, source, []))
-    ECall(_, args) => args.all(fn(e) { distinct_expr(e, source) })
-    EBinary(a, _, b) => distinct_expr(a, source) && distinct_expr(b, source)
-    _ => true
   }
 }
 
@@ -1321,14 +1303,14 @@ fn parse_print(parser : QueryParser) -> ParsedQuery {
   let mut period = SrcDirectives("entries")
   if parser.match_keyword("from") {
     if !(parser.peek() is BWord(word) &&
-      ["open", "close"].contains(word.to_lower())) {
+      ["open", "close", "clear"].contains(word.to_lower())) {
       filter = match parse_cond_or(parser) {
         Some(c) => c
         None => return PqError(parser.error.unwrap_or("invalid PRINT filter"))
       }
     }
     if parser.peek() is BWord(word) &&
-      ["open", "close"].contains(word.to_lower()) {
+      ["open", "close", "clear"].contains(word.to_lower()) {
       period = match parse_source(parser) {
         Some(s) => s
         None => {
@@ -1351,9 +1333,185 @@ fn parse_print(parser : QueryParser) -> ParsedQuery {
   if !aggregate_free_cond(filter) {
     return PqError("compilation query.invalid_aggregate: FROM clause")
   }
+  filter = resolve_quoted_condition(filter, SrcDirectives("entries"))
   projection_condition_types(filter, SrcDirectives("entries"), errors)
   if !errors.is_empty() {
     return PqError(errors[0])
   }
   PqPrint(filter, period)
+}
+
+///|
+fn parse_source(parser : QueryParser) -> QuerySource? {
+  if parser.peek_sym() == Some("#") ||
+    parser.peek_sym() == Some("(") ||
+    (
+      parser.peek() is BWord(word) &&
+      [
+        "postings", "transactions", "balances", "entries", "commodities", "documents",
+        "events", "notes", "prices",
+      ].contains(word.to_lower())
+    ) {
+    return parse_source_base(parser)
+  }
+  let mut filter = CTrue
+  if !(parser.peek() is BWord(word) &&
+    ["open", "close", "clear"].contains(word.to_lower())) {
+    filter = match parse_cond_or(parser) {
+      Some(c) => c
+      None => return None
+    }
+  }
+  let mut start = None
+  let mut end = None
+  let mut close_all = false
+  if parser.match_keyword("open") {
+    if !parser.expect_keyword("on") {
+      return None
+    }
+    start = match parser.advance() {
+      BDate(d) => {
+        if ordinal(d) == 1 {
+          parser.fail(
+            "query.oracle_type_error: OverflowError opening date out of range",
+          )
+          return None
+        }
+        Some(d)
+      }
+      _ => {
+        parser.fail("OPEN ON requires a date")
+        return None
+      }
+    }
+  }
+  if parser.match_keyword("close") {
+    if parser.match_keyword("on") {
+      end = match parser.advance() {
+        BDate(d) => Some(d)
+        _ => {
+          parser.fail("CLOSE ON requires a date")
+          return None
+        }
+      }
+    } else {
+      close_all = true
+    }
+  }
+  let clear = parser.match_keyword("clear")
+  let errors : Array[String] = []
+  filter = resolve_quoted_condition(filter, SrcPostings)
+  projection_condition_types(filter, SrcPostings, errors)
+  if !aggregate_free_cond(filter) {
+    errors.push("compilation query.invalid_aggregate: FROM clause")
+  }
+  if !errors.is_empty() {
+    parser.fail(errors[0])
+    return None
+  }
+  Some(SrcFrom(filter, start, end, close_all, clear))
+}
+
+///|
+fn parse_journal(parser : QueryParser) -> ParsedQuery {
+  if parser.peek() is BWord(word) &&
+    !["at", "from"].contains(word.to_lower()) &&
+    word.to_lower() != "limit" {
+    return parse_legacy_journal(parser)
+  }
+  if parser.peek() is BStr(_) &&
+    parser.tokens.get(parser.index + 1) is Some(BWord(word)) &&
+    word.to_lower() == "limit" {
+    return parse_legacy_journal(parser)
+  }
+  let account = match parser.peek() {
+    BStr(pattern) => {
+      parser.advance() |> ignore
+      Some(pattern)
+    }
+    _ => None
+  }
+  let mut mode = ""
+  if parser.match_keyword("at") {
+    mode = match parser.take_word() {
+      Some(s) => s
+      None => return PqError("expected valuation function")
+    }
+  }
+  let source = if parser.match_keyword("from") {
+    match parse_source(parser) {
+      Some(s) => s
+      None => return PqError(parser.error.unwrap_or("invalid FROM clause"))
+    }
+  } else {
+    SrcPostings
+  }
+  if !parser.at_end() {
+    return PqError("unexpected input after JOURNAL")
+  }
+  let filter = match account {
+    Some(pattern) => {
+      let regex = @string.Regex("(?i:" + pattern + ")") catch {
+        _ =>
+          return PqError(
+            "query.oracle_type_error: PatternError invalid journal regex",
+          )
+      }
+      CRegex(ECol("account"), pattern, regex)
+    }
+    None => CTrue
+  }
+  let valuation = fn(column : String) {
+    if mode == "" {
+      ECol(column)
+    } else {
+      ECall(mode.to_lower(), [ECol(column)])
+    }
+  }
+  let projections = [
+    ECol("date"),
+    ECol("flag"),
+    ECall("maxwidth", [ECol("payee"), ENum(@decimal.Decimal::from_int(48))]),
+    ECall("maxwidth", [ECol("narration"), ENum(@decimal.Decimal::from_int(80))]),
+    ECol("account"),
+    valuation("position"),
+    valuation("balance"),
+  ]
+  let errors : Array[String] = []
+  for expr in projections {
+    expression_type(expr, source, errors) |> ignore
+  }
+  if !errors.is_empty() {
+    return PqError(errors[0])
+  }
+  let labels = [
+    "date",
+    "flag",
+    "MAXWIDTH(payee, 48)",
+    "MAXWIDTH(narration, 80)",
+    "account",
+    if mode == "" {
+      "position"
+    } else {
+      mode + "(position)"
+    },
+    if mode == "" {
+      "balance"
+    } else {
+      mode + "(balance)"
+    },
+  ]
+  PqSelect({
+    projections,
+    names: labels,
+    labels,
+    source,
+    filter,
+    groups: [],
+    orders: [],
+    limit: None,
+    having: CTrue,
+    distinct: false,
+    pivot: None,
+  })
 }

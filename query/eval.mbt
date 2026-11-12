@@ -108,7 +108,7 @@ fn posting_rows(
   for entry in realized.entries {
     match entry.directive {
       DTransaction(txn) =>
-        for posting in txn.postings {
+        for posting in booked_postings(txn.postings) {
           match posting.units {
             Some(units) => {
               let cost = posting_cost(posting, units)
@@ -185,7 +185,7 @@ fn source_rows(
   origin : Bool,
 ) -> Array[BqlRow] {
   match source {
-    SrcPostings => posting_rows(realized, origin)
+    SrcPostings | SrcFrom(_, _, _, _, _) => posting_rows(realized, origin)
     SrcTransactions => transaction_rows(realized, origin)
     SrcBalances => balance_rows(realized)
     SrcDirectives(table) => directive_rows(realized, table)
@@ -225,7 +225,7 @@ fn eval_column(ctx : QueryContext, row : BqlRow, name : String) -> QueryValue {
       }
     "meta" =>
       if row_posting(row) is Some(p) {
-        QDict(source_metadata(p.loc, p.meta))
+        posting_metadata(p)
       } else {
         match row_entry(row) {
           Some(entry) => entry_metadata(entry)
@@ -239,7 +239,9 @@ fn eval_column(ctx : QueryContext, row : BqlRow, name : String) -> QueryValue {
     "filename" | "lineno" | "location" =>
       match row_entry(row) {
         Some(e) =>
-          if name == "filename" {
+          if row_posting(row) is Some(p) && p.loc.file == "" && p.loc.line == 0 {
+            QNull
+          } else if name == "filename" {
             QText(
               row_posting(row)
               .map(fn(p) { p.loc.file })
@@ -527,23 +529,15 @@ fn cond_holds(ctx : QueryContext, cond : Cond, row : BqlRow) -> Bool {
         QInterval(_, n) => n != @bigint.BigInt::from_int(0)
         QDate(_) => true
       }
-    CCmp(left, op, right) => {
-      let a = eval_expr(ctx, left, row)
-      let b = eval_expr(ctx, right, row)
-      match typed_compare(ctx, a, b) {
-        Some(order) =>
-          match op {
-            "=" | "==" => order == 0
-            "!=" | "<>" => order != 0
-            "<" => order < 0
-            "<=" => order <= 0
-            ">" => order > 0
-            ">=" => order >= 0
-            _ => false
-          }
-        None => false
-      }
-    }
+    CCmp(left, op, right) =>
+      truth(
+        query_comparison(
+          ctx,
+          eval_expr(ctx, left, row),
+          op,
+          eval_expr(ctx, right, row),
+        ),
+      )
   }
 }
 
@@ -787,13 +781,13 @@ fn eval_grouped(
             }
           }),
         ),
-        rows[0],
+        ctx.aggregate_row.unwrap_or_else(fn() { rows[0] }),
       )
     } else {
       QNull
     }
   } else if rows.length() > 0 {
-    eval_expr(ctx, expr, rows[0])
+    eval_expr(ctx, expr, ctx.aggregate_row.unwrap_or_else(fn() { rows[0] }))
   } else {
     QNull
   }
@@ -930,7 +924,13 @@ fn sort_outputs(
           if projected[i] >= 0 {
             output.values[projected[i]]
           } else {
-            eval_grouped(ctx, orders[i].expr, output.group)
+            let saved = ctx.aggregate_row
+            if !contains_sum(orders[i].expr) {
+              ctx.aggregate_row = None
+            }
+            let value = eval_grouped(ctx, orders[i].expr, output.group)
+            ctx.aggregate_row = saved
+            value
           },
         )
       }
@@ -1004,6 +1004,7 @@ fn sort_value_compare(
 fn run_select(
   realized : @realization.RealizedLedger,
   query : SelectQuery,
+  diagnostics : Array[@ast.Diagnostic],
 ) -> QueryResult {
   if (query.distinct || query_any(query, representation_expr)) &&
     realized.entries.any(fn(e) { !e.query_exact_decimal }) {
@@ -1017,7 +1018,24 @@ fn run_select(
     }
   }
   let ctx = QueryContext::new(realized, query.source)
-  let origin = query_any(query, origin_expr)
+  let from_filter = match query.source {
+    SrcFrom(c, _, _, _, _) => c
+    _ => CTrue
+  }
+  let origin = query_any(query, origin_expr) ||
+    cond_any(from_filter, origin_expr)
+  let source_realized = if query.source is SrcFrom(_, _, _, _, _) {
+    {
+      ..realized,
+      entries: print_period(
+        realized,
+        print_recovered_entries(realized.entries, diagnostics),
+        query.source,
+      ),
+    }
+  } else {
+    realized
+  }
   let running = query_any(query, fn(e) { e is ECol("balance") })
   let all_rows = if query.source is SrcRelation(inner) {
     if inner.pivot is Some(_) {
@@ -1030,24 +1048,26 @@ fn run_select(
         ),
       }
     }
-    let relation = run_select(realized, inner)
+    let relation = run_select(realized, inner, diagnostics)
     if relation.error is Some(_) {
       return relation
     }
     relation_rows(inner.names, relation.rows)
   } else {
-    source_rows(realized, query.source, origin)
+    source_rows(source_realized, query.source, origin)
   }
   let rows : Array[BqlRow] = []
   for row in all_rows {
-    if cond_holds(ctx, query.filter, row) {
+    if cond_holds(ctx, from_filter, row) && cond_holds(ctx, query.filter, row) {
       if running {
         running_balance(ctx, row) |> ignore
       }
       rows.push(row)
     }
   }
-  let mut outputs = build_output(ctx, query, rows).filter(fn(output) {
+  let built = build_output(ctx, query, rows)
+  ctx.aggregate_row = all_rows.last()
+  let mut outputs = built.filter(fn(output) {
     grouped_cond(ctx, query.having, output.group)
   })
   sort_outputs(ctx, outputs, query.orders, query.projections)
@@ -1091,19 +1111,6 @@ fn run_select(
 }
 
 ///|
-fn run_balances(realized : @realization.RealizedLedger) -> QueryResult {
-  let columns = ["account", "balance"]
-  let rows : Array[Array[QueryValue]] = []
-  for account in realized.account_names() {
-    let inventory = realized.inventory(account)
-    if !inventory.is_empty() {
-      rows.push([QText(account), QInventory(inventory)])
-    }
-  }
-  { kind: Table, columns, rows, error: None, }
-}
-
-///|
 fn journal_row(entry : @ast.Entry, posting : @ast.Posting) -> BqlRow? {
   match posting.units {
     Some(units) => {
@@ -1141,7 +1148,7 @@ fn run_journal(
   for entry in realized.entries {
     match entry.directive {
       DTransaction(txn) =>
-        for posting in txn.postings {
+        for posting in booked_postings(txn.postings) {
           if posting.account == account ||
             @realization.is_subaccount(posting.account, account) {
             match journal_row(entry, posting) {
@@ -1184,9 +1191,8 @@ pub fn run_query(
   match parse_query(text) {
     PqError(message) =>
       { kind: Table, columns: [], rows: [], error: Some(message), }
-    PqSelect(query) => run_select(realized, query)
+    PqSelect(query) => run_select(realized, query, diagnostics)
     PqPrint(filter, period) => run_print(realized, filter, period, diagnostics)
-    PqBalances => run_balances(realized)
     PqJournal(account, limit) => run_journal(realized, account, limit)
   }
 }
@@ -1203,6 +1209,21 @@ fn arithmetic(
       "+" => return QInt(x.add(y))
       "-" => return QInt(x.sub(y))
       "*" => return QInt(x.mul(y))
+      "%" => {
+        if y == @bigint.BigInt::from_int(0) {
+          return QNull
+        }
+        let remainder = x % y
+        return QInt(
+          if remainder != @bigint.BigInt::from_int(0) &&
+            (x < @bigint.BigInt::from_int(0)) !=
+            (y < @bigint.BigInt::from_int(0)) {
+            remainder.add(y)
+          } else {
+            remainder
+          },
+        )
+      }
       _ => ()
     }
   }
@@ -1212,7 +1233,13 @@ fn arithmetic(
         "+" => Some(x.add(y))
         "-" => Some(x.sub(y))
         "*" => Some(x.mul(y))
-        "/" => x.div(y)
+        "/" =>
+          if x.is_zero() && !y.is_zero() {
+            Some(@decimal.Decimal::zero_scaled(x.scale() - y.scale()))
+          } else {
+            x.div(y)
+          }
+        "%" => decimal_modulo(ctx, x, y)
         _ => None
       }
       match result {
@@ -1224,6 +1251,7 @@ fn arithmetic(
               "*" | "/" => negative_a != negative_b
               "+" => negative_a && negative_b
               "-" => negative_a && !negative_b
+              "%" => negative_a
               _ => false
             }
             if negative {
@@ -1231,14 +1259,13 @@ fn arithmetic(
             } else {
               QNumber(n)
             }
+          } else if n.is_zero() && op == "%" && x.is_negative() {
+            QNegativeZero(n.scale())
           } else if n.is_zero() &&
             (op == "*" || op == "/") &&
             x.is_negative() != y.is_negative() &&
             !(a is QInt(_) && b is QInt(_) && op != "/") {
-            query_error(
-              ctx, "unsupported query.unsupported.decimal_representation: signed-zero arithmetic",
-            )
-            QNull
+            QNegativeZero(n.scale())
           } else if a is QInt(_) && b is QInt(_) && op != "/" {
             QInt(n.mantissa())
           } else {
@@ -1273,24 +1300,14 @@ fn grouped_cond(ctx : QueryContext, cond : Cond, rows : Array[BqlRow]) -> Bool {
         _ => true
       }
     CCmp(a, op, b) =>
-      match
-        typed_compare(
+      truth(
+        query_comparison(
           ctx,
           eval_grouped(ctx, a, rows),
+          op,
           eval_grouped(ctx, b, rows),
-        ) {
-        Some(n) =>
-          match op {
-            "=" | "==" => n == 0
-            "!=" | "<>" => n != 0
-            "<" => n < 0
-            "<=" => n <= 0
-            ">" => n > 0
-            ">=" => n >= 0
-            _ => false
-          }
-        None => false
-      }
+        ),
+      )
   }
 }
 

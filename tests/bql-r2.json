@@ -229,7 +229,6 @@
   {
     "query": "SELECT accounts FROM OPEN ON 2024-01-03",
     "ledger": "tests/bql-sources/metadata.beancount",
-    "kind": "period_column",
     "oracle": [
       [
         "accounts"

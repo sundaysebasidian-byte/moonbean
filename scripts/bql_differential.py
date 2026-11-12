@@ -108,7 +108,7 @@ def main():
         ok = oracle == case['oracle']
         if 'kind' in case:
             output = proc.stdout + proc.stderr
-            code = 'query.invalid_source' if case['kind'] == 'syntax' else 'query.unsupported.' + case['kind']
+            code = ('query.invalid_source' if case['kind'] == 'syntax' else 'unexpected star' if case['kind'] == 'star' else 'query.unsupported.' + case['kind'])
             ok = ok and proc.returncode == 1 and code in output and 'BQL:' in output
         else:
             ours = json.loads(proc.stdout) if proc.returncode == 0 else None

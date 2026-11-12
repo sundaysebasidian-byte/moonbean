@@ -56,13 +56,31 @@ fn aggregate_precedes(
             number
           } else if currency != 0 {
             currency
-          } else if a.to_string() == b.to_string() {
-            0
           } else {
-            query_error(
-              ctx, "unsupported query.unsupported.aggregate_type: Cost date/label ordering",
-            )
-            0
+            let date = match (a.date, b.date) {
+              (Some(a), Some(b)) => a.compare(b)
+              (None, None) => 0
+              _ => {
+                query_error(
+                  ctx, "query.oracle_type_error: TypeError None and date",
+                )
+                0
+              }
+            }
+            if date != 0 {
+              date
+            } else {
+              match (a.label, b.label) {
+                (Some(a), Some(b)) => python_text_compare(a, b)
+                (None, None) => 0
+                _ => {
+                  query_error(
+                    ctx, "query.oracle_type_error: TypeError None and str",
+                  )
+                  0
+                }
+              }
+            }
           }
         }
       }
@@ -73,12 +91,10 @@ fn aggregate_precedes(
       }
     }
     _ =>
-      match value_compare(a, b) {
+      match typed_compare(ctx, a, b) {
         Some(n) => if maximum { n > 0 } else { n < 0 }
         None => {
-          query_error(
-            ctx, "unsupported query.unsupported.aggregate_type: Python object ordering",
-          )
+          query_error(ctx, "query.oracle_type_error: TypeError object ordering")
           false
         }
       }

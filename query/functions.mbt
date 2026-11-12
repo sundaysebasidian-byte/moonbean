@@ -186,6 +186,16 @@ fn eval_function(
     return QNull
   }
   match (name, values) {
+    ("__in" | "__notin", [item, container]) =>
+      match membership(ctx, item, container) {
+        QBool(b) => QBool(if name == "__notin" { !b } else { b })
+        other => other
+      }
+    ("__between", [item, low, high]) =>
+      match (value_compare(item, low), value_compare(item, high)) {
+        (Some(a), Some(b)) => QBool(a >= 0 && b <= 0)
+        _ => QNull
+      }
     ("parse_date", [QText(text)]) => flexible_date(ctx, text)
     ("parse_date", [QText(text), QText(format)]) =>
       strptime_date(ctx, text, format)
@@ -568,11 +578,13 @@ fn eval_function(
         (Some(a), Some(b)) =>
           if b.is_zero() {
             QNumber(@decimal.Decimal::zero())
-          } else if a.is_zero() && b.is_negative() {
-            query_error(
-              ctx, "unsupported query.unsupported.decimal_representation: signed-zero safediv",
-            )
-            QNull
+          } else if a.is_zero() {
+            let zero = @decimal.Decimal::zero_scaled(a.scale() - b.scale())
+            if b.is_negative() {
+              QNegativeZero(zero.scale())
+            } else {
+              QNumber(zero)
+            }
           } else {
             QNumber(a.div(b).unwrap())
           }

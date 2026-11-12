@@ -191,3 +191,63 @@ fn pivot_result(
   }
   { kind: Table, columns, rows, error: ctx.error, }
 }
+
+///|
+fn resolve_quoted(expr : Expr, source : QuerySource) -> Expr {
+  match expr {
+    ECall("__quoted", [EStr(name)]) =>
+      if column_type(source, name) != "unknown" {
+        ECol(name)
+      } else {
+        EStr(name)
+      }
+    ECall(name, args) =>
+      ECall(name, args.map(fn(e) { resolve_quoted(e, source) }))
+    EBinary(a, op, b) =>
+      EBinary(resolve_quoted(a, source), op, resolve_quoted(b, source))
+    EPredicate(c) => EPredicate(resolve_quoted_condition(c, source))
+    _ => expr
+  }
+}
+
+///|
+fn resolve_quoted_condition(cond : Cond, source : QuerySource) -> Cond {
+  match cond {
+    CTrue => CTrue
+    CNot(c) => CNot(resolve_quoted_condition(c, source))
+    CAnd(a, b) =>
+      CAnd(
+        resolve_quoted_condition(a, source),
+        resolve_quoted_condition(b, source),
+      )
+    COr(a, b) =>
+      COr(
+        resolve_quoted_condition(a, source),
+        resolve_quoted_condition(b, source),
+      )
+    CCmp(a, op, b) => {
+      let a = resolve_quoted(a, source)
+      let b = resolve_quoted(b, source)
+      let ta = expression_type(a, source, [])
+      let tb = expression_type(b, source, [])
+      // The compiler casts dynamic metadata to the other operand's scalar type.
+      CCmp(
+        if ta == "object" && ["int", "decimal", "str", "date"].contains(tb) {
+          ECall(tb, [a])
+        } else {
+          a
+        },
+        op,
+        if tb == "object" && ["int", "decimal", "str", "date"].contains(ta) {
+          ECall(ta, [b])
+        } else {
+          b
+        },
+      )
+    }
+    CIsNull(e, negated) => CIsNull(resolve_quoted(e, source), negated)
+    CTruthy(e) => CTruthy(resolve_quoted(e, source))
+    CRegex(e, pattern, regex) =>
+      CRegex(resolve_quoted(e, source), pattern, regex)
+  }
+}

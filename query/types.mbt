@@ -2,6 +2,7 @@
 fn type_argument(actual : String, expected : String) -> Bool {
   actual == expected ||
   (actual == "nonetype" && expected == "object") ||
+  (actual == "inventory" && expected == "dict") ||
   expected == "any" ||
   (actual == "bool" && expected == "int")
 }
@@ -44,6 +45,9 @@ fn expression_type(
         QInt(_) => "int"
         QNumber(_) | QNegativeZero(_) => "decimal"
         QInterval(_, _) => "relativedelta"
+        QList(_) => "list"
+        QBool(_) => "bool"
+        QDate(_) => "date"
         QText(_) => "str"
         QNull => "nonetype"
         _ => "object"
@@ -71,6 +75,16 @@ fn expression_type(
       }
     }
     ECall(name, args) => {
+      if name == "__in" || name == "__notin" || name == "__between" {
+        let ts = args.map(fn(e) { expression_type(e, source, errors) })
+        if name == "__between" &&
+          !(ts.all(fn(t) { ["int", "decimal"].contains(t) }) ||
+          ts.all(fn(t) { t == "str" }) ||
+          ts.all(fn(t) { t == "date" })) {
+          errors.push("compilation query.invalid_signature: BETWEEN operands")
+        }
+        return "bool"
+      }
       if source is SrcRelation(_) {
         let dependency = match name {
           "meta" => "meta"
@@ -190,8 +204,15 @@ fn condition_types(
       condition_types(b, source, errors)
     }
     CCmp(a, _, b) => {
-      expression_type(a, source, errors) |> ignore
-      expression_type(b, source, errors) |> ignore
+      let legacy = fn(e) {
+        expr_any(e, fn(e) { e is ECol("units" | "cost" | "value" | "weight") })
+      }
+      if legacy(a) || legacy(b) {
+        expression_type(a, source, errors) |> ignore
+        expression_type(b, source, errors) |> ignore
+      } else {
+        projection_condition_types(cond, source, errors)
+      }
     }
     CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) =>
       expression_type(e, source, errors) |> ignore

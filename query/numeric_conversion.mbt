@@ -39,8 +39,8 @@ fn python_number_string(
     }
     let base = python_number_string(ctx, parts[0].to_owned(), false)
     let exp = python_number_string(ctx, parts[1].to_owned(), true)
-    match (base, exp) {
-      (QNumber(base), QInt(_)) =>
+    match (value_number(base), exp) {
+      (Some(number), QInt(_)) =>
         match query_integer(exp) {
           Some(e) =>
             if e > 1000000 || e < -1000000 {
@@ -48,8 +48,12 @@ fn python_number_string(
                 ctx, "unsupported query.unsupported.decimal_representation: exponent resource bound",
               )
               QNull
+            } else if base is QNegativeZero(_) {
+              QNegativeZero(number.scale() - e)
             } else {
-              QNumber(@decimal.Decimal::new(base.mantissa(), base.scale() - e))
+              QNumber(
+                @decimal.Decimal::new(number.mantissa(), number.scale() - e),
+              )
             }
           None => {
             query_error(
@@ -102,10 +106,7 @@ fn python_number_string(
         if integer {
           QInt(n.mantissa())
         } else if n.is_zero() && out.to_string().has_prefix("-") {
-          query_error(
-            ctx, "unsupported query.unsupported.decimal_representation: signed zero",
-          )
-          QNull
+          QNegativeZero(n.scale())
         } else {
           QNumber(n)
         }

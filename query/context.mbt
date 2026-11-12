@@ -2,6 +2,7 @@
 priv struct QueryContext {
   source : QuerySource
   realized : @realization.RealizedLedger
+  mut aggregate_row : BqlRow?
   mut error : String?
   running : @booking.Inventory
   mut opens : Map[String, @ast.Entry]?
@@ -17,6 +18,7 @@ fn QueryContext::new(
   {
     source,
     realized,
+    aggregate_row: None,
     error: None,
     running: @booking.Inventory::new(),
     opens: None,
@@ -167,7 +169,10 @@ fn directive_value(entry : @ast.Entry) -> QueryValue {
         ("narration", QText(t.narration)),
         ("tags", QFrozenSet(t.tags)),
         ("links", QFrozenSet(t.links)),
-        ("postings", QList(t.postings.map(posting_value_record))),
+        (
+          "postings",
+          QList(booked_postings(t.postings).map(posting_value_record)),
+        ),
       ])
       "Transaction"
     }
@@ -249,7 +254,7 @@ fn posting_value_record(p : @ast.Posting) -> QueryValue {
         None => QNull
       },
     ),
-    ("meta", QDict(source_metadata(p.loc, p.meta))),
+    ("meta", posting_metadata(p)),
   ])
 }
 
@@ -459,11 +464,29 @@ fn typed_compare(ctx : QueryContext, a : QueryValue, b : QueryValue) -> Int32? {
   if a is QText(a) && b is QText(b) {
     return Some(python_text_compare(a, b))
   }
+  let sequence = match (a, b) {
+    (QList(a), QList(b)) => Some((a, b))
+    (QRecord(_, a), QRecord(_, b)) =>
+      Some((a.map(fn(p) { p.1 }), b.map(fn(p) { p.1 })))
+    _ => None
+  }
+  if sequence is Some((a, b)) {
+    for i in 0..<a.length().min(b.length()) {
+      if !membership_equal(a[i], b[i]) {
+        if a[i] is QNull || b[i] is QNull {
+          query_error(ctx, "query.oracle_type_error: TypeError None ordering")
+          return None
+        }
+        return typed_compare(ctx, a[i], b[i])
+      }
+    }
+    return Some(a.length().compare(b.length()))
+  }
   if !(a is QNull) &&
     !(b is QNull) &&
     (structural_value(a) || structural_value(b)) {
     query_error(
-      ctx, "unsupported query.unsupported.object_comparison: structural value ordering/equality",
+      ctx, "query.oracle_type_error: TypeError structural object ordering",
     )
     None
   } else {
@@ -503,4 +526,53 @@ fn row_posting(row : BqlRow) -> @ast.Posting? {
     Some(extra) => extra.posting
     None => None
   }
+}
+
+///|
+fn posting_metadata(posting : @ast.Posting) -> QueryValue {
+  if posting.loc.file == "" && posting.loc.line == 0 && posting.meta.is_empty() {
+    QNull
+  } else {
+    QDict(source_metadata(posting.loc, posting.meta))
+  }
+}
+
+///|
+fn booked_postings(postings : Array[@ast.Posting]) -> Array[@ast.Posting] {
+  if postings.length() < 3 {
+    return postings
+  }
+  let currency = fn(p : @ast.Posting) {
+    if p.units is Some(a) {
+      if posting_cost(p, a) is Some(c) {
+        c.currency
+      } else if posting_price(p) is QAmount(price) {
+        price.currency
+      } else {
+        a.currency
+      }
+    } else {
+      ""
+    }
+  }
+  let currencies : Array[String] = []
+  for p in postings {
+    let c = currency(p)
+    if !currencies.contains(c) {
+      currencies.push(c)
+    }
+  }
+  if currencies.length() < 2 {
+    return postings
+  }
+  let result = postings.copy()
+  result
+  .mut_view()
+  .stable_sort_by(fn(a, b) {
+    currencies
+    .search(currency(a))
+    .unwrap()
+    .compare(currencies.search(currency(b)).unwrap())
+  })
+  result
 }
