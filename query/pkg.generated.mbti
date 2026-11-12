@@ -23,6 +23,7 @@ pub(all) enum QueryError {
 }
 
 pub(all) struct QueryResult {
+  kind : StatementResult
   columns : Array[String]
   rows : Array[Array[QueryValue]]
   error : String?
@@ -43,7 +44,7 @@ pub(all) enum QueryValue {
   QSet(Array[String])
   QFrozenSet(Array[String])
   QNumber(@decimal.Decimal)
-  QNegativeZero(Int)
+  QNegativeZero(Int32)
   QInterval(String, @bigint.BigInt)
   QDate(@ast.Date)
   QAmount(@ast.Amount)
@@ -54,6 +55,11 @@ pub(all) enum QueryValue {
 }
 pub fn QueryValue::to_json(Self) -> String
 pub fn QueryValue::to_text(Self) -> String
+
+pub(all) enum StatementResult {
+  Table
+  DirectiveText(String)
+}
 
 // Type aliases
 

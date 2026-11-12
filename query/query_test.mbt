@@ -403,10 +403,7 @@ test "BQL string backslashes and doubled quotes match oracle literally" {
 
 ///|
 test "new unsupported boundaries preserve positions" {
-  for
-    (q, code) in [
-      ("SELECT account WHERE account LIKE 'A%'", "like"),
-    ] {
+  for (q, code) in [("SELECT account WHERE account LIKE 'A%'", "like")] {
     let r = queried(ledger_source(), q)
     assert_true(r.failure() is Some(@query.Unsupported(_)))
     assert_true(r.error.unwrap().contains("query.unsupported." + code))
@@ -976,7 +973,6 @@ test "transaction unknown columns are compilation errors" {
   }
 }
 
-
 ///|
 test "round preserves negative zero without changing Decimal arithmetic" {
   let r = queried(
@@ -990,28 +986,6 @@ test "round preserves negative zero without changing Decimal arithmetic" {
   assert_eq(r.rows[0][3].to_text(), "FALSE")
   assert_eq(r.rows[0][4].to_text(), "TRUE")
 }
-
-
-///|
-test "empty substitution and hyphen shortening match oracle" {
-  let r = queried(
-    ledger_source(),
-    "SELECT subst('','X','ab'),subst('a*','X','aba'),maxwidth('abc-def ghi',10),maxwidth('a-b-c-d-e-f',10) LIMIT 1",
-  )
-  assert_true(r.is_ok())
-  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
-    "XaXbX", "XXbXX", "abc- [...]", "a-b- [...]",
-  ])
-}
-
-
-///|
-test "scalar aggregate DISTINCT uses computed grouping keys" {
-  let r = queried(ledger_source(), "SELECT DISTINCT upper(account),sum(number)")
-  assert_true(r.is_ok())
-  assert_true(r.rows.length() > 0)
-}
-
 
 ///|
 test "calendar scalar evaluators preserve types NULLs and interval boundaries" {
@@ -1049,6 +1023,48 @@ test "calendar scalar evaluators preserve types NULLs and interval boundaries" {
   )
 }
 
+///|
+test "PRINT carries directives through its distinct text result" {
+  let source = "2024-01-01 open Assets:A USD\n2024-01-01 open Equity:A USD\n2024-01-02 * \"one\"\n  Assets:A 1 USD\n  Equity:A -1 USD\n"
+  let r = queried(source, "PRINT FROM date=2024-01-02")
+  assert_true(r.is_ok())
+  assert_eq(r.rows.length(), 1)
+  assert_eq(r.columns, ["ROW(*)"])
+  assert_true(r.kind is @query.DirectiveText(_))
+  assert_true(r.to_json().contains("\"kind\":\"print\""))
+  assert_eq(
+    r.to_text(),
+    "\n2024-01-02 * \"one\"\n  Assets:A   1 USD\n  Equity:A  -1 USD\n",
+  )
+  assert_eq(queried(source, "PRINT FROM false").to_text(), "")
+  assert_true(
+    queried(source, "PRINT WHERE account='Assets:A'").failure()
+    is Some(@query.Syntax(_)),
+  )
+  assert_true(
+    queried(source, "PRINT FROM missing=1").failure()
+    is Some(@query.Compilation(_)),
+  )
+}
+
+///|
+test "empty substitution and hyphen shortening match oracle" {
+  let r = queried(
+    ledger_source(),
+    "SELECT subst('','X','ab'),subst('a*','X','aba'),maxwidth('abc-def ghi',10),maxwidth('a-b-c-d-e-f',10) LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "XaXbX", "XXbXX", "abc- [...]", "a-b- [...]",
+  ])
+}
+
+///|
+test "scalar aggregate DISTINCT uses computed grouping keys" {
+  let r = queried(ledger_source(), "SELECT DISTINCT upper(account),sum(number)")
+  assert_true(r.is_ok())
+  assert_true(r.rows.length() > 0)
+}
 
 ///|
 test "NULL object conversions and signed interval parsing" {
@@ -1061,4 +1077,3 @@ test "NULL object conversions and signed interval parsing" {
     "", "", "", "relativedelta(days=+2)", "0",
   ])
 }
-

@@ -114,6 +114,7 @@ fn pivot_result(
 ) -> QueryResult {
   if query.groups.is_empty() && !query.projections.any(contains_sum) {
     return {
+      kind: Table,
       columns: [],
       rows: [],
       error: Some(
@@ -188,5 +189,5 @@ fn pivot_result(
     }
     rows.push(result)
   }
-  { columns, rows, error: ctx.error, }
+  { kind: Table, columns, rows, error: ctx.error, }
 }

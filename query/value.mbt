@@ -23,7 +23,14 @@ pub(all) enum QueryValue {
 }
 
 ///|
+pub(all) enum StatementResult {
+  Table
+  DirectiveText(String)
+}
+
+///|
 pub(all) struct QueryResult {
+  kind : StatementResult
   columns : Array[String]
   rows : Array[Array[QueryValue]]
   error : String?
@@ -89,7 +96,8 @@ pub fn QueryValue::to_text(self : QueryValue) -> String {
       sorted.join(",")
     }
     QText(text) => text
-    QNegativeZero(scale) => "-" + python_decimal(@decimal.Decimal::zero_scaled(scale))
+    QNegativeZero(scale) =>
+      "-" + python_decimal(@decimal.Decimal::zero_scaled(scale))
     QNumber(number) => python_decimal(number)
     QDate(date) => date.to_string()
     QAmount(amount) => python_amount(amount)
@@ -164,7 +172,8 @@ pub fn QueryValue::to_json(self : QueryValue) -> String {
       values.map(fn(s) { "\"" + query_json_escape(s) + "\"" }).join(",") +
       "]"
     QText(text) => "\"" + query_json_escape(text) + "\""
-    QNegativeZero(scale) => "-" + python_decimal(@decimal.Decimal::zero_scaled(scale))
+    QNegativeZero(scale) =>
+      "-" + python_decimal(@decimal.Decimal::zero_scaled(scale))
     QNumber(number) => python_decimal(number)
     QDate(date) => "\"" + date.to_string() + "\""
     QAmount(amount) => query_amount_json(amount)
@@ -239,6 +248,9 @@ pub fn QueryResult::to_text(self : QueryResult) -> String {
     }
     None => ()
   }
+  if self.kind is DirectiveText(text) {
+    return text
+  }
   let widths : Array[Int32] = []
   for column in self.columns {
     widths.push(column.length())
@@ -307,7 +319,14 @@ pub fn QueryResult::to_json(self : QueryResult) -> String {
     Some(message) => return "{\"error\":\"" + query_json_escape(message) + "\"}"
     None => ()
   }
-  sb.write_string("{\"columns\":[")
+  if self.kind is DirectiveText(text) {
+    sb.write_string(
+      "{\"kind\":\"print\",\"text\":" + QText(text).to_json() + ",",
+    )
+  } else {
+    sb.write_char('{')
+  }
+  sb.write_string("\"columns\":[")
   for i in 0..<self.columns.length() {
     if i > 0 {
       sb.write_string(",")

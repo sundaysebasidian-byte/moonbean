@@ -733,7 +733,8 @@ fn eval_aggregate(
                   inventory.add(p)
                 }
               QInt(n) => integer_total = integer_total.add(n)
-              QNegativeZero(scale) => total = total.add(@decimal.Decimal::zero_scaled(scale))
+              QNegativeZero(scale) =>
+                total = total.add(@decimal.Decimal::zero_scaled(scale))
               QNumber(n) => total = total.add(n)
               QBool(b) =>
                 if b {
@@ -826,7 +827,8 @@ fn group_key(ctx : QueryContext, exprs : Array[Expr], row : BqlRow) -> String {
           )
           ""
         }
-        QNegativeZero(scale) => decimal_group_key(@decimal.Decimal::zero_scaled(scale))
+        QNegativeZero(scale) =>
+          decimal_group_key(@decimal.Decimal::zero_scaled(scale))
         QNumber(n) => decimal_group_key(n)
         QAmount(a) => "amount:" + a.currency + ":" + decimal_group_key(a.number)
         _ => value.to_json()
@@ -1006,6 +1008,7 @@ fn run_select(
   if (query.distinct || query_any(query, representation_expr)) &&
     realized.entries.any(fn(e) { !e.query_exact_decimal }) {
     return {
+      kind: Table,
       columns: [],
       rows: [],
       error: Some(
@@ -1019,6 +1022,7 @@ fn run_select(
   let all_rows = if query.source is SrcRelation(inner) {
     if inner.pivot is Some(_) {
       return {
+        kind: Table,
         columns: [],
         rows: [],
         error: Some(
@@ -1078,7 +1082,7 @@ fn run_select(
   for output in outputs {
     result_rows.push(output.values)
   }
-  let result = { columns, rows: result_rows, error: ctx.error, }
+  let result = { kind: Table, columns, rows: result_rows, error: ctx.error, }
   if query.pivot is Some((row, column)) && ctx.error is None {
     pivot_result(ctx, query, result_rows, row, column)
   } else {
@@ -1096,7 +1100,7 @@ fn run_balances(realized : @realization.RealizedLedger) -> QueryResult {
       rows.push([QText(account), QInventory(inventory)])
     }
   }
-  { columns, rows, error: None, }
+  { kind: Table, columns, rows, error: None, }
 }
 
 ///|
@@ -1168,7 +1172,7 @@ fn run_journal(
       _ => ()
     }
   }
-  { columns, rows, error: None, }
+  { kind: Table, columns, rows, error: None, }
 }
 
 ///|
@@ -1177,8 +1181,10 @@ pub fn run_query(
   text : String,
 ) -> QueryResult {
   match parse_query(text) {
-    PqError(message) => { columns: [], rows: [], error: Some(message), }
+    PqError(message) =>
+      { kind: Table, columns: [], rows: [], error: Some(message), }
     PqSelect(query) => run_select(realized, query)
+    PqPrint(filter, period) => run_print(realized, filter, period)
     PqBalances => run_balances(realized)
     PqJournal(account, limit) => run_journal(realized, account, limit)
   }
@@ -1453,7 +1459,8 @@ fn transaction_accounts(postings : Array[@ast.Posting]) -> Array[String] {
 fn distinct_key(value : QueryValue) -> String {
   match value {
     QInt(n) => "n:" + n.to_string()
-    QNegativeZero(scale) => "n:" + decimal_group_key(@decimal.Decimal::zero_scaled(scale))
+    QNegativeZero(scale) =>
+      "n:" + decimal_group_key(@decimal.Decimal::zero_scaled(scale))
     QNumber(n) => "n:" + decimal_group_key(n)
     QBool(b) => if b { "n:1" } else { "n:0" }
     QSet(s) | QFrozenSet(s) => {

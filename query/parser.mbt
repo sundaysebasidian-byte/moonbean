@@ -72,6 +72,7 @@ priv struct SelectQuery {
 priv enum ParsedQuery {
   PqSelect(SelectQuery)
   PqBalances
+  PqPrint(Cond, QuerySource)
   PqJournal(String, Int32?)
   PqError(String)
 }
@@ -1054,6 +1055,7 @@ fn parse_query(text : String) -> ParsedQuery {
   let result = match parser.take_word() {
     Some(word) =>
       match word.to_lower() {
+        "print" => parse_print(parser)
         "select" => parse_select(parser)
         "balances" =>
           if parser.at_end() {
@@ -1311,4 +1313,35 @@ fn unaggregated_condition(cond : Cond) -> Bool {
     CCmp(a, _, b) => unaggregated_column(a) || unaggregated_column(b)
     CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) => unaggregated_column(e)
   }
+}
+
+///|
+fn parse_print(parser : QueryParser) -> ParsedQuery {
+  let mut filter = CTrue
+  let mut period = SrcDirectives("entries")
+  if parser.match_keyword("from") {
+    if !(parser.peek() is BWord(word) &&
+      ["open", "close"].contains(word.to_lower())) {
+      filter = match parse_cond_or(parser) {
+        Some(c) => c
+        None => return PqError(parser.error.unwrap_or("invalid PRINT filter"))
+      }
+    }
+    if parser.peek() is BWord(word) &&
+      ["open", "close"].contains(word.to_lower()) {
+      period = match parse_source(parser) {
+        Some(s) => s
+        None => return PqError(parser.error.unwrap_or("invalid PRINT period"))
+      }
+    }
+  }
+  if !parser.at_end() {
+    return PqError("unexpected input after PRINT")
+  }
+  let errors : Array[String] = []
+  condition_types(filter, SrcDirectives("entries"), errors)
+  if !errors.is_empty() {
+    return PqError(errors[0])
+  }
+  PqPrint(filter, period)
 }

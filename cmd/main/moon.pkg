@@ -2,6 +2,7 @@ import {
   "moonbitlang/core/path",
   "sundaysebasidian-byte/moonbean",
   "sundaysebasidian-byte/moonbean/ast",
+  "sundaysebasidian-byte/moonbean/query",
   "sundaysebasidian-byte/moonbean/realization",
   "sundaysebasidian-byte/moonbean/validation",
   "moonbitlang/core/async",

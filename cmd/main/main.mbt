@@ -289,7 +289,14 @@ async fn cmd_query(args : Array[String]) -> Unit {
       if options.json {
         println(result.to_json())
       } else {
-        println(result.to_text())
+        let text = result.to_text()
+        if result.kind is @query.DirectiveText(_) {
+          if text != "" {
+            println(text[:text.length() - 1])
+          }
+        } else {
+          println(text)
+        }
       }
       if !result.is_ok() {
         exit(1)
