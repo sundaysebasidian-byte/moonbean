@@ -937,3 +937,15 @@ test "relation names retain expression spelling and quoted aliases" {
   assert_true(sub.is_ok())
   assert_eq(sub.rows[0][0].to_text(), "bxnxnx")
 }
+
+///|
+test "pivot retains first equal axis representation and last cell" {
+  let source = "2024-01-01 open Assets:Cash\n2024-01-01 open Equity:Opening\n2024-01-02 * \"USD\"\n  Assets:Cash 1.00 USD\n  Equity:Opening -1.00 USD\n2024-01-03 * \"EUR\"\n  Assets:Cash 1.0 EUR\n  Equity:Opening -1.0 EUR\n"
+  let r = queried(source, "SELECT currency,number,count(*) PIVOT BY 1,2")
+  assert_true(r.is_ok())
+  assert_eq(r.columns, ["currency/number", "-1.00", "1.00"])
+  let sorted = queried(
+    source, "SELECT currency,number,count(*) ORDER BY 1 PIVOT BY 1,2",
+  )
+  assert_eq(sorted.columns, ["currency/number", "-1.0", "1.0"])
+}

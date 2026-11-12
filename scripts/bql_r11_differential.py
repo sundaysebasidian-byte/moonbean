@@ -1,7 +1,6 @@
 """R11 public-API oracle probes. No upstream implementation is inspected."""
 import itertools
 import random
-import re
 import json
 import subprocess
 import sys
@@ -97,14 +96,14 @@ def cases():
     # Exercise every previously unsupported advertised signature with typed inputs,
     # literal NULLs, and invalid argument types. Remaining capability boundaries
     # are recorded separately and never counted as conformance successes.
-    old = subprocess.check_output(['git','show','d53b8b5:query/types.mbt'], text=True).split('fn function_implemented',1)[1].split('///|',1)[0]
-    supported_before = set(re.findall(r'"([a-z_]+)"',old))
+    missing_before = {'convert','date_bin','date_part','date_trunc','findfirst','getprice','grep','grepn',
+                      'has_account','interval','joinstr','maxwidth','parse_date','possign','subst','today','value'}
     inventory = json.loads(Path('docs/evidence/compatibility-inventory.json').read_text())
     samples = dict(amount='units(position)', position='position', inventory='sum(position)',
                    str="'USD'", date='2024-01-02', relativedelta="interval('1 day')", set='tags', decimal='1.0', int='1')
     for sig in inventory['functions']:
         name, arguments = sig[:-1].split('(')
-        if name in supported_before:
+        if name not in missing_before:
             continue
         types = arguments.split(', ') if arguments else []
         args = [samples[t] for t in types]
@@ -141,6 +140,13 @@ def cases():
     for expr in ['sum(position) AND true','NOT sum(position)','position AND true','units(position) AND true',
                  'tags AND true','meta AND true','sum(position) IS NULL','balance AND true']:
         add('SELECT '+expr+' AS result LIMIT 1', 'predicate-type', True)
+    for expr in ["date_bin('1 month',2024-03-20,2024-01-15)",
+                 "date_bin(interval('1 day'),2024-03-20,2024-01-15)", "interval('1 day')",
+                 "parse_date('Feb 29, 2024')", "parse_date('29/02/2024','%d/%m/%Y')"]:
+        add('SELECT '+expr+' LIMIT 1', 'remaining-positive')
+    for projection in ['currency,number,count(*)','number,currency,count(*)']:
+        for order in ['', ' ORDER BY 1', ' ORDER BY 1 DESC']:
+            add('SELECT '+projection+order+' PIVOT BY 1,2', 'pivot-representation', True, ledger='tests/r11/pivot-repr.beancount')
     return out
 
 

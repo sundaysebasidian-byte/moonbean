@@ -9,6 +9,7 @@ def encode(v):
     if isinstance(v,datetime.date):return {'_date':v.isoformat()}
     if isinstance(v,enum.Enum):return {'_enum':type(v).__name__,'value':v.value}
     if isinstance(v,type):return {'_python_type':v.__qualname__ if v.__module__=='builtins' else v.__module__+'.'+v.__qualname__}
+    if type(v).__name__=='relativedelta':return {'_relativedelta':repr(v)}
     if type(v).__name__=='Inventory':return [encode(p) for p in v.get_positions()]
     if isinstance(v,dict):return {str(k):encode(x) for k,x in v.items()}
     if isinstance(v,(set,frozenset)):return sorted(v)

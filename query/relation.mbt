@@ -133,8 +133,12 @@ fn pivot_result(
   for cells_row in values {
     let r = distinct_key(cells_row[row])
     let c = distinct_key(cells_row[column])
-    row_keys.set(r, cells_row[row])
-    column_keys.set(c, cells_row[column])
+    if !row_keys.contains(r) {
+      row_keys.set(r, cells_row[row])
+    }
+    if !column_keys.contains(c) {
+      column_keys.set(c, cells_row[column])
+    }
     cells.set(r.length().to_string() + ":" + r + c, cells_row)
   }
   let rs = row_keys.keys().to_array()
