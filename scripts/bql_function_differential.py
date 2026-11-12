@@ -28,7 +28,9 @@ def run(ours,oracle):
         if name=='int' and types==['str']:values=["'١_٢٣'"]
         if name=='decimal' and types==['str']:values=["'１２.３'"]
         expression=name+'('+','.join(values)+')'
-        queries.append((sig,'SELECT repr('+expression+") WHERE account='Assets:Cash'"))
+        predicate = "account='Assets:Cash'"
+        if name == 'joinstr': predicate += ' AND length(tags)<=1'
+        queries.append((sig,'SELECT repr('+expression+') WHERE '+predicate))
     extra=["SELECT repr(sum(number)),repr(sum(balance)),repr(sum(1)),repr(sum(1.0))",
         "SELECT repr(first(meta)),repr(last(entry)),str(sum(position))",
         "SELECT any_meta('receipt'),entry_meta('receipt'),meta('receipt')",

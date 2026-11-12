@@ -1,5 +1,7 @@
 """R11 public-API oracle probes. No upstream implementation is inspected."""
 import itertools
+import random
+import re
 import json
 import subprocess
 import sys
@@ -60,6 +62,53 @@ def cases():
         'SELECT * FROM (SELECT account,currency,sum(number) PIVOT BY 1,2)',
     ]:
         add(query, 'pivot', True)
+    for expr in ["units(position)", "position", "sum(position)"]:
+        for target in ['USD', 'EUR', 'JPY', 'HOOL']:
+            for date in ['', ',2024-01-02', ',2023-12-31']:
+                expression = f"convert({expr},'{target}'{date})"
+                add('SELECT repr('+expression+'),'+expression, 'price', ledger='tests/r11/prices.beancount')
+        if expr != 'units(position)':
+            for date in ['', ',2024-01-02', ',2023-12-31']:
+                expression = f'value({expr}{date})'
+                add('SELECT repr('+expression+'),'+expression, 'price', ledger='tests/r11/prices.beancount')
+    for base, quote in itertools.product(['USD','EUR','HOOL','ZERO','JPY'], repeat=2):
+        for date in ['', ',2024-01-02', ',2024-01-04', ',2023-12-31']:
+            add(f"SELECT repr(getprice('{base}','{quote}'{date})) LIMIT 1", 'price', ledger='tests/r11/prices.beancount')
+    for expr, account in itertools.product(['2.0','units(position)','position','sum(position)'],
+                                         ['Assets:X','Expenses:X','Income:X','Equity:X','Liabilities:X','Unknown:X','assets:X']):
+        add(f"SELECT repr(possign({expr},'{account}'))", 'sign', ledger='tests/r11/prices.beancount')
+    rng = random.Random(20261111)
+    dates = ['0001-01-01','0009-01-01','0099-12-31','1900-03-01','2000-02-29','2021-01-01','9999-12-31']
+    dates += [f'{rng.randrange(1,10000):04}-{rng.randrange(1,13):02}-{rng.randrange(1,29):02}' for _ in range(30)]
+    for name in ['date_part','date_trunc']:
+        for date in dates:
+            expressions = [f"repr({name}('{part}',{date}))" for part in
+                          ['year','month','day','quarter','week','dow','isodow','epoch','decade','century','millennium','invalid','YEAR']]
+            add('SELECT '+','.join(expressions)+' LIMIT 1', 'calendar')
+    for text, width in itertools.product(['abcdef','a😀中b','',' a   b cdef ghi ','abcdef ghijkl','a-b-c-d-e-f', 'ab cd ef gh', 'a　b　c'],
+                                         [-1,0,1,4,5,6,8,10,100]):
+        add(f"SELECT maxwidth('{text}',{width}) LIMIT 1", 'string')
+    for expression in ["joinstr(tags)", "findfirst('alpha',tags)", "findfirst('absent',tags)",
+                       "grep('a(.)','bacd')", "grepn('a(.)','bacd',1)", "grepn('a(.)','bacd',0)",
+                       "grepn('a(.)','bacd',2)", "grepn('a(.)','zzz',2)", "grepn('(a)?b','b',1)",
+                       "grep('a','BACD')", "grep('[','abc')", "has_account('assets')", "has_account('cash')", "has_account('absent')"]:
+        add('SELECT '+expression, 'regex', ledger='tests/r11/prices.beancount')
+    # Exercise every previously unsupported advertised signature with typed inputs,
+    # literal NULLs, and invalid argument types. Remaining capability boundaries
+    # are recorded separately and never counted as conformance successes.
+    old = subprocess.check_output(['git','show','d53b8b5:query/types.mbt'], text=True).split('fn function_implemented',1)[1].split('///|',1)[0]
+    supported_before = set(re.findall(r'"([a-z_]+)"',old))
+    inventory = json.loads(Path('docs/evidence/compatibility-inventory.json').read_text())
+    samples = dict(amount='units(position)', position='position', inventory='sum(position)',
+                   str="'USD'", date='2024-01-02', relativedelta="interval('1 day')", set='tags', decimal='1.0', int='1')
+    for sig in inventory['functions']:
+        name, arguments = sig[:-1].split('(')
+        if name in supported_before:
+            continue
+        types = arguments.split(', ') if arguments else []
+        args = [samples[t] for t in types]
+        for values in [args, ['NULL' for _ in args], ['true' for _ in args]]:
+            add('SELECT '+name+'('+','.join(values)+')', 'signature:'+sig, ledger='tests/r11/prices.beancount')
     return out
 
 

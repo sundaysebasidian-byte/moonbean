@@ -6,6 +6,7 @@ priv struct QueryContext {
   running : @booking.Inventory
   mut opens : Map[String, @ast.Entry]?
   mut closes : Map[String, @ast.Entry]?
+  mut prices : Map[String, Array[(@ast.Date, @decimal.Decimal)]]?
 }
 
 ///|
@@ -20,6 +21,7 @@ fn QueryContext::new(
     running: @booking.Inventory::new(),
     opens: None,
     closes: None,
+    prices: None,
   }
 }
 

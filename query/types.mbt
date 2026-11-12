@@ -15,6 +15,9 @@ fn function_implemented(name : String) -> Bool {
     "neg", "units", "cost", "currency", "commodity", "number", "empty", "only", "filter_currency",
     "safediv", "sum", "count", "first", "last", "min", "max", "round", "splitcomp",
     "account_sortkey",
+    "getprice", "convert", "value", "possign",
+    "date_part", "date_trunc", "joinstr", "maxwidth",
+    "grep", "grepn", "findfirst", "has_account",
   ].contains(name)
 }
 
@@ -98,6 +101,13 @@ fn expression_type(
         return "unknown"
       }
       match name {
+        "date_part" => "int"
+        "date_trunc" => "date"
+        "joinstr" | "maxwidth" | "grep" | "grepn" | "findfirst" => "str"
+        "has_account" => "bool"
+        "getprice" => "decimal"
+        "convert" | "value" => if ts[0] == "inventory" { "inventory" } else { "amount" }
+        "possign" => ts[0]
         "first" | "last" | "min" | "max" | "round" => ts[0]
         "sum" =>
           if ["amount", "position", "inventory"].contains(ts[0]) {

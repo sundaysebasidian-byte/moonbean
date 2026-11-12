@@ -822,3 +822,40 @@ test "pivot creates sorted schema after limit and fills missing cells" {
     is Some(@query.Compilation(_)),
   )
 }
+
+///|
+test "query prices preserve inverse precision dates and cost-currency conversion" {
+  let source = ledger_source() + "2024-01-01 price EUR 2 USD\n2024-01-02 price USD 0.6 EUR\n"
+  let r = queried(source, "SELECT repr(getprice('USD','EUR')),repr(getprice('EUR','USD')),getprice('USD','USD'),getprice('USD','JPY') LIMIT 1")
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0][0].to_text(), "Decimal('0.5999999999999999999999999999')")
+  assert_eq(r.rows[0][1].to_text(), "Decimal('1.666666666666666666666666667')")
+  assert_eq(r.rows[0][2].to_text(), "1")
+  assert_true(r.rows[0][3] is @query.QNull)
+  let old = queried(source, "SELECT getprice('EUR','USD',2024-01-01) LIMIT 1")
+  assert_eq(old.rows[0][0].to_text(), "2")
+  let converted = queried(source, "SELECT convert(units(position),'EUR'),possign(number,'Income:X') WHERE account='Assets:Cash' LIMIT 1")
+  assert_true(converted.is_ok())
+  assert_eq(converted.rows[0][0].to_text(), "599.9999999999999999999999999 EUR")
+  assert_eq(converted.rows[0][1].to_text(), "-1000")
+}
+
+///|
+test "date parts ISO week boundaries and truncation errors" {
+  let r = queried(ledger_source(), "SELECT date_part('week',2021-01-01),date_part('dow',2024-02-29),date_part('epoch',0001-01-01),date_trunc('week',2024-02-29),date_part('day',date) LIMIT 1")
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), ["53", "3", "-62135596800", "2024-02-26", ""])
+  assert_true(queried(ledger_source(), "SELECT date_trunc('decade',0001-01-01)").failure() is Some(@query.Evaluation(_)))
+}
+
+///|
+test "string functions preserve declared unsupported boundaries" {
+  let r = queried(ledger_source(), "SELECT maxwidth(' a  b cdef ghi ',10),grep('a(.)','bacd'),grepn('a(.)','bacd',1),has_account('assets'),joinstr(tags) LIMIT 1")
+  assert_true(r.is_ok())
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), ["a b [...]", "ac", "c", "TRUE", ""])
+  for q in ["SELECT maxwidth('a-b-c-d-e-f',10)","SELECT grep('(?=a)','a')"] {
+    assert_true(queried(ledger_source(),q).failure() is Some(@query.Unsupported(_)))
+  }
+  assert_true(queried(ledger_source(), "SELECT grepn('a','a',1)").failure() is Some(@query.Evaluation(_)))
+  assert_true(queried(ledger_source(), "SELECT maxwidth('',4)").failure() is Some(@query.Evaluation(_)))
+}
