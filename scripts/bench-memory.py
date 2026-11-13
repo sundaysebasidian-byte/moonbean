@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Sample stage RSS in an instrumented source snapshot, using the default heap.
 
-Snapshots and raw logs are retained. Sampling is diagnostic and is never used
-as timing-gate input. RSS is sampled process residency, not V8 live heap.
+Snapshots and raw logs are retained for stage-memory diagnosis. Gate runs use
+the pristine benchmark driver. RSS includes runtime residency and retained objects.
 """
 import argparse
 import hashlib

@@ -35,9 +35,7 @@ and two warmups at every unchanged benchmark stage in the diagnostic run.
 | substr | unreached | 1111.2 |
 
 These are 100 ms `ps` samples of process RSS within marked stages, including
-retained objects and runtime residency. Sampling can miss brief peaks. The
-values do not measure per-stage allocation volume or V8 retained heap. Earlier
-stages' allocations can remain resident in later stages. The diagnostic
+retained objects and runtime residency. Sampling can miss brief peaks. Earlier stages' allocations can remain resident in later stages. The diagnostic
 instrumentation is excluded from timing-gate inputs. Raw snapshots, markers,
 samples and failure stderr remain in `.oracle-cache/r13/`; the portable
 [memory packet](evidence/r13-memory.json) pins source and artifact hashes.
@@ -52,6 +50,40 @@ python3 scripts/bench-memory.py --out .oracle-cache/r13-memory-current
 The historical measurements below retain their original workload and version
 boundaries. R13's uninstrumented full-matrix results are recorded in its
 [acceptance record](evidence/r13-acceptance.md).
+
+## R13 Lead-scoped timing evidence
+
+Main `89dafbb` and candidate `a2f177a` were built from verified archives inside
+the existing worktree. The unchanged standard runner completed wasm-gc 1M FIFO
+on the candidate with 15 measurements per stage and peak RSS **1,390,510,080
+bytes**. Main failed with default V8 heap exhaustion at peak RSS **1,462,255,616
+bytes**, with zero completed timed samples. Candidate p50 seconds were parse
+1.445, booking 0.316, validate/pad 0.619, realize 0.125, format 1.501, aggregate
+0.399, group 0.681, regex 0.503, transactions 0.241, length 0.467 and substr 0.609.
+
+Lead then authorized three short A/B rounds per native/JS workload under the
+shared GUI load. Each process used two warmups and one measured sample per
+stage. Whole-case source order alternated. The following values are medians of
+all three independent measurements, with candidate/main ratios.
+
+| Target / postings | Main parse (s) | Candidate parse (s) | Parse ratio | Main median peak RSS (bytes) | Candidate median peak RSS (bytes) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| native / 100,000 | 0.186 | 0.110 | 0.591 | 151,388,160 | 106,659,840 |
+| js / 100,000 | 0.293 | 0.120 | 0.410 | 1,036,877,824 | 788,135,936 |
+| native / 1,000,000 | 2.496 | 1.112 | 0.446 | 1,465,679,872 | 1,172,111,360 |
+| js / 1,000,000 | 3.814 | 1.595 | 0.418 | 2,641,297,408 | 2,440,888,320 |
+
+Native 1M format was 1.338294 times main (1.349 / 1.008 s). JS 1M regex was
+1.321814 times main (0.612 / 0.463 s). An isolated native 1M booking measurement
+was 64.691 s, with the other two candidate measurements 0.486 and 0.500 s. The
+cause remains unconfirmed. Short-round comparator exits were 0, 1 and 1. All
+three rounds and their failures are retained. Sampled short-run one-minute load
+ranged from 4.271 to 9.886.
+
+**Full 30% matrix gate is pending idle-host rerun by Lead.** The original full
+run was stopped after eight invocations. [Exact stage tables and comparator output](evidence/r13-acceptance.md#performance-gate),
+[all samples, A/B order, source/artifact hashes and load traces](evidence/r13-performance.json).
+The historical large ORDER BY skip remains part of this unchanged benchmark.
 
 ## Historical 0.2.2 library-stage evidence
 

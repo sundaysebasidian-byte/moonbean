@@ -6,7 +6,7 @@ The compatibility endpoint is **beancount 3.2.3 syntax and accounting semantics 
 
 Oracle metadata was obtained through public runtime descriptors, independently authored parser inputs, and CLI `.tables`, `.describe`, `.help targets` and statement probes. No upstream source or fixtures were inspected or copied. Reproduce with the pinned oracle Python: `python scripts/compatibility_inventory.py`. [Machine-readable inventory](evidence/compatibility-inventory.json) retains signatures, defaults, repeated-assignment probes, columns and command results. A descriptor or successful parse is not semantic conformance evidence.
 
-Evidence: `scripts/conformance.py` (ledger fixtures), `scripts/bql_differential.py` (current results linked below), `query/query_test.mbt`, `syntax/parser_test.mbt`, and [current acceptance](evidence/r12-acceptance.md). QueryError now distinguishes Syntax, Compilation, Evaluation and Unsupported. Shared invalid-input cases compare normalized oracle error categories. Unsupported statements/functions return errors; recognized options retained as raw data may have no effect, as listed below.
+Evidence: `scripts/conformance.py` (ledger fixtures), `scripts/bql_differential.py` (current results linked below), `query/query_test.mbt`, `syntax/parser_test.mbt`, and [current acceptance](evidence/r13-acceptance.md). QueryError now distinguishes Syntax, Compilation, Evaluation and Unsupported. Shared invalid-input cases compare normalized oracle error categories. Unsupported statements/functions return errors; recognized options retained as raw data may have no effect, as listed below.
 
 ## Options
 
@@ -421,3 +421,14 @@ The fixture checks UTC, Los Angeles and Kiritimati cross-day dates, both Los
 Angeles DST transitions, clock advancement after installation, partial dates and
 invalid/unavailable/uninstalled-provider fallbacks. Python's public datetime API
 from the pinned oracle environment independently checks each local date.
+
+
+## R13 acceptance status
+
+All three requested targets pass 193 unit tests each. The unchanged complete
+BQL differential passes 20549/20549 checks, and actual JS-hosted Wasm calendar
+checks pass 99/99. The default-heap wasm-gc 1M FIFO standard case completes on
+0.2.7 at peak RSS 1,390,510,080 bytes. Main's paired case fails at 1,462,255,616
+bytes. Three short native/JS A/B rounds retain all measured ratios and the
+reported format/regex increases. The full 30% matrix gate is pending idle-host
+rerun by Lead. [Current acceptance and exact limitations](evidence/r13-acceptance.md).

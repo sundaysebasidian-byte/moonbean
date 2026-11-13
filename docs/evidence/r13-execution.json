@@ -180,5 +180,49 @@
     "node": "v24.18.0",
     "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
     "oracle_versions": "3.2.3\n0.2.0"
-  }
+  },
+  "final_recheck_logs": [
+    {
+      "path": ".oracle-cache/r13/acceptance/final-check.log",
+      "sha256": "e498562d5b827e04a6a2bf9cd7d95fcfe26bfd66817379f50adec0bd598ef03b",
+      "output_summary": [
+        "Finished. moon: ran 14 tasks, now up to date"
+      ]
+    },
+    {
+      "path": ".oracle-cache/r13/acceptance/final-fmt.log",
+      "sha256": "30ec13dbdad8330682289e0f37415033da68d27500ec282757b7d943ce8227b5",
+      "output_summary": [
+        "Finished. moon: no work to do"
+      ]
+    },
+    {
+      "path": ".oracle-cache/r13/acceptance/final-info.log",
+      "sha256": "d0e63235b9f89969f9821fb2a2144a0004d65451be4f025f20b9d85fe67c5de7",
+      "output_summary": [
+        "Finished. moon: no work to do"
+      ]
+    },
+    {
+      "path": ".oracle-cache/r13/acceptance/final-js.log",
+      "sha256": "c1577d32b36c202265753eed8e4e4a0f677c926f51615ca401cbb23c521138c0",
+      "output_summary": [
+        "Total tests: 193, passed: 193, failed: 0."
+      ]
+    },
+    {
+      "path": ".oracle-cache/r13/acceptance/final-native.log",
+      "sha256": "c1577d32b36c202265753eed8e4e4a0f677c926f51615ca401cbb23c521138c0",
+      "output_summary": [
+        "Total tests: 193, passed: 193, failed: 0."
+      ]
+    },
+    {
+      "path": ".oracle-cache/r13/acceptance/final-wasm-gc.log",
+      "sha256": "c1577d32b36c202265753eed8e4e4a0f677c926f51615ca401cbb23c521138c0",
+      "output_summary": [
+        "Total tests: 193, passed: 193, failed: 0."
+      ]
+    }
+  ]
 }

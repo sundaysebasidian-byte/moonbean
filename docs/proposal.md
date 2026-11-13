@@ -21,12 +21,14 @@ Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运
 
 ## 一致性证据
 
+- R13（0.2.7）三目标单元测试各 193/193，完整 BQL 差分 20549/20549，实际 JS-hosted Wasm 时钟检查 99/99；宿主 import 与 UTC 回退覆盖跨日和 DST。wasm-gc 百万 FIFO 默认堆场景完成，峰值 RSS 1,390,510,080 字节；main 配对仍因堆耗尽失败，峰值 1,462,255,616 字节。[当前验收](evidence/r13-acceptance.md)保留全部阶段数值。
+- R13 按 Lead 决定仅完成三轮短 native/JS 交错 A/B；100k/1M 解析中位数比值为 0.410–0.591，native 1M format 为 1.338 倍、JS 1M regex 为 1.322 倍，另保留一次 64.691 s 的 native booking 样本，原因未确认。完整 30% 矩阵门禁标为 pending idle-host rerun by Lead。
 - 历史 R10 验收：120 份自编账本对 beancount 3.2.3 与 beanquery 0.2.0：118 份可比较账本全部通过；另 2 份使用扩展，不计为 oracle 一致。
-- R12 保留 4030 项既有检查，并接入独立 R11/R12 A/B 审查用例、日期、负零和 PRINT 逐字节差分；解析健壮性和 256 层/递归运算符资源限制单独计数；实际数量、共享错误类别与剩余拒绝分类见[本轮验收](evidence/r12-acceptance.md)。拒绝检查单独计数。
+- R12 保留 4030 项既有检查，并接入独立 R11/R12 A/B 审查用例、日期、负零和 PRINT 逐字节差分；解析健壮性和 256 层/递归运算符资源限制单独计数；实际数量、共享错误类别与剩余拒绝分类见[R12 验收](evidence/r12-acceptance.md)。拒绝检查单独计数。
 - 历史 R10 验收：两个 seed 各 1000 份随机账本：858 份完全一致，142 份仅因 AVERAGE 扩展不同，其余差异为 0。
 - 既有版本的 22 份报表和 lot 回归账本共 144 项检查、5 份迁移边界账本证据保留，未将其计为本轮重跑。
 - R12 native、wasm-gc、JS 单元测试结果见本轮验收；today 与 oracle 当天日期比较。Playground 历史证据为 29 项 node 和 8 项无头浏览器检查，本轮未重跑；本候选未推送、未运行远端 CI。
-- 0.2.2 历史性能基线：固定种子、100 万 source posting 的 native release 库阶段中位数：解析 1.931 s、FIFO booking 0.505 s、校验含 pad 1.017 s、BQL GROUP BY 0.812 s（Apple M4 / 16 GiB / MoonBit 0.1.20261104；2 次预热、21 次测量）。[原始数组、阶段 profile 与本地趋势检查](performance.md)均可复现；阶段并非互斥，不可相加。旧基线未完成 10 万/100 万 ORDER BY；本轮改为缓存键的稳定 O(n log n) 排序，native 10 万 posting 排序已通过逐行差分，历史门限仍保留大排序跳过项；wasm-gc 的 100 万 FIFO 综合场景因默认 moonrun 堆耗尽未完成。R10 的高负载矩阵未通过，不能作为当前性能结论；R11 曾未通过 JS 百万 FIFO 门限。R12 独立复审修复后的源码冻结于 ed31935，与 main 992eaa2 交错运行相同矩阵，35 组可比较配对在三组完整配对低负载复测后通过原 30% 中位数/RSS 门限；wasm-gc 百万 FIFO 双方均因堆耗尽未完成。结果和原始值详见[本轮结果](evidence/r12-acceptance.md)，按实际结果披露性能限制。
+- 0.2.2 历史性能基线：固定种子、100 万 source posting 的 native release 库阶段中位数：解析 1.931 s、FIFO booking 0.505 s、校验含 pad 1.017 s、BQL GROUP BY 0.812 s（Apple M4 / 16 GiB / MoonBit 0.1.20261104；2 次预热、21 次测量）。[原始数组、阶段 profile 与本地趋势检查](performance.md)均可复现；阶段并非互斥，不可相加。旧基线未完成 10 万/100 万 ORDER BY；本轮改为缓存键的稳定 O(n log n) 排序，native 10 万 posting 排序已通过逐行差分，历史门限仍保留大排序跳过项；wasm-gc 的 100 万 FIFO 综合场景因默认 moonrun 堆耗尽未完成。R10 的高负载矩阵未通过，不能作为当前性能结论；R11 曾未通过 JS 百万 FIFO 门限。R12 独立复审修复后的源码冻结于 ed31935，与 main 992eaa2 交错运行相同矩阵，35 组可比较配对在三组完整配对低负载复测后通过原 30% 中位数/RSS 门限；wasm-gc 百万 FIFO 双方均因堆耗尽未完成。结果和原始值详见[R12 结果](evidence/r12-acceptance.md)，按实际结果披露性能限制。
 
 ## 基础与本期工作
 

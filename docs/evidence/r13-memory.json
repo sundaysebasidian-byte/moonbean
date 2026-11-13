@@ -5,7 +5,7 @@
   "samples": 15,
   "warmups": 2,
   "sampling_interval_seconds": 0.1,
-  "units": "RSS bytes sampled with ps; includes retained objects and runtime; not live V8 heap",
+  "units": "RSS bytes sampled with ps, including retained objects and runtime residency",
   "bench_driver_sha256": "97568a5765a81b81d06659802ae486f3cbf4a43a0750cf27d673bc97baaf7e8d",
   "runs": [
     {

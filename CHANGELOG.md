@@ -2,9 +2,11 @@
 
 ## 0.2.7
 
+- Complete the previously failing default-heap wasm-gc 1M FIFO standard case. Preserve the main OOM pair, all short native/JS A/B results and the pending Lead idle-host 30% gate.
+
 - Add an optional WebAssembly host calendar import adapter and a per-read callback for today, partial-date defaults and two-digit years, with a validated UTC fallback. Existing moonrun applications retain the default calendar until a host service is installed.
 - Stream parser lines and share immutable word, numeric and date literals in bounded parse-local caches, reducing repeated-parse peak memory in the retained-ledger benchmark.
-- Add cross-target calendar/cache regressions, actual JS-hosted Wasm import/fallback tests and a reproducible stage-RSS diagnostic runner. R13 acceptance records correctness and the unchanged performance gate.
+- Add cross-target calendar/cache regressions, actual JS-hosted Wasm import/fallback tests and a reproducible stage-RSS diagnostic runner. R13 acceptance records correctness, scoped A/B timings and the pending idle-host matrix gate.
 
 ## 0.2.6
 

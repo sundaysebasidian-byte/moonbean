@@ -1,0 +1,13 @@
+Round 1, exit 0
+PASS: all baseline stage medians and RSS within tolerance
+
+Round 2, exit 1
+native-1000000-FIFO.json/booking_FIFO: p50 64.691, baseline 0.508000s
+native-1000000-FIFO.json/format: p50 1.508, baseline 1.008000s
+native-1000000-FIFO.json/regex: p50 1.047, baseline 0.484000s
+
+Round 3, exit 1
+js-1000000-FIFO.json/regex: p50 0.751, baseline 0.463000s
+native-100000-FIFO.json/regex: p50 0.069, baseline 0.047000s
+
+Full 30% matrix gate: pending idle-host rerun by Lead
