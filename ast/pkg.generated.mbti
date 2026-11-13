@@ -176,6 +176,8 @@ pub fn Meta::set(Self, String, MetaValue) -> Unit
 pub(all) enum MetaValue {
   MString(String)
   MNumber(@decimal.Decimal)
+  MAmount(Amount)
+  MNull
   MDate(Date)
   MAccount(String)
   MCurrency(String)

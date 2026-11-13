@@ -234,3 +234,40 @@ test "expanded diagnostics retain nested source locations and probe lines" {
     )
   }
 }
+
+///|
+test "include expansion preserves multiline logical strings and source maps" {
+  let source = "2024-01-01 open Assets:A\n2024-01-02 note Assets:A \"first\ninclude \"missing\"\nlast\"\n2024-01-03 open Assets:B\n"
+  let expanded = @moonbean.expand_includes(
+    source,
+    "/tmp",
+    fn(_) { abort("unexpected include read") },
+    file="root.bean",
+  )
+  assert_eq(expanded.source, source)
+  assert_eq(expanded.source_map.length(), 6)
+  let ledger = @moonbean.check_source(
+    "root.bean",
+    expanded.source,
+    source_map=expanded.source_map,
+  )
+  assert_true(ledger.errors.length() > 0)
+  let nested = @moonbean.expand_includes(
+    "include \"a\nb.bean\"\n2024-01-03 open Assets:B\n",
+    "/tmp",
+    fn(path) {
+      if path != "/tmp/a\nb.bean" {
+        abort("include path")
+      }
+      Some("2024-01-01 open Assets:A\n")
+    },
+    file="root.bean",
+  )
+  let parsed = @moonbean.check_source(
+    "root.bean",
+    nested.source,
+    source_map=nested.source_map,
+  )
+  assert_eq(parsed.errors.length(), 0)
+  assert_eq(parsed.entries[1].loc.line, 3)
+}

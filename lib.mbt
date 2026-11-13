@@ -35,34 +35,12 @@ fn lib_include_target(line : String) -> String? {
     ) {
     return None
   }
-  let mut start = -1
-  let mut i = 8
-  while i < text.length() {
-    let c = match text.get_char(i) {
-      Some(c) => c
-      None => break
-    }
-    if c == '"' {
-      start = i + 1
-      break
-    }
-    i = i + 1
+  let tokens = @syntax.tokenize(text)
+  if tokens.length() == 3 && tokens[1].kind is @syntax.Str(path) {
+    Some(path)
+  } else {
+    None
   }
-  if start < 0 {
-    return None
-  }
-  let mut end = start
-  while end < text.length() {
-    let c = match text.get_char(end) {
-      Some(c) => c
-      None => break
-    }
-    if c == '"' {
-      return Some(lib_view(text[start:end]))
-    }
-    end = end + 1
-  }
-  None
 }
 
 ///|
@@ -174,8 +152,10 @@ pub(all) struct ExpandedSource {
 struct IncludeFrame {
   file : String
   base : String
+  source : String
   lines : Array[String]
   mut index : Int32
+  mut offset : Int32
 }
 
 ///|
@@ -206,8 +186,10 @@ pub fn IncludeExpander::new(
           path_join("", file)
         },
         base: base_dir,
+        source,
         lines: source.split("\n").map(lib_view).to_array(),
         index: 0,
+        offset: 0,
       },
     ],
     output: [],
@@ -230,16 +212,31 @@ pub fn IncludeExpander::next(self : IncludeExpander) -> String? {
       self.frames.pop() |> ignore
       continue
     }
-    let line = frame.lines[frame.index]
-    frame.index += 1
+    let first = frame.index
+    let physical = frame.lines[first]
+    let end = if physical.contains("\"") {
+      @syntax.logical_line_end(frame.source, start=frame.offset)
+    } else {
+      frame.offset + physical.length()
+    }
+    let line = if end == frame.offset + physical.length() {
+      physical
+    } else {
+      frame.source[frame.offset:end].to_owned()
+    }
+    while frame.index < frame.lines.length() && frame.offset <= end {
+      frame.offset += frame.lines[frame.index].length() + 1
+      frame.index += 1
+    }
     match include_target(line) {
-      None => {
-        self.output.push(line)
-        self.source_map.push(@ast.Loc::new(frame.file, frame.index))
-      }
+      None =>
+        for index in first..<frame.index {
+          self.output.push(frame.lines[index])
+          self.source_map.push(@ast.Loc::new(frame.file, index + 1))
+        }
       Some(relative) => {
         let path = path_join(frame.base, relative)
-        let loc = @ast.Loc::new(frame.file, frame.index)
+        let loc = @ast.Loc::new(frame.file, first + 1)
         if self.frames.any(fn(f) { f.file == path }) {
           self.errors.push(
             @ast.Diagnostic::new(
@@ -280,13 +277,19 @@ pub fn IncludeExpander::provide(
         self.frames.push({
           file: path,
           base: path_dirname(path),
+          source,
           lines: source.split("\n").map(lib_view).to_array(),
           index: 0,
+          offset: 0,
         })
       None => {
         self.missing.push(path)
         self.output.push(line)
-        self.source_map.push(loc)
+        let mut index = 0
+        for _ in line.split("\n") {
+          self.source_map.push(@ast.Loc::new(loc.file, loc.line + index))
+          index += 1
+        }
         self.errors.push(
           @ast.Diagnostic::new(
             "include.missing",

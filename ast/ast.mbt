@@ -42,6 +42,8 @@ pub fn Diagnostic::to_string(self : Diagnostic) -> String {
 pub(all) enum MetaValue {
   MString(String)
   MNumber(@decimal.Decimal)
+  MAmount(Amount)
+  MNull
   MDate(Date)
   MAccount(String)
   MCurrency(String)
@@ -54,6 +56,8 @@ pub fn MetaValue::to_string(self : MetaValue) -> String {
   match self {
     MString(s) => "\"" + s.replace_all(old="\"", new="\\\"") + "\""
     MNumber(n) => n.to_string()
+    MAmount(a) => a.to_string()
+    MNull => ""
     MDate(d) => d.to_string()
     MAccount(a) => a
     MCurrency(c) => c

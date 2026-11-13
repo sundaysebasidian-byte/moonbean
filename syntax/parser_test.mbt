@@ -226,3 +226,47 @@ test "streamed lines and bounded literals preserve independent parse values" {
   let negative = parse_ok("2024-01-01 balance Assets:A -0.00 USD\n")
   assert_false(negative.entries[0].query_exact_decimal)
 }
+
+///|
+test "multiline strings preserve physical source positions and escapes" {
+  let ledger = parse_ok(
+    "2024-01-01 open Assets:A USD\n2024-01-02 note Assets:A \"one\n  two\n\n; text\nthree\"\n2024-01-03 open Assets:B\n",
+  )
+  assert_eq(ledger.entries.length(), 3)
+  assert_eq(ledger.entries[1].loc.line, 2)
+  assert_eq(ledger.entries[2].loc.line, 7)
+  guard ledger.entries[1].directive is @ast.DNote(note) else { abort("note") }
+  assert_eq(note.comment, "one\n  two\n\n; text\nthree")
+  let crlf = parse_ok(
+    "2024-01-01 open Assets:A\r\n2024-01-02 note Assets:A \"a\r\nb\"\r\n",
+  )
+  guard crlf.entries[1].directive is @ast.DNote(note) else { abort("note") }
+  assert_eq(note.comment, "a\r\nb")
+}
+
+///|
+test "unterminated strings report a token error and recover following directives" {
+  let ledger = @syntax.parse_source(
+    "bad.bean", "2024-01-01 open Assets:A\n2024-01-02 note Assets:A \"bad\n2024-01-03 open Assets:B\n",
+  )
+  assert_eq(ledger.errors[0].code, "parse.token")
+  assert_eq(ledger.errors[0].loc.line, 2)
+  assert_eq(ledger.entries.length(), 2)
+}
+
+///|
+test "metadata retains amounts expressions and empty values" {
+  let ledger = parse_ok(
+    "pushmeta stack: 2.50 USD\n2024-01-01 open Assets:A USD\n  value: (1+2)*3 USD\n  empty:\n  memo: \"a\nb\"\n2024-01-02 * \"stack\"\npopmeta stack:\n",
+  )
+  assert_true(ledger.entries[0].meta.get("empty") is Some(@ast.MNull))
+  guard ledger.entries[0].meta.get("value") is Some(@ast.MAmount(amount)) else {
+    abort("amount")
+  }
+  assert_eq(amount.number.to_string(), "9")
+  assert_eq(amount.currency, "USD")
+  assert_eq(
+    ledger.entries[1].meta.get("stack").unwrap().to_string(),
+    "2.50 USD",
+  )
+}

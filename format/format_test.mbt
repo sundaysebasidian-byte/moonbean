@@ -67,3 +67,13 @@ test "plain postings without amounts are left unaligned" {
   inspect(formatted.contains("  Expenses:Food  10 USD"), content="true")
   inspect(formatted.contains("  Assets:Cash\n"), content="true")
 }
+
+///|
+test "multiline literals retain whitespace through formatting" {
+  let source = "2024-01-01 open Assets:A\n2024-01-02 * \"first  \n  second\r\n\nlast\"\n  Assets:A 1 USD\n  Assets:A -1 USD\n"
+  assert_eq(@format.format_source(source), source)
+  let ledger = @syntax.parse_source("multi.bean", @format.format_source(source))
+  assert_eq(ledger.errors.length(), 0)
+  guard ledger.entries[1].directive is DTransaction(txn) else { abort("txn") }
+  assert_eq(txn.narration, "first  \n  second\r\n\nlast")
+}

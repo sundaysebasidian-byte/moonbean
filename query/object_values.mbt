@@ -141,6 +141,8 @@ fn meta_value(value : @ast.MetaValue) -> QueryValue {
   match value {
     MString(s) | MAccount(s) | MCurrency(s) | MTag(s) => QText(s)
     MNumber(n) => QNumber(n)
+    MAmount(a) => QAmount(a)
+    MNull => QNull
     MDate(d) => QDate(d)
     MBool(b) => QBool(b)
   }

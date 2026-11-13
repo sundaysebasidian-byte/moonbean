@@ -726,3 +726,16 @@ test "same day balances distinguish currencies and Unicode names validate" {
   assert_true(invalid.has_errors())
   assert_eq(invalid.entries.length(), 1)
 }
+
+///|
+test "empty transaction and automatic posting have no residual" {
+  let ledger = validated(
+    "2024-01-01 open Assets:A USD\n2024-01-02 *\n2024-01-03 * \"empty\"\n  Assets:A\n",
+  )
+  assert_eq(ledger.errors.length(), 0)
+  assert_eq(ledger.entries.length(), 3)
+  guard ledger.entries[2].directive is @ast.DTransaction(txn) else {
+    abort("txn")
+  }
+  assert_eq(txn.postings.length(), 0)
+}

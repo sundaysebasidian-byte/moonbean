@@ -838,6 +838,13 @@ fn interpolate_missing(
     )
     return
   }
+  if weights.is_empty() &&
+    posting.units_currency is None &&
+    posting.price is None {
+    posting.units = Some(@ast.Amount::new(@decimal.Decimal::zero(), ""))
+    posting.meta.set("__automatic__", @ast.MBool(true))
+    return
+  }
   let currency = match posting.units_currency {
     Some(currency) => Some(currency)
     None => infer_currency(weights)
@@ -1156,7 +1163,21 @@ pub fn validate_ledger(ledger : @ast.Ledger) -> ValidatedLedger {
       DClose(close) => process_close(ctx, entry, close)
       DPad(pad) => process_pad(ctx, entry, pad)
       DBalance(balance) => process_balance(ctx, entry, balance)
-      DTransaction(txn) => process_transaction(ctx, entry, txn)
+      DTransaction(txn) => {
+        let before = ctx.errors.length()
+        process_transaction(ctx, entry, txn)
+        let mut discard = false
+        for index in before..<ctx.errors.length() {
+          let message = ctx.errors[index].message
+          if message.has_prefix("Failed to categorize posting") ||
+            message.has_prefix("You may not have more than one auto-posting") {
+            discard = true
+          }
+        }
+        if discard {
+          continue
+        }
+      }
       DNote(note) =>
         check_account(ctx, note.account, entry.date, entry.loc, false) |> ignore
       DDocument(document) => {

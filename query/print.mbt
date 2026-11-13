@@ -19,6 +19,7 @@ fn ledger_metadata(meta : @ast.Meta, indent : String) -> String {
       (match value {
         MString(s) => ledger_quote(s)
         MNumber(n) => python_decimal(n)
+        MAmount(a) => python_decimal(a.number) + " " + a.currency
         MCurrency(c) | MAccount(c) | MTag(c) => ledger_quote(c)
         other => other.to_string()
       }) +

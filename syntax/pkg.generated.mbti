@@ -10,6 +10,8 @@ pub fn is_valid_account(String) -> Bool
 
 pub fn is_valid_currency(String) -> Bool
 
+pub fn logical_line_end(String, start? : Int32) -> Int32
+
 pub fn parse_source(String, String, source_map? : Array[@ast.Loc]) -> @ast.Ledger
 
 pub fn tokenize(String) -> Array[Token]
@@ -25,6 +27,7 @@ pub(all) struct Token {
 pub(all) enum TokenKind {
   Word(String)
   Str(String)
+  Invalid(String)
   LBrace
   RBrace
   LDoubleBrace

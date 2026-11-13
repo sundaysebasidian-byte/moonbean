@@ -1464,3 +1464,17 @@ test "host calendar applies to today and partial dates and resets safely" {
     )
   }
 }
+
+///|
+test "amount and empty metadata retain typed query and PRINT values" {
+  let source = "2024-01-01 open Assets:A USD\n  value: 1.00 USD\n  empty:\n"
+  let result = queried(
+    source, "SELECT meta('value'),meta('empty') FROM #entries",
+  )
+  assert_true(result.error is None)
+  assert_eq(result.rows[0][0].to_text(), "1.00 USD")
+  assert_true(result.rows[0][1] is @query.QNull)
+  let printed = queried(source, "PRINT")
+  guard printed.kind is @query.DirectiveText(text) else { abort("PRINT") }
+  assert_true(text.contains("  value: 1.00 USD\n  empty: \n"))
+}

@@ -232,7 +232,45 @@ fn format_block(
 }
 
 ///|
+fn contains_multiline_string(source : String) -> Bool {
+  let mut rest = source[:]
+  let mut quoted = false
+  while rest.find("\"") is Some(index) {
+    let prefix = rest[0:index]
+    if quoted && prefix.find("\n") is Some(_) {
+      return true
+    }
+    if !quoted && prefix.find(";") is Some(_) {
+      let last_line = prefix.rev_find("\n").map(fn(i) { i + 1 }).unwrap_or(0)
+      if prefix[last_line:].find(";") is Some(_) {
+        match rest[index:].find("\n") {
+          Some(end) => {
+            rest = rest[index + end + 1:]
+            continue
+          }
+          None => return false
+        }
+      }
+    }
+    let mut backslashes = 0
+    let mut i = index - 1
+    while i >= 0 && rest.get_char(i) == Some('\\') {
+      backslashes += 1
+      i -= 1
+    }
+    if !quoted || backslashes % 2 == 0 {
+      quoted = !quoted
+    }
+    rest = rest[index + 1:]
+  }
+  false
+}
+
+///|
 pub fn format_source(source : String) -> String {
+  if contains_multiline_string(source) {
+    return if source.has_suffix("\n") { source } else { source + "\n" }
+  }
   let lines : Array[String] = []
   for view in source.split("\n") {
     lines.push(format_view(view))

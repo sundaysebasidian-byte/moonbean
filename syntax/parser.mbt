@@ -21,12 +21,6 @@ fn starts_whitespace(text : String) -> Bool {
 }
 
 ///|
-fn is_comment_line(text : String) -> Bool {
-  let t = trimmed(text)
-  t.length() > 0 && t.get_char(0) == Some(';')
-}
-
-///|
 fn is_blank_line(text : String) -> Bool {
   trimmed(text).length() == 0
 }
@@ -225,6 +219,8 @@ fn Cursor::take_string(self : Cursor) -> String? {
 ///|
 priv struct Parser {
   file : String
+  source : String
+  mut offset : Int32
   source_map : Array[@ast.Loc]
   lines : Iter[StringView]
   mut next_line : String?
@@ -247,6 +243,8 @@ fn Parser::new(
   let lines = source.split("\n")
   {
     file,
+    source,
+    offset: 0,
     source_map,
     lines,
     next_line: lines.next().map(view_to_string),
@@ -313,44 +311,71 @@ fn Parser::pop_tag(self : Parser, tag : String) -> Bool {
 }
 
 ///|
-fn collect_indented(parser : Parser) -> Array[(String, Int32)] {
+fn collect_indented(parser : Parser) -> Array[(Array[Token], Int32)] {
   let result = []
   while parser.next_line is Some(line) {
-    if is_blank_line(line) {
+    if is_blank_line(line) || !starts_whitespace(line) {
       break
     }
-    if !starts_whitespace(line) {
-      break
+    let pair = parser.take_tokens()
+    if pair.0.length() > 1 {
+      result.push(pair)
     }
-    result.push((line, parser.index + 1))
-    parser.advance_line()
   }
   result
 }
 
 ///|
 fn Parser::advance_line(self : Parser) -> Unit {
+  if self.next_line is Some(line) {
+    self.offset = self.offset + line.length() + 1
+  }
   self.index = self.index + 1
   self.next_line = self.lines.next().map(view_to_string)
 }
 
 ///|
-fn parse_meta_line(tokens : Array[Token]) -> (String, @ast.MetaValue)? {
+fn parse_metadata_value(
+  cursor : Cursor,
+  parser : Parser,
+  line : Int32,
+) -> @ast.MetaValue? {
+  if cursor.eof() {
+    return Some(@ast.MNull)
+  }
+  if cursor.kind() is Word(word) && parser.looks_like_number(word) {
+    guard parse_number_expression(cursor, parser, line) is Some(number) else {
+      return None
+    }
+    if cursor.kind() is Word(currency) && is_valid_currency(currency) {
+      cursor.advance() |> ignore
+      return Some(@ast.MAmount(@ast.Amount::new(number, currency)))
+    }
+    return Some(@ast.MNumber(number))
+  }
+  let value = meta_value(cursor.peek())
+  if value is None && cursor.kind() is Word(word) {
+    parser.error(line, "parse.token", "Invalid token: '" + word + "'")
+  }
+  if value is Some(_) {
+    cursor.advance() |> ignore
+  }
+  value
+}
+
+///|
+fn parse_meta_line(
+  tokens : Array[Token],
+  parser : Parser,
+  line : Int32,
+) -> (String, @ast.MetaValue)? {
   let cursor = Cursor::new(tokens)
-  let key = match cursor.peek().kind {
-    Word(w) =>
-      match meta_key_from_word(w) {
-        Some(key) => key
-        None => return None
-      }
-    _ => return None
-  }
+  guard cursor.kind() is Word(word) else { return None }
+  guard meta_key_from_word(word) is Some(key) else { return None }
   cursor.advance() |> ignore
-  let value = match meta_value(cursor.peek()) {
-    Some(v) => v
-    None => return None
+  guard parse_metadata_value(cursor, parser, line) is Some(value) else {
+    return None
   }
-  cursor.advance() |> ignore
   if !cursor.eof() {
     return None
   }
@@ -575,6 +600,7 @@ fn TokenKind::describe_token(self : TokenKind) -> String {
   match self {
     Word(w) => "`" + w + "`"
     Str(s) => "\"" + s + "\""
+    Invalid(s) => s
     LBrace => "`{`"
     RBrace => "`}`"
     LDoubleBrace => "`{{`"
@@ -851,7 +877,7 @@ fn parse_tags_and_links(
         push_unique(links, l)
         cursor.advance() |> ignore
       }
-      _ => cursor.advance() |> ignore
+      _ => break
     }
   }
 }
@@ -895,27 +921,31 @@ fn parse_transaction(
         _ => s
       }
     }
+    Eof | Tag(_) | Link(_) => ""
     _ => {
-      parser.error(
-        line, "parse.narration", "transaction is missing a narration string",
-      )
+      parser.error(line, "parse.narration", "invalid transaction header")
       return None
     }
   }
   let tags : Array[String] = []
   let links : Array[String] = []
   parse_tags_and_links(cursor, tags, links)
+  if !cursor.eof() {
+    parser.error(
+      line, "parse.transaction", "unexpected token after transaction header",
+    )
+    return None
+  }
   let txn = @ast.Transaction::new(flag, payee, narration, tags, links)
   let own_meta = @ast.Meta::new()
   let continuations = collect_indented(parser)
   let mut posting_count = 0
   for pair in continuations {
-    let text = pair.0
+    let line_tokens = pair.0
     let meta_line = pair.1
-    if is_blank_line(text) || is_comment_line(text) {
-      continue
+    if line_tokens.any(fn(t) { t.kind is Invalid(_) }) {
+      return None
     }
-    let line_tokens = parser.tokens(text)
     if line_tokens[0].kind is Word(w) && w.length() == 2 && w.has_suffix(":") {
       parser.error(meta_line, "parse.meta", "invalid metadata key")
       return None
@@ -926,15 +956,20 @@ fn parse_transaction(
         match meta_key_from_word(w) {
           Some(_) => {
             handled = true
-            match parse_meta_line(line_tokens) {
+            let before = parser.ledger.errors.length()
+            match parse_meta_line(line_tokens, parser, meta_line) {
               Some((key, value)) =>
                 if posting_count > 0 {
                   txn.postings[posting_count - 1].meta.set(key, value)
                 } else {
                   own_meta.set(key, value)
                 }
-              None =>
-                parser.error(meta_line, "parse.meta", "invalid metadata line")
+              None => {
+                if parser.ledger.errors.length() == before {
+                  parser.error(meta_line, "parse.meta", "invalid metadata line")
+                }
+                return None
+              }
             }
           }
           None => ()
@@ -1434,13 +1469,18 @@ fn parse_note(
   let links : Array[String] = []
   parse_tags_and_links(cursor, tags, links)
   if !cursor.eof() {
-    parser.error(
-      line,
-      "parse.note",
-      "unexpected " +
-      cursor.kind().describe_token() +
-      " at end of note directive",
-    )
+    if cursor.kind() is Word(word) && !is_valid_currency(word) {
+      parser.error(line, "parse.token", "Invalid token: '" + word + "'")
+    } else {
+      parser.error(
+        line,
+        "parse.note",
+        "unexpected " +
+        cursor.kind().describe_token() +
+        " at end of note directive",
+      )
+    }
+    return None
   }
   let entry = @ast.Entry::new(
     date,
@@ -1855,14 +1895,13 @@ fn parse_push_meta(
   }
   cursor.advance() |> ignore
   if push {
-    let value = match meta_value(cursor.peek()) {
+    let value = match parse_metadata_value(cursor, parser, line) {
       Some(v) => v
       None => {
         parser.error(line, "parse.pushmeta", "expected a metadata value")
         return
       }
     }
-    cursor.advance() |> ignore
     parser.push_stack_meta(key, value)
   } else {
     parser.pop_stack_meta(key)
@@ -1941,18 +1980,24 @@ fn attach_continuation_meta(
   let own_meta = @ast.Meta::new()
   let mut lexical_error = false
   for pair in continuations {
-    let text = pair.0
+    let tokens = pair.0
     let meta_line = pair.1
-    if is_blank_line(text) || is_comment_line(text) {
+    if tokens.any(fn(t) { t.kind is Invalid(_) }) {
+      lexical_error = true
       continue
     }
-    let tokens = parser.tokens(text)
     if tokens[0].kind is Word(w) && w.length() == 2 && w.has_suffix(":") {
       lexical_error = true
     }
-    match parse_meta_line(tokens) {
+    let before = parser.ledger.errors.length()
+    match parse_meta_line(tokens, parser, meta_line) {
       Some((key, value)) => own_meta.set(key, value)
-      None => parser.error(meta_line, "parse.meta", "invalid metadata line")
+      None => {
+        if parser.ledger.errors.length() == before {
+          parser.error(meta_line, "parse.meta", "invalid metadata line")
+        }
+        lexical_error = true
+      }
     }
   }
   let merged = merge_meta(entry.meta, own_meta)
@@ -2017,17 +2062,25 @@ pub fn parse_source(
   let parser = Parser::new(file, source, source_map)
   while parser.next_line is Some(line) {
     let line_no = parser.index + 1
-    parser.advance_line()
-    if is_blank_line(line) || is_comment_line(line) {
+    if is_blank_line(line) {
+      parser.advance_line()
       continue
     }
     if starts_whitespace(line) {
       parser.error(
         line_no, "parse.indent", "unexpected indented line outside of a directive",
       )
+      parser.advance_line()
       continue
     }
-    let tokens = parser.tokens(line)
+    let (tokens, _) = parser.take_tokens()
+    if tokens.length() == 1 {
+      continue
+    }
+    if tokens.any(fn(t) { t.kind is Invalid(_) }) {
+      collect_indented(parser) |> ignore
+      continue
+    }
     parse_toplevel(parser, tokens, line_no)
   }
   if parser.query_signed_zero[0] {
@@ -2070,4 +2123,55 @@ fn Parser::date(self : Parser, text : String) -> @ast.Date? {
     self.dates[text] = date
   }
   result
+}
+
+///|
+fn Parser::take_tokens(self : Parser) -> (Array[Token], Int32) {
+  let line = self.index + 1
+  let start = self.offset
+  let text = self.next_line.unwrap()
+  self.advance_line()
+  let mut tokens = self.tokens(text)
+  let mut logical = text
+  if tokens.length() > 1 && tokens[tokens.length() - 2].kind is Invalid(_) {
+    let end = multiline_line_end(
+      self.source,
+      start + tokens[tokens.length() - 2].pos,
+      start + text.length(),
+    )
+    if end > start + text.length() {
+      while self.offset <= end && self.next_line is Some(_) {
+        self.advance_line()
+      }
+      logical = self.source[start:end].to_owned()
+      tokens = self.tokens(logical)
+    }
+  }
+  if start + logical.length() == self.source.length() && tokens.length() > 1 {
+    let last = tokens.length() - 2
+    if tokens[last].kind is Word(word) &&
+      word.length() == 1 &&
+      word.get_char(0) is Some(c) &&
+      c >= 'A' &&
+      c <= 'Z' &&
+      tokens[last].pos + 1 == logical.length() {
+      tokens[last] = { ..tokens[last], kind: Invalid(word), }
+    }
+  }
+  for token in tokens {
+    if token.kind is Invalid(raw) {
+      let offset = logical[0:token.pos]
+        .iter()
+        .filter(fn(c) { c == '\n' })
+        .count()
+      self.error(
+        line + offset,
+        "parse.token",
+        "Invalid token: '" +
+        raw.replace_all(old="\\", new="\\\\").replace_all(old="'", new="\\'") +
+        "'",
+      )
+    }
+  }
+  (tokens, line)
 }

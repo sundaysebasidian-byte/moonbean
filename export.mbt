@@ -48,6 +48,8 @@ fn jmeta(meta : @ast.Meta) -> String {
       match value {
         @ast.MString(text) => jstr(text)
         @ast.MNumber(number) => jnum(number)
+        @ast.MAmount(amount) => jamount(amount)
+        @ast.MNull => "null"
         @ast.MDate(date) => jdate(date)
         @ast.MAccount(account) => jstr(account)
         @ast.MCurrency(currency) => jstr(currency)
