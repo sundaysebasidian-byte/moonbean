@@ -93,7 +93,11 @@ pub fn tokenize(text : String) -> Array[Token] {
 }
 
 ///|
-fn tokenize_guarded(text : String, signed_zero : Array[Bool]?) -> Array[Token] {
+fn tokenize_guarded(
+  text : String,
+  signed_zero : Array[Bool]?,
+  words~ : Map[String, String]? = None,
+) -> Array[Token] {
   let tokens = []
   let len = text.length()
   let mut i = 0
@@ -234,7 +238,20 @@ fn tokenize_guarded(text : String, signed_zero : Array[Bool]?) -> Array[Token] {
       // parser can report a precise error instead of looping forever.
       j = j + (if c.to_int() > 0xFFFF { 2 } else { 1 })
     }
-    let word = text.unsafe_substring(start~, end=j)
+    let text_word = text.unsafe_substring(start~, end=j)
+    let word = match words {
+      Some(cache) =>
+        match cache.get(text_word) {
+          Some(word) => word
+          None => {
+            if cache.length() < literal_cache_limit {
+              cache[text_word] = text_word
+            }
+            text_word
+          }
+        }
+      None => text_word
+    }
     if signed_zero is Some(flag) &&
       !flag[0] &&
       word.has_prefix("-0") &&

@@ -4,7 +4,7 @@
 
 ///|
 fn view_to_string(view : StringView) -> String {
-  String::from_iter(view.iter())
+  view.to_owned()
 }
 
 ///|
@@ -226,9 +226,13 @@ fn Cursor::take_string(self : Cursor) -> String? {
 priv struct Parser {
   file : String
   source_map : Array[@ast.Loc]
-  lines : Array[String]
+  lines : Iter[StringView]
+  mut next_line : String?
   mut index : Int32
   query_signed_zero : Array[Bool]
+  words : Map[String, String]
+  numbers : Map[String, @decimal.Decimal]
+  dates : Map[String, @ast.Date]
   ledger : @ast.Ledger
   meta_stack : @ast.Meta
   tag_stack : Array[String]
@@ -240,16 +244,17 @@ fn Parser::new(
   source : String,
   source_map : Array[@ast.Loc],
 ) -> Parser {
-  let lines = []
-  for line in source.split("\n") {
-    lines.push(view_to_string(line))
-  }
+  let lines = source.split("\n")
   {
     file,
     source_map,
     lines,
+    next_line: lines.next().map(view_to_string),
     index: 0,
     query_signed_zero: [false],
+    words: {},
+    numbers: {},
+    dates: {},
     ledger: @ast.Ledger::new(),
     meta_stack: @ast.Meta::new(),
     tag_stack: [],
@@ -310,8 +315,7 @@ fn Parser::pop_tag(self : Parser, tag : String) -> Bool {
 ///|
 fn collect_indented(parser : Parser) -> Array[(String, Int32)] {
   let result = []
-  while parser.index < parser.lines.length() {
-    let line = parser.lines[parser.index]
+  while parser.next_line is Some(line) {
     if is_blank_line(line) {
       break
     }
@@ -319,9 +323,15 @@ fn collect_indented(parser : Parser) -> Array[(String, Int32)] {
       break
     }
     result.push((line, parser.index + 1))
-    parser.index = parser.index + 1
+    parser.advance_line()
   }
   result
+}
+
+///|
+fn Parser::advance_line(self : Parser) -> Unit {
+  self.index = self.index + 1
+  self.next_line = self.lines.next().map(view_to_string)
 }
 
 ///|
@@ -385,7 +395,7 @@ fn parse_expr_primary(
           None => None
         }
       } else {
-        match @decimal.Decimal::parse(word) {
+        match parser.number(word) {
           Some(number) => {
             cursor.advance() |> ignore
             Some(number)
@@ -514,11 +524,11 @@ fn is_expression_start(word : String) -> Bool {
 }
 
 ///|
-fn looks_like_number(word : String) -> Bool {
+fn Parser::looks_like_number(self : Parser, word : String) -> Bool {
   if is_expression_start(word) {
     return true
   }
-  match @decimal.Decimal::parse(word) {
+  match self.number(word) {
     Some(_) => true
     None => false
   }
@@ -631,7 +641,7 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
         cursor.advance() |> ignore
       }
       Word(w) =>
-        if looks_like_number(w) {
+        if parser.looks_like_number(w) {
           match parse_number_expression(cursor, parser, line) {
             Some(n) => {
               number = Some(n)
@@ -647,7 +657,7 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
             None => ()
           }
         } else {
-          match @ast.Date::parse(w) {
+          match parser.date(w) {
             Some(d) => {
               date = Some(d)
               cursor.advance() |> ignore
@@ -777,7 +787,7 @@ fn parse_posting(
   posting.loc = parser.loc(line)
   match cursor.kind() {
     Word(w) =>
-      if looks_like_number(w) {
+      if parser.looks_like_number(w) {
         match parse_number_expression(cursor, parser, line) {
           Some(number) => {
             let currency = match cursor.take_word() {
@@ -1192,7 +1202,7 @@ fn parse_balance(
   }
   let number = match cursor.kind() {
     Word(w) =>
-      if looks_like_number(w) {
+      if parser.looks_like_number(w) {
         match parse_number_expression(cursor, parser, line) {
           Some(n) => n
           None => return None
@@ -1526,7 +1536,7 @@ fn parse_custom(
           values.push(@ast.CustomValue::CBool(w == "TRUE"))
           cursor.advance() |> ignore
         } else {
-          match @ast.Date::parse(w) {
+          match parser.date(w) {
             Some(d) => {
               values.push(@ast.CustomValue::CDate(d))
               cursor.advance() |> ignore
@@ -1874,7 +1884,7 @@ fn parse_dated_directive(
 ) -> @ast.Entry? {
   let date = match tokens[0].kind {
     Word(w) =>
-      match @ast.Date::parse(w) {
+      match parser.date(w) {
         Some(d) => d
         None => {
           parser.error(line, "parse.date", "invalid date `" + w + "`")
@@ -2005,10 +2015,9 @@ pub fn parse_source(
   source_map~ : Array[@ast.Loc] = [],
 ) -> @ast.Ledger {
   let parser = Parser::new(file, source, source_map)
-  while parser.index < parser.lines.length() {
-    let line = parser.lines[parser.index]
+  while parser.next_line is Some(line) {
     let line_no = parser.index + 1
-    parser.index = parser.index + 1
+    parser.advance_line()
     if is_blank_line(line) || is_comment_line(line) {
       continue
     }
@@ -2031,5 +2040,34 @@ pub fn parse_source(
 
 ///|
 fn Parser::tokens(self : Parser, text : String) -> Array[Token] {
-  tokenize_guarded(text, Some(self.query_signed_zero))
+  tokenize_guarded(text, Some(self.query_signed_zero), words=Some(self.words))
+}
+
+///|
+// These immutable literals are often repeated across a ledger. Bound each
+// parse-local cache so unique input cannot retain an unbounded second index.
+let literal_cache_limit = 1024
+
+///|
+fn Parser::number(self : Parser, text : String) -> @decimal.Decimal? {
+  if self.numbers.get(text) is Some(number) {
+    return Some(number)
+  }
+  let result = @decimal.Decimal::parse(text)
+  if result is Some(number) && self.numbers.length() < literal_cache_limit {
+    self.numbers[text] = number
+  }
+  result
+}
+
+///|
+fn Parser::date(self : Parser, text : String) -> @ast.Date? {
+  if self.dates.get(text) is Some(date) {
+    return Some(date)
+  }
+  let result = @ast.Date::parse(text)
+  if result is Some(date) && self.dates.length() < literal_cache_limit {
+    self.dates[text] = date
+  }
+  result
 }

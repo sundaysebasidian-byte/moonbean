@@ -192,3 +192,37 @@ test "Unicode accounts retain lexer accepted semantic errors" {
   assert_eq(single.entries.length(), 0)
   assert_true(single.errors.length() > 0)
 }
+
+///|
+test "streamed lines and bounded literals preserve independent parse values" {
+  let source = StringBuilder()
+  for i in 0..<1030 {
+    source.write_string("2024-01-01 * \"row\"\r\n  Assets:A \{i}.00 USD\r\n")
+  }
+  source.write_string(
+    "\n; boundary\n2024-01-02 * \"𐐀\"\n  Assets:A (1.00 + 2.00) USD\n    detail: \"first\"\n  Assets:A 1 USD\n  Assets:A 1.00 USD\n2024-01-03 note Assets:A \"last\"",
+  )
+  let ledger = parse_ok(source.to_string())
+  assert_eq(ledger.entries.length(), 1032)
+  assert_eq(ledger.entries[1029].loc.line, 2059)
+  let entry = ledger.entries[1030]
+  assert_eq(entry.loc.line, 2063)
+  guard entry.directive is @ast.DTransaction(txn) else { abort("transaction") }
+  assert_eq(txn.narration, "𐐀")
+  assert_eq(txn.postings[0].units.unwrap().number.to_string(), "3.00")
+  assert_eq(txn.postings[1].units.unwrap().number.to_string(), "1")
+  assert_eq(txn.postings[2].units.unwrap().number.to_string(), "1.00")
+  assert_eq(txn.postings[0].loc.line, 2064)
+  assert_eq(txn.postings[0].meta.entries.length(), 1)
+  assert_eq(txn.postings[1].meta.entries.length(), 0)
+  assert_eq(ledger.entries[1031].loc.line, 2068)
+  let mapped = @syntax.parse_source(
+    "expanded.bean",
+    "\n2024-01-01 open Assets:A\n",
+    source_map=[@ast.Loc::new("skip.bean", 10), @ast.Loc::new("child.bean", 42)],
+  )
+  assert_eq(mapped.entries[0].loc.file, "child.bean")
+  assert_eq(mapped.entries[0].loc.line, 42)
+  let negative = parse_ok("2024-01-01 balance Assets:A -0.00 USD\n")
+  assert_false(negative.entries[0].query_exact_decimal)
+}
