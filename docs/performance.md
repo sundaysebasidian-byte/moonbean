@@ -1,6 +1,59 @@
-# Performance (0.2.2)
+# Performance (0.2.7)
 
-## Current library-stage evidence
+
+## R13 retained-ledger memory
+
+The unchanged 1M-source-posting FIFO workload retains the generated source,
+parsed ledger and validated ledger while repeatedly parsing a second ledger.
+Stage-marker diagnostics reproduced default-moonrun heap exhaustion during the
+first timed parse. The baseline completed initial parse and validation. Its
+fatal GC line reported 1383.6 MB live after collection near the heap limit.
+
+The parser now reads lines through a single lookahead iterator. Each parse owns
+bounded caches of at most 1024 words, 1024 exact-spelling numeric literals and
+1024 dates. Immutable values can be shared across entries. Decimal scales stay
+distinct, and mutable postings, metadata and arrays remain independently owned.
+The caches expire with their parser. Switching line iteration alone still failed
+at 1M. Combining streaming and literal sharing completed all 15 measurements
+and two warmups at every unchanged benchmark stage in the diagnostic run.
+
+| Stage | Main sampled RSS peak (MiB) | Streamed/shared sampled RSS peak (MiB) |
+| --- | ---: | ---: |
+| generate | 123.0 | 123.0 |
+| initial parse | 903.8 | 576.8 |
+| initial validate | 1103.6 | 724.7 |
+| repeated parse | 1391.3, failed | 1299.4 |
+| FIFO booking | unreached | 1088.5 |
+| validate + pad | unreached | 1022.2 |
+| realize | unreached | 859.2 |
+| format | unreached | 1099.3 |
+| aggregate | unreached | 1136.3 |
+| group | unreached | 1163.4 |
+| regex | unreached | 1138.5 |
+| transactions | unreached | 1204.9 |
+| length | unreached | 1203.9 |
+| substr | unreached | 1111.2 |
+
+These are 100 ms `ps` samples of process RSS within marked stages, including
+retained objects and runtime residency. Sampling can miss brief peaks. The
+values do not measure per-stage allocation volume or V8 retained heap. Earlier
+stages' allocations can remain resident in later stages. The diagnostic
+instrumentation is excluded from timing-gate inputs. Raw snapshots, markers,
+samples and failure stderr remain in `.oracle-cache/r13/`; the portable
+[memory packet](evidence/r13-memory.json) pins source and artifact hashes.
+No heap-size flag is supplied.
+
+```sh
+export MOON_HOME=/tmp/moon-new PATH=/tmp/moon-new/bin:$PATH
+python3 scripts/bench-memory.py --ref main --out .oracle-cache/r13-memory-main
+python3 scripts/bench-memory.py --out .oracle-cache/r13-memory-current
+```
+
+The historical measurements below retain their original workload and version
+boundaries. R13's uninstrumented full-matrix results are recorded in its
+[acceptance record](evidence/r13-acceptance.md).
+
+## Historical 0.2.2 library-stage evidence
 
 Measured locally on Apple M4 (Mac16,12), 10 logical cores, 16 GiB RAM,
 macOS 27.2 arm64, MoonBit 0.1.20261104, Node 24.18.0. Release builds use

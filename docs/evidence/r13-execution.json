@@ -1,0 +1,184 @@
+{
+  "schema": 1,
+  "source_commit": "a2f177af880ab31c4c97a8821b07f381361e0869",
+  "version": "0.2.7",
+  "TZ": "UTC",
+  "oracle": "/tmp/moonbean-r4-oracle/bin",
+  "commands": [
+    {
+      "command": [
+        "moon",
+        "info"
+      ],
+      "started": "2026-11-13T05:19:13.291470+00:00",
+      "exit_code": 0,
+      "log": "00-moon-info.log",
+      "log_sha256": "e498562d5b827e04a6a2bf9cd7d95fcfe26bfd66817379f50adec0bd598ef03b",
+      "output_summary": [
+        "Finished. moon: ran 14 tasks, now up to date"
+      ]
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--exit-code",
+        "--",
+        "*.mbti"
+      ],
+      "started": "2026-11-13T05:19:13.992349+00:00",
+      "exit_code": 0,
+      "log": "01-git-diff.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "output_summary": []
+    },
+    {
+      "command": [
+        "moon",
+        "check",
+        "--deny-warn"
+      ],
+      "started": "2026-11-13T05:19:14.017964+00:00",
+      "exit_code": 0,
+      "log": "02-moon-check.log",
+      "log_sha256": "c06625b981cd0420840d8f364656621037f8842836eb59d76f8dfa672dfb48ee",
+      "output_summary": [
+        "Finished. moon: ran 15 tasks, now up to date"
+      ]
+    },
+    {
+      "command": [
+        "moon",
+        "fmt",
+        "--check"
+      ],
+      "started": "2026-11-13T05:19:14.721007+00:00",
+      "exit_code": 0,
+      "log": "03-moon-fmt.log",
+      "log_sha256": "bac6ac26dd9bf097c6e817a2c334692bbe993d27b6425db085dc7ab33e0fe01d",
+      "output_summary": [
+        "Finished. moon: ran 82 tasks, now up to date"
+      ]
+    },
+    {
+      "command": [
+        "moon",
+        "test",
+        "--target",
+        "native"
+      ],
+      "started": "2026-11-13T05:19:15.476274+00:00",
+      "exit_code": 0,
+      "log": "04-moon-test.log",
+      "log_sha256": "c1577d32b36c202265753eed8e4e4a0f677c926f51615ca401cbb23c521138c0",
+      "output_summary": [
+        "Total tests: 193, passed: 193, failed: 0."
+      ]
+    },
+    {
+      "command": [
+        "moon",
+        "test",
+        "--target",
+        "wasm-gc"
+      ],
+      "started": "2026-11-13T05:19:21.612296+00:00",
+      "exit_code": 0,
+      "log": "05-moon-test.log",
+      "log_sha256": "c1577d32b36c202265753eed8e4e4a0f677c926f51615ca401cbb23c521138c0",
+      "output_summary": [
+        "Total tests: 193, passed: 193, failed: 0."
+      ]
+    },
+    {
+      "command": [
+        "moon",
+        "test",
+        "--target",
+        "js"
+      ],
+      "started": "2026-11-13T05:19:24.254887+00:00",
+      "exit_code": 0,
+      "log": "06-moon-test.log",
+      "log_sha256": "c1577d32b36c202265753eed8e4e4a0f677c926f51615ca401cbb23c521138c0",
+      "output_summary": [
+        "Total tests: 193, passed: 193, failed: 0."
+      ]
+    },
+    {
+      "command": [
+        "moon",
+        "build",
+        "--release",
+        "--target",
+        "native",
+        "cmd/main"
+      ],
+      "started": "2026-11-13T05:19:25.913829+00:00",
+      "exit_code": 0,
+      "log": "07-moon-build.log",
+      "log_sha256": "3a836aa1f123237472994051241d019f8d66cbe839733bf14011f42a2180c2ea",
+      "output_summary": [
+        "Finished. moon: ran 11 tasks, now up to date"
+      ]
+    },
+    {
+      "command": [
+        "moon",
+        "build",
+        "--release",
+        "--target",
+        "wasm-gc",
+        "tests/clock_host"
+      ],
+      "started": "2026-11-13T05:19:46.688359+00:00",
+      "exit_code": 0,
+      "log": "08-moon-build.log",
+      "log_sha256": "e8f446cc4cb631fcc50a46eadaa1008b35d07706293730be4d4701e26671121f",
+      "output_summary": [
+        "Finished. moon: ran 6 tasks, now up to date"
+      ]
+    },
+    {
+      "command": [
+        "node",
+        "scripts/wasm-clock-test.mjs"
+      ],
+      "started": "2026-11-13T05:20:46.001480+00:00",
+      "exit_code": 0,
+      "log": "09-node-wasm-clock-test.mjs.log",
+      "log_sha256": "5d77a84d13e319718403a1960619e28db9d71e3fe585a917b7f1e2266c718589",
+      "output_summary": [
+        "Wasm host clock: 99/99 checks passed"
+      ]
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/bql_differential.py",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin",
+        "--ours",
+        "<repo>/_build/native/release/build/cmd/main/main.exe"
+      ],
+      "started": "2026-11-13T05:20:46.912720+00:00",
+      "exit_code": 0,
+      "log": "10-python3-bql_differential.py.log",
+      "log_sha256": "c3143628e7f04f70368f34553c6e54765e5ee26d751a2eb8063eb49e11cf7159",
+      "output_summary": [
+        "]BQL differential: 20549/20549 checks passed"
+      ]
+    }
+  ],
+  "bql": {
+    "total": 20549,
+    "passed": 20549
+  },
+  "native_cli_sha256": "e5d3296b84d96563dacc88881aef90b0a02e3daadc927bacc6434b96941bcd1f",
+  "environment": {
+    "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+    "node": "v24.18.0",
+    "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+    "oracle_versions": "3.2.3\n0.2.0"
+  }
+}
