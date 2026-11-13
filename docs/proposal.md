@@ -10,12 +10,12 @@ Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运
 
 ## 兼容终点与当前边界
 
-兼容终点是 beancount 3.2.3 的语法与记账语义，以及 beanquery 0.2.0 全集；0.2.6 尚未达到全集，不作完整兼容声明。[逐项清单](compatibility.md)列出全部 oracle 表/列、函数签名、option 默认值和当前证据与缺口。
+兼容终点是 beancount 3.2.3 的语法与记账语义，以及 beanquery 0.2.0 全集；0.2.7 尚未达到全集，不作完整兼容声明。[逐项清单](compatibility.md)列出全部 oracle 表/列、函数签名、option 默认值和当前证据与缺口。
 
 | 范围 | 当前可核对边界 |
 | --- | --- |
 | 记账与指令 | open/close/commodity/balance/pad/price/transaction、include 与元数据栈有差分证据；document 仅校验账户并警告未检查文件；note/event/query/custom 保留语法与数据，未证明所有错误类别一致。query 存储后由调用方显式执行 |
-| BQL | 10 张 oracle 表的全部公开列已接入类型值模型；105 个标量签名均有完整或受限求值器。0.2.6 补入 interval、date_bin、parse_date、today，增加独立 PRINT 指令文本结果、FROM 过滤与 OPEN/CLOSE/CLEAR 变换、规范 JOURNAL/BALANCES、IN/BETWEEN/取模、引号查列与混合聚合引用，并修复 round 负零/精度溢出、两位年份、日期及 interval 算术、coalesce、空匹配替换、连字符截断、标量聚合 DISTINCT 与未知列/表错误类别。独立复审还修复 Unicode 账户、按币种 balance 判重、OPEN 顺序及成本汇总、CLEAR 日期和 PRINT 分组/引号/过滤顺序。PRINT 证据仅覆盖指定的 84 条语句 × 142 份账本及旧有语料，不声明任意输出等价；interval−date 与 oracle 一样报 Evaluation，其余所列 interval 算术有差分。CPython 随机集合顺序、移植正则引擎以外的 Python 特性、有限 Decimal 与尚未穷尽的语法/对象组合和 shell .explain/.run 仍有缺口；wasm 当前日期使用 UTC，host 本地时区服务缺失。日期解析覆盖以差分语料为界，未证明全部 dateutil/locale 行为。LIKE/JOIN 及已探测 FLATTEN/EXPLAIN 关键字形式被 oracle 拒绝 |
+| BQL | 10 张 oracle 表的全部公开列已接入类型值模型；105 个标量签名均有完整或受限求值器。0.2.6 补入 interval、date_bin、parse_date、today，增加独立 PRINT 指令文本结果、FROM 过滤与 OPEN/CLOSE/CLEAR 变换、规范 JOURNAL/BALANCES、IN/BETWEEN/取模、引号查列与混合聚合引用，并修复 round 负零/精度溢出、两位年份、日期及 interval 算术、coalesce、空匹配替换、连字符截断、标量聚合 DISTINCT 与未知列/表错误类别。独立复审还修复 Unicode 账户、按币种 balance 判重、OPEN 顺序及成本汇总、CLEAR 日期和 PRINT 分组/引号/过滤顺序。PRINT 证据仅覆盖指定的 84 条语句 × 142 份账本及旧有语料，不声明任意输出等价；interval−date 与 oracle 一样报 Evaluation，其余所列 interval 算术有差分。CPython 随机集合顺序、移植正则引擎以外的 Python 特性、有限 Decimal 与尚未穷尽的语法/对象组合和 shell .explain/.run 仍有缺口；0.2.7 的 wasm-gc 可通过可选 host_clock import 逐次读取宿主本地日期及 DST；未接入或服务不可用时回退 UTC，裸 moonrun 仍使用 UTC。日期解析覆盖以差分语料为界，未证明全部 dateutil/locale 行为。LIKE/JOIN 及已探测 FLATTEN/EXPLAIN 关键字形式被 oracle 拒绝 |
 | option | booking、容差推断、按币种和通配符默认容差有证据；operating_currency 仅单币种报表转换；account_rounding、render_commas、documents 等未实现的效果逐项披露，不能仅凭解析成功计为兼容 |
 | plugin 与扩展 | 五个内置插件有差分证据，其余 Python 插件警告且不执行；AVERAGE、{*}、裸 FROM balances 库存语义均为扩展 |
 
