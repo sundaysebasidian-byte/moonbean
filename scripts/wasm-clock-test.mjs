@@ -15,10 +15,14 @@ const fixtures = [
   ["UTC", "2024-01-01T00:30:00Z"],
   ["America/Los_Angeles", "2024-01-01T00:30:00Z"],
   ["Pacific/Kiritimati", "2024-12-31T12:30:00Z"],
+  ["America/Los_Angeles", "2024-03-10T07:30:00Z"],
   ["America/Los_Angeles", "2024-03-10T09:59:00Z"],
   ["America/Los_Angeles", "2024-03-10T10:01:00Z"],
+  ["America/Los_Angeles", "2024-11-03T06:30:00Z"],
   ["America/Los_Angeles", "2024-11-03T08:59:00Z"],
   ["America/Los_Angeles", "2024-11-03T09:01:00Z"],
+  ["UTC", "2079-06-15T00:00:00Z"],
+  ["UTC", "2080-06-15T00:00:00Z"],
 ];
 assert.throws(() => new WebAssembly.Instance(module, {
   "moonbitlang/async": { "runtime/get_platform": () => 1 },
@@ -50,8 +54,17 @@ for (const [zone, instant] of fixtures) {
     assert.equal(result.rows[0][0], expected, JSON.stringify(result));
     const day = Math.min(Number(expected.slice(8)), 31);
     assert.equal(result.rows[0][1], `${expected.slice(0, 4)}-03-${day.toString().padStart(2, "0")}`);
-    assert.equal(result.rows[0][2], "2050-06-15");
-    checks += 3;
+    const shortYears = JSON.parse(execFileSync(process.argv[3] ?? "/tmp/moonbean-r4-oracle/bin/python", [
+      "-c", "import datetime,json,sys,time;from unittest.mock import patch;from dateutil.parser import parse,parserinfo;d=datetime.datetime.fromisoformat(sys.argv[1]);t=time.struct_time((d.year,d.month,d.day,0,0,0,0,1,-1));\nwith patch('time.localtime',return_value=t): print(json.dumps([str(parse(s,default=d,parserinfo=parserinfo()).date()) for s in ['50-06-15','06-15-29']]))", expected,
+    ], { encoding: "utf8" }));
+    assert.deepEqual(result.rows[0].slice(2), shortYears);
+    if (zone === "America/Los_Angeles" && (instant.endsWith("T07:30:00Z") || instant.endsWith("T06:30:00Z"))) {
+      assert.notEqual(local, utc);
+      checks += 1;
+    }
+    if (zone === "UTC" && instant.startsWith("2079")) { assert.equal(shortYears[1], "2029-06-15"); checks += 1; }
+    if (zone === "UTC" && instant.startsWith("2080")) { assert.equal(shortYears[1], "2129-06-15"); checks += 1; }
+    checks += 4;
     console.log(JSON.stringify({ zone, instant, mode, expected, result: result.rows[0] }));
   }
   // The provider receives the epoch on each read, allowing date/DST changes.
