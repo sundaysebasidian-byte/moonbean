@@ -1428,3 +1428,39 @@ test "PRINT Unicode account alignment counts complete scalar values" {
   assert_true(r.to_text().contains("open Assets:𐐀" + " ".repeat(40) + "USD"))
   assert_true(r.to_text().contains("Assets:𐐀   1 USD"))
 }
+
+///|
+test "host calendar applies to today and partial dates and resets safely" {
+  defer @query.set_local_date_provider(None)
+  let mut date = 20240229
+  let mut seen_ms = 0.0
+  @query.set_local_date_provider(
+    Some(fn(ms) {
+      seen_ms = ms
+      date
+    }),
+  )
+  let r = queried(
+    ledger_source(),
+    "SELECT today(),parse_date('March'),parse_date('99-12-31') LIMIT 1",
+  )
+  assert_true(r.is_ok())
+  assert_true(seen_ms > 0.0)
+  assert_eq(r.rows[0][0].to_text(), "2024-02-29")
+  assert_eq(r.rows[0][1].to_text(), "2024-03-29")
+  assert_eq(r.rows[0][2].to_text(), "1999-12-31")
+  date = 20250301
+  assert_eq(
+    queried(ledger_source(), "SELECT today() LIMIT 1").rows[0][0].to_text(),
+    "2025-03-01",
+  )
+  @query.set_local_date_provider(None)
+  let default_date = queried(ledger_source(), "SELECT today() LIMIT 1").rows[0][0]
+  for invalid in [0, -1, 20250229, 20241301, 100000101] {
+    @query.set_local_date_provider(Some(fn(_) { invalid }))
+    assert_eq(
+      queried(ledger_source(), "SELECT today() LIMIT 1").rows[0][0].to_text(),
+      default_date.to_text(),
+    )
+  }
+}

@@ -1,0 +1,15 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "sundaysebasidian-byte/moonbean/tests/clock_host"
+
+// Values
+pub fn install() -> Unit
+
+pub fn probe() -> String
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

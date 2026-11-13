@@ -1,0 +1,13 @@
+import {
+  "sundaysebasidian-byte/moonbean",
+  "sundaysebasidian-byte/moonbean/host_clock",
+}
+
+options(
+  link: {
+    "wasm-gc": {
+      "exports": [ "install", "probe" ],
+      "use-js-builtin-string": true,
+    },
+  },
+)

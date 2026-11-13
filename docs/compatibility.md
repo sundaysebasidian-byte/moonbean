@@ -267,7 +267,7 @@ Support is limited to accepted argument expressions/types. Functions on unsuppor
 | `str(any)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Multi-member set representations (including nested sets) are explicitly rejected: CPython iteration depends on its hash seed; use typed JSON members or oracle for exact repr text. |
 | `subst(str, str, str)` | Implemented literal replacement in the tested portable regex dialect, including empty patterns and greedy empty matches. Numbered capture references, numeric group syntax, octal escapes and replacement control escapes are implemented. Python-only pattern constructs and lazy patterns with interior empty matches remain conservative explicit rejections. Nonempty lazy matches and end-only empty matches execute. The portable matcher exposes forward-progress replacement without that retry contract. |
 | `substr(str, int, int)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
-| `today()` | Native uses libc localtime with the core epoch clock, JS uses Date local calendar fields, and wasm/wasm-gc use the core host epoch clock in UTC. Native/JS have same-day oracle checks across UTC, Los Angeles and Kiritimati; all three requested targets run tests with an oracle date. The wasm host API exposes no local timezone/calendar service, so non-UTC local-date parity remains a target-specific gap. |
+| `today()` | Native uses libc localtime and JS uses Date local calendar fields. WebAssembly supports a per-read host calendar callback through the optional host_clock import adapter, including timezone/DST and partial-date defaults. The default WebAssembly calendar and unavailable-provider fallback are UTC. See the host calendar integration below. |
 | `units(position)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
 | `units(inventory)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
 | `upper(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
@@ -371,3 +371,53 @@ R11 supersedes the earlier subquery/PIVOT/alias/positional-reference and S6 proj
 All 31 previously missing scalar signatures now have evaluators, including the partial domains described above. R12 adds the independent R11 and R12 A/B review corpora, seeded interval/date-bin probes, dateutil/strptime and two-digit year cases, date/interval arithmetic, same-day clock comparisons, round precision/representation regressions, and the bounded PRINT matrix. The tracked review scripts retain the reviewers' cases; parser fuzz/resource checks are counted separately from oracle comparisons. Native, JS and wasm-gc reject queries exceeding 256 nested parentheses or 256 recursive operators with Syntax query.depth_limit; this is an explicit resource boundary, not oracle conformance. Unsupported input domains are counted separately from conformance comparisons. Exact diagnostic prose and exhaustive grammar/value-domain equivalence are unverified.
 
 PRINT, signed-zero round, quoted lookup, IN/BETWEEN/modulo, generic source transforms, canonical JOURNAL/BALANCES, structural DISTINCT and mixed aggregate-row clauses are implemented in 0.2.6 with bounded differential coverage. Remaining BQL boundaries include CPython randomized set iteration, Python regex features outside the portable matcher, nonfinite/resource-bounded Decimal domains, source-parsed negative-zero exact representations and exhaustive dateutil/locale parsing. Shell commands and general oracle table formatting remain host exclusions. Genuine non-BQL exclusions include external Python plugins, document discovery/stat callbacks, renamed account taxonomy, account_rounding and the option/report boundaries listed above. See [R12 acceptance](evidence/r12-acceptance.md) for current results and performance evidence.
+
+## WebAssembly host calendar (0.2.7)
+
+`query.set_local_date_provider` installs an instance-local callback from Unix epoch
+milliseconds (`Double`) to `YYYYMMDD` (`Int32`). It is consulted for every clock
+read, including `today()`, partial `parse_date` defaults and the rolling
+two-digit-year window. `None`, zero and invalid calendar dates select the target
+default. Native/JS defaults use their local calendars. WebAssembly defaults to UTC.
+
+For a JS-hosted wasm-gc application, import the optional
+`sundaysebasidian-byte/moonbean/host_clock` package and call `@host_clock.install()`
+before running queries. The linked application then imports
+`moonbean:clock.local_date(f64) -> i32`. Supply the shipped JS adapter alongside
+the application's existing imports.
+
+```js
+import { clockImports } from './host_clock/imports.mjs';
+const imports = { ...applicationImports, ...clockImports() };
+const { instance } = await WebAssembly.instantiate(bytes, imports, compileOptions);
+```
+
+`clockImports()` uses JS `Date` local calendar fields at the supplied timestamp,
+including the host's timezone and DST rules. `clockImports(null)` supplies a zero
+callback for hosts without a calendar service, selecting UTC. A custom provider
+can be passed to `clockImports(provider)`. It must return an integer calendar date
+or zero. Invalid returned dates also select UTC. Applications can supply a direct
+MoonBit callback through `@query.set_local_date_provider(Some(provider))`, and
+reset it with `None`.
+
+Moon 0.1.20261104 core `env.now()` imports
+`__moonbit_time_unstable.now` and exposes epoch milliseconds. Its clock API has no
+local calendar or timezone service. `extern "wasm"` supplies inline Wasm code, and
+named foreign declarations create host imports. WebAssembly resolves imports
+before guest execution, so an absent function cannot be detected by guest code.
+The optional adapter keeps the default library and `moon test --target wasm-gc`
+usable with existing moonrun hosts. An application opting into the import must
+supply either the local callback or the zero callback at instantiation. Bare
+moonrun continues to use UTC. [MoonBit FFI](https://docs.moonbitlang.com/en/stable/language/ffi.html).
+
+Run the actual imported-module checks with the pinned toolchain.
+
+```sh
+moon build --release --target wasm-gc tests/clock_host
+node scripts/wasm-clock-test.mjs
+```
+
+The fixture checks UTC, Los Angeles and Kiritimati cross-day dates, both Los
+Angeles DST transitions, clock advancement after installation, partial dates and
+invalid/unavailable/uninstalled-provider fallbacks. Python's public datetime API
+from the pinned oracle environment independently checks each local date.

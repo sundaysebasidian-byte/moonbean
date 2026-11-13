@@ -12,6 +12,8 @@ import {
 // Values
 pub fn run_query(@realization.RealizedLedger, String, diagnostics? : Array[@ast.Diagnostic]) -> QueryResult
 
+pub fn set_local_date_provider(((Double) -> Int32)?) -> Unit
+
 // Errors
 
 // Types and methods

@@ -1,0 +1,10 @@
+import {
+  "sundaysebasidian-byte/moonbean/query",
+}
+
+options(
+  targets: {
+    "import.mbt": [ "wasm", "wasm-gc" ],
+    "default.mbt": [ "native", "llvm", "js" ],
+  },
+)
