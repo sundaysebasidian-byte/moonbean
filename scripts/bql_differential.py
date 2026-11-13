@@ -19,6 +19,7 @@ import bql_r12_differential as r12_cases
 import bql_r12a_review_differential as review_a
 import bql_r12b_print_differential as review_b
 import bql_r12b_regression_differential as review_regressions
+import bql_r14_parser_differential as r14_parser
 
 
 def compare_bql(ours, oracle):
@@ -146,6 +147,7 @@ def main():
     results.extend(review_a.run(args.ours,args.oracle))
     results.extend(review_b.run_corpus(args.ours,args.oracle))
     results.extend(review_regressions.run(args.ours,args.oracle))
+    results.extend(r14_parser.run(args.ours,args.oracle))
     print(json.dumps(results, indent=2))
     print(f"BQL differential: {sum(r['ok'] for r in results)}/{len(results)} checks passed", file=sys.stderr)
     return int(any(not r['ok'] for r in results))

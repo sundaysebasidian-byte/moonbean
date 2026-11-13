@@ -167,6 +167,35 @@ async fn check_file(file : String) -> @validation.ValidatedLedger? {
 }
 
 ///|
+async fn check_document_files(ledger : @validation.ValidatedLedger) -> Unit {
+  for entry in ledger.entries {
+    if entry.directive is @ast.DDocument(document) {
+      let relative = @moonbean.path_join(
+        @moonbean.path_dirname(entry.loc.file),
+        document.filename,
+      )
+      let path = @path.Path(relative).resolve().to_string() catch {
+          _ => relative
+        }
+      if !@fs.exists(path) {
+        ledger.errors.push(
+          @ast.Diagnostic::new(
+            "validation.document_missing",
+            "File does not exist: \"" + path + "\"",
+            entry.loc,
+          ),
+        )
+      }
+    }
+  }
+  let warnings = ledger.warnings.filter(fn(d) {
+    d.code != "validation.document_unchecked"
+  })
+  ledger.warnings.clear()
+  ledger.warnings.append(warnings)
+}
+
+///|
 async fn cmd_check(args : Array[String]) -> Unit {
   if args.length() == 0 {
     fail("check needs at least one file")
@@ -176,6 +205,7 @@ async fn cmd_check(args : Array[String]) -> Unit {
     match check_file(file) {
       None => exit(1)
       Some(ledger) => {
+        check_document_files(ledger)
         print_warnings(ledger)
         print_diagnostics(ledger.errors)
         total_errors = total_errors + ledger.errors.length()

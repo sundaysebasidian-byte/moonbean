@@ -1,0 +1,170 @@
+[
+  {
+    "name": "unterm",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 * \"unterminated\n  Assets:A 1 USD\n  Assets:A -1 USD\n"
+  },
+  {
+    "name": "unterm-eof",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 * \"unterminated"
+  },
+  {
+    "name": "unterm-then-quote",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 note Assets:A \"abc\n2024-01-03 note Assets:A \"later\"\n"
+  },
+  {
+    "name": "multiline",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 note Assets:A \"line1\nline2\nline3\"\n2024-01-03 open Assets:B\n"
+  },
+  {
+    "name": "multi-txn",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 * \"pay\nee\" \"narr\nation\"\n  Assets:A 1 USD\n  Assets:A -1 USD\n"
+  },
+  {
+    "name": "multi-meta",
+    "source": "2024-01-01 open Assets:A USD\n  memo: \"hello\n  world\n\n; comment\nend\"\n2024-01-02 open Assets:B\n"
+  },
+  {
+    "name": "multi-crlf",
+    "source": "2024-01-01 open Assets:A USD\r\n2024-01-02 note Assets:A \"a\r\nb\"\r\n"
+  },
+  {
+    "name": "slash-newline",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 note Assets:A \"a\\\nb\"\n"
+  },
+  {
+    "name": "escapes",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 note Assets:A \"a\\q\\v\\b\\f\\a\\u0041\\x41\"\n"
+  },
+  {
+    "name": "single-currency",
+    "source": "2024-01-01 open Assets:A U\n"
+  },
+  {
+    "name": "single-currency-eof",
+    "source": "2024-01-01 open Assets:A U"
+  },
+  {
+    "name": "amount-meta",
+    "source": "2024-01-01 open Assets:A USD\n  value: 0.50 USD\n"
+  },
+  {
+    "name": "expr-meta",
+    "source": "2024-01-01 open Assets:A USD\n  value: (1+2)*3 USD\n"
+  },
+  {
+    "name": "empty-meta",
+    "source": "2024-01-01 open Assets:A USD\n  value:\n"
+  },
+  {
+    "name": "empty-meta-eof",
+    "source": "2024-01-01 open Assets:A USD\n  value:"
+  },
+  {
+    "name": "unknown-meta",
+    "source": "2024-01-01 open Assets:A USD\n  value: nope\n"
+  },
+  {
+    "name": "partial-txn",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 *"
+  },
+  {
+    "name": "partial-txn-nl",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 *\n"
+  },
+  {
+    "name": "partial-posting",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 * \"x\"\n  Assets:A 1"
+  },
+  {
+    "name": "partial-posting-nl",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 * \"x\"\n  Assets:A 1\n"
+  },
+  {
+    "name": "zero-posting",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 * \"x\"\n"
+  },
+  {
+    "name": "meta-extra",
+    "source": "2024-01-01 open Assets:A USD\n  value: 1 USD EUR\n"
+  },
+  {
+    "name": "missing-string",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 note Assets:A\n"
+  },
+  {
+    "name": "auto-alone",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 * \"x\"\n  Assets:A\n"
+  },
+  {
+    "name": "auto-alone-space",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 * \"x\"\n  Assets:A "
+  },
+  {
+    "name": "auto-currency",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 * \"x\"\n  Assets:A USD\n"
+  },
+  {
+    "name": "auto-two",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 * \"x\"\n  Assets:A\n  Assets:A\n"
+  },
+  {
+    "name": "standalone-comment",
+    "source": "  ; tail\n"
+  },
+  {
+    "name": "comment-after-open",
+    "source": "2024-01-01 open Assets:A USD\n\n  ; tail\n2024-01-02 open Assets:B\n"
+  },
+  {
+    "name": "amount-print",
+    "source": "2024-01-01 open Assets:A USD\n  amount: 1.00 USD\n  empty:\n"
+  },
+  {
+    "name": "expr-number",
+    "source": "2024-01-01 open Assets:A USD\n  amount: (1+2)*3\n"
+  },
+  {
+    "name": "doc-dir",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 document Assets:A \"/tmp\"\n"
+  },
+  {
+    "name": "doc-present",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 document Assets:A \"{{repo}}/README.md\"\n"
+  },
+  {
+    "name": "quote-tail",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 note Assets:A \"abc\" tail\n"
+  },
+  {
+    "name": "negative-amount",
+    "source": "2024-01-01 open Assets:A USD\n  amount: -12.50 EUR\n"
+  },
+  {
+    "name": "stack-amount",
+    "source": "2024-01-01 open Assets:A USD\npushmeta value: 2.50 USD\n2024-01-02 * \"stack\"\npopmeta value:\n"
+  },
+  {
+    "name": "posting-meta",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 * \"values\"\n  Assets:A 1 USD\n    value: 1.00 EUR\n  Assets:A -1 USD\n"
+  },
+  {
+    "name": "large-multiline",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 note Assets:A \"x\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nlast\"\n"
+  },
+  {
+    "name": "unclosed-meta",
+    "source": "2024-01-01 open Assets:A USD\n  memo: \"unclosed\n2024-01-02 open Assets:B\n"
+  },
+  {
+    "name": "escaped-meta",
+    "source": "2024-01-01 open Assets:A USD\n  memo: \"a\\\\b\\b\\f\\q\"\n"
+  },
+  {
+    "name": "currency-eof",
+    "source": "2024-01-01 open Assets:A USD\n2024-01-02 price USD 1 U"
+  },
+  {
+    "name": "multi-option",
+    "source": "2024-01-01 open Assets:A USD\noption \"title\" \"hello\nworld\"\n"
+  }
+]

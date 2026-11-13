@@ -1,0 +1,10 @@
+; A leading comment before any directive.
+option "title" "Comments" ; an option followed by a comment
+
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Equity:Opening USD
+2024-01-01 open Expenses:Food USD ; trailing comment
+
+; Opening balances.
+2024-01-02 * "Opening"
+  Assets:Cash

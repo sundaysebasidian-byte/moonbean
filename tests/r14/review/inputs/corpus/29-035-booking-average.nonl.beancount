@@ -1,0 +1,14 @@
+2024-01-01 open Assets:Stock HOOL "AVERAGE"
+2024-01-01 open Assets:Cash USD
+
+2024-01-02 * "Buy lot A"
+  Assets:Stock    10 HOOL {10.00 USD}
+  Assets:Cash  -100.00 USD
+
+2024-01-03 * "Buy lot B"
+  Assets:Stock    10 HOOL {20.00 USD}
+  Assets:Cash  -200.00 USD
+
+2024-01-04 * "Sell at the averaged cost"
+  Assets:Stock    -5 HOOL {}
+  Assets:Cash     75.00 USD

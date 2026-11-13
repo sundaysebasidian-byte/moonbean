@@ -1,0 +1,586 @@
+[
+  {
+    "id": 0,
+    "ledger": "tests/r14/review/inputs/corpus/00-document.beancount",
+    "source": "document.beancount",
+    "sha256": "df5744df37d7d670c8378ca82fbee835a7aad00a80ecf3fe791dd44a18eb7643",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 1,
+    "ledger": "tests/r14/review/inputs/corpus/01-035-booking-average.beancount",
+    "source": "035-booking-average.beancount",
+    "sha256": "6266ee4bb5c69718defc32d1040db1b46935ce3daf4cae4261b66f3ad8724ef1",
+    "boundary": "AVERAGE extension",
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 2,
+    "ledger": "tests/r14/review/inputs/corpus/02-058-cost-merge.beancount",
+    "source": "058-cost-merge.beancount",
+    "sha256": "e7f62465954370c020d1430c50db8bb2d2e624c569e3a3c221e09f042170b743",
+    "boundary": "cost merge extension",
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 3,
+    "ledger": "tests/r14/review/inputs/corpus/03-quoted-fields.beancount",
+    "source": "quoted-fields.beancount",
+    "sha256": "f3c2fd48879cea77adebf4f2c69a65a1bd6529f9114ad3e2cac78dcf116748ff",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 4,
+    "ledger": "tests/r14/review/inputs/corpus/04-mid-string.beancount",
+    "source": "mid-string.beancount",
+    "sha256": "8db015ef0e6b7f565c08b1f0fdad5fd68c69046803171c7fe6c4707651bd7c35",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 5,
+    "ledger": "tests/r14/review/inputs/corpus/05-multiline-string.beancount",
+    "source": "multiline-string.beancount",
+    "sha256": "9a082832b30408ed514e863a15afa83d05fc47621b7d6a22d148ab5fe22dc5b7",
+    "boundary": null,
+    "oracle_initial_exit": 0
+  },
+  {
+    "id": 6,
+    "ledger": "tests/r14/review/inputs/corpus/06-meta-heavy.beancount",
+    "source": "meta-heavy.beancount",
+    "sha256": "07ce5f6ff47539eb5d1484a7c34558cf22210478b7aad0034b0edfcd2018965f",
+    "boundary": null,
+    "oracle_initial_exit": 0
+  },
+  {
+    "id": 7,
+    "ledger": "tests/r14/review/inputs/corpus/07-full-year-2024.crlf.beancount",
+    "source": "full-year-2024.crlf.beancount",
+    "sha256": "927fdc3a4fe6ac923fb987fdc98d8de066af579b6891bc04394f0a81661d3ec8",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 8,
+    "ledger": "tests/r14/review/inputs/corpus/08-full-year-2024.nonl.beancount",
+    "source": "full-year-2024.nonl.beancount",
+    "sha256": "34c9f7b169c6785b26b16c8cfe4cb1a7630cf3d1efa66b4e4e3ad9d777015225",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 9,
+    "ledger": "tests/r14/review/inputs/corpus/09-full-year-2024.tabs.beancount",
+    "source": "full-year-2024.tabs.beancount",
+    "sha256": "330c5e8b35023f4484443b6e1b29ca3f4348efd7d42fd2cd6b0406095e25121f",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 10,
+    "ledger": "tests/r14/review/inputs/corpus/10-full-year-2024.trunc.beancount",
+    "source": "full-year-2024.trunc.beancount",
+    "sha256": "4d6dc2e3b4d156d866214e3bb4913945524d0e55033dce1bdc6ee2b177db5296",
+    "boundary": null,
+    "oracle_initial_exit": 0
+  },
+  {
+    "id": 11,
+    "ledger": "tests/r14/review/inputs/corpus/11-full-year-2024.fuzz.beancount",
+    "source": "full-year-2024.fuzz.beancount",
+    "sha256": "b459d1bbb2a2ec60304ff1e84edb17ec79650e82661799166379184b354b31d5",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 12,
+    "ledger": "tests/r14/review/inputs/corpus/12-document.crlf.beancount",
+    "source": "document.crlf.beancount",
+    "sha256": "7ebbf731b344aea4a925a21caa5fa0252b4d6d3c85e7d44b00f9d84f41977a79",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 13,
+    "ledger": "tests/r14/review/inputs/corpus/13-document.nonl.beancount",
+    "source": "document.nonl.beancount",
+    "sha256": "599232007fc3494c50d06eae304dea3e8bf47fb2c4e6803a903c07815e1ebc3f",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 14,
+    "ledger": "tests/r14/review/inputs/corpus/14-document.tabs.beancount",
+    "source": "document.tabs.beancount",
+    "sha256": "df5744df37d7d670c8378ca82fbee835a7aad00a80ecf3fe791dd44a18eb7643",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 15,
+    "ledger": "tests/r14/review/inputs/corpus/15-001-basic.trunc.beancount",
+    "source": "001-basic.trunc.beancount",
+    "sha256": "2f491c6d3dce79531c7412f8f29a4875058ed64e1d16221554969ebd980650dd",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 16,
+    "ledger": "tests/r14/review/inputs/corpus/16-002-multi-currency.trunc.beancount",
+    "source": "002-multi-currency.trunc.beancount",
+    "sha256": "837c60090f5331f5531cd56d144dd925aa09b3bd6581f305b4c172f699fe1ed1",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 17,
+    "ledger": "tests/r14/review/inputs/corpus/17-008-directives.crlf.beancount",
+    "source": "008-directives.crlf.beancount",
+    "sha256": "5db79ed297047b890ee06aa452529aa20f9368fff14965d1dd5216c813ad318c",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 18,
+    "ledger": "tests/r14/review/inputs/corpus/18-008-directives.nonl.beancount",
+    "source": "008-directives.nonl.beancount",
+    "sha256": "463a6d0f7fccb413ecc269cf19b223a944abd433b674d8471a768e30a240ff8d",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 19,
+    "ledger": "tests/r14/review/inputs/corpus/19-008-directives.tabs.beancount",
+    "source": "008-directives.tabs.beancount",
+    "sha256": "26ad96efb31364fd0bc60374e9e8392ce92a22f21b1d8f5f2b27a0bc10ae9a77",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 20,
+    "ledger": "tests/r14/review/inputs/corpus/20-008-directives.trunc.beancount",
+    "source": "008-directives.trunc.beancount",
+    "sha256": "ff2cc96d46a85e8db1e28d7129275cbee3457fb7f11ae8d5f8348aa9ab796d08",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 21,
+    "ledger": "tests/r14/review/inputs/corpus/21-016-push-tags.trunc.beancount",
+    "source": "016-push-tags.trunc.beancount",
+    "sha256": "b7b7a8b2223aca67d5dd36f77a1568f0677b388a04cbb9e296e0b11859484a3a",
+    "boundary": null,
+    "oracle_initial_exit": 0
+  },
+  {
+    "id": 22,
+    "ledger": "tests/r14/review/inputs/corpus/22-023-multiple-missing.trunc.beancount",
+    "source": "023-multiple-missing.trunc.beancount",
+    "sha256": "6da8539e20735fdb7c176a2ff5ef8ab5a4dac5a94a20f2c9c60204bd8f8f0558",
+    "boundary": null,
+    "oracle_initial_exit": 0
+  },
+  {
+    "id": 23,
+    "ledger": "tests/r14/review/inputs/corpus/23-024-cost-per.trunc.beancount",
+    "source": "024-cost-per.trunc.beancount",
+    "sha256": "3611c3159dc69b61cbaf880b92587c213971d71ec13d35ff4bbbb27d5aff7ccc",
+    "boundary": null,
+    "oracle_initial_exit": 0
+  },
+  {
+    "id": 24,
+    "ledger": "tests/r14/review/inputs/corpus/24-025-cost-total.trunc.beancount",
+    "source": "025-cost-total.trunc.beancount",
+    "sha256": "e962958cd1ca6ae3e33b8f64eca2c19c40111123d2772c1fdfa345ff136a9039",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 25,
+    "ledger": "tests/r14/review/inputs/corpus/25-028-price-total.trunc.beancount",
+    "source": "028-price-total.trunc.beancount",
+    "sha256": "542990ab1dea0f30769a52ce752f3ce84f54a3c592fe1639695fdd74f1306a51",
+    "boundary": null,
+    "oracle_initial_exit": 0
+  },
+  {
+    "id": 26,
+    "ledger": "tests/r14/review/inputs/corpus/26-030-booking-lifo.trunc.beancount",
+    "source": "030-booking-lifo.trunc.beancount",
+    "sha256": "d8b8bb7e9d95a3d528444a899d5c5f9093ce8d9359a1996cff611cea1be3795a",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 27,
+    "ledger": "tests/r14/review/inputs/corpus/27-032-booking-strict.trunc.beancount",
+    "source": "032-booking-strict.trunc.beancount",
+    "sha256": "7cc67df3ff01c49d6435e6b8d10d1212972c164bd89b51d0ee3dc8f4cbf37223",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 28,
+    "ledger": "tests/r14/review/inputs/corpus/28-035-booking-average.crlf.beancount",
+    "source": "035-booking-average.crlf.beancount",
+    "sha256": "c74446b65d7262f1d9b22e1d6d514849c1579b987bb60963e3478bc2e0f9d1b1",
+    "boundary": "AVERAGE extension",
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 29,
+    "ledger": "tests/r14/review/inputs/corpus/29-035-booking-average.nonl.beancount",
+    "source": "035-booking-average.nonl.beancount",
+    "sha256": "bc2d8d35ce48964863c9a986f52c5fffa863036f7be15773d182867bd104c27b",
+    "boundary": "AVERAGE extension",
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 30,
+    "ledger": "tests/r14/review/inputs/corpus/30-035-booking-average.tabs.beancount",
+    "source": "035-booking-average.tabs.beancount",
+    "sha256": "f8db2d00c57ba6bc4131b2855179477fbc35d88cd9f94a04bcb8b16e4ebbb615",
+    "boundary": "AVERAGE extension",
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 31,
+    "ledger": "tests/r14/review/inputs/corpus/31-035-booking-average.fuzz.beancount",
+    "source": "035-booking-average.fuzz.beancount",
+    "sha256": "44dc85537a90db9383f7207e984e0a5d83dd4145910d326b8e3846cc0698c285",
+    "boundary": "AVERAGE extension",
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 32,
+    "ledger": "tests/r14/review/inputs/corpus/32-036-booking-insufficient.trunc.beancount",
+    "source": "036-booking-insufficient.trunc.beancount",
+    "sha256": "15b14ff662a1da9c59f57f5f60b209715a09d65be8b0400e1864de49c8f2d305",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 33,
+    "ledger": "tests/r14/review/inputs/corpus/33-038-unbalanced.trunc.beancount",
+    "source": "038-unbalanced.trunc.beancount",
+    "sha256": "c8ba5bfecda35102a933f1c848b149a3645dfb21e34b67b9d6127e38581b86c1",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 34,
+    "ledger": "tests/r14/review/inputs/corpus/34-045-comments.trunc.beancount",
+    "source": "045-comments.trunc.beancount",
+    "sha256": "79bd39e22edbee4c4727e573020c660d9b97c4971e629c4d816a40dafbc4d22b",
+    "boundary": null,
+    "oracle_initial_exit": 0
+  },
+  {
+    "id": 35,
+    "ledger": "tests/r14/review/inputs/corpus/35-046-string-escapes.trunc.beancount",
+    "source": "046-string-escapes.trunc.beancount",
+    "sha256": "40883692a32e80482efcd00fd07766ebd169c82cd37c0c68e8b124cce2937e43",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 36,
+    "ledger": "tests/r14/review/inputs/corpus/36-049-invalid-booking-method.trunc.beancount",
+    "source": "049-invalid-booking-method.trunc.beancount",
+    "sha256": "c8ba5bfecda35102a933f1c848b149a3645dfb21e34b67b9d6127e38581b86c1",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 37,
+    "ledger": "tests/r14/review/inputs/corpus/37-051-query-journal.fuzz.beancount",
+    "source": "051-query-journal.fuzz.beancount",
+    "sha256": "e45099608faa82eb91c7215637a9e00c108d16b0ada104d46cbeec083004e7bd",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 38,
+    "ledger": "tests/r14/review/inputs/corpus/38-058-cost-merge.crlf.beancount",
+    "source": "058-cost-merge.crlf.beancount",
+    "sha256": "fd7428f277de6e7fd2ec6fe8fe473e2fcf95d485d45612fd7c9956adb1376406",
+    "boundary": "cost merge extension",
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 39,
+    "ledger": "tests/r14/review/inputs/corpus/39-058-cost-merge.nonl.beancount",
+    "source": "058-cost-merge.nonl.beancount",
+    "sha256": "f21323f49b8fcbe2d51989eea16d1460cfc653aca524413466576a41989164e8",
+    "boundary": "cost merge extension",
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 40,
+    "ledger": "tests/r14/review/inputs/corpus/40-058-cost-merge.tabs.beancount",
+    "source": "058-cost-merge.tabs.beancount",
+    "sha256": "681f8a3c1d0a7fab691d13f04487a3928ae6a7501cb6fcf6334701bd708bdffe",
+    "boundary": "cost merge extension",
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 41,
+    "ledger": "tests/r14/review/inputs/corpus/41-059-plugin-auto-basic.trunc.beancount",
+    "source": "059-plugin-auto-basic.trunc.beancount",
+    "sha256": "de996eda95faa3a07e8f1644f73de6870ccab46e49d62c058d191037d7c65230",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 42,
+    "ledger": "tests/r14/review/inputs/corpus/42-064-plugin-implicit-total.trunc.beancount",
+    "source": "064-plugin-implicit-total.trunc.beancount",
+    "sha256": "03c2500cbe368adcb0e02d06ba1df2e0c99b8498cd12b454fda0eb9ed9d738e8",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 43,
+    "ledger": "tests/r14/review/inputs/corpus/43-065-plugin-implicit-priority.trunc.beancount",
+    "source": "065-plugin-implicit-priority.trunc.beancount",
+    "sha256": "0bd24c11fcba60ed9ae3baf4e7bc7e9d8c15d7d7668810b2dac7c8764962e672",
+    "boundary": null,
+    "oracle_initial_exit": 0
+  },
+  {
+    "id": 44,
+    "ledger": "tests/r14/review/inputs/corpus/44-067-plugin-commodity-valid.trunc.beancount",
+    "source": "067-plugin-commodity-valid.trunc.beancount",
+    "sha256": "93a2ab1e87b1973e112a5ad656c4b2381ff48a0535d727977d3ca3e2be9954c4",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 45,
+    "ledger": "tests/r14/review/inputs/corpus/45-068-plugin-commodity-missing.trunc.beancount",
+    "source": "068-plugin-commodity-missing.trunc.beancount",
+    "sha256": "514c12e593ed1a112b549351433cef0ef8701b4f137c9cb1f49a69729c8b3ee8",
+    "boundary": null,
+    "oracle_initial_exit": 0
+  },
+  {
+    "id": 46,
+    "ledger": "tests/r14/review/inputs/corpus/46-069-plugin-commodity-price.trunc.beancount",
+    "source": "069-plugin-commodity-price.trunc.beancount",
+    "sha256": "50b2369291f1bc816f8f39b3985127f7adfcc4c474b47a3906b26a5e63b9ac68",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 47,
+    "ledger": "tests/r14/review/inputs/corpus/47-072-plugin-leaf-valid.trunc.beancount",
+    "source": "072-plugin-leaf-valid.trunc.beancount",
+    "sha256": "e7773cf8f5c7a88a36df9afa9bf153a5fd40969b3702b781675f00b9a407e450",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 48,
+    "ledger": "tests/r14/review/inputs/corpus/48-084-exempt-before-price.trunc.beancount",
+    "source": "084-exempt-before-price.trunc.beancount",
+    "sha256": "624e043511c91dcd6f8cd2e854fc78c7d1d92d76e3d790a381f1b11bdbeb1127",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 49,
+    "ledger": "tests/r14/review/inputs/corpus/49-087-leaf-note.trunc.beancount",
+    "source": "087-leaf-note.trunc.beancount",
+    "sha256": "c1c55bed4bc53b4e56732d28edfba156abab70f7570950d644f4fb4bc5bc7aac",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 50,
+    "ledger": "tests/r14/review/inputs/corpus/50-091-leaf-pad-source.trunc.beancount",
+    "source": "091-leaf-pad-source.trunc.beancount",
+    "sha256": "0e185b96466e41204912506d670d19b710b7e9ffdebf3ea9b6066845572e0794",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 51,
+    "ledger": "tests/r14/review/inputs/corpus/51-095-short-lifo.trunc.beancount",
+    "source": "095-short-lifo.trunc.beancount",
+    "sha256": "ea5e2e9f3cb358d218a1eaee0a62e3ec31cf942b6a1c9cd8927498a8e9949167",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 52,
+    "ledger": "tests/r14/review/inputs/corpus/52-097-short-strict_with_size.trunc.beancount",
+    "source": "097-short-strict_with_size.trunc.beancount",
+    "sha256": "dcd16eae1245d61e9e44d5c80f0098d2899e9cc863da5fbb3698cc38cee20677",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 53,
+    "ledger": "tests/r14/review/inputs/corpus/53-108-short-inferred-average-0.trunc.beancount",
+    "source": "108-short-inferred-average-0.trunc.beancount",
+    "sha256": "33de297a99fe0f38a661505e3066702fa8256d3be4a4fd5f16c5ff7ab6b42bcc",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 54,
+    "ledger": "tests/r14/review/inputs/corpus/54-113-round-zero.trunc.beancount",
+    "source": "113-round-zero.trunc.beancount",
+    "sha256": "2b5c7cd16e6aff8142f266ddf8c2dcfb2a1dc7179a9f1f734c035e4150fae81f",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 55,
+    "ledger": "tests/r14/review/inputs/corpus/55-117-bql-tables.crlf.beancount",
+    "source": "117-bql-tables.crlf.beancount",
+    "sha256": "02ed4685f06ec74797daa7fc6cddd4c2513b833d0924131e3f7b32c10608d070",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 56,
+    "ledger": "tests/r14/review/inputs/corpus/56-117-bql-tables.nonl.beancount",
+    "source": "117-bql-tables.nonl.beancount",
+    "sha256": "bfd1e44e230829a6b7f7a53c950a9df13e9aa3bc3e641574c97dfd6048d83f9b",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 57,
+    "ledger": "tests/r14/review/inputs/corpus/57-117-bql-tables.tabs.beancount",
+    "source": "117-bql-tables.tabs.beancount",
+    "sha256": "ac9f315ebfa5be83100df84a499ec9a31b56a7cc5a33da5149cd239ffec46c92",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 58,
+    "ledger": "tests/r14/review/inputs/corpus/58-117-bql-tables.trunc.beancount",
+    "source": "117-bql-tables.trunc.beancount",
+    "sha256": "55267cc12fd63071a8ef59bb6b5c74eafca404e9b6139f0776faf3d6f72ebf3a",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 59,
+    "ledger": "tests/r14/review/inputs/corpus/59-117-bql-tables.fuzz.beancount",
+    "source": "117-bql-tables.fuzz.beancount",
+    "sha256": "6dbe0f5e7087e7ccaa669406c78021d255dfb98519670825eb28dcc83d34e144",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 60,
+    "ledger": "tests/r14/review/inputs/corpus/60-clear-cost.trunc.beancount",
+    "source": "clear-cost.trunc.beancount",
+    "sha256": "676a23a074aa924ec7e5c389d5c6513d8e0609efca560f2803e56fda2240a8e8",
+    "boundary": null,
+    "oracle_initial_exit": 0
+  },
+  {
+    "id": 61,
+    "ledger": "tests/r14/review/inputs/corpus/61-grouping.crlf.beancount",
+    "source": "grouping.crlf.beancount",
+    "sha256": "b17aa79ccb1d3a767924b15d2ac629ddf198c139a9d774466b4028aa3f60a664",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 62,
+    "ledger": "tests/r14/review/inputs/corpus/62-grouping.nonl.beancount",
+    "source": "grouping.nonl.beancount",
+    "sha256": "e2bd66d195e1ff3cd131df43af28f4d98ffa94a696ec8ed59ca608499b836c91",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 63,
+    "ledger": "tests/r14/review/inputs/corpus/63-grouping.tabs.beancount",
+    "source": "grouping.tabs.beancount",
+    "sha256": "d8f42a9e0f97dee3bd301b2dd58e49e444cb1dacabd80e5993e2e5124b574b00",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 64,
+    "ledger": "tests/r14/review/inputs/corpus/64-grouping.trunc.beancount",
+    "source": "grouping.trunc.beancount",
+    "sha256": "7324102cf5505cec6fc3242d0d0606c5905dd58660ca27c81eb8a07e811e9dd4",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 65,
+    "ledger": "tests/r14/review/inputs/corpus/65-kitchen2.crlf.beancount",
+    "source": "kitchen2.crlf.beancount",
+    "sha256": "ef49eb9ff94ad226a6dc674ca05ed56a070771a5800de0c5924302112ae4d1aa",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 66,
+    "ledger": "tests/r14/review/inputs/corpus/66-kitchen2.nonl.beancount",
+    "source": "kitchen2.nonl.beancount",
+    "sha256": "7d3bcea7896913b179124eaf31aa4394449289d4774348ae1ab7862cd58817a5",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 67,
+    "ledger": "tests/r14/review/inputs/corpus/67-kitchen2.tabs.beancount",
+    "source": "kitchen2.tabs.beancount",
+    "sha256": "e9ea488a0e84bcde9b4562a8fb48e5253d6c1958bbad54b1364162e8393a5e37",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 68,
+    "ledger": "tests/r14/review/inputs/corpus/68-meta-types.trunc.beancount",
+    "source": "meta-types.trunc.beancount",
+    "sha256": "f5f2496445a11d4570b2c3980871ff4b33b2dcc34aa46229d543a26d7f5b05e5",
+    "boundary": null,
+    "oracle_initial_exit": 0
+  },
+  {
+    "id": 69,
+    "ledger": "tests/r14/review/inputs/corpus/69-quoted-fields.crlf.beancount",
+    "source": "quoted-fields.crlf.beancount",
+    "sha256": "c0b9d3e02164884196a9c6f63f375673056df5d4a41a3dd8af627d8f71077b6d",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 70,
+    "ledger": "tests/r14/review/inputs/corpus/70-quoted-fields.nonl.beancount",
+    "source": "quoted-fields.nonl.beancount",
+    "sha256": "52964296ee2059055ce1dccb1f4a31720524b9e561d179159bac39b41dd77133",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 71,
+    "ledger": "tests/r14/review/inputs/corpus/71-quoted-fields.tabs.beancount",
+    "source": "quoted-fields.tabs.beancount",
+    "sha256": "f3c2fd48879cea77adebf4f2c69a65a1bd6529f9114ad3e2cac78dcf116748ff",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  },
+  {
+    "id": 72,
+    "ledger": "tests/r14/review/inputs/corpus/72-tx.fuzz.beancount",
+    "source": "tx.fuzz.beancount",
+    "sha256": "3e3708032715bd9c7770176cf86dd1388cfda6eb45c9252a977da97c90f8770e",
+    "boundary": null,
+    "oracle_initial_exit": 1
+  }
+]
