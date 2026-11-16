@@ -1,0 +1,90 @@
+[
+  {
+    "command": [
+      "moon",
+      "info"
+    ],
+    "exit": 0,
+    "log": "0-moon.log"
+  },
+  {
+    "command": [
+      "moon",
+      "check",
+      "--deny-warn"
+    ],
+    "exit": 0,
+    "log": "1-moon.log"
+  },
+  {
+    "command": [
+      "moon",
+      "fmt",
+      "--check"
+    ],
+    "exit": 0,
+    "log": "2-moon.log"
+  },
+  {
+    "command": [
+      "moon",
+      "test",
+      "--target",
+      "native"
+    ],
+    "exit": 0,
+    "log": "3-moon.log"
+  },
+  {
+    "command": [
+      "moon",
+      "test",
+      "--target",
+      "wasm-gc"
+    ],
+    "exit": 0,
+    "log": "4-moon.log"
+  },
+  {
+    "command": [
+      "moon",
+      "test",
+      "--target",
+      "js"
+    ],
+    "exit": 0,
+    "log": "5-moon.log"
+  },
+  {
+    "command": [
+      "moon",
+      "build",
+      "--release",
+      "--target",
+      "native",
+      "cmd/main"
+    ],
+    "exit": 0,
+    "log": "6-moon.log"
+  },
+  {
+    "command": [
+      "moon",
+      "build",
+      "--release",
+      "--target",
+      "wasm-gc",
+      "tests/clock_host"
+    ],
+    "exit": 0,
+    "log": "7-moon.log"
+  },
+  {
+    "command": [
+      "node",
+      "scripts/wasm-clock-test.mjs"
+    ],
+    "exit": 0,
+    "log": "8-node.log"
+  }
+]

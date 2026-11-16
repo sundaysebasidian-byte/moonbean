@@ -1,10 +1,18 @@
 # Changelog
 
+## 0.2.8
+
+- Parse multiline strings with physical source locations, reject unterminated literals, and preserve whitespace in multiline ledgers during formatting.
+- Retain amount and empty metadata values through parsing, query values, PRINT and JSON export, including number expressions and posting metadata.
+- Match the reviewed empty transaction, zero-residual auto-posting, standalone indentation and malformed metadata behavior. Native check validates document existence.
+- Track all 73 R13 classification cases and authored syntax/value/diagnostic/format probes. AVERAGE and cost merging retain their documented extension behavior.
+- Add DST cross-day and rolling-century clock tests on Node-hosted wasm-gc, correct R13 lexer provenance, and add the paired shared-host memory/performance harness. R14 final acceptance awaits restoration of its pinned toolchain and oracle.
+
 ## 0.2.7
 
 - Complete the previously failing default-heap wasm-gc 1M FIFO standard case. Preserve the main OOM pair, all short native/JS A/B results and the pending Lead idle-host 30% gate.
 
-- Add an optional WebAssembly host calendar import adapter and a per-read callback for today, partial-date defaults and two-digit years, with a validated UTC fallback. Existing moonrun applications retain the default calendar until a host service is installed.
+- Add an optional WebAssembly host calendar import adapter and a per-read callback for today, partial-date defaults and two-digit years, with UTC selection after a resolved callback returns zero/invalid data or install is unused. Linking host_clock requires the moonbean:clock import at instantiation. Unlinked moonrun programs use UTC.
 - Stream parser lines and share immutable word, numeric and date literals in bounded parse-local caches, reducing repeated-parse peak memory in the retained-ledger benchmark.
 - Add cross-target calendar/cache regressions, actual JS-hosted Wasm import/fallback tests and a reproducible stage-RSS diagnostic runner. R13 acceptance records correctness, scoped A/B timings and the pending idle-host matrix gate.
 

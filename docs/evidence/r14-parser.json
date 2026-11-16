@@ -1,0 +1,5215 @@
+[
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/00-document.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/00-document.beancount:2: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/missing-receipt.pdf\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/00-document.beancount:2: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/missing-receipt.pdf\"\n\n   2024-01-02 document Assets:Cash \"<repo>/tests/r14/review/inputs/corpus/missing-receipt.pdf\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/01-035-booking-average.beancount",
+    "ok": true,
+    "conformant": false,
+    "boundary": "AVERAGE extension",
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/01-035-booking-average.beancount: ok\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/01-035-booking-average.beancount:12: AVERAGE method is not supported\n\n   2024-01-04 * \"Sell at the averaged cost\"\n     Assets:Stock     -5 HOOL {}\n     Assets:Cash   75.00 USD\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/02-058-cost-merge.beancount",
+    "ok": true,
+    "conformant": false,
+    "boundary": "cost merge extension",
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/02-058-cost-merge.beancount: ok\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/02-058-cost-merge.beancount:13: Cost merging is not supported yet\n\n<repo>/tests/r14/review/inputs/corpus/02-058-cost-merge.beancount:12: Transaction does not balance: (50.00 USD)\n\n   2024-01-04 * \"Merge lots at the average cost\"\n     Assets:Stock     -10 HOOL {10.00 USD, 2024-01-02}\n     Assets:Cash   150.00 USD\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/03-quoted-fields.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/03-quoted-fields.beancount:6: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/a\"b\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/03-quoted-fields.beancount:6: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/a\"b\"\n\n   2024-01-06 document Assets:A \"<repo>/tests/r14/review/inputs/corpus/a\"b\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/04-mid-string.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/04-mid-string.beancount:2: parse.token: Invalid token: '\"unterminated'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/04-mid-string.beancount:2: Invalid token: '\"unterminated'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/05-multiline-string.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/05-multiline-string.beancount: ok\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/06-meta-heavy.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/06-meta-heavy.beancount: ok\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/07-full-year-2024.crlf.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/07-full-year-2024.crlf.beancount:520: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/receipts/laptop-2024-09-10.pdf\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/07-full-year-2024.crlf.beancount:520: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/receipts/laptop-2024-09-10.pdf\"\n\n   2024-09-10 document Assets:Bank:Checking \"<repo>/tests/r14/review/inputs/corpus/receipts/laptop-2024-09-10.pdf\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/08-full-year-2024.nonl.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/08-full-year-2024.nonl.beancount:520: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/receipts/laptop-2024-09-10.pdf\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/08-full-year-2024.nonl.beancount:520: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/receipts/laptop-2024-09-10.pdf\"\n\n   2024-09-10 document Assets:Bank:Checking \"<repo>/tests/r14/review/inputs/corpus/receipts/laptop-2024-09-10.pdf\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/09-full-year-2024.tabs.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/09-full-year-2024.tabs.beancount:520: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/receipts/laptop-2024-09-10.pdf\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/09-full-year-2024.tabs.beancount:520: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/receipts/laptop-2024-09-10.pdf\"\n\n   2024-09-10 document Assets:Bank:Checking \"<repo>/tests/r14/review/inputs/corpus/receipts/laptop-2024-09-10.pdf\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/10-full-year-2024.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/10-full-year-2024.trunc.beancount: ok\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/11-full-year-2024.fuzz.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/11-full-year-2024.fuzz.beancount:192: parse.indent: unexpected indented line outside of a directive\n<repo>/tests/r14/review/inputs/corpus/11-full-year-2024.fuzz.beancount:521: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/receipts/laptop-2024-09-10.pdf\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/11-full-year-2024.fuzz.beancount:192: syntax error, unexpected INDENT\n\n<repo>/tests/r14/review/inputs/corpus/11-full-year-2024.fuzz.beancount:521: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/receipts/laptop-2024-09-10.pdf\"\n\n   2024-09-10 document Assets:Bank:Checking \"<repo>/tests/r14/review/inputs/corpus/receipts/laptop-2024-09-10.pdf\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/12-document.crlf.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/12-document.crlf.beancount:2: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/missing-receipt.pdf\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/12-document.crlf.beancount:2: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/missing-receipt.pdf\"\n\n   2024-01-02 document Assets:Cash \"<repo>/tests/r14/review/inputs/corpus/missing-receipt.pdf\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/13-document.nonl.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/13-document.nonl.beancount:2: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/missing-receipt.pdf\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/13-document.nonl.beancount:2: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/missing-receipt.pdf\"\n\n   2024-01-02 document Assets:Cash \"<repo>/tests/r14/review/inputs/corpus/missing-receipt.pdf\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/14-document.tabs.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/14-document.tabs.beancount:2: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/missing-receipt.pdf\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/14-document.tabs.beancount:2: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/missing-receipt.pdf\"\n\n   2024-01-02 document Assets:Cash \"<repo>/tests/r14/review/inputs/corpus/missing-receipt.pdf\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/15-001-basic.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/15-001-basic.trunc.beancount:3: parse.token: Invalid token: 'U'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/15-001-basic.trunc.beancount:3: Invalid token: 'U'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/16-002-multi-currency.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/16-002-multi-currency.trunc.beancount:4: parse.token: Invalid token: '\"Open'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/16-002-multi-currency.trunc.beancount:4: Invalid token: '\"Open'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/17-008-directives.crlf.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/17-008-directives.crlf.beancount:9: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/receipts/drawer-2024-01-06.pdf\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/17-008-directives.crlf.beancount:9: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/receipts/drawer-2024-01-06.pdf\"\n\n   2024-01-06 document Assets:Cash \"<repo>/tests/r14/review/inputs/corpus/receipts/drawer-2024-01-06.pdf\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/18-008-directives.nonl.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/18-008-directives.nonl.beancount:9: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/receipts/drawer-2024-01-06.pdf\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/18-008-directives.nonl.beancount:9: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/receipts/drawer-2024-01-06.pdf\"\n\n   2024-01-06 document Assets:Cash \"<repo>/tests/r14/review/inputs/corpus/receipts/drawer-2024-01-06.pdf\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/19-008-directives.tabs.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/19-008-directives.tabs.beancount:9: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/receipts/drawer-2024-01-06.pdf\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/19-008-directives.tabs.beancount:9: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/receipts/drawer-2024-01-06.pdf\"\n\n   2024-01-06 document Assets:Cash \"<repo>/tests/r14/review/inputs/corpus/receipts/drawer-2024-01-06.pdf\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/20-008-directives.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/20-008-directives.trunc.beancount:7: parse.token: Invalid token: '\"SELECT account, sum(pos'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/20-008-directives.trunc.beancount:7: Invalid token: '\"SELECT'\n\n<repo>/tests/r14/review/inputs/corpus/20-008-directives.trunc.beancount:7: Invalid token: 'account,'\n\n<repo>/tests/r14/review/inputs/corpus/20-008-directives.trunc.beancount:7: Invalid token: 'sum(pos'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/21-016-push-tags.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/21-016-push-tags.trunc.beancount: ok\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/22-023-multiple-missing.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/22-023-multiple-missing.trunc.beancount: ok\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/23-024-cost-per.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/23-024-cost-per.trunc.beancount: ok\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/24-025-cost-total.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/24-025-cost-total.trunc.beancount:4: parse.token: Invalid token: '\"Buy sh'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/24-025-cost-total.trunc.beancount:4: Invalid token: '\"Buy'\n\n<repo>/tests/r14/review/inputs/corpus/24-025-cost-total.trunc.beancount:4: Invalid token: 'sh'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/25-028-price-total.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/25-028-price-total.trunc.beancount: ok\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/26-030-booking-lifo.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/26-030-booking-lifo.trunc.beancount:9: parse.token: Invalid token: '\"Buy lo'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/26-030-booking-lifo.trunc.beancount:9: Invalid token: '\"Buy'\n\n<repo>/tests/r14/review/inputs/corpus/26-030-booking-lifo.trunc.beancount:9: Invalid token: 'lo'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/27-032-booking-strict.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/27-032-booking-strict.trunc.beancount:13: parse.token: Invalid token: '\"Sell an exactly matching'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/27-032-booking-strict.trunc.beancount:13: Invalid token: '\"Sell'\n\n<repo>/tests/r14/review/inputs/corpus/27-032-booking-strict.trunc.beancount:13: Invalid token: 'an'\n\n<repo>/tests/r14/review/inputs/corpus/27-032-booking-strict.trunc.beancount:13: Invalid token: 'exactly'\n\n<repo>/tests/r14/review/inputs/corpus/27-032-booking-strict.trunc.beancount:13: Invalid token: 'matching'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/28-035-booking-average.crlf.beancount",
+    "ok": true,
+    "conformant": false,
+    "boundary": "AVERAGE extension",
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/28-035-booking-average.crlf.beancount: ok\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/28-035-booking-average.crlf.beancount:12: AVERAGE method is not supported\n\n   2024-01-04 * \"Sell at the averaged cost\"\n     Assets:Stock     -5 HOOL {}\n     Assets:Cash   75.00 USD\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/29-035-booking-average.nonl.beancount",
+    "ok": true,
+    "conformant": false,
+    "boundary": "AVERAGE extension",
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/29-035-booking-average.nonl.beancount: ok\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/29-035-booking-average.nonl.beancount:12: AVERAGE method is not supported\n\n   2024-01-04 * \"Sell at the averaged cost\"\n     Assets:Stock     -5 HOOL {}\n     Assets:Cash   75.00 USD\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/30-035-booking-average.tabs.beancount",
+    "ok": true,
+    "conformant": false,
+    "boundary": "AVERAGE extension",
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/30-035-booking-average.tabs.beancount: ok\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/30-035-booking-average.tabs.beancount:12: AVERAGE method is not supported\n\n   2024-01-04 * \"Sell at the averaged cost\"\n     Assets:Stock     -5 HOOL {}\n     Assets:Cash   75.00 USD\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/31-035-booking-average.fuzz.beancount",
+    "ok": true,
+    "conformant": false,
+    "boundary": "AVERAGE extension",
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/31-035-booking-average.fuzz.beancount: ok\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/31-035-booking-average.fuzz.beancount:14: AVERAGE method is not supported\n\n   2024-01-04 * \"Sell at the averaged cost\"\n     Assets:Stock  -5 HOOL {}\n     Assets:Cash\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/32-036-booking-insufficient.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/32-036-booking-insufficient.trunc.beancount:8: parse.token: Invalid token: '\"Sell more than hel'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/32-036-booking-insufficient.trunc.beancount:8: Invalid token: '\"Sell'\n\n<repo>/tests/r14/review/inputs/corpus/32-036-booking-insufficient.trunc.beancount:8: Invalid token: 'more'\n\n<repo>/tests/r14/review/inputs/corpus/32-036-booking-insufficient.trunc.beancount:8: Invalid token: 'than'\n\n<repo>/tests/r14/review/inputs/corpus/32-036-booking-insufficient.trunc.beancount:8: Invalid token: 'hel'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/33-038-unbalanced.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/33-038-unbalanced.trunc.beancount:1: parse.token: Invalid token: 'U'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/33-038-unbalanced.trunc.beancount:1: Invalid token: 'U'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/34-045-comments.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/34-045-comments.trunc.beancount: ok\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/35-046-string-escapes.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/35-046-string-escapes.trunc.beancount:4: parse.token: Invalid token: '\"Cafe \\\\\"Quoted\\\\'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/35-046-string-escapes.trunc.beancount:4: Invalid token: '\"Cafe'\n\n<repo>/tests/r14/review/inputs/corpus/35-046-string-escapes.trunc.beancount:4: Invalid token: '\\\"Quoted\\'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/36-049-invalid-booking-method.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/36-049-invalid-booking-method.trunc.beancount:1: parse.token: Invalid token: 'U'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/36-049-invalid-booking-method.trunc.beancount:1: Invalid token: 'U'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/37-051-query-journal.fuzz.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/37-051-query-journal.fuzz.beancount:24: parse.token: Invalid token: '\"'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/37-051-query-journal.fuzz.beancount:15: Invalid token: 'Employer\"'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/38-058-cost-merge.crlf.beancount",
+    "ok": true,
+    "conformant": false,
+    "boundary": "cost merge extension",
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/38-058-cost-merge.crlf.beancount: ok\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/38-058-cost-merge.crlf.beancount:13: Cost merging is not supported yet\n\n<repo>/tests/r14/review/inputs/corpus/38-058-cost-merge.crlf.beancount:12: Transaction does not balance: (50.00 USD)\n\n   2024-01-04 * \"Merge lots at the average cost\"\n     Assets:Stock     -10 HOOL {10.00 USD, 2024-01-02}\n     Assets:Cash   150.00 USD\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/39-058-cost-merge.nonl.beancount",
+    "ok": true,
+    "conformant": false,
+    "boundary": "cost merge extension",
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/39-058-cost-merge.nonl.beancount: ok\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/39-058-cost-merge.nonl.beancount:13: Cost merging is not supported yet\n\n<repo>/tests/r14/review/inputs/corpus/39-058-cost-merge.nonl.beancount:12: Transaction does not balance: (50.00 USD)\n\n   2024-01-04 * \"Merge lots at the average cost\"\n     Assets:Stock     -10 HOOL {10.00 USD, 2024-01-02}\n     Assets:Cash   150.00 USD\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/40-058-cost-merge.tabs.beancount",
+    "ok": true,
+    "conformant": false,
+    "boundary": "cost merge extension",
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/40-058-cost-merge.tabs.beancount: ok\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/40-058-cost-merge.tabs.beancount:13: Cost merging is not supported yet\n\n<repo>/tests/r14/review/inputs/corpus/40-058-cost-merge.tabs.beancount:12: Transaction does not balance: (50.00 USD)\n\n   2024-01-04 * \"Merge lots at the average cost\"\n     Assets:Stock     -10 HOOL {10.00 USD, 2024-01-02}\n     Assets:Cash   150.00 USD\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/41-059-plugin-auto-basic.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/41-059-plugin-auto-basic.trunc.beancount:2: parse.token: Invalid token: '\"indepe'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/41-059-plugin-auto-basic.trunc.beancount:2: Invalid token: '\"indepe'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/42-064-plugin-implicit-total.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/42-064-plugin-implicit-total.trunc.beancount:4: parse.token: Invalid token: '\"indep'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/42-064-plugin-implicit-total.trunc.beancount:4: Invalid token: '\"indep'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/43-065-plugin-implicit-priority.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/43-065-plugin-implicit-priority.trunc.beancount: ok\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/44-067-plugin-commodity-valid.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/44-067-plugin-commodity-valid.trunc.beancount:1: parse.token: Invalid token: '\"'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/44-067-plugin-commodity-valid.trunc.beancount:1: Invalid token: '\"'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/45-068-plugin-commodity-missing.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/45-068-plugin-commodity-missing.trunc.beancount: ok\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/46-069-plugin-commodity-price.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/46-069-plugin-commodity-price.trunc.beancount:1: parse.token: Invalid token: '\"beancount.'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/46-069-plugin-commodity-price.trunc.beancount:1: Invalid token: '\"beancount.'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/47-072-plugin-leaf-valid.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/47-072-plugin-leaf-valid.trunc.beancount:1: parse.token: Invalid token: '\"beanco'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/47-072-plugin-leaf-valid.trunc.beancount:1: Invalid token: '\"beanco'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/48-084-exempt-before-price.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/48-084-exempt-before-price.trunc.beancount:1: parse.token: Invalid token: '\"{\\'Ass'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/48-084-exempt-before-price.trunc.beancount:1: Invalid token: '\"{'Ass'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/49-087-leaf-note.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/49-087-leaf-note.trunc.beancount:1: parse.token: Invalid token: '\"beancount.plugins.leafon'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/49-087-leaf-note.trunc.beancount:1: Invalid token: '\"beancount.plugins.leafon'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/50-091-leaf-pad-source.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/50-091-leaf-pad-source.trunc.beancount:1: parse.token: Invalid token: '\"beancoun'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/50-091-leaf-pad-source.trunc.beancount:1: Invalid token: '\"beancoun'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/51-095-short-lifo.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/51-095-short-lifo.trunc.beancount:1: parse.token: Invalid token: '\"LIFO'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/51-095-short-lifo.trunc.beancount:1: Invalid token: '\"LIFO'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/52-097-short-strict_with_size.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/52-097-short-strict_with_size.trunc.beancount:1: parse.token: Invalid token: '\"STRICT_WITH_SIZE'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/52-097-short-strict_with_size.trunc.beancount:1: Invalid token: '\"STRICT_WITH_SIZE'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/53-108-short-inferred-average-0.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/53-108-short-inferred-average-0.trunc.beancount:4: parse.token: Invalid token: '\"'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/53-108-short-inferred-average-0.trunc.beancount:4: Invalid token: '\"'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/54-113-round-zero.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/54-113-round-zero.trunc.beancount:4: parse.token: Invalid token: '\"roun'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/54-113-round-zero.trunc.beancount:4: Invalid token: '\"roun'\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/55-117-bql-tables.crlf.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/55-117-bql-tables.crlf.beancount:12: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/README.md\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/55-117-bql-tables.crlf.beancount:12: File does not exist: \"<repo>/tests/r14/review/README.md\"\n\n   2024-01-05 document Assets:Cash \"<repo>/tests/r14/review/README.md\" #receipt ^book\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/56-117-bql-tables.nonl.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/56-117-bql-tables.nonl.beancount:12: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/README.md\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/56-117-bql-tables.nonl.beancount:12: File does not exist: \"<repo>/tests/r14/review/README.md\"\n\n   2024-01-05 document Assets:Cash \"<repo>/tests/r14/review/README.md\" #receipt ^book\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/57-117-bql-tables.tabs.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/57-117-bql-tables.tabs.beancount:12: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/README.md\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/57-117-bql-tables.tabs.beancount:12: File does not exist: \"<repo>/tests/r14/review/README.md\"\n\n   2024-01-05 document Assets:Cash \"<repo>/tests/r14/review/README.md\" #receipt ^book\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/58-117-bql-tables.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/58-117-bql-tables.trunc.beancount:12: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/README.md\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/58-117-bql-tables.trunc.beancount:12: File does not exist: \"<repo>/tests/r14/review/README.md\"\n\n   2024-01-05 document Assets:Cash \"<repo>/tests/r14/review/README.md\" #receipt\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/59-117-bql-tables.fuzz.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/59-117-bql-tables.fuzz.beancount:12: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/README.md\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/59-117-bql-tables.fuzz.beancount:12: File does not exist: \"<repo>/tests/r14/review/README.md\"\n\n   2024-01-05 document Assets:Cash \"<repo>/tests/r14/review/README.md\" #receipt ^book\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/60-clear-cost.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/60-clear-cost.trunc.beancount: ok\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/61-grouping.crlf.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/61-grouping.crlf.beancount:13: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/grouping.beancount\"\n<repo>/tests/r14/review/inputs/corpus/61-grouping.crlf.beancount:14: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/dupbal.beancount\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/61-grouping.crlf.beancount:13: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/grouping.beancount\"\n\n   2024-01-06 document Assets:A \"<repo>/tests/r14/review/inputs/corpus/grouping.beancount\"\n\n\n<repo>/tests/r14/review/inputs/corpus/61-grouping.crlf.beancount:14: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/dupbal.beancount\"\n\n   2024-01-06 document Assets:A \"<repo>/tests/r14/review/inputs/corpus/dupbal.beancount\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/62-grouping.nonl.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/62-grouping.nonl.beancount:13: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/grouping.beancount\"\n<repo>/tests/r14/review/inputs/corpus/62-grouping.nonl.beancount:14: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/dupbal.beancount\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/62-grouping.nonl.beancount:13: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/grouping.beancount\"\n\n   2024-01-06 document Assets:A \"<repo>/tests/r14/review/inputs/corpus/grouping.beancount\"\n\n\n<repo>/tests/r14/review/inputs/corpus/62-grouping.nonl.beancount:14: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/dupbal.beancount\"\n\n   2024-01-06 document Assets:A \"<repo>/tests/r14/review/inputs/corpus/dupbal.beancount\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/63-grouping.tabs.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/63-grouping.tabs.beancount:13: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/grouping.beancount\"\n<repo>/tests/r14/review/inputs/corpus/63-grouping.tabs.beancount:14: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/dupbal.beancount\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/63-grouping.tabs.beancount:13: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/grouping.beancount\"\n\n   2024-01-06 document Assets:A \"<repo>/tests/r14/review/inputs/corpus/grouping.beancount\"\n\n\n<repo>/tests/r14/review/inputs/corpus/63-grouping.tabs.beancount:14: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/dupbal.beancount\"\n\n   2024-01-06 document Assets:A \"<repo>/tests/r14/review/inputs/corpus/dupbal.beancount\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/64-grouping.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/64-grouping.trunc.beancount:14: parse.token: Invalid token: '\"dupba'\n<repo>/tests/r14/review/inputs/corpus/64-grouping.trunc.beancount:13: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/grouping.beancount\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/64-grouping.trunc.beancount:14: Invalid token: '\"dupba'\n\n<repo>/tests/r14/review/inputs/corpus/64-grouping.trunc.beancount:13: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/grouping.beancount\"\n\n   2024-01-06 document Assets:A \"<repo>/tests/r14/review/inputs/corpus/grouping.beancount\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/65-kitchen2.crlf.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/65-kitchen2.crlf.beancount:52: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/kitchen.beancount\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/65-kitchen2.crlf.beancount:52: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/kitchen.beancount\"\n\n   2024-01-12 document Assets:Bank:Checking \"<repo>/tests/r14/review/inputs/corpus/kitchen.beancount\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/66-kitchen2.nonl.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/66-kitchen2.nonl.beancount:52: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/kitchen.beancount\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/66-kitchen2.nonl.beancount:52: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/kitchen.beancount\"\n\n   2024-01-12 document Assets:Bank:Checking \"<repo>/tests/r14/review/inputs/corpus/kitchen.beancount\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/67-kitchen2.tabs.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/67-kitchen2.tabs.beancount:52: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/kitchen.beancount\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/67-kitchen2.tabs.beancount:52: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/kitchen.beancount\"\n\n   2024-01-12 document Assets:Bank:Checking \"<repo>/tests/r14/review/inputs/corpus/kitchen.beancount\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/68-meta-types.trunc.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/68-meta-types.trunc.beancount: ok\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/69-quoted-fields.crlf.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/69-quoted-fields.crlf.beancount:6: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/a\"b\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/69-quoted-fields.crlf.beancount:6: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/a\"b\"\n\n   2024-01-06 document Assets:A \"<repo>/tests/r14/review/inputs/corpus/a\"b\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/70-quoted-fields.nonl.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/70-quoted-fields.nonl.beancount:6: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/a\"b\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/70-quoted-fields.nonl.beancount:6: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/a\"b\"\n\n   2024-01-06 document Assets:A \"<repo>/tests/r14/review/inputs/corpus/a\"b\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/71-quoted-fields.tabs.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/71-quoted-fields.tabs.beancount:6: validation.document_missing: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/a\"b\"\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/71-quoted-fields.tabs.beancount:6: File does not exist: \"<repo>/tests/r14/review/inputs/corpus/a\"b\"\n\n   2024-01-06 document Assets:A \"<repo>/tests/r14/review/inputs/corpus/a\"b\"\n\n\n"
+  },
+  {
+    "feature": "r14-review-classification",
+    "ledger": "tests/r14/review/inputs/corpus/72-tx.fuzz.beancount",
+    "ok": true,
+    "conformant": true,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/tests/r14/review/inputs/corpus/72-tx.fuzz.beancount:25: parse.token: Invalid token: '\" #job ^link-2'\n",
+    "oracle": "<repo>/tests/r14/review/inputs/corpus/72-tx.fuzz.beancount:18: Invalid token: 'lot-a\"}'\n\n"
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "unterm",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/unterm.beancount:2: parse.token: Invalid token: '\"unterminated'\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/unterm.beancount:2: Invalid token: '\"unterminated'\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '\"unterminated'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "unterm",
+    "ok": true,
+    "ours_families": [
+      "parse"
+    ],
+    "oracle_families": [
+      "parse"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/unterm.beancount:2: parse.token: Invalid token: '\"unterminated'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '\"unterminated'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "unterm",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "unterm",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/unterm.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "2f6d096f645df0fcb9443d97eebc8f6c"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/unterm.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "2f6d096f645df0fcb9443d97eebc8f6c"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "unterm-eof",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/unterm-eof.beancount:2: parse.token: Invalid token: '\"unterminated'\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/unterm-eof.beancount:2: Invalid token: '\"unterminated'\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '\"unterminated'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "unterm-eof",
+    "ok": true,
+    "ours_families": [
+      "parse"
+    ],
+    "oracle_families": [
+      "parse"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/unterm-eof.beancount:2: parse.token: Invalid token: '\"unterminated'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '\"unterminated'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "unterm-eof",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "unterm-eof",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/unterm-eof.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "364f96980f9313a934043e8ebf7f5210"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/unterm-eof.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "364f96980f9313a934043e8ebf7f5210"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "unterm-then-quote",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/unterm-then-quote.beancount:3: parse.token: Invalid token: '\"'\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/unterm-then-quote.beancount:3: Invalid token: 'later\"'\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: 'later\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "unterm-then-quote",
+    "ok": true,
+    "ours_families": [
+      "parse"
+    ],
+    "oracle_families": [
+      "parse"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/unterm-then-quote.beancount:3: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: 'later\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "unterm-then-quote",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "unterm-then-quote",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/unterm-then-quote.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "744b820fd89b609fc432fadd0b83353f"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/unterm-then-quote.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "744b820fd89b609fc432fadd0b83353f"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "multiline",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/multiline.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "multiline",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 note Assets:A \"line1\nline2\nline3\"\n\n2024-01-03 open Assets:B\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 note Assets:A \"line1\nline2\nline3\"\n\n2024-01-03 open Assets:B\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "multiline",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multiline.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "dd6ce810bc3e3b98ee60e2a0f20effbe"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multiline.beancount",
+            "lineno": 2
+          },
+          2,
+          "note",
+          "ec83e7f2758d2ebef1fd29b1381ca3e3"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multiline.beancount",
+            "lineno": 5
+          },
+          5,
+          "open",
+          "edf8a07b5ba7fbd2f79d9cf23409d846"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/multiline.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "dd6ce810bc3e3b98ee60e2a0f20effbe"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/multiline.beancount",
+          "lineno": 2
+        },
+        2,
+        "note",
+        "ec83e7f2758d2ebef1fd29b1381ca3e3"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/multiline.beancount",
+          "lineno": 5
+        },
+        5,
+        "open",
+        "edf8a07b5ba7fbd2f79d9cf23409d846"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "multiline",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multiline.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "dd6ce810bc3e3b98ee60e2a0f20effbe"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multiline.beancount",
+            "lineno": 2
+          },
+          2,
+          "note",
+          "ec83e7f2758d2ebef1fd29b1381ca3e3"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multiline.beancount",
+            "lineno": 5
+          },
+          5,
+          "open",
+          "edf8a07b5ba7fbd2f79d9cf23409d846"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multiline.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "dd6ce810bc3e3b98ee60e2a0f20effbe"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multiline.beancount",
+            "lineno": 2
+          },
+          2,
+          "note",
+          "ec83e7f2758d2ebef1fd29b1381ca3e3"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multiline.beancount",
+            "lineno": 5
+          },
+          5,
+          "open",
+          "edf8a07b5ba7fbd2f79d9cf23409d846"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "multi-txn",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/multi-txn.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "multi-txn",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \"pay\nee\" \"narr\nation\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \"pay\nee\" \"narr\nation\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "multi-txn",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-txn.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "d07872ded32b8d51408d8af893c0b772"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-txn.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "f3e00a303d40995cff0fd48e0bbf0977"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-txn.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "d07872ded32b8d51408d8af893c0b772"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-txn.beancount",
+          "lineno": 2,
+          "__tolerances__": {}
+        },
+        2,
+        "transaction",
+        "f3e00a303d40995cff0fd48e0bbf0977"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "multi-txn",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-txn.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "d07872ded32b8d51408d8af893c0b772"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-txn.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "f3e00a303d40995cff0fd48e0bbf0977"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-txn.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "d07872ded32b8d51408d8af893c0b772"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-txn.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "f3e00a303d40995cff0fd48e0bbf0977"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "multi-meta",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/multi-meta.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "multi-meta",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n  memo: \"hello\n  world\n\n; comment\nend\"\n2024-01-02 open Assets:B\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n  memo: \"hello\n  world\n\n; comment\nend\"\n2024-01-02 open Assets:B\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "multi-meta",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-meta.beancount",
+            "lineno": 1,
+            "memo": "hello\n  world\n\n; comment\nend"
+          },
+          1,
+          "open",
+          "a8b5e6eafd4d2185466b24dfa0fee277"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-meta.beancount",
+            "lineno": 7
+          },
+          7,
+          "open",
+          "053e12405904c532f9d17a9302c60530"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-meta.beancount",
+          "lineno": 1,
+          "memo": "hello\n  world\n\n; comment\nend"
+        },
+        1,
+        "open",
+        "a8b5e6eafd4d2185466b24dfa0fee277"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-meta.beancount",
+          "lineno": 7
+        },
+        7,
+        "open",
+        "053e12405904c532f9d17a9302c60530"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "multi-meta",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-meta.beancount",
+            "lineno": 1,
+            "memo": "hello\n  world\n\n; comment\nend"
+          },
+          1,
+          "open",
+          "a8b5e6eafd4d2185466b24dfa0fee277"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-meta.beancount",
+            "lineno": 7
+          },
+          7,
+          "open",
+          "053e12405904c532f9d17a9302c60530"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-meta.beancount",
+            "lineno": 1,
+            "memo": "hello\n  world\n\n; comment\nend"
+          },
+          1,
+          "open",
+          "a8b5e6eafd4d2185466b24dfa0fee277"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-meta.beancount",
+            "lineno": 7
+          },
+          7,
+          "open",
+          "053e12405904c532f9d17a9302c60530"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "multi-crlf",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/multi-crlf.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "multi-crlf",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 note Assets:A \"a\r\nb\"\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 note Assets:A \"a\r\nb\"\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "multi-crlf",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-crlf.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "408e510eb59969f040adf6b5c85a56dc"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-crlf.beancount",
+            "lineno": 2
+          },
+          2,
+          "note",
+          "9942bc0141de72634b129ed413ab651c"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-crlf.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "408e510eb59969f040adf6b5c85a56dc"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-crlf.beancount",
+          "lineno": 2
+        },
+        2,
+        "note",
+        "9942bc0141de72634b129ed413ab651c"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "multi-crlf",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-crlf.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "408e510eb59969f040adf6b5c85a56dc"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-crlf.beancount",
+            "lineno": 2
+          },
+          2,
+          "note",
+          "9942bc0141de72634b129ed413ab651c"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-crlf.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "408e510eb59969f040adf6b5c85a56dc"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-crlf.beancount",
+            "lineno": 2
+          },
+          2,
+          "note",
+          "9942bc0141de72634b129ed413ab651c"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "slash-newline",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/slash-newline.beancount:2: parse.token: Invalid token: '\"a\\\\'\n<repo>/.oracle-cache/r14/parser-corpus/slash-newline.beancount:3: parse.token: Invalid token: '\"'\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/slash-newline.beancount:2: Invalid token: '\"a\\'\n\n<repo>/.oracle-cache/r14/parser-corpus/slash-newline.beancount:3: Invalid token: 'b\"'\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '\"a\\'"
+      },
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: 'b\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "slash-newline",
+    "ok": true,
+    "ours_families": [
+      "parse"
+    ],
+    "oracle_families": [
+      "parse"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/slash-newline.beancount:2: parse.token: Invalid token: '\"a\\\\'\n<repo>/.oracle-cache/r14/parser-corpus/slash-newline.beancount:3: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '\"a\\'"
+      },
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: 'b\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "slash-newline",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "slash-newline",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/slash-newline.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "65646a529620f7fa243ef754405aef76"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/slash-newline.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "65646a529620f7fa243ef754405aef76"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "escapes",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/escapes.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "escapes",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 note Assets:A \"aqv\b\fau0041x41\"\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 note Assets:A \"aqv\b\fau0041x41\"\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "escapes",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/escapes.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "6b108d0ab3b4b1c309592b3cd32c0e32"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/escapes.beancount",
+            "lineno": 2
+          },
+          2,
+          "note",
+          "8a16995ae6c174ebb447c15776307004"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/escapes.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "6b108d0ab3b4b1c309592b3cd32c0e32"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/escapes.beancount",
+          "lineno": 2
+        },
+        2,
+        "note",
+        "8a16995ae6c174ebb447c15776307004"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "escapes",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/escapes.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "6b108d0ab3b4b1c309592b3cd32c0e32"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/escapes.beancount",
+            "lineno": 2
+          },
+          2,
+          "note",
+          "8a16995ae6c174ebb447c15776307004"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/escapes.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "6b108d0ab3b4b1c309592b3cd32c0e32"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/escapes.beancount",
+            "lineno": 2
+          },
+          2,
+          "note",
+          "8a16995ae6c174ebb447c15776307004"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "single-currency",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/single-currency.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "single-currency",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        U\n",
+    "oracle": "2024-01-01 open Assets:A                                        U\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "single-currency",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/single-currency.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "bb444d69b55b76cf5ded4f65a6b5a3d9"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/single-currency.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "bb444d69b55b76cf5ded4f65a6b5a3d9"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "single-currency",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/single-currency.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "bb444d69b55b76cf5ded4f65a6b5a3d9"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/single-currency.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "bb444d69b55b76cf5ded4f65a6b5a3d9"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "single-currency-eof",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/single-currency-eof.beancount:1: parse.token: Invalid token: 'U'\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/single-currency-eof.beancount:1: Invalid token: 'U'\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "LexerError",
+        "line": 1,
+        "message": "Invalid token: 'U'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "single-currency-eof",
+    "ok": true,
+    "ours_families": [
+      "parse"
+    ],
+    "oracle_families": [
+      "parse"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/single-currency-eof.beancount:1: parse.token: Invalid token: 'U'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 1,
+        "message": "Invalid token: 'U'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "single-currency-eof",
+    "ok": true,
+    "ours": "",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "single-currency-eof",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": []
+    },
+    "oracle": []
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "amount-meta",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/amount-meta.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "amount-meta",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n  value: 0.50 USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n  value: 0.50 USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "amount-meta",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/amount-meta.beancount",
+            "lineno": 1,
+            "value": {
+              "number": "0.50",
+              "currency": "USD"
+            }
+          },
+          1,
+          "open",
+          "c3630ffa24546204fb0189533309dabb"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/amount-meta.beancount",
+          "lineno": 1,
+          "value": {
+            "number": "0.50",
+            "currency": "USD"
+          }
+        },
+        1,
+        "open",
+        "c3630ffa24546204fb0189533309dabb"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "amount-meta",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/amount-meta.beancount",
+            "lineno": 1,
+            "value": {
+              "number": "0.50",
+              "currency": "USD"
+            }
+          },
+          1,
+          "open",
+          "c3630ffa24546204fb0189533309dabb"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/amount-meta.beancount",
+            "lineno": 1,
+            "value": {
+              "number": "0.50",
+              "currency": "USD"
+            }
+          },
+          1,
+          "open",
+          "c3630ffa24546204fb0189533309dabb"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "expr-meta",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/expr-meta.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "expr-meta",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n  value: 9 USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n  value: 9 USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "expr-meta",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/expr-meta.beancount",
+            "lineno": 1,
+            "value": {
+              "number": "9",
+              "currency": "USD"
+            }
+          },
+          1,
+          "open",
+          "3a56c8db544dca446742562daf571850"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/expr-meta.beancount",
+          "lineno": 1,
+          "value": {
+            "number": "9",
+            "currency": "USD"
+          }
+        },
+        1,
+        "open",
+        "3a56c8db544dca446742562daf571850"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "expr-meta",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/expr-meta.beancount",
+            "lineno": 1,
+            "value": {
+              "number": "9",
+              "currency": "USD"
+            }
+          },
+          1,
+          "open",
+          "3a56c8db544dca446742562daf571850"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/expr-meta.beancount",
+            "lineno": 1,
+            "value": {
+              "number": "9",
+              "currency": "USD"
+            }
+          },
+          1,
+          "open",
+          "3a56c8db544dca446742562daf571850"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "empty-meta",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/empty-meta.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "empty-meta",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n  value: \n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n  value: \n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "empty-meta",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/empty-meta.beancount",
+            "lineno": 1,
+            "value": null
+          },
+          1,
+          "open",
+          "ee100351330198e8ad9a9e345956be51"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/empty-meta.beancount",
+          "lineno": 1,
+          "value": null
+        },
+        1,
+        "open",
+        "ee100351330198e8ad9a9e345956be51"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "empty-meta",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/empty-meta.beancount",
+            "lineno": 1,
+            "value": null
+          },
+          1,
+          "open",
+          "ee100351330198e8ad9a9e345956be51"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/empty-meta.beancount",
+            "lineno": 1,
+            "value": null
+          },
+          1,
+          "open",
+          "ee100351330198e8ad9a9e345956be51"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "empty-meta-eof",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/empty-meta-eof.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "empty-meta-eof",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n  value: \n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n  value: \n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "empty-meta-eof",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/empty-meta-eof.beancount",
+            "lineno": 1,
+            "value": null
+          },
+          1,
+          "open",
+          "3a0c15d2620625a6329936e4b247c028"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/empty-meta-eof.beancount",
+          "lineno": 1,
+          "value": null
+        },
+        1,
+        "open",
+        "3a0c15d2620625a6329936e4b247c028"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "empty-meta-eof",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/empty-meta-eof.beancount",
+            "lineno": 1,
+            "value": null
+          },
+          1,
+          "open",
+          "3a0c15d2620625a6329936e4b247c028"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/empty-meta-eof.beancount",
+            "lineno": 1,
+            "value": null
+          },
+          1,
+          "open",
+          "3a0c15d2620625a6329936e4b247c028"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "unknown-meta",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/unknown-meta.beancount:2: parse.token: Invalid token: 'nope'\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/unknown-meta.beancount:2: Invalid token: 'nope'\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'nope'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "unknown-meta",
+    "ok": true,
+    "ours_families": [
+      "parse"
+    ],
+    "oracle_families": [
+      "parse"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/unknown-meta.beancount:2: parse.token: Invalid token: 'nope'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'nope'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "unknown-meta",
+    "ok": true,
+    "ours": "",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "unknown-meta",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": []
+    },
+    "oracle": []
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "partial-txn",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "partial-txn",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "partial-txn",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "25b452bf5e322ee35a66bb06ed7f8b4e"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "3a7aac2a3c4b4945a3559fe37214d905"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "25b452bf5e322ee35a66bb06ed7f8b4e"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn.beancount",
+          "lineno": 2,
+          "__tolerances__": {}
+        },
+        2,
+        "transaction",
+        "3a7aac2a3c4b4945a3559fe37214d905"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "partial-txn",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "25b452bf5e322ee35a66bb06ed7f8b4e"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "3a7aac2a3c4b4945a3559fe37214d905"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "25b452bf5e322ee35a66bb06ed7f8b4e"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "3a7aac2a3c4b4945a3559fe37214d905"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "partial-txn-nl",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn-nl.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "partial-txn-nl",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "partial-txn-nl",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn-nl.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "4407aa49843b78e5f723734405e4063b"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn-nl.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "82a8822ca197d9027386650df9b3155f"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn-nl.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "4407aa49843b78e5f723734405e4063b"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn-nl.beancount",
+          "lineno": 2,
+          "__tolerances__": {}
+        },
+        2,
+        "transaction",
+        "82a8822ca197d9027386650df9b3155f"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "partial-txn-nl",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn-nl.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "4407aa49843b78e5f723734405e4063b"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn-nl.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "82a8822ca197d9027386650df9b3155f"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn-nl.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "4407aa49843b78e5f723734405e4063b"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-txn-nl.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "82a8822ca197d9027386650df9b3155f"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "partial-posting",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/partial-posting.beancount:3: validation.cost: Failed to categorize posting 1\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/partial-posting.beancount:3: Failed to categorize posting 1\n\n   2024-01-02 * \"x\"\n     Assets:A  1 <class 'beancount.core.number.MISSING'>\n\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "CategorizationError",
+        "line": 3,
+        "message": "Failed to categorize posting 1"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "partial-posting",
+    "ok": true,
+    "ours_families": [
+      "validation"
+    ],
+    "oracle_families": [
+      "validation"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/partial-posting.beancount:3: validation.cost: Failed to categorize posting 1\n",
+    "oracle": [
+      {
+        "kind": "CategorizationError",
+        "line": 3,
+        "message": "Failed to categorize posting 1"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "partial-posting",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "partial-posting",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-posting.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "b34772f55e02e5004947da644a541017"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-posting.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "b34772f55e02e5004947da644a541017"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "partial-posting-nl",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/partial-posting-nl.beancount:3: validation.cost: Failed to categorize posting 1\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/partial-posting-nl.beancount:3: Failed to categorize posting 1\n\n   2024-01-02 * \"x\"\n     Assets:A  1 <class 'beancount.core.number.MISSING'>\n\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "CategorizationError",
+        "line": 3,
+        "message": "Failed to categorize posting 1"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "partial-posting-nl",
+    "ok": true,
+    "ours_families": [
+      "validation"
+    ],
+    "oracle_families": [
+      "validation"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/partial-posting-nl.beancount:3: validation.cost: Failed to categorize posting 1\n",
+    "oracle": [
+      {
+        "kind": "CategorizationError",
+        "line": 3,
+        "message": "Failed to categorize posting 1"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "partial-posting-nl",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "partial-posting-nl",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-posting-nl.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "12a4c53db956aa655f5e7bf7261f9ad5"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/partial-posting-nl.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "12a4c53db956aa655f5e7bf7261f9ad5"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "zero-posting",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/zero-posting.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "zero-posting",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \"x\"\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \"x\"\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "zero-posting",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/zero-posting.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "031afecae3107951501176cd0e813338"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/zero-posting.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "0cfc42cd71c555c84ac637cd41cb5bca"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/zero-posting.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "031afecae3107951501176cd0e813338"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/zero-posting.beancount",
+          "lineno": 2,
+          "__tolerances__": {}
+        },
+        2,
+        "transaction",
+        "0cfc42cd71c555c84ac637cd41cb5bca"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "zero-posting",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/zero-posting.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "031afecae3107951501176cd0e813338"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/zero-posting.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "0cfc42cd71c555c84ac637cd41cb5bca"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/zero-posting.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "031afecae3107951501176cd0e813338"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/zero-posting.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "0cfc42cd71c555c84ac637cd41cb5bca"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "meta-extra",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/meta-extra.beancount:2: parse.meta: invalid metadata line\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/meta-extra.beancount:2: syntax error, unexpected CURRENCY, expecting end of file or EOL\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected CURRENCY, expecting end of file or EOL"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "meta-extra",
+    "ok": true,
+    "ours_families": [
+      "parse"
+    ],
+    "oracle_families": [
+      "parse"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/meta-extra.beancount:2: parse.meta: invalid metadata line\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected CURRENCY, expecting end of file or EOL"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "meta-extra",
+    "ok": true,
+    "ours": "",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "meta-extra",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": []
+    },
+    "oracle": []
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "missing-string",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/missing-string.beancount:2: parse.note: note directive is missing a comment string\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/missing-string.beancount:3: syntax error, unexpected EOL, expecting STRING\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 3,
+        "message": "syntax error, unexpected EOL, expecting STRING"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "missing-string",
+    "ok": true,
+    "ours_families": [
+      "parse"
+    ],
+    "oracle_families": [
+      "parse"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/missing-string.beancount:2: parse.note: note directive is missing a comment string\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 3,
+        "message": "syntax error, unexpected EOL, expecting STRING"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "missing-string",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "missing-string",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/missing-string.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "7212e4a571dd08c4f7c01aafd60045eb"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/missing-string.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "7212e4a571dd08c4f7c01aafd60045eb"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "auto-alone",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "auto-alone",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \"x\"\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \"x\"\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "auto-alone",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "53d9e5e8e8aa226dfaf0873ecdc908cb"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "68341c0065493a056fa559d21fed8b14"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "53d9e5e8e8aa226dfaf0873ecdc908cb"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone.beancount",
+          "lineno": 2,
+          "__tolerances__": {}
+        },
+        2,
+        "transaction",
+        "68341c0065493a056fa559d21fed8b14"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "auto-alone",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "53d9e5e8e8aa226dfaf0873ecdc908cb"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "68341c0065493a056fa559d21fed8b14"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "53d9e5e8e8aa226dfaf0873ecdc908cb"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "68341c0065493a056fa559d21fed8b14"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "auto-alone-space",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone-space.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "auto-alone-space",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \"x\"\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \"x\"\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "auto-alone-space",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone-space.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "fe88471de484f3f5b25797705e72bc01"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone-space.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "c9cb723a5d471f51d699b3f2338b6e94"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone-space.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "fe88471de484f3f5b25797705e72bc01"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone-space.beancount",
+          "lineno": 2,
+          "__tolerances__": {}
+        },
+        2,
+        "transaction",
+        "c9cb723a5d471f51d699b3f2338b6e94"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "auto-alone-space",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone-space.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "fe88471de484f3f5b25797705e72bc01"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone-space.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "c9cb723a5d471f51d699b3f2338b6e94"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone-space.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "fe88471de484f3f5b25797705e72bc01"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-alone-space.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "c9cb723a5d471f51d699b3f2338b6e94"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "auto-currency",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/auto-currency.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "auto-currency",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \"x\"\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \"x\"\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "auto-currency",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-currency.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "9b8513ffb0f41745bd927aaf0abdd324"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-currency.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "0d0d49e8919f82d80727e0a2cc288012"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-currency.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "9b8513ffb0f41745bd927aaf0abdd324"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-currency.beancount",
+          "lineno": 2,
+          "__tolerances__": {}
+        },
+        2,
+        "transaction",
+        "0d0d49e8919f82d80727e0a2cc288012"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "auto-currency",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-currency.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "9b8513ffb0f41745bd927aaf0abdd324"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-currency.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "0d0d49e8919f82d80727e0a2cc288012"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-currency.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "9b8513ffb0f41745bd927aaf0abdd324"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-currency.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "0d0d49e8919f82d80727e0a2cc288012"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "auto-two",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/auto-two.beancount:4: validation.missing: You may not have more than one auto-posting per currency\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/auto-two.beancount:4: You may not have more than one auto-posting per currency\n\n   2024-01-02 * \"x\"\n     Assets:A\n     Assets:A\n\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "CategorizationError",
+        "line": 4,
+        "message": "You may not have more than one auto-posting per currency"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "auto-two",
+    "ok": true,
+    "ours_families": [
+      "validation"
+    ],
+    "oracle_families": [
+      "validation"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/auto-two.beancount:4: validation.missing: You may not have more than one auto-posting per currency\n",
+    "oracle": [
+      {
+        "kind": "CategorizationError",
+        "line": 4,
+        "message": "You may not have more than one auto-posting per currency"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "auto-two",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "auto-two",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-two.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "6b5230e6d66f8c564c6536d9acda3d3e"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/auto-two.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "6b5230e6d66f8c564c6536d9acda3d3e"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "standalone-comment",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/standalone-comment.beancount:1: parse.indent: unexpected indented line outside of a directive\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/standalone-comment.beancount:1: syntax error, unexpected INDENT\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 1,
+        "message": "syntax error, unexpected INDENT"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "standalone-comment",
+    "ok": true,
+    "ours_families": [
+      "parse"
+    ],
+    "oracle_families": [
+      "parse"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/standalone-comment.beancount:1: parse.indent: unexpected indented line outside of a directive\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 1,
+        "message": "syntax error, unexpected INDENT"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "standalone-comment",
+    "ok": true,
+    "ours": "",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "standalone-comment",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": []
+    },
+    "oracle": []
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "comment-after-open",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/comment-after-open.beancount:3: parse.indent: unexpected indented line outside of a directive\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/comment-after-open.beancount:3: syntax error, unexpected INDENT\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 3,
+        "message": "syntax error, unexpected INDENT"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "comment-after-open",
+    "ok": true,
+    "ours_families": [
+      "parse"
+    ],
+    "oracle_families": [
+      "parse"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/comment-after-open.beancount:3: parse.indent: unexpected indented line outside of a directive\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 3,
+        "message": "syntax error, unexpected INDENT"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "comment-after-open",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n2024-01-02 open Assets:B\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n2024-01-02 open Assets:B\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "comment-after-open",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/comment-after-open.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "a978f124a4233bba99e8f6af5e31891b"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/comment-after-open.beancount",
+            "lineno": 4
+          },
+          4,
+          "open",
+          "c8ac178ffd60db8f3e542eaf1f726deb"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/comment-after-open.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "a978f124a4233bba99e8f6af5e31891b"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/comment-after-open.beancount",
+          "lineno": 4
+        },
+        4,
+        "open",
+        "c8ac178ffd60db8f3e542eaf1f726deb"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "amount-print",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/amount-print.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "amount-print",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n  amount: 1.00 USD\n  empty: \n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n  amount: 1.00 USD\n  empty: \n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "amount-print",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/amount-print.beancount",
+            "lineno": 1,
+            "amount": {
+              "number": "1.00",
+              "currency": "USD"
+            },
+            "empty": null
+          },
+          1,
+          "open",
+          "e22ab55cea362042ca0c42c562dbd61b"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/amount-print.beancount",
+          "lineno": 1,
+          "amount": {
+            "number": "1.00",
+            "currency": "USD"
+          },
+          "empty": null
+        },
+        1,
+        "open",
+        "e22ab55cea362042ca0c42c562dbd61b"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "amount-print",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/amount-print.beancount",
+            "lineno": 1,
+            "amount": {
+              "number": "1.00",
+              "currency": "USD"
+            },
+            "empty": null
+          },
+          1,
+          "open",
+          "e22ab55cea362042ca0c42c562dbd61b"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/amount-print.beancount",
+            "lineno": 1,
+            "amount": {
+              "number": "1.00",
+              "currency": "USD"
+            },
+            "empty": null
+          },
+          1,
+          "open",
+          "e22ab55cea362042ca0c42c562dbd61b"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "expr-number",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/expr-number.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "expr-number",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n  amount: 9\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n  amount: 9\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "expr-number",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/expr-number.beancount",
+            "lineno": 1,
+            "amount": {
+              "_decimal": "9"
+            }
+          },
+          1,
+          "open",
+          "bf889cbe4faed3728debc925b6d82580"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/expr-number.beancount",
+          "lineno": 1,
+          "amount": {
+            "_decimal": "9"
+          }
+        },
+        1,
+        "open",
+        "bf889cbe4faed3728debc925b6d82580"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "expr-number",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/expr-number.beancount",
+            "lineno": 1,
+            "amount": {
+              "_decimal": "9"
+            }
+          },
+          1,
+          "open",
+          "bf889cbe4faed3728debc925b6d82580"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/expr-number.beancount",
+            "lineno": 1,
+            "amount": {
+              "_decimal": "9"
+            }
+          },
+          1,
+          "open",
+          "bf889cbe4faed3728debc925b6d82580"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "doc-dir",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/doc-dir.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "doc-dir",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 document Assets:A \"/tmp\"\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 document Assets:A \"/tmp\"\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "doc-dir",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-dir.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "3b5c1846961cb8dc3d533ee6a058c181"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-dir.beancount",
+            "lineno": 2
+          },
+          2,
+          "document",
+          "ec98e55563574e44e4e5ab09dc006a73"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-dir.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "3b5c1846961cb8dc3d533ee6a058c181"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-dir.beancount",
+          "lineno": 2
+        },
+        2,
+        "document",
+        "ec98e55563574e44e4e5ab09dc006a73"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "doc-dir",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-dir.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "3b5c1846961cb8dc3d533ee6a058c181"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-dir.beancount",
+            "lineno": 2
+          },
+          2,
+          "document",
+          "ec98e55563574e44e4e5ab09dc006a73"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-dir.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "3b5c1846961cb8dc3d533ee6a058c181"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-dir.beancount",
+            "lineno": 2
+          },
+          2,
+          "document",
+          "ec98e55563574e44e4e5ab09dc006a73"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "doc-present",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/doc-present.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "doc-present",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 document Assets:A \"<repo>/README.md\"\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 document Assets:A \"<repo>/README.md\"\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "doc-present",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-present.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "cbb0b3bc4ca0dbbc2c2da93124102d5c"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-present.beancount",
+            "lineno": 2
+          },
+          2,
+          "document",
+          "5936e4184319464b8ed1873037eb5670"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-present.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "cbb0b3bc4ca0dbbc2c2da93124102d5c"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-present.beancount",
+          "lineno": 2
+        },
+        2,
+        "document",
+        "5936e4184319464b8ed1873037eb5670"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "doc-present",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-present.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "cbb0b3bc4ca0dbbc2c2da93124102d5c"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-present.beancount",
+            "lineno": 2
+          },
+          2,
+          "document",
+          "5936e4184319464b8ed1873037eb5670"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-present.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "cbb0b3bc4ca0dbbc2c2da93124102d5c"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/doc-present.beancount",
+            "lineno": 2
+          },
+          2,
+          "document",
+          "5936e4184319464b8ed1873037eb5670"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "quote-tail",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/quote-tail.beancount:2: parse.token: Invalid token: 'tail'\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/quote-tail.beancount:2: Invalid token: 'tail'\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'tail'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "quote-tail",
+    "ok": true,
+    "ours_families": [
+      "parse"
+    ],
+    "oracle_families": [
+      "parse"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/quote-tail.beancount:2: parse.token: Invalid token: 'tail'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'tail'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "quote-tail",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "quote-tail",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/quote-tail.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "1896d07ef0004de09a08f943aebe273e"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/quote-tail.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "1896d07ef0004de09a08f943aebe273e"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "negative-amount",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/negative-amount.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "negative-amount",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n  amount: -12.50 EUR\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n  amount: -12.50 EUR\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "negative-amount",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/negative-amount.beancount",
+            "lineno": 1,
+            "amount": {
+              "number": "-12.50",
+              "currency": "EUR"
+            }
+          },
+          1,
+          "open",
+          "668dc273b8a76f348beb82f720718bca"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/negative-amount.beancount",
+          "lineno": 1,
+          "amount": {
+            "number": "-12.50",
+            "currency": "EUR"
+          }
+        },
+        1,
+        "open",
+        "668dc273b8a76f348beb82f720718bca"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "negative-amount",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/negative-amount.beancount",
+            "lineno": 1,
+            "amount": {
+              "number": "-12.50",
+              "currency": "EUR"
+            }
+          },
+          1,
+          "open",
+          "668dc273b8a76f348beb82f720718bca"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/negative-amount.beancount",
+            "lineno": 1,
+            "amount": {
+              "number": "-12.50",
+              "currency": "EUR"
+            }
+          },
+          1,
+          "open",
+          "668dc273b8a76f348beb82f720718bca"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "stack-amount",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/stack-amount.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "stack-amount",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \"stack\"\n  value: 2.50 USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \"stack\"\n  value: 2.50 USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "stack-amount",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/stack-amount.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "a51f86d35dd449101f2c7897a31d9a7e"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/stack-amount.beancount",
+            "lineno": 3,
+            "value": {
+              "number": "2.50",
+              "currency": "USD"
+            },
+            "__tolerances__": {}
+          },
+          3,
+          "transaction",
+          "35e258f876f8d946143a65bf53b8370d"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/stack-amount.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "a51f86d35dd449101f2c7897a31d9a7e"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/stack-amount.beancount",
+          "lineno": 3,
+          "value": {
+            "number": "2.50",
+            "currency": "USD"
+          },
+          "__tolerances__": {}
+        },
+        3,
+        "transaction",
+        "35e258f876f8d946143a65bf53b8370d"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "stack-amount",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/stack-amount.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "a51f86d35dd449101f2c7897a31d9a7e"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/stack-amount.beancount",
+            "lineno": 3,
+            "value": {
+              "number": "2.50",
+              "currency": "USD"
+            },
+            "__tolerances__": {}
+          },
+          3,
+          "transaction",
+          "35e258f876f8d946143a65bf53b8370d"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/stack-amount.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "a51f86d35dd449101f2c7897a31d9a7e"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/stack-amount.beancount",
+            "lineno": 3,
+            "value": {
+              "number": "2.50",
+              "currency": "USD"
+            },
+            "__tolerances__": {}
+          },
+          3,
+          "transaction",
+          "35e258f876f8d946143a65bf53b8370d"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "posting-meta",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/posting-meta.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "posting-meta",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \"values\"\n  Assets:A   1 USD\n    value: 1.00 EUR\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 * \"values\"\n  Assets:A   1 USD\n    value: 1.00 EUR\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "posting-meta",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/posting-meta.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "4a49d289f075d8f5d7fdf700930895af"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/posting-meta.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "f26322e5abd3be8dc4944d0eb11fd8f0"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/posting-meta.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "4a49d289f075d8f5d7fdf700930895af"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/posting-meta.beancount",
+          "lineno": 2,
+          "__tolerances__": {}
+        },
+        2,
+        "transaction",
+        "f26322e5abd3be8dc4944d0eb11fd8f0"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "posting-meta",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/posting-meta.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "4a49d289f075d8f5d7fdf700930895af"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/posting-meta.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "f26322e5abd3be8dc4944d0eb11fd8f0"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/posting-meta.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "4a49d289f075d8f5d7fdf700930895af"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/posting-meta.beancount",
+            "lineno": 2,
+            "__tolerances__": {}
+          },
+          2,
+          "transaction",
+          "f26322e5abd3be8dc4944d0eb11fd8f0"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "large-multiline",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/large-multiline.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "large-multiline",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 note Assets:A \"x\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nlast\"\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n\n2024-01-02 note Assets:A \"x\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nx\nlast\"\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "large-multiline",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/large-multiline.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "1f366c95689c1050615d00de16334c75"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/large-multiline.beancount",
+            "lineno": 2
+          },
+          2,
+          "note",
+          "207465e0ada33c7a1a4851d8b1039d6b"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/large-multiline.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "1f366c95689c1050615d00de16334c75"
+      ],
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/large-multiline.beancount",
+          "lineno": 2
+        },
+        2,
+        "note",
+        "207465e0ada33c7a1a4851d8b1039d6b"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "large-multiline",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/large-multiline.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "1f366c95689c1050615d00de16334c75"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/large-multiline.beancount",
+            "lineno": 2
+          },
+          2,
+          "note",
+          "207465e0ada33c7a1a4851d8b1039d6b"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/large-multiline.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "1f366c95689c1050615d00de16334c75"
+        ],
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/large-multiline.beancount",
+            "lineno": 2
+          },
+          2,
+          "note",
+          "207465e0ada33c7a1a4851d8b1039d6b"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "unclosed-meta",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/unclosed-meta.beancount:2: parse.token: Invalid token: '\"unclosed'\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/unclosed-meta.beancount:2: Invalid token: '\"unclosed'\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '\"unclosed'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "unclosed-meta",
+    "ok": true,
+    "ours_families": [
+      "parse"
+    ],
+    "oracle_families": [
+      "parse"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/unclosed-meta.beancount:2: parse.token: Invalid token: '\"unclosed'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '\"unclosed'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "unclosed-meta",
+    "ok": true,
+    "ours": "2024-01-02 open Assets:B\n",
+    "oracle": "2024-01-02 open Assets:B\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "unclosed-meta",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/unclosed-meta.beancount",
+            "lineno": 3
+          },
+          3,
+          "open",
+          "a64e6992260d9aeb7786ce7fd9359c3d"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/unclosed-meta.beancount",
+          "lineno": 3
+        },
+        3,
+        "open",
+        "a64e6992260d9aeb7786ce7fd9359c3d"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "escaped-meta",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/escaped-meta.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "escaped-meta",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n  memo: \"a\\\\b\b\fq\"\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n  memo: \"a\\\\b\b\fq\"\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "escaped-meta",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/escaped-meta.beancount",
+            "lineno": 1,
+            "memo": "a\\b\b\fq"
+          },
+          1,
+          "open",
+          "bf122d6fd944914d2d460adedd0e108b"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/escaped-meta.beancount",
+          "lineno": 1,
+          "memo": "a\\b\b\fq"
+        },
+        1,
+        "open",
+        "bf122d6fd944914d2d460adedd0e108b"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "escaped-meta",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/escaped-meta.beancount",
+            "lineno": 1,
+            "memo": "a\\b\b\fq"
+          },
+          1,
+          "open",
+          "bf122d6fd944914d2d460adedd0e108b"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/escaped-meta.beancount",
+            "lineno": 1,
+            "memo": "a\\b\b\fq"
+          },
+          1,
+          "open",
+          "bf122d6fd944914d2d460adedd0e108b"
+        ]
+      ]
+    }
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "currency-eof",
+    "ok": true,
+    "ours_exit": 1,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/currency-eof.beancount:2: parse.token: Invalid token: 'U'\n",
+    "oracle": "<repo>/.oracle-cache/r14/parser-corpus/currency-eof.beancount:2: Invalid token: 'U'\n\n",
+    "oracle_diagnostics": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'U'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-diagnostic",
+    "case": "currency-eof",
+    "ok": true,
+    "ours_families": [
+      "parse"
+    ],
+    "oracle_families": [
+      "parse"
+    ],
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/currency-eof.beancount:2: parse.token: Invalid token: 'U'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'U'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "currency-eof",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "currency-eof",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/currency-eof.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "cbc4b5a7ff018bb9cec66362af32e8bd"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/currency-eof.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "cbc4b5a7ff018bb9cec66362af32e8bd"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-check",
+    "case": "multi-option",
+    "ok": true,
+    "ours_exit": 0,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14/parser-corpus/multi-option.beancount: ok\n",
+    "oracle": "",
+    "oracle_diagnostics": []
+  },
+  {
+    "feature": "r14-parser-print",
+    "case": "multi-option",
+    "ok": true,
+    "ours": "2024-01-01 open Assets:A                                        USD\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD\n"
+  },
+  {
+    "feature": "r14-parser-values",
+    "case": "multi-option",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-option.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "d135d6b009a7714cfa8c830974d5117a"
+        ]
+      ]
+    },
+    "oracle": [
+      [
+        {
+          "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-option.beancount",
+          "lineno": 1
+        },
+        1,
+        "open",
+        "d135d6b009a7714cfa8c830974d5117a"
+      ]
+    ]
+  },
+  {
+    "feature": "r14-parser-format",
+    "case": "multi-option",
+    "ok": true,
+    "ours": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-option.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "d135d6b009a7714cfa8c830974d5117a"
+        ]
+      ]
+    },
+    "expected": {
+      "columns": [
+        "meta",
+        "lineno",
+        "type",
+        "id"
+      ],
+      "rows": [
+        [
+          {
+            "filename": "<repo>/.oracle-cache/r14/parser-corpus/multi-option.beancount",
+            "lineno": 1
+          },
+          1,
+          "open",
+          "d135d6b009a7714cfa8c830974d5117a"
+        ]
+      ]
+    }
+  }
+]

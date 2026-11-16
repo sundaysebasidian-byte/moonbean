@@ -1,0 +1,8 @@
+{
+  "profile": "streamed-and-shared-literals",
+  "retained_lexer_sha256": "27195325cdf8e51397e7db2beb4597b63e2e15ce253958f751de9d1fa0248d8e",
+  "published_e33a3fc_lexer_sha256": "4e5b72e7b50d16ee86732de5beea66f9d7d0cdb6e2e90c0544881d8abb7105a5",
+  "formatted_retained_lexer_sha256": "4e5b72e7b50d16ee86732de5beea66f9d7d0cdb6e2e90c0544881d8abb7105a5",
+  "formatted_bytes_equal_published": true,
+  "difference": "Pre-moon-fmt layout of the word-cache match arm. The published parser hash already matched. The diagnostic used this retained pre-format lexer and bench stage markers."
+}

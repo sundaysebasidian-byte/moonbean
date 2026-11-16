@@ -66,6 +66,10 @@ invalid/unavailable/uninstalled-provider fallback and import resolution. Public
 Python datetime calls independently check each instant in the pinned oracle
 environment. [Raw host-clock output](r13-clock.log).
 
+## Memory source provenance correction (R14)
+
+The streamed/shared diagnostic retained lexer SHA-256 `27195325cdf8e51397e7db2beb4597b63e2e15ce253958f751de9d1fa0248d8e`. It came from an uncommitted pre-format snapshot. The e33a3fc lexer is `4e5b72e7b50d16ee86732de5beea66f9d7d0cdb6e2e90c0544881d8abb7105a5`. Applying the pinned moonfmt to the retained lexer produces exactly the published bytes. The difference is the layout of the word-cache match arm. The parser fingerprint already matches the published source. The original memory samples retain their actual source hashes. The corrected profile note identifies the pre-format lexer and benchmark stage markers. [Byte-level provenance check](r14-lexer-provenance.json).
+
 ## Memory diagnosis
 
 Main failed during the first repeated parse while retaining source, parsed and

@@ -249,7 +249,7 @@
         "validation/validation.mbt": "74365313e873d49e6bf6d65bf9319dc693db75941587ae7c5803acdd0eaadf9d",
         "validation/validation_test.mbt": "d069c08137f721ec6ef5d6129adebfc9c83e183dec2caf103d0dd2f4302226d9"
       },
-      "profile_source_note": "Retained working-source snapshot with only bench stage markers added. Main archive SHA is retained separately."
+      "profile_source_note": "Pre-moon-fmt layout of the word-cache match arm. The published parser hash already matched. The diagnostic used this retained pre-format lexer and bench stage markers."
     }
   ],
   "environment": {

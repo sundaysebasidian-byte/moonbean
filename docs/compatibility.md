@@ -64,13 +64,21 @@ Defaults and types are oracle values. Repeat means collection accumulation; scal
 | `event` (meta, date, type, description) | Date/type/description parsing and retention supported (008); typed events source supported (every-column differential). |
 | `query` (meta, date, name, query_string) | Date/name/query text retained (008). Check does not execute stored queries, as with bean-check; oracle `.run name` execution unsupported. Call `run_query` explicitly for supported query texts. |
 | `price` (meta, date, currency, amount) | Raw prices and duplicate preservation supported (003, 057, 063–070). |
-| `document` (meta, date, account, filename, tags, links) | Account validation and metadata parsing supported (008, 088); file stat and documents-folder discovery unsupported: the pure library has no document resolver callback. A warning explicitly states the file was not checked; host must check it. |
+| `document` (meta, date, account, filename, tags, links) | Account validation and metadata parsing supported (008, 088); Native CLI check verifies file existence, including directory paths accepted by the oracle. The pure library warns that document files need host verification. Automatic documents-folder discovery still requires host filesystem integration. |
 | `custom` (meta, date, type, values) | Typed values/account references supported (056, 092); no custom plugin semantics. All oracle error categories not exhaustively verified. |
 | `include` | Supported via native filesystem / host resolver (041 and include smoke); host filesystem policy applies. |
 | `plugin` | Five built-ins supported; other Python plugins only warn and do not execute. See conformance.md. |
 | `pushtag` / `poptag`, `pushmeta` / `popmeta` | Supported stacks (016–017). |
 
 Account parsing preserves the reviewed non-ASCII names, supplementary-plane letters and digit-prefixed child components. Semantic character masks come from the pinned public account.is_valid predicate; its accepted domain differs from the runtime's Unicode 16 categories. A separate 3,336,192-call audit checks every Unicode scalar at root-first, child-first and body positions with zero table differences. Lexer rejection versus validation-error retention has authored fixtures, not an exhaustive malformed-loader proof.
+
+## R14 source syntax and check behavior (0.2.8)
+
+Multiline double-quoted strings preserve physical newlines, CRLF, indentation and blank lines. The logical-line reader retains physical source maps through includes and recovers after unterminated literals. Backslash-newline string fragments raise token errors, matching the pinned oracle. Ordinary escaped characters follow the reviewed lexer semantics. Formatting preserves the original layout of a ledger containing a multiline string.
+
+Metadata accepts amount values, number expressions and empty values. Typed Amount/NULL metadata survives BQL, PRINT and export. Pushed metadata follows the oracle's transaction scope. Native CLI check performs document-existence checks. Library callers retain the host verification contract.
+
+All 73 R13 classification counterexamples are tracked with source hashes. The fixed supported cases cover unclosed/multiline strings, amount/empty metadata, optional narration, zero-residual automatic postings, standalone indentation and document existence. Nine cases retain AVERAGE or cost-merge extension results because the oracle rejects those features. Diagnostic probes compare check exit status, error families and physical lexer-error positions. Full diagnostic prose and every semantic-error location retain their existing limits. [R14 acceptance](evidence/r14-acceptance.md).
 
 ## BQL tables and every oracle column
 
@@ -267,7 +275,7 @@ Support is limited to accepted argument expressions/types. Functions on unsuppor
 | `str(any)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. Multi-member set representations (including nested sets) are explicitly rejected: CPython iteration depends on its hash seed; use typed JSON members or oracle for exact repr text. |
 | `subst(str, str, str)` | Implemented literal replacement in the tested portable regex dialect, including empty patterns and greedy empty matches. Numbered capture references, numeric group syntax, octal escapes and replacement control escapes are implemented. Python-only pattern constructs and lazy patterns with interior empty matches remain conservative explicit rejections. Nonempty lazy matches and end-only empty matches execute. The portable matcher exposes forward-progress replacement without that retry contract. |
 | `substr(str, int, int)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
-| `today()` | Native uses libc localtime and JS uses Date local calendar fields. WebAssembly supports a per-read host calendar callback through the optional host_clock import adapter, including timezone/DST and partial-date defaults. The default WebAssembly calendar and unavailable-provider fallback are UTC. See the host calendar integration below. |
+| `today()` | Native uses libc localtime and JS uses Date local calendar fields. The wasm-gc integration, tested on Node 24, supports a per-read host calendar callback through the optional host_clock import adapter, including timezone/DST and partial-date defaults. The default WebAssembly calendar and resolved zero/invalid providers and unused installation select UTC. See the host calendar integration below. |
 | `units(position)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
 | `units(inventory)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
 | `upper(str)` | Implemented typed signature; bql_function_differential.py compares values/repr and shared error categories. |
@@ -338,7 +346,7 @@ The following work was **not completed in this round**; these are implementation
 | FROM transform combinations beyond the R12 corpus | SELECT, JOURNAL, BALANCES and PRINT share OPEN/CLOSE/CLEAR transformations. Synthetic identities/account sets, costs and price context have authored regressions. Every malformed-loader recovery and transform combination remains unverified. |
 | Shell .explain/.run | Interactive plan rendering and stored-query dispatch remain unimplemented. Their shell state and output protocol are absent from the current API. PRINT has a separate directive-text result and native CLI path. |
 | account_rounding | No residual-to-rounding-account pass on booked transactions; enabling only a label would change balances without correct tolerance/residual rules. Option remains stored without posting semantics; use oracle. |
-| documents callback/discovery | Current pure loader has include resolution but no document stat/enumeration callback. Missing/existing receipt diagnostics and documents-folder generated entries are not equivalent. Native/host callers must stat/discover explicitly or use oracle; warning states files were not checked. |
+| documents callback/discovery | Native CLI check verifies explicit document paths. The pure loader provides include resolution and warns when document paths need host verification. Automatic documents-folder discovery and a library document callback require additional host integration. |
 | render_commas / operating_currency / display context | The query table renderer lacks the oracle display-context/multi-currency layout contract. PRINT preserves directive precision; its byte-level evidence is limited to the exact 84-statement/142-ledger review matrix and the earlier nine-statement corpus. General table/JOURNAL/BALANCES layout parity remains unimplemented because the current renderer retains its public text/CSV/JSON contract and lacks the oracle display-context renderer. |
 | Every directive/option diagnostic | Normalized authored cases pass; read-only options, converters, renamed root taxonomy, exact messages and every document/note/event/query/custom error combination are unproven. Use bean-check for final oracle validation. |
 
@@ -370,7 +378,7 @@ R11 supersedes the earlier subquery/PIVOT/alias/positional-reference and S6 proj
 
 All 31 previously missing scalar signatures now have evaluators, including the partial domains described above. R12 adds the independent R11 and R12 A/B review corpora, seeded interval/date-bin probes, dateutil/strptime and two-digit year cases, date/interval arithmetic, same-day clock comparisons, round precision/representation regressions, and the bounded PRINT matrix. The tracked review scripts retain the reviewers' cases; parser fuzz/resource checks are counted separately from oracle comparisons. Native, JS and wasm-gc reject queries exceeding 256 nested parentheses or 256 recursive operators with Syntax query.depth_limit; this is an explicit resource boundary, not oracle conformance. Unsupported input domains are counted separately from conformance comparisons. Exact diagnostic prose and exhaustive grammar/value-domain equivalence are unverified.
 
-PRINT, signed-zero round, quoted lookup, IN/BETWEEN/modulo, generic source transforms, canonical JOURNAL/BALANCES, structural DISTINCT and mixed aggregate-row clauses are implemented in 0.2.6 with bounded differential coverage. Remaining BQL boundaries include CPython randomized set iteration, Python regex features outside the portable matcher, nonfinite/resource-bounded Decimal domains, source-parsed negative-zero exact representations and exhaustive dateutil/locale parsing. Shell commands and general oracle table formatting remain host exclusions. Genuine non-BQL exclusions include external Python plugins, document discovery/stat callbacks, renamed account taxonomy, account_rounding and the option/report boundaries listed above. See [R12 acceptance](evidence/r12-acceptance.md) for current results and performance evidence.
+PRINT, signed-zero round, quoted lookup, IN/BETWEEN/modulo, generic source transforms, canonical JOURNAL/BALANCES, structural DISTINCT and mixed aggregate-row clauses are implemented in 0.2.6 with bounded differential coverage. Remaining BQL boundaries include CPython randomized set iteration, Python regex features outside the portable matcher, nonfinite/resource-bounded Decimal domains, source-parsed negative-zero exact representations and exhaustive dateutil/locale parsing. Shell commands and general oracle table formatting remain host exclusions. Genuine non-BQL exclusions include external Python plugins, automatic document discovery and library stat callbacks, renamed account taxonomy, account_rounding and the option/report boundaries listed above. See [R12 acceptance](evidence/r12-acceptance.md) for current results and performance evidence.
 
 ## WebAssembly host calendar (0.2.7)
 
@@ -407,8 +415,11 @@ named foreign declarations create host imports. WebAssembly resolves imports
 before guest execution, so an absent function cannot be detected by guest code.
 The optional adapter keeps the default library and `moon test --target wasm-gc`
 usable with existing moonrun hosts. An application opting into the import must
-supply either the local callback or the zero callback at instantiation. Bare
-moonrun continues to use UTC. [MoonBit FFI](https://docs.moonbitlang.com/en/stable/language/ffi.html).
+supply either the local callback or the zero callback at instantiation. Linking
+host_clock with an absent moonbean:clock import raises an instantiation TypeError.
+Bare moonrun raises that error for a linked application. Applications using the
+unlinked library select UTC. UTC selection for a linked application requires a
+resolved import and a zero/invalid callback result or unused install(). [MoonBit FFI](https://docs.moonbitlang.com/en/stable/language/ffi.html).
 
 Run the actual imported-module checks with the pinned toolchain.
 
@@ -417,13 +428,19 @@ moon build --release --target wasm-gc tests/clock_host
 node scripts/wasm-clock-test.mjs
 ```
 
-The fixture checks UTC, Los Angeles and Kiritimati cross-day dates, both Los
-Angeles DST transitions, clock advancement after installation, partial dates and
-invalid/unavailable/uninstalled-provider fallbacks. Python's public datetime API
-from the pinned oracle environment independently checks each local date.
+The integration fixture runs wasm-gc on Node 24.18.0 / V8. It covers UTC, Los
+Angeles and Kiritimati dates, both Los Angeles DST transitions, two DST-day
+instants with different local/UTC calendar dates, per-read advancement, partial
+dates and resolved zero/invalid/uninstalled provider modes. Years 2079 and 2080
+exercise the rolling two-digit year boundary. Public Python datetime and a fresh
+dateutil parserinfo under the fixture year check the expected values.
+
+The package also declares its import for the wasm target. Behavioral integration
+coverage currently consists of wasm-gc on Node. Browser, wasmtime and the wasm
+(non-GC) adapter paths await host-specific tests.
 
 
-## R13 acceptance status
+## Historical R13 acceptance status
 
 All three requested targets pass 193 unit tests each. The unchanged complete
 BQL differential passes 20549/20549 checks, and actual JS-hosted Wasm calendar
@@ -432,3 +449,13 @@ checks pass 99/99. The default-heap wasm-gc 1M FIFO standard case completes on
 bytes. Three short native/JS A/B rounds retain all measured ratios and the
 reported format/regex increases. The full 30% matrix gate is pending idle-host
 rerun by Lead. [Current acceptance and exact limitations](evidence/r13-acceptance.md).
+
+## R14 acceptance status
+
+The interrupted run completed 200 unit tests on each required target, 215 imported-clock checks and the standalone 241-check parser corpus. Complete combined differential and repeated performance acceptance are blocked by missing /tmp/moon-new and /tmp/moonbean-r4-oracle environments. The preserved single baseline memory sample supplies zero complete pairs. [Partial R14 acceptance](evidence/r14-acceptance.md).
+
+The tracked wasm-gc harness plans repeated default-heap moonrun pairs and
+Node/V8 heap-statistic pairs using the same guest artifacts. The Node host reports
+its actual heap limit and sampled available heap. Moonrun's public interface
+provides completion/RSS observations. Exact host scope, sample counts and shared
+host performance ratios are recorded in [R14 acceptance](evidence/r14-acceptance.md).
