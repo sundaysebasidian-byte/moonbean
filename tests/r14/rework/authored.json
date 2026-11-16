@@ -954,5 +954,25 @@
   {
     "name": "duplicate-string-238",
     "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  Assets:A 0 USD\n    kk: FALSE\n    kk: FALSE\n"
+  },
+  {
+    "name": "recovery-review-g08-057-bql-prices.unterm",
+    "source": "option \"title\" \"Prices and positions\n\n2024-01-01 commodity HOOL\n2024-01-01 commodity USD\n\n2024-01-01 open Assets:Stock HOOL \"FIFO\"\n2024-01-01 open Assets:Cash USD\n2024-01-01 open Income:Gains USD\n\n2024-01-02 price HOOL 100.00 USD\n\n2024-01-03 * \"Buy shares\"\n  Assets:Stock    20 HOOL {100.00 USD}\n  Assets:Cash  -2000.00 USD\n\n2024-01-04 price HOOL 110.00 USD\n\n2024-01-05 * \"Sell with a total price\"\n  Assets:Stock    -5 HOOL {100.00 USD} @@ 600.00 USD\n  Assets:Cash    600.00 USD\n  Income:Gains  -100.00 USD\n"
+  },
+  {
+    "name": "recovery-review-g17-028-price-total.unterm",
+    "source": "2024-01-01 open Assets:Stock HOOL \"FIFO\n2024-01-01 open Assets:Cash USD\n2024-01-01 open Income:Gains USD\n\n2024-01-02 * \"Buy shares\"\n  Assets:Stock    10 HOOL {100.00 USD}\n  Assets:Cash  -1000.00 USD\n\n2024-01-03 * \"Sell with a total price\"\n  Assets:Stock    -5 HOOL {100.00 USD} @@ 600.00 USD\n  Assets:Cash    600.00 USD\n  Income:Gains  -100.00 USD\n"
+  },
+  {
+    "name": "recovery-review-g19-021-arithmetic.unterm",
+    "source": "2024-01-01 open Assets:Cash USD\n2024-01-01 open Assets:Stock HOOL \"FIFO\n2024-01-01 open Equity:Opening USD\n\n2024-01-02 * \"Expressions\"\n  Assets:Cash       (10 + 5) * 2 / 3 USD\n  Equity:Opening   -10.00 USD\n\n2024-01-03 balance Assets:Cash 10.00 ~ 0.01 USD\n\n2024-01-04 * \"Buy shares\"\n  Assets:Stock         (2 + 3) HOOL {(40 / 2) * 1.00 USD}\n  Assets:Cash        -100.00 USD\n"
+  },
+  {
+    "name": "recovery-review-g24-043-options.unterm",
+    "source": "option \"title\" \"Options ledger\"\noption \"operating_currency\" \"USD\noption \"render_commas\" \"TRUE\"\n\n2024-01-01 open Assets:Cash USD\n2024-01-01 open Equity:Opening USD\n\n2024-01-02 * \"Opening\"\n  Assets:Cash     100.00 USD\n  Equity:Opening -100.00 USD\n"
+  },
+  {
+    "name": "recovery-review-un-odd-quotes",
+    "source": "2024-01-01 open Assets:A USD,EUR\n2024-01-01 open Equity:E\n2024-01-02 * \"a\" \"b\n  Assets:A 1 USD\n  Equity:E\n2024-01-02 * \"payee\" \"narr\"\n  Assets:A 1 USD\n  Equity:E\n2024-01-02 * \"payee\" \"narr\"\n  Assets:A 1 USD\n  Equity:E\n"
   }
 ]
