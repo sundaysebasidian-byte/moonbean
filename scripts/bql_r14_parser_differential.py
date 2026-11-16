@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """R13 review classifications and R14 syntax/value/diagnostic regressions."""
 import json
+import re
 import subprocess
 import sys
 from decimal import Decimal
@@ -64,8 +65,11 @@ def run(ours, oracle):
         if expected['diagnostics']:
             lexical = [e for e in expected['diagnostics'] if e['kind'] == 'LexerError']
             ok = all((':'+str(e['line'])+': parse.token:') in a.stderr for e in lexical)
-            ok = ok and ('parse.' in a.stderr or 'validation.' in a.stderr)
+            expected_families = {'parse' if e['kind'] in ['LexerError','ParserSyntaxError'] else 'document' if e['kind'] == 'DocumentError' else 'validation' for e in expected['diagnostics']}
+            actual_families = {'parse' if code.startswith('parse.') else 'document' if code == 'validation.document_missing' else 'validation' for code in re.findall(r': ((?:parse|validation)\.[^: ]+):', a.stderr)}
+            ok = ok and actual_families == expected_families
             results.append(dict(feature='r14-parser-diagnostic', case=case['name'], ok=ok,
+                                ours_families=sorted(actual_families),oracle_families=sorted(expected_families),
                                 ours=a.stderr, oracle=expected['diagnostics']))
         printed = subprocess.run([ours, 'query', path, 'PRINT'], capture_output=True, timeout=30)
         results.append(dict(feature='r14-parser-print', case=case['name'],
