@@ -25,23 +25,30 @@ proc=subprocess.run([a.ours,'check',str(root/'deep-0.beancount')],text=True,capt
 assert proc.returncode==0,(proc.stdout,proc.stderr)
 print('CLI include self/mutual/absolute cycles, missing file and depth 100: 5/5 PASS')
 
-(root/'child.beancount').write_text('2024-01-01 open Assets:Cash USD\n2024-01-02 note Assets:Cash "kept"\n2024-01-03 note Assets:Cash "still"\n2024-01-04 note Assets:Cash "here"\n2024-01-05 document Assets:Cash "missing-receipt.pdf"\n2024-01-06 balance Assets:Cash 1 USD\n')
+child_source='2024-01-01 open Assets:Cash USD\n2024-01-02 note Assets:Cash "kept"\n2024-01-03 note Assets:Cash "still"\n2024-01-04 note Assets:Cash "here"\n2024-01-05 document Assets:Cash "missing-receipt.pdf"\n2024-01-06 balance Assets:Cash 1 USD\n'
 (root/'middle.beancount').write_text('include "child.beancount"\n')
+(root/'present-receipt.pdf').write_text('synthetic document existence fixture\n')
+assert not (root/'missing-receipt.pdf').exists(), 'missing-document fixture must be absent'
 for included in ['child.beancount', 'middle.beancount']:
+    (root/'child.beancount').write_text(child_source)
     (root/'root.beancount').write_text(f'2024-01-01 open Equity:Opening USD\ninclude "{included}"\ninclude "not-present.beancount"\n')
     proc=subprocess.run([a.ours,'check',str(root/'root.beancount')],text=True,capture_output=True)
     assert proc.returncode==1,proc
-    for file,line,code in [('child.beancount',5,'validation.document_unchecked'),('child.beancount',6,'validation.balance'),('root.beancount',3,'include.missing')]:
+    for file,line,code in [('child.beancount',5,'validation.document_missing'),('child.beancount',6,'validation.balance'),('root.beancount',3,'include.missing')]:
         assert f'{root/file}:{line}: {code}:' in proc.stderr,proc.stderr
+    assert 'validation.document_unchecked' not in proc.stderr,proc.stderr
+    assert 'File does not exist:' in proc.stderr,proc.stderr
     (root/'valid.beancount').write_text(f'include "{included}"\n')
-    (root/'child.beancount').write_text((root/'child.beancount').read_text().replace('2024-01-06 balance Assets:Cash 1 USD\n',''))
+    (root/'child.beancount').write_text(child_source.replace('2024-01-06 balance Assets:Cash 1 USD\n','').replace('missing-receipt.pdf','present-receipt.pdf'))
+    proc=subprocess.run([a.ours,'check',str(root/'valid.beancount')],text=True,capture_output=True)
+    assert proc.returncode==0,(proc.stdout,proc.stderr)
+    assert not proc.stderr,proc.stderr
     proc=subprocess.run([a.ours,'export',str(root/'valid.beancount'),'--json'],text=True,capture_output=True)
     assert proc.returncode==0,proc.stderr
     data=json.loads(proc.stdout)
     assert not data['errors'],data
     assert len(data['warnings'])==1,data
+    assert data['warnings'][0]['code']=='validation.document_unchecked',data
     assert data['warnings'][0]['file']==str(root/'child.beancount'),data
     assert data['warnings'][0]['line']==5,data
-    with (root/'child.beancount').open('a') as file:
-        file.write('2024-01-06 balance Assets:Cash 1 USD\n')
-print('CLI nested include source locations in text and JSON: PASS')
+print('CLI nested include source locations, absent/present documents and JSON warning contract: PASS')
