@@ -2011,5 +2011,11 @@
     "validation": "Pinned oracle executable missing before commands began",
     "benchmark_exit": 255,
     "benchmark_log": ".oracle-cache/r14/performance-final/build-baseline-native.log"
+  },
+  "resolution": {
+    "status": "resolved",
+    "restored_oracle_python": "3.14.7",
+    "evidence": "r14-acceptance.md",
+    "note": "Original interruption record retained; final acceptance rerun completed after restoration."
   }
 }

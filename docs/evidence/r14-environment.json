@@ -20,5 +20,8 @@
   "source_commit": "194caf2fd9e22556cb227ec037f2e43f284f4a09",
   "baseline": "e33a3fc6b72470193ef25b98aff322579c266bf0",
   "correctness_timezone": "UTC",
-  "performance_policy": "Interleaved pairs on shared host; do not wait for idle"
+  "performance_policy": "Interleaved pairs on shared host; do not wait for idle",
+  "native_cli_sha256": "3cbd1d73da44cf3e532ef6b2d6d18e034036fb5b7930a4a929101ae6adf1f658",
+  "raw_bql_stdout_sha256": "df3c461ed31a4ca45cfbf614382d3a44542b4efc1aeb88d0b081c614dd0d7301",
+  "interface_check": "moon info exit 0; git diff --exit-code -- *.mbti exit 0"
 }

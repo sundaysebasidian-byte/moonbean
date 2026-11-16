@@ -452,10 +452,4 @@ rerun by Lead. [Current acceptance and exact limitations](evidence/r13-acceptanc
 
 ## R14 acceptance status
 
-The interrupted run completed 200 unit tests on each required target, 215 imported-clock checks and the standalone 241-check parser corpus. Complete combined differential and repeated performance acceptance are blocked by missing /tmp/moon-new and /tmp/moonbean-r4-oracle environments. The preserved single baseline memory sample supplies zero complete pairs. [Partial R14 acceptance](evidence/r14-acceptance.md).
-
-The tracked wasm-gc harness plans repeated default-heap moonrun pairs and
-Node/V8 heap-statistic pairs using the same guest artifacts. The Node host reports
-its actual heap limit and sampled available heap. Moonrun's public interface
-provides completion/RSS observations. Exact host scope, sample counts and shared
-host performance ratios are recorded in [R14 acceptance](evidence/r14-acceptance.md).
+R14 passes 200 unit tests on each required target, 215 Node-hosted wasm-gc clock checks, and the complete **20790/20790** differential (original 20549 plus 241 new parser checks). This includes explicit rejection/extension and parser-robustness checks, not only conformance comparisons. Three paired default-heap moonrun 1M FIFO runs and three paired Node/V8 heap-statistic runs completed. Short interleaved native/JS ratios, actual Node heap limit and sampled headroom are recorded in [R14 acceptance](evidence/r14-acceptance.md). Moonrun exposes RSS/completion but no public heap-limit statistics.

@@ -6,7 +6,7 @@
 - Retain amount and empty metadata values through parsing, query values, PRINT and JSON export, including number expressions and posting metadata.
 - Match the reviewed empty transaction, zero-residual auto-posting, standalone indentation and malformed metadata behavior. Native check validates document existence.
 - Track all 73 R13 classification cases and authored syntax/value/diagnostic/format probes. AVERAGE and cost merging retain their documented extension behavior.
-- Add DST cross-day and rolling-century clock tests on Node-hosted wasm-gc, correct R13 lexer provenance, and add the paired shared-host memory/performance harness. R14 final acceptance awaits restoration of its pinned toolchain and oracle.
+- Add DST cross-day and rolling-century clock tests on Node-hosted wasm-gc, correct R13 lexer provenance, and add the paired shared-host memory/performance harness. R14 records 20790 differential checks, 200 unit tests per target, 215 clock checks, three paired wasm-gc 1M FIFO completions and sampled Node/V8 heap headroom.
 
 ## 0.2.7
 
