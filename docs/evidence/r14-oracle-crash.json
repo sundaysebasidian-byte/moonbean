@@ -1,0 +1,22 @@
+{
+  "source": "2024-01-01 open Assets:A USD\n  amount: 1/0 USD\n",
+  "oracle": {
+    "command": [
+      "/tmp/moonbean-r4-oracle/bin/bean-check",
+      "<repo>/.oracle-cache/r14/division-zero.beancount"
+    ],
+    "returncode": -11,
+    "stdout": "",
+    "stderr": ""
+  },
+  "ours": {
+    "command": [
+      "_build/native/release/build/cmd/main/main.exe",
+      "check",
+      "<repo>/.oracle-cache/r14/division-zero.beancount"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "<repo>/.oracle-cache/r14/division-zero.beancount:2: parse.number: division by zero\n"
+  }
+}

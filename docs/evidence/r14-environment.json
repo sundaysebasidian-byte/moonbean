@@ -1,0 +1,24 @@
+{
+  "recorded_at": "2026-11-16T06:49:28.593437+00:00",
+  "os": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "physical_memory_bytes": 17179869184,
+  "logical_cpus": 10,
+  "moon": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+  "node": "v24.18.0",
+  "v8": "13.6.233.17-node.50",
+  "harness_python": "3.14.6",
+  "oracle": {
+    "python": "3.14.7",
+    "beancount": "3.2.3",
+    "beanquery": "0.2.0",
+    "dateutil": "4.0.0",
+    "today_utc": "2026-11-16"
+  },
+  "prior_oracle_python": "3.14.6",
+  "oracle_rebuilt": true,
+  "source_commit": "194caf2fd9e22556cb227ec037f2e43f284f4a09",
+  "baseline": "e33a3fc6b72470193ef25b98aff322579c266bf0",
+  "correctness_timezone": "UTC",
+  "performance_policy": "Interleaved pairs on shared host; do not wait for idle"
+}

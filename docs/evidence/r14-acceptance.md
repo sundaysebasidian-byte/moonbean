@@ -1,12 +1,12 @@
-# R14 partial acceptance for MoonBean 0.2.8
+# R14 acceptance for MoonBean 0.2.8
 
-Status is blocked after the interrupted session. Both pinned /tmp environments are missing. Complete differential and repeated performance acceptance remain pending. [Environment and preserved results](r14-environment-blocker.json).
+The pinned environments were restored on 2026-11-15 (local time). Correctness acceptance passed against the restored oracle; paired performance measurements are in progress; the earlier interrupted attempt is retained as historical evidence in [the environment blocker record](r14-environment-blocker.json).
 
 ## Source and method
 
 Work uses compat-0.2.8 in the existing moonbean-r2 worktree. The comparison baseline is `e33a3fc6b72470193ef25b98aff322579c266bf0`, the reviewed 0.2.7 source. Runtime implementation is frozen at `344ad10a26c69191c40857d10a76922253828c19`. The preserved partial benchmark archived e33a3fc and e38ff33. Runtime files in e38ff33 and 344ad10 are identical. The latter commit strengthens the Python diagnostic comparison. Source archives, build logs and artifact hashes retain these identities.
 
-Commands use `MOON_HOME=/tmp/moon-new PATH=/tmp/moon-new/bin:$PATH`. The black-box oracle is Beancount 3.2.3 / beanquery 0.2.0 in `/tmp/moonbean-r4-oracle/bin`. Public loader, cursor, printer, datetime and dateutil APIs supplied observations. Oracle source was never inspected. Correctness tests use TZ=UTC and the current oracle date.
+Commands use `MOON_HOME=/tmp/moon-new PATH=/tmp/moon-new/bin:$PATH`. The black-box oracle is Beancount 3.2.3 / beanquery 0.2.0 in `/tmp/moonbean-r4-oracle/bin`. Public loader, cursor, printer, datetime and dateutil APIs supplied observations. Oracle source was never inspected. Correctness tests use TZ=UTC and the current oracle date (2026-11-16 for this rerun). The restored oracle uses Python 3.14.7, replacing the earlier 3.14.6, with python-dateutil 4.0.0; Beancount 3.2.3 and beanquery 0.2.0 are unchanged. The system Python driving the differential remains 3.14.6. [Restored environment](r14-environment.json).
 
 ## S1–S7
 
@@ -34,31 +34,36 @@ The standalone tracked corpus passes 241/241 checks. Its 73 review cases compris
 
 The new source syntax also covers empty narration, empty metadata and removal of zero-residual automatic postings. Standalone indented comments produce the oracle's indentation error. Native CLI check verifies explicit document paths through the host filesystem. The pure library retains its document-verification warning for callers to handle. Automatic document discovery remains a host endpoint exclusion.
 
-A division-by-zero metadata expression crashed the pinned oracle process during exploration. That input has no stable oracle diagnostic contract. MoonBean retains its clean numeric-expression error. This exploratory failure is recorded separately from passing comparisons.
+The restored oracle also segfaults on metadata `amount: 1/0 USD`: bean-check returns signal 11 (subprocess return code -11), with no diagnostic text. MoonBean returns exit 1 and `parse.number: division by zero`. This robustness difference is retained explicitly, outside the passing conformance count. [Exact source and process results](r14-oracle-crash.json).
 
 ## Correctness commands
 
-The following commands completed before interruption. Each exited 0.
+All ten commands completed against the restored environment and exited 0. Actual output excerpts follow.
 
 ```text
 $ moon info
 Finished. moon: ran 14 tasks, now up to date
 $ moon check --deny-warn
-Finished. moon: ran 14 tasks, now up to date
+Finished. moon: ran 28 tasks, now up to date
 $ moon fmt --check
-Finished. moon: ran 82 tasks, now up to date
+Finished. moon: no work to do
 $ moon test --target native
 Total tests: 200, passed: 200, failed: 0.
 $ moon test --target wasm-gc
 Total tests: 200, passed: 200, failed: 0.
 $ moon test --target js
 Total tests: 200, passed: 200, failed: 0.
+$ moon build --release --target native cmd/main
+  sundaysebasidian-byte/moonbean/cmd/main  native  /Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/_build/native/release/build/cmd/main/main.exe
+$ moon build --release --target wasm-gc tests/clock_host
+  sundaysebasidian-byte/moonbean/tests/clock_host  wasm-gc  /Users/sebasidian/.t3/projects/moonbit-nov/.wt/moonbean-r2/_build/wasm-gc/release/build/tests/clock_host/clock_host.wasm
 $ node scripts/wasm-clock-test.mjs
 Wasm host clock: 215/215 checks passed
+$ python3 scripts/bql_differential.py --oracle /tmp/moonbean-r4-oracle/bin --ours _build/native/release/build/cmd/main/main.exe
+BQL differential: 20790/20790 checks passed
 ```
 
-The frozen-source combined differential was interrupted before producing a complete result. Its restart stopped when the pinned oracle executable was absent. The original 20549-check corpus remains wired into the main runner. Its complete final acceptance is pending. [Completed commands](r14-correctness-commands.json), [logs](r14-correctness.log).
-
+The combined differential passes **20790/20790** checks: the unchanged original 20549 checks plus 241 new parser checks. Passing checks include explicit rejection/extension and resource-robustness probes; this total does not claim full language equivalence. The nine new extension checks retain AVERAGE/cost-merge behavior as described above. [Command statuses](r14-correctness-commands.json), [full logs](r14-correctness.log), [differential records](r14-bql.json). PRINT output byte counts and SHA-256 are stored after exact comparison; full original output is retained in the local task cache.
 The main runner retains the original 20549 checks and the additional tracked parser corpus. The required targets share the parser implementation. Generated interfaces are committed and checked for consistency.
 
 ## Clock checks
