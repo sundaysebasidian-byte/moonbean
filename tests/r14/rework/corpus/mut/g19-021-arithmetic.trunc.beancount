@@ -1,0 +1,11 @@
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Assets:Stock HOOL "FIFO"
+2024-01-01 open Equity:Opening USD
+
+2024-01-02 * "Expressions"
+  Assets:Cash       (10 + 5) * 2 / 3 USD
+  Equity:Opening   -10.00 USD
+
+2024-01-03 balance Assets:Cash 10.00 ~ 0.01 USD
+
+2024-01-04 *

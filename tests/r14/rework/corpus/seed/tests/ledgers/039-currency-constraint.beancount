@@ -1,0 +1,6 @@
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Equity:Opening
+
+2024-01-02 * "Wrong currency"
+  Assets:Cash    -10.00 CAD
+  Equity:Opening  10.00 CAD

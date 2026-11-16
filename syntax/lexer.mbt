@@ -197,6 +197,26 @@ fn tokenize_guarded(
       i = j
       continue
     }
+    if c == '-' &&
+      tokens.last() is Some(previous) &&
+      previous.kind is Word(word) &&
+      (
+        word == ")" ||
+        (
+          word.get_char(0) is Some(first) &&
+          (first.is_ascii_digit() || first == '-' || first == '+') &&
+          @decimal.Decimal::parse(word) is Some(_)
+        )
+      ) {
+      tokens.push({ kind: Word("-"), pos: i, })
+      i += 1
+      continue
+    }
+    if (c == '-' || c == '+') && text.get_char(i + 1) == Some('.') {
+      tokens.push({ kind: Word(c.to_string()), pos: i, })
+      i += 1
+      continue
+    }
     let number_start = if is_digit(c) {
       true
     } else if c == '-' || c == '+' || c == '.' {
@@ -232,7 +252,18 @@ fn tokenize_guarded(
         }
         break
       }
-      if d == '+' || d == '/' || d == '(' || d == ')' {
+      if d == '+' ||
+        d == '/' ||
+        d == '(' ||
+        d == ')' ||
+        d == '*' ||
+        (
+          d == '-' &&
+          number_start &&
+          j > start &&
+          !(text.get_char(start + 4) == Some('-') &&
+          text.get_char(start + 7) == Some('-'))
+        ) {
         break
       }
       if is_delimiter(d) {
@@ -246,6 +277,42 @@ fn tokenize_guarded(
       j = j + (if c.to_int() > 0xFFFF { 2 } else { 1 })
     }
     let text_word = text.unsafe_substring(start~, end=j)
+    // A quote only starts a string after a recognized lexical token. Unknown
+    // words consume the entire non-whitespace run, including attached quotes.
+    if text.get_char(j) == Some('"') && !quoted_word_prefix(text_word) {
+      while j < len && text.get_char(j) is Some(c) && !is_space(c) && c != '\n' {
+        j += if c.to_int() > 0xFFFF { 2 } else { 1 }
+      }
+      tokens.push({ kind: Invalid(text[start:j].to_owned()), pos: start, })
+      i = j
+      continue
+    }
+    if (
+        c == '.' &&
+        text_word.length() > 1 &&
+        text_word.get_char(1) is Some(c) &&
+        c.is_ascii_digit()
+      ) ||
+      (
+        ((c == '-' || c == '+') && text.get_char(start + 1) == Some('.')) &&
+        text_word.length() > 2
+      ) {
+      tokens.push({ kind: Invalid(text_word), pos: start, })
+      i = j
+      continue
+    }
+    if (text_word.length() == 1 && ((c >= 'a' && c <= 'z') || c == '\'')) ||
+      (
+        c >= 'A' &&
+        c <= 'Z' &&
+        text_word.length() > 1 &&
+        !text_word.contains(":") &&
+        !is_valid_currency(text_word)
+      ) {
+      tokens.push({ kind: Invalid(text_word), pos: start, })
+      i = j
+      continue
+    }
     let word = match words {
       Some(cache) =>
         match cache.get(text_word) {
@@ -286,8 +353,8 @@ fn physical_line_end(source : String, start : Int32) -> Int32 {
 }
 
 ///|
-// Search without consuming the streaming iterator so an unmatched quote can
-// recover at its physical line and preserve subsequent directives.
+// Search without consuming the iterator. Only actual string openings extend
+// the logical line; invalid word/quote runs end at their physical newline.
 fn multiline_line_end(
   source : String,
   opening : Int32,
@@ -326,7 +393,8 @@ fn multiline_line_end(
       return end
     }
     match tail[tail.length() - 2].kind {
-      Invalid(_) => quote = i + tail[tail.length() - 2].pos
+      Invalid(raw) if raw.has_prefix("\"") =>
+        quote = i + tail[tail.length() - 2].pos
       _ => return end
     }
   }
@@ -338,9 +406,36 @@ fn multiline_line_end(
 pub fn logical_line_end(source : String, start~ : Int32 = 0) -> Int32 {
   let end = physical_line_end(source, start)
   let tokens = tokenize(source[start:end].to_owned())
-  if tokens.length() > 1 && tokens[tokens.length() - 2].kind is Invalid(_) {
+  if tokens.length() > 1 &&
+    tokens[tokens.length() - 2].kind is Invalid(raw) &&
+    raw.has_prefix("\"") {
     multiline_line_end(source, start + tokens[tokens.length() - 2].pos, end)
   } else {
     end
   }
+}
+
+///|
+fn quoted_word_prefix(word : String) -> Bool {
+  lexical_account(word) ||
+  (is_valid_currency(word) && word.length() > 1) ||
+  @ast.Date::parse(word) is Some(_) ||
+  (
+    word.get_char(0) is Some(c) &&
+    (c.is_ascii_digit() || c == '-' || c == '+') &&
+    @decimal.Decimal::parse(word) is Some(_)
+  ) ||
+  meta_key_from_word(word) is Some(_) ||
+  [
+    "option", "plugin", "include", "pushtag", "poptag", "pushmeta", "popmeta", "open",
+    "close", "commodity", "pad", "balance", "price", "event", "query", "note", "document",
+    "custom", "txn", "TRUE", "FALSE", "NULL",
+  ].contains(word)
+}
+
+///|
+fn is_flag_word(word : String) -> Bool {
+  word.length() == 1 &&
+  word.get_char(0) is Some(c) &&
+  ((c >= 'A' && c <= 'Z') || "!%&?".contains(word))
 }

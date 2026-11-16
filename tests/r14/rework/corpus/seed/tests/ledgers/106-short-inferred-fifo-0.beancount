@@ -1,0 +1,6 @@
+option "booking_method" "FIFO"
+2024-01-01 open Assets:Stock HOOL
+2024-01-01 open Assets:Cash USD
+2024-01-02 * "sell"
+  Assets:Stock -2 HOOL {}
+  Assets:Cash 200 USD

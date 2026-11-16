@@ -1,0 +1,6 @@
+option "inferred_tolerance_default" "*:0.02"
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Equity:Opening USD
+2024-01-02 * "Inferred tolerance overrides wildcard fallback"
+  Assets:Cash 1 USD
+  Equity:Opening -1.01 USD

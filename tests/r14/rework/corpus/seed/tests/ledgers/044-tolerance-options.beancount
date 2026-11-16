@@ -1,0 +1,11 @@
+option "inferred_tolerance_default" "USD:0.01"
+option "tolerance_multiplier" "2.0"
+
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Equity:Opening USD
+
+2024-01-02 * "Opening"
+  Assets:Cash     100.00 USD
+  Equity:Opening -100.00 USD
+
+2024-01-03 balance Assets:Cash 100.005 USD

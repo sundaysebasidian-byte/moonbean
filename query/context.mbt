@@ -316,9 +316,18 @@ fn directive_identity(value : QueryValue) -> String {
 fn document_filename(entry : @ast.Entry, document : @ast.Document) -> String {
   let file = @path.Path(document.filename)
   if file.is_absolute() {
-    file.normalize().to_string()
+    document.filename
   } else {
-    @path.Path(entry.loc.file).dirname().join(file).normalize().to_string()
+    let resolved = @path.Path(entry.loc.file)
+      .dirname()
+      .join(file)
+      .normalize()
+      .to_string()
+    let mut end = resolved.length()
+    while end > 1 && resolved.get_char(end - 1) == Some('/') {
+      end -= 1
+    }
+    resolved[0:end].to_owned()
   }
 }
 

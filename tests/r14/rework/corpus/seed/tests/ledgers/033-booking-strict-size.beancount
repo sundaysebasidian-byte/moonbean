@@ -1,0 +1,14 @@
+2024-01-01 open Assets:Stock HOOL "STRICT_WITH_SIZE"
+2024-01-01 open Assets:Cash USD
+
+2024-01-02 * "Buy a small lot"
+  Assets:Stock    10 HOOL {10.00 USD}
+  Assets:Cash  -100.00 USD
+
+2024-01-03 * "Buy a large lot"
+  Assets:Stock    20 HOOL {10.00 USD}
+  Assets:Cash  -200.00 USD
+
+2024-01-04 * "Sell the lot that matches the size"
+  Assets:Stock   -20 HOOL {10.00 USD}
+  Assets:Cash    200.00 USD

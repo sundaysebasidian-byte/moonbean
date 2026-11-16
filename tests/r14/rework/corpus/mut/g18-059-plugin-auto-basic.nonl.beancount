@@ -1,0 +1,4 @@
+plugin "beancount.plugins.auto_accounts"
+2024-01-02 * "independent purchase"
+  Assets:Stock 2 XYZ {3 USD}
+  Assets:Cash -6 USD

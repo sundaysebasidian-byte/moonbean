@@ -1,0 +1,6 @@
+2024-01-01 open Assets:A
+  k-1: 5 USD
+2024-01-01 open Equity:E
+2024-01-02 * "payee" "narr"
+  Assets:A 1
+  Equity:E

@@ -1,0 +1,6 @@
+option "infer_tolerance_from_cost" "TRUE"
+2024-01-01 open Assets:Stock XYZ
+2024-01-01 open Assets:Cash USD
+2024-01-02 * "quantity precision times cost, not cost precision"
+  Assets:Stock 1.0 XYZ {100 USD}
+  Assets:Cash -100.04 USD

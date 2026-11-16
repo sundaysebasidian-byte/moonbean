@@ -1,0 +1,2 @@
+plugin "beancount.plugins.check_commodity"
+2024-01-02 price XYZ 2 USD

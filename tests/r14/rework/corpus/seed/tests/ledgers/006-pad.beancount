@@ -1,0 +1,10 @@
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Equity:Opening USD
+2024-01-01 open Expenses:Food USD
+
+2024-01-02 pad Assets:Cash Equity:Opening
+2024-01-05 balance Assets:Cash 250.00 USD
+
+2024-01-06 * "Groceries"
+  Assets:Cash    -50.00 USD
+  Expenses:Food   50.00 USD

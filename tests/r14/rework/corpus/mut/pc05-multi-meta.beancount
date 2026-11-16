@@ -1,0 +1,7 @@
+2024-01-01 open Assets:A USD
+  memo: "hello
+  world
+
+; comment
+end"
+2024-01-02 open Assets:B

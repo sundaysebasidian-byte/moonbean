@@ -1,0 +1,16 @@
+2024-01-01 open Assets:Stock HOOL "HIFO"
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Income:Gains USD
+
+2024-01-02 * "Buy an expensive lot"
+  Assets:Stock    10 HOOL {20.00 USD}
+  Assets:Cash  -200.00 USD
+
+2024-01-03 * "Buy a cheap lot"
+  Assets:Stock    10 HOOL {10.00 USD}
+  Assets:Cash  -100.00 USD
+
+2024-01-04 * "Sell the highest cost lot"
+  Assets:Stock   -10 HOOL {}
+  Assets:Cash    250.00 USD
+  Income:Gains  -50.00 USD

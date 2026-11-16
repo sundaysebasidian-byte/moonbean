@@ -1,0 +1,7 @@
+2024-01-01 commodity USD
+2024-01-01 commodity CNY
+2024-01-01 open Assets:Cash USD
+
+2024-01-02 price USD 7.20 CNY
+2024-01-03 event "location" "Beijing"
+2024-01-04 query "balances" "SELECT account, sum(pos

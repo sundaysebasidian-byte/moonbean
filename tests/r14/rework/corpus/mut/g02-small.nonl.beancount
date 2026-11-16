@@ -1,0 +1,11 @@
+2024-01-01 open Assets:A
+  cur: USD
+  s: "has \"quote\" and \\ backslash"
+2024-01-02 note Assets:A "say \"hi\""
+2024-01-03 * "Payee" ""
+  Assets:A 1 USD
+  Assets:A -1 USD
+2024-01-04 * "only narration \"q\""
+  Assets:A 1 USD
+  Assets:A -1 USD
+2024-01-05 event "e" "x \"y\""

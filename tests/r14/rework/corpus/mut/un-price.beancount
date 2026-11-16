@@ -1,0 +1,7 @@
+2024-01-01 open Assets:A USD,EUR
+2024-01-01 open Equity:E
+2024-01-03 price USD 1 EUR
+2024-01-03 note Assets:A "
+2024-01-02 * "payee" "narr"
+  Assets:A 1 USD
+  Equity:E

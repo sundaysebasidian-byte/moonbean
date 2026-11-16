@@ -1,0 +1,5 @@
+plugin "beancount.plugins.leafonly"
+2024-01-01 open Assets:Bank
+2024-01-01 open Assets:Bank:Checking
+2024-01-01 open Equity:Opening
+2024-01-02 pad Assets:Bank Equity:Opening

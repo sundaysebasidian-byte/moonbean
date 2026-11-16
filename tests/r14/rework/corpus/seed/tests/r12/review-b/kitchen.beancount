@@ -1,0 +1,77 @@
+option "title" "Kitchen ✓ sink"
+option "operating_currency" "USD"
+option "booking_method" "FIFO"
+plugin "beancount.plugins.auto_accounts"
+
+1990-01-01 commodity USD
+  name: "US Dollar"
+  precision: 2
+1990-01-01 commodity HOOL
+  export: "NASDAQ:HOOL"
+  quote: USD
+2024-01-01 open Assets:Bank:Checking USD,EUR
+  bank: "Chase"
+  number: 1234
+  rate: 1.25
+  flag: TRUE
+  when: 2023-12-31
+2024-01-01 open Assets:Broker HOOL "FIFO"
+2024-01-01 open Equity:Opening
+2024-01-01 open Expenses:Food:咖啡
+2024-01-01 open Income:Salary USD
+2024-01-01 open Liabilities:Card USD
+2024-01-01 open Expenses:Fees
+2024-01-02 pad Assets:Bank:Checking Equity:Opening
+2024-01-03 balance Assets:Bank:Checking 1000.00 USD
+2024-01-03 balance Assets:Bank:Checking 0 EUR
+2024-01-04 * "Café ☕" "Latte — très bon 日本語 😀" #coffee #morning ^receipt-1 ^ref.2
+  memo: "line-level"
+  Expenses:Food:咖啡      4.50 USD
+    item: "latte"
+  ! Assets:Bank:Checking -4.50 USD
+2024-01-05 ! "Buy shares"
+  Assets:Broker           10 HOOL {100.00 USD, 2024-01-05, "lot-a"}
+  Assets:Bank:Checking   -1000.00 USD
+  Expenses:Fees          0 USD
+2024-01-06 * "Sell shares" ^sale
+  Assets:Broker           -5 HOOL {100.00 USD} @ 120.00 USD
+  Assets:Bank:Checking   600.00 USD
+  Income:Salary          -100.00 USD
+2024-01-07 * "Total price"
+  Assets:Broker           2 HOOL {101 USD} @@ 250 USD
+  Assets:Bank:Checking
+2024-01-08 txn "Payee only" ""
+  Liabilities:Card       -12345678.123456 USD
+  Assets:Bank:Checking   12345678.123456 USD
+2024-01-09 * "A very long narration that goes on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on and on"
+  Liabilities:Card   -0.001 USD
+  Expenses:Food:咖啡   0.001 USD
+2024-01-10 price HOOL 123.4567 USD
+2024-01-10 price EUR 1.10 USD
+2024-01-11 note Assets:Bank:Checking "Called the bank \"about\" fees"
+2024-01-12 document Assets:Bank:Checking "/tmp/statement.pdf"
+2024-01-13 event "location" "Paris, France"
+2024-01-14 query "cash" "SELECT account, sum(position) WHERE account ~ 'Cash'"
+2024-01-15 custom "budget" Expenses:Food:咖啡 "monthly" 200.00 USD TRUE 2024-02-01
+2024-01-16 * "Tagged" #trip
+  Expenses:Food:咖啡  1 EUR @ 1.10 USD
+  Assets:Bank:Checking
+pushtag #pushed
+2024-01-17 * "Pushed tag"
+  Expenses:Fees   2.00 USD
+  Liabilities:Card
+poptag #pushed
+2024-01-18 * "Cost with date only"
+  Assets:Broker   1 HOOL {2024-01-01}
+  Assets:Bank:Checking -100 USD
+2024-01-19 * "Negative / weird numbers"
+  Expenses:Fees   -0.00 USD
+  Expenses:Fees   1,234.50 USD
+  Liabilities:Card  -1234.50 USD
+2024-01-20 close Liabilities:Card
+2024-01-21 S "Flag S"
+  Expenses:Fees  1 USD
+  Assets:Bank:Checking
+2024-01-22 * "Expr amounts"
+  Expenses:Fees  (2 + 3) * 1.5 USD
+  Assets:Bank:Checking

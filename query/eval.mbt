@@ -1655,18 +1655,7 @@ fn directive_column(
       match entry.directive {
         DDocument(document) =>
           if table == "documents" {
-            let file = @path.Path(document.filename)
-            return QText(
-              if file.is_absolute() {
-                file.normalize().to_string()
-              } else {
-                @path.Path(entry.loc.file)
-                .dirname()
-                .join(file)
-                .normalize()
-                .to_string()
-              },
-            )
+            return QText(document_filename(entry, document))
           } else {
             return QText(query_location(entry).file)
           }

@@ -1,0 +1,25 @@
+option "title" "Journal"
+
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Assets:Bank USD
+2024-01-01 open Equity:Opening USD
+2024-01-01 open Income:Salary USD
+2024-01-01 open Expenses:Food USD
+2024-01-01 open Expenses:Rent USD
+
+2024-01-01 * "Opening balances"
+  Assets:Cash      2000.00 USD
+  Assets:Bank       500.00 USD
+  Equity:Opening  -2500.00 USD
+
+2024-01-05 * "Employer" "Monthly salary"
+  Assets:Bank      3000.00 USD
+  Income:Salary   -3000.00 USD
+
+2024-01-06 * "Landlord" "January rent"
+  Assets:Bank     -1200.00 USD
+  Expenses:Rent    1200.00 USD
+
+2024-01-07 * "Cafe" "Coffee"
+  Assets:Cash       -30.00 USD
+  Expenses:Food      30.00 USD

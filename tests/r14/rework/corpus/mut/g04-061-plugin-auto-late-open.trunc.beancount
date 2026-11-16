@@ -1,0 +1,4 @@
+plugin "beancount.plugins.auto_accounts"
+2024-01-05 open Assets:Stock
+2024-01-02 * "independent purchase"
+  Asse

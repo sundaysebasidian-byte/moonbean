@@ -1,0 +1,5 @@
+2024-01-01 open Assets:A USD
+2024-01-02 * "values"
+  Assets:A 1 USD
+    value: 1.00 EUR
+  Assets:A -1 USD

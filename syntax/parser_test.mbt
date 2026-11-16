@@ -270,3 +270,89 @@ test "metadata retains amounts expressions and empty values" {
     "2.50 USD",
   )
 }
+
+///|
+test "transaction and posting flags follow the oracle alphabet" {
+  for flag in ["A", "Z", "!", "#", "%", "&", "*", "?", "txn"] {
+    let ledger = parse_ok("2024-01-02 " + flag + "\n")
+    inspect(ledger.entries.length(), content="1")
+  }
+  for flag in ["a", "c", "o", "z", "'", "0"] {
+    for narration in ["", " \"n\""] {
+      let ledger = @syntax.parse_source(
+        "flags.bean",
+        "2024-01-02 " + flag + narration + "\n2024-01-03 open Assets:A\n",
+      )
+      inspect(ledger.errors.length() > 0, content="true")
+      inspect(ledger.entries.length(), content="1")
+    }
+  }
+}
+
+///|
+test "attached unknown word quotes recover at the invalid token line" {
+  let ledger = @syntax.parse_source(
+    "quotes.bean", "option \"title\" \"T\noption \"render_commas\" \"TRUE\"\n2024-01-01 open Assets:A\n2024-01-02 open Assets:B\n2024-01-03 note Assets:A \"n\"\n",
+  )
+  inspect(ledger.errors.length(), content="1")
+  inspect(ledger.errors[0].loc.line, content="2")
+  inspect(ledger.errors[0].message, content="Invalid token: 'render_commas\"'")
+  inspect(ledger.entries.length(), content="3")
+  inspect(
+    @syntax.logical_line_end("option \"T\nword\" \"TRUE\"\nnext\n"),
+    content="22",
+  )
+}
+
+///|
+test "amount metadata splits adjacent multiplication and rejects leading dot" {
+  let ledger = parse_ok(
+    "2024-01-01 open Assets:A\n  amount: (2*3+4)/2 USD\n2024-01-02 * \"n\"\n  Assets:A 2*3 USD\n  Assets:A -6 USD\n",
+  )
+  inspect(
+    ledger.entries[0].meta.get("amount").unwrap().to_string(),
+    content="5 USD",
+  )
+  let bad = @syntax.parse_source(
+    "dot.bean", "2024-01-01 open Assets:A\n  amount: .5 USD\n",
+  )
+  inspect(bad.errors.length(), content="1")
+  inspect(bad.entries.length(), content="0")
+}
+
+///|
+test "duplicate transaction metadata reports an error and retains the first value" {
+  let ledger = @syntax.parse_source(
+    "duplicate.bean", "2024-01-01 open Assets:A\n  kk: 1 USD\n  kk: 2 USD\n2024-01-02 * \"n\"\n  kk: 3 USD\n  kk: 4 USD\n  Assets:A 0 USD\n    kk: \"first\"\n    kk: \"last\"\n",
+  )
+  inspect(ledger.errors.length(), content="2")
+  inspect(ledger.entries.length(), content="2")
+  inspect(
+    ledger.entries[0].meta.get("kk").unwrap().to_string(),
+    content="2 USD",
+  )
+  inspect(
+    ledger.entries[1].meta.get("kk").unwrap().to_string(),
+    content="3 USD",
+  )
+  match ledger.entries[1].directive {
+    @ast.DTransaction(txn) =>
+      inspect(
+        txn.postings[0].meta.get("kk").unwrap().to_string(),
+        content="\"first\"",
+      )
+    _ => abort("expected transaction")
+  }
+}
+
+///|
+test "posting flags reject lowercase tokens and accept hash" {
+  let good = parse_ok("2024-01-02 * \"n\"\n  # Assets:A 0 USD\n")
+  inspect(good.entries.length(), content="1")
+  let bad = @syntax.parse_source(
+    "flags.bean", "2024-01-02 * \"n\"\n  a Assets:A 0 USD\n2024-01-03 open Assets:B\n",
+  )
+  inspect(bad.errors.length(), content="1")
+  inspect(bad.errors[0].loc.line, content="2")
+  inspect(bad.entries.length(), content="1")
+}

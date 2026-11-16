@@ -1,0 +1,4 @@
+plugin "beancount.plugins.auto_accounts"
+2024-01-01 balance Assets:Cash 0 USD
+2024-01-02 note Assets:Memo "self authored"
+2024-01-03 close Assets:Closed

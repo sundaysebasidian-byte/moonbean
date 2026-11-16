@@ -1,0 +1,10 @@
+pushmeta city: "上海"
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Equity:Opening USD
+pushtag #stack
+2024-01-02 note Assets:Cash "receipt" #local ^link
+2024-01-03 * "metadata"
+  Assets:Cash 1.00 USD
+  Equity:Opening
+popmeta city:
+poptag #stack

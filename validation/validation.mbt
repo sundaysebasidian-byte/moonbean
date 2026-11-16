@@ -1001,7 +1001,25 @@ fn resolve_missing_currencies(
   if missing.length() == 0 {
     return true
   }
-  let currencies = transaction_currencies(postings)
+  let mut currencies = transaction_currencies(postings)
+  if currencies.length() != 1 &&
+    missing.all(fn(i) { postings[i].cost is None && postings[i].price is None }) {
+    let weights : Array[String] = []
+    for posting in postings {
+      if posting.units is Some(units) && units.currency != "" {
+        let currency = match posting.cost {
+          Some(spec) => spec.currency.unwrap_or(units.currency)
+          None =>
+            match posting.price {
+              Some(price) => price.amount().currency
+              None => units.currency
+            }
+        }
+        add_currency(weights, currency)
+      }
+    }
+    currencies = weights
+  }
   if currencies.length() != 1 {
     let target = postings[missing[0]].loc
     let loc = if target.line > 0 { target } else { entry.loc }

@@ -767,12 +767,16 @@ fn parse_posting(
   let mut flag : String? = None
   let first = cursor.peek()
   match first.kind {
+    Tag("") => {
+      flag = Some("#")
+      cursor.advance() |> ignore
+    }
     Star => {
       flag = Some("*")
       cursor.advance() |> ignore
     }
     Word(w) =>
-      if w.length() == 1 && w != "*" {
+      if is_flag_word(w) {
         // A single character word is a posting flag only when an account
         // follows; otherwise it is the account itself.
         let next = cursor.tokens
@@ -898,11 +902,15 @@ fn parse_transaction(
       flag = "*"
       cursor.advance() |> ignore
     }
+    Tag("") => {
+      flag = "#"
+      cursor.advance() |> ignore
+    }
     Word(w) =>
       if w == "txn" {
         flag = "*"
         cursor.advance() |> ignore
-      } else if w.length() == 1 {
+      } else if is_flag_word(w) {
         flag = w
         cursor.advance() |> ignore
       }
@@ -958,12 +966,28 @@ fn parse_transaction(
             handled = true
             let before = parser.ledger.errors.length()
             match parse_meta_line(line_tokens, parser, meta_line) {
-              Some((key, value)) =>
-                if posting_count > 0 {
-                  txn.postings[posting_count - 1].meta.set(key, value)
+              Some((key, value)) => {
+                let meta = if posting_count > 0 {
+                  txn.postings[posting_count - 1].meta
                 } else {
-                  own_meta.set(key, value)
+                  own_meta
                 }
+                if meta.get(key) is Some(previous) {
+                  if !repeated_metadata_value(previous, value) {
+                    parser.error(
+                      line,
+                      "parse.meta",
+                      if posting_count > 0 {
+                        "Duplicate posting metadata field: " + key
+                      } else {
+                        "Duplicate metadata field on entry: " + key
+                      },
+                    )
+                  }
+                } else {
+                  meta.set(key, value)
+                }
+              }
               None => {
                 if parser.ledger.errors.length() == before {
                   parser.error(meta_line, "parse.meta", "invalid metadata line")
@@ -974,7 +998,7 @@ fn parse_transaction(
           }
           None => ()
         }
-      Tag(t) => {
+      Tag(t) if t != "" => {
         handled = true
         push_unique(txn.tags, t)
       }
@@ -1954,11 +1978,14 @@ fn parse_dated_directive(
     Word("document") => parse_document(parser, date, tokens, line, 2)
     Word("custom") => parse_custom(parser, date, tokens, line, 2)
     Word("txn") => parse_transaction(parser, date, tokens, line, 1)
-    Star => parse_transaction(parser, date, tokens, line, 1)
+    Star | Tag("") => parse_transaction(parser, date, tokens, line, 1)
     Str(_) => parse_transaction(parser, date, tokens, line, 1)
     Word(w) =>
-      if w.length() == 1 {
+      if is_flag_word(w) {
         parse_transaction(parser, date, tokens, line, 1)
+      } else if w.length() == 1 {
+        parser.error(line, "parse.token", "Invalid token: '" + w + "'")
+        None
       } else {
         parser.error(line, "parse.directive", "unknown directive `" + w + "`")
         None
@@ -2133,7 +2160,9 @@ fn Parser::take_tokens(self : Parser) -> (Array[Token], Int32) {
   self.advance_line()
   let mut tokens = self.tokens(text)
   let mut logical = text
-  if tokens.length() > 1 && tokens[tokens.length() - 2].kind is Invalid(_) {
+  if tokens.length() > 1 &&
+    tokens[tokens.length() - 2].kind is Invalid(raw) &&
+    raw.has_prefix("\"") {
     let end = multiline_line_end(
       self.source,
       start + tokens[tokens.length() - 2].pos,
@@ -2174,4 +2203,14 @@ fn Parser::take_tokens(self : Parser) -> (Array[Token], Int32) {
     }
   }
   (tokens, line)
+}
+
+///|
+fn repeated_metadata_value(a : @ast.MetaValue, b : @ast.MetaValue) -> Bool {
+  match (a, b) {
+    (MString(a), MString(b)) | (MAccount(a), MAccount(b)) => a == b
+    (MBool(a), MBool(b)) => a == b
+    (MNull, MNull) => true
+    _ => false
+  }
 }

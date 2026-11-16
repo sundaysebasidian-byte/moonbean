@@ -1,0 +1,4 @@
+2024-01-01 open Assets:A USD,EUR
+2024-01-01 open Equity:E
+2024-01-03 close Assets:A
+2024-01-05 document Assets:A "exists.pdf"

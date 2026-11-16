@@ -1,0 +1,14 @@
+2024-01-01 open Assets:Cash USD
+  note: "primary cash account"
+2024-01-01 open Equity:Opening USD
+2024-01-01 open Expenses:Food USD
+
+2024-01-02 * "Opening"
+  time: "09:00"
+  Assets:Cash     100.00 USD
+  Equity:Opening -100.00 USD
+
+2024-01-03 * "Cafe" "Coffee"
+  payment: "card"
+  Assets:Cash    -8.00 USD
+  Expenses:Food   8.00 USD

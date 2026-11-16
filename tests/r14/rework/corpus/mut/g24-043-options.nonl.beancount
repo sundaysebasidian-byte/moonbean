@@ -1,0 +1,10 @@
+option "title" "Options ledger"
+option "operating_currency" "USD"
+option "render_commas" "TRUE"
+
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Equity:Opening USD
+
+2024-01-02 * "Opening"
+  Assets:Cash     100.00 USD
+  Equity:Opening -100.00 USD

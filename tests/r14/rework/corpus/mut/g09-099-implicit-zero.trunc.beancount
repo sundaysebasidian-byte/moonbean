@@ -1,0 +1,3 @@
+plugin "beancount.plugins.implicit_prices"
+2024-01-01 open Assets:Stock
+2024-01-0

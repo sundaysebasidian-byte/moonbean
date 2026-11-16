@@ -739,3 +739,14 @@ test "empty transaction and automatic posting have no residual" {
   }
   assert_eq(txn.postings.length(), 0)
 }
+
+///|
+test "bare quantity currency follows a stock transaction weight" {
+  let v = validated(
+    "2024-01-01 open Assets:Stock HOOL \"FIFO\"\n2024-01-01 open Assets:Cash USD\n2024-01-01 open Income:Gains USD\n\n2024-01-02 * \"Buy shares\"\n  Assets:Stock    10 HOOL {100.00 USD}\n  Assets:Cash  -1000.00 USD\n\n2024-01-03 * \"Sell with a total price\"\n  Assets:Stock    -5 HOOL {100.00 USD} @@ 600.00 USD\n  Assets:Cash    600.00 USD\n  Income:Gains  -100.",
+  )
+  inspect(v.errors.length(), content="0")
+  inspect(v.entries.length(), content="5")
+  let txn = find_transaction(v, "Sell with a total price").unwrap()
+  inspect(txn.postings[2].units.unwrap().to_string(), content="-100 USD")
+}

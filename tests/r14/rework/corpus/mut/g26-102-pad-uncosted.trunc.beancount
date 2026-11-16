@@ -1,0 +1,5 @@
+2024-01-01 open Assets:Stock
+2024-01-01 open Assets:Cash
+2024-01-01 open Equity:Opening
+2024-01-01 pad Assets:Stock Equity:Opening
+2024-01-15 * 

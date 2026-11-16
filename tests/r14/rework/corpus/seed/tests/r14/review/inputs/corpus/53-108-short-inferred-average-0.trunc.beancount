@@ -1,0 +1,4 @@
+option "booking_method" "AVERAGE"
+2024-01-01 open Assets:Stock HOOL
+2024-01-01 open Assets:Cash USD
+2024-01-02 * "

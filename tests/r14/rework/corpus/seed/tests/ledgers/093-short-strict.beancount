@@ -1,0 +1,7 @@
+option "booking_method" "STRICT"
+plugin "beancount.plugins.implicit_prices"
+2024-01-01 open Assets:Stock HOOL
+2024-01-01 open Assets:Cash USD
+2024-01-02 * "short"
+  Assets:Stock -2 HOOL {100 USD}
+  Assets:Cash 200 USD

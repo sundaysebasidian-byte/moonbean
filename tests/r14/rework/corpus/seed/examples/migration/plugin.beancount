@@ -1,0 +1,4 @@
+plugin "beancount.plugins.auto_accounts"
+2024-01-02 * "Plugin-created accounts required"
+  Assets:Cash -12 USD
+  Expenses:Food 12 USD

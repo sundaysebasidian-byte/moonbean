@@ -1,0 +1,13 @@
+include "includes/ledger-child.beancount"
+
+2024-01-01 open Assets:Cash USD
+2024-01-01 open Equity:Opening USD
+2024-01-01 open Expenses:Food USD
+
+2024-01-02 * "Opening"
+  Assets:Cash     100.00 USD
+  Equity:Opening -100.00 USD
+
+2024-01-03 * "Cafe" "Coffee"
+  Assets:Cash    -8.00 USD
+  Expenses:Food   8.00 USD
