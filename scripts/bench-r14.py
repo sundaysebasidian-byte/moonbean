@@ -101,6 +101,7 @@ def main():
     parser.add_argument('--candidate',default='HEAD')
     parser.add_argument('--out',default='.oracle-cache/r14/performance')
     parser.add_argument('--rounds',type=int,default=3)
+    parser.add_argument('--short-only',action='store_true',help='Only the interleaved native/JS pairs')
     args = parser.parse_args()
     if args.rounds < 1:
         parser.error('rounds must be positive')
@@ -112,7 +113,7 @@ def main():
     sources, identities = {}, {}
     for side, ref in [('baseline',args.baseline),('candidate',args.candidate)]:
         sources[side], identities[side] = snapshot(ref,out/('input-'+side))
-        for target in ['native','js','wasm-gc']:
+        for target in (['native','js'] if args.short_only else ['native','js','wasm-gc']):
             with (out/f'build-{side}-{target}.log').open('w') as log:
                 subprocess.run(['moon','build','--release','--target',target,'bench'],cwd=sources[side],
                                env=env,stdout=log,stderr=log,check=True)
@@ -128,9 +129,10 @@ def main():
             record = invoke(sources[side],identities[side],side,host,count,runs,index,out,env)
             records.append(record)
             (out/'results.json').write_text(json.dumps(dict(environment=environment,records=records),indent=2)+'\n')
-    for index in range(args.rounds):
-        run_pair('moonrun',1000000,15,index)
-        run_pair('node-wasm',1000000,1,index)
+    if not args.short_only:
+        for index in range(args.rounds):
+            run_pair('moonrun',1000000,15,index)
+            run_pair('node-wasm',1000000,1,index)
     for index in range(args.rounds):
         for offset, (host,count) in enumerate([('native',100000),('js',100000),('native',1000000),('js',1000000)]):
             # Alternate whole-case order within each process round.
