@@ -356,3 +356,12 @@ test "posting flags reject lowercase tokens and accept hash" {
   inspect(bad.errors[0].loc.line, content="2")
   inspect(bad.entries.length(), content="1")
 }
+
+///|
+test "duplicate string metadata follows the oracle singleton exceptions" {
+  let ledger = @syntax.parse_source(
+    "duplicates.bean", "2024-01-01 * \"n\"\n  empty: \"\"\n  empty: \"\"\n  short: \"é\"\n  short: \"é\"\n  long: \"same\"\n  long: \"same\"\n  wide: \"☃\"\n  wide: \"☃\"\n",
+  )
+  inspect(ledger.entries.length(), content="1")
+  inspect(ledger.errors.length(), content="2")
+}

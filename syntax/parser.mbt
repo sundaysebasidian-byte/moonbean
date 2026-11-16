@@ -2206,9 +2206,17 @@ fn Parser::take_tokens(self : Parser) -> (Array[Token], Int32) {
 }
 
 ///|
+// Oracle duplicate checks permit cached account, empty/Latin-1 single-character
+// string and singleton values. Equal numbers, dates and amounts still conflict.
 fn repeated_metadata_value(a : @ast.MetaValue, b : @ast.MetaValue) -> Bool {
   match (a, b) {
-    (MString(a), MString(b)) | (MAccount(a), MAccount(b)) => a == b
+    (MString(a), MString(b)) =>
+      a == b &&
+      (
+        a == "" ||
+        (a.length() == 1 && a.get_char(0) is Some(c) && c.to_int() <= 255)
+      )
+    (MAccount(a), MAccount(b)) => a == b
     (MBool(a), MBool(b)) => a == b
     (MNull, MNull) => true
     _ => false

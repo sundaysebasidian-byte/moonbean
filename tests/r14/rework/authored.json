@@ -882,5 +882,77 @@
   {
     "name": "duplicate-scalar-220",
     "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  Assets:A 0 USD\n    kk: 2024-01-01\n    kk: 2024-01-01\n"
+  },
+  {
+    "name": "duplicate-string-221",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  kk: \"\"\n  kk: \"\"\n"
+  },
+  {
+    "name": "duplicate-string-222",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  Assets:A 0 USD\n    kk: \"\"\n    kk: \"\"\n"
+  },
+  {
+    "name": "duplicate-string-223",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  kk: \"ab\"\n  kk: \"ab\"\n"
+  },
+  {
+    "name": "duplicate-string-224",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  Assets:A 0 USD\n    kk: \"ab\"\n    kk: \"ab\"\n"
+  },
+  {
+    "name": "duplicate-string-225",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  kk: \"first\"\n  kk: \"first\"\n"
+  },
+  {
+    "name": "duplicate-string-226",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  Assets:A 0 USD\n    kk: \"first\"\n    kk: \"first\"\n"
+  },
+  {
+    "name": "duplicate-string-227",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  kk: \"é\"\n  kk: \"é\"\n"
+  },
+  {
+    "name": "duplicate-string-228",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  Assets:A 0 USD\n    kk: \"é\"\n    kk: \"é\"\n"
+  },
+  {
+    "name": "duplicate-string-229",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  kk: \"☃\"\n  kk: \"☃\"\n"
+  },
+  {
+    "name": "duplicate-string-230",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  Assets:A 0 USD\n    kk: \"☃\"\n    kk: \"☃\"\n"
+  },
+  {
+    "name": "duplicate-string-231",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  kk: \"日本\"\n  kk: \"日本\"\n"
+  },
+  {
+    "name": "duplicate-string-232",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  Assets:A 0 USD\n    kk: \"日本\"\n    kk: \"日本\"\n"
+  },
+  {
+    "name": "duplicate-string-233",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  kk: Assets:LongAccount\n  kk: Assets:LongAccount\n"
+  },
+  {
+    "name": "duplicate-string-234",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  Assets:A 0 USD\n    kk: Assets:LongAccount\n    kk: Assets:LongAccount\n"
+  },
+  {
+    "name": "duplicate-string-235",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  kk: \"\\n\"\n  kk: \"\\n\"\n"
+  },
+  {
+    "name": "duplicate-string-236",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  Assets:A 0 USD\n    kk: \"\\n\"\n    kk: \"\\n\"\n"
+  },
+  {
+    "name": "duplicate-string-237",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  kk: FALSE\n  kk: FALSE\n"
+  },
+  {
+    "name": "duplicate-string-238",
+    "source": "2024-01-01 open Assets:A\n2024-01-02 * \"n\"\n  Assets:A 0 USD\n    kk: FALSE\n    kk: FALSE\n"
   }
 ]
