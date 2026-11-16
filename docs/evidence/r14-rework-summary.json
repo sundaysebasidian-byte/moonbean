@@ -1,0 +1,31 @@
+{
+  "checks": 22344,
+  "passed": 22344,
+  "previous_checks": 20790,
+  "new_checks": 1554,
+  "new_features": {
+    "r14-rework-classification": 977,
+    "r14-rework-lexer-lines": 89,
+    "r14-rework-print": 244,
+    "r14-rework-count": 244
+  },
+  "before_failures": 385,
+  "retained_boundaries": {
+    "AVERAGE extension": 6,
+    "cost merge extension": 5,
+    "pre-existing unknown-option passthrough": 12
+  },
+  "raw_bql_sha256": "5f7af58a0a087675dbb3fbd9693b4944a257a0eae9da327ae747067105b5c881",
+  "native_cli_sha256": "af354a959894fdc9a3a4c6ca1070ac718a43411c7277ea838d00db11657e6c94",
+  "before_cli_sha256": "3cbd1d73da44cf3e532ef6b2d6d18e034036fb5b7930a4a929101ae6adf1f658",
+  "runtime_commit": "1dfb5e5",
+  "test_corpus_commit": "0fef3d6",
+  "baseline": "e33a3fc",
+  "oracle": {
+    "python": "3.14.7",
+    "beancount": "3.2.3",
+    "beanquery": "0.2.0",
+    "dateutil": "4.0.0"
+  },
+  "scope": "733 classification checks; 244 authored inputs with PRINT/count plus 89 lexical line/message checks; passing checks include explicit extension boundaries and pre-existing resource checks."
+}

@@ -5,8 +5,9 @@
 - Parse multiline strings with physical source locations, reject unterminated literals, and preserve whitespace in multiline ledgers during formatting.
 - Retain amount and empty metadata values through parsing, query values, PRINT and JSON export, including number expressions and posting metadata.
 - Match the reviewed empty transaction, zero-residual auto-posting, standalone indentation and malformed metadata behavior. Native check validates document existence.
+- Match the R14 flag alphabet and attached-word quote recovery; reject leading-dot ledger numbers, enforce transaction/posting duplicate metadata behavior, accept compact arithmetic, infer the reviewed bare stock/cash quantity currency, and normalize relative document paths. Track the 733-ledger review corpus and authored lexical/PRINT/count regressions.
 - Track all 73 R13 classification cases and authored syntax/value/diagnostic/format probes. AVERAGE and cost merging retain their documented extension behavior.
-- Add DST cross-day and rolling-century clock tests on Node-hosted wasm-gc, correct R13 lexer provenance, and add the paired shared-host memory/performance harness. R14 records 20790 differential checks, 200 unit tests per target, 215 clock checks, three paired wasm-gc 1M FIFO completions and sampled Node/V8 heap headroom.
+- Add DST cross-day and rolling-century clock tests on Node-hosted wasm-gc, correct R13 lexer provenance, and add the paired shared-host memory/performance harness. The initial R14 packet records three paired wasm-gc 1M FIFO completions and Node/V8 heap samples for its original source. R14 rework passes 22344 differential checks, 207 unit tests per required target and 215 clock checks, with a fresh short native/JS A/B comparison.
 
 ## 0.2.7
 

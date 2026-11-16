@@ -1,5 +1,7 @@
 # R14 acceptance for MoonBean 0.2.8
 
+The initial packet below records candidate 5a5f264 (runtime input 194caf2). It predates the independent R14 rejection; current rework results are recorded in the review-rework section. Historical memory measurements are not reruns of the reworked parser.
+
 The pinned environments were restored on 2026-11-15 (local time). Correctness and the requested paired shared-host measurements completed against the restored environment; the earlier interrupted attempt is retained as historical evidence in [the environment blocker record](r14-environment-blocker.json).
 
 ## Source and method
@@ -17,7 +19,7 @@ Commands use `MOON_HOME=/tmp/moon-new PATH=/tmp/moon-new/bin:$PATH`. The black-b
 | S3 host scope | Imported-module integration tests execute wasm-gc on Node 24.18.0 / V8. The wasm target also declares the import. Browser, wasmtime and non-GC wasm adapter integration remain unverified. Native/JS library tests exercise their respective default clocks. |
 | S4 lexer provenance | Retained lexer 27195325… is an uncommitted pre-format snapshot. Pinned moonfmt produces the exact published e33a3fc lexer 4e5b72e7…. The difference is layout of the word-cache match arm. Corrected r13-acceptance.md and the profile_source_note preserve the actual historical source hash and identify this difference. |
 | S5 repeatability and memory | Three complete default-heap moonrun pairs and three Node/V8 heap-statistic pairs pass. Per-process RSS, actual Node heap limit and sampled headroom are recorded below. |
-| S6 unterminated literals | Incomplete strings raise Invalid token diagnostics at the physical opening line, discard the affected directive and recover following directives. A closing quote on a later line forms a multiline literal. Backslash-newline is a lexical error in the oracle. |
+| S6 unterminated literals | An unmatched EOF string reports its physical opening line. Later quotes can form multiline literals and consume intervening directive-looking text. Unknown attached `word"` runs are rejected as whole tokens at their own physical line, permitting the reviewed subsequent-directive recovery. The earlier unconditional recovery claim was incorrect; the R14 rework regressions include cases 37/72 and the reviewer's option/full-year examples. Backslash-newline remains a lexical error. |
 | S7 ordinary syntax | Multiline text preserves indentation, blank lines, CRLF and source locations. Amount, expression and empty metadata retain typed values through BQL, PRINT and export. Pushed metadata follows transaction scope. Include expansion handles logical lines and escaped paths. fmt preserves a multiline ledger's original layout. |
 
 [Lexer byte provenance](r14-lexer-provenance.json) retains full hashes. The historical R13 sampled-RSS values retain their original provenance. The new performance packet uses pristine committed sources.
@@ -133,3 +135,84 @@ Observed medians range from 0.897 to 1.118. The largest increase is JS 1M format
 The nine retained review mismatches are the intentional AVERAGE/cost-merge extensions. Existing randomized-set, portable-regex, finite-Decimal/source-negative-zero, exhaustive dateutil/locale and host endpoint boundaries retain their documented scope. Required clock integration evidence is specific to Node-hosted wasm-gc. The parser diagnostic comparison has the family/physical-lexer-position scope above.
 
 Final source, reviewer inputs, complete differential output, frozen benchmark trees/artifacts and all historical attempts are retained. No temporary service or browser was started. The completed local closeout manifest, verified Git/raw-evidence backups, process inventory, zero-move restore map and observed df values are stored under `.oracle-cache/r14-final-closeout/`. Nothing is selected for Trash; current/shared/unknown inputs and prior backups are retained. No push or publication occurred.
+
+## Independent R14 review rework
+
+This section supersedes the initial correctness/performance acceptance above. Runtime source is `1dfb5e5`; `1540b17` implements the main fixes, and `0fef3d6` finishes the recovery regression data. Later changes only add documentation/evidence. The main interface files remain consistent after moon info. The oracle is still Beancount 3.2.3 / beanquery 0.2.0 on Python 3.14.7 and dateutil 4.0.0. It was used only through public lexer/loader/printer/cursor APIs and CLI; no oracle source was read.
+
+| Review finding | Reproduction and resulting behavior |
+| --- | --- |
+| Important 1: flag regression | The original e33a3fc CLI rejects the truncated lowercase flag. The reviewed 5a5f264 executable accepts it; the oracle rejects it. Flags now accept ASCII A–Z and ! # % & * ?, plus txn syntax. Lowercase letters and apostrophes are lexical errors. Authored scans cover valid/invalid header flags, narration/no narration, EOF and posting flags. |
+| Important 2: attached word/quote | The option example now reports render_commas" on line 2 and retains both opens and the note. Whole unknown non-whitespace runs include attached quotes. Cases 37/72, the full-year mutation and all nine changed rejected PRINT examples are tracked with PRINT/count/error-line regressions. Recovery is lexical; a later quote may legally close a multiline string and consume intervening directive-like text. The original S6 wording promised too much and is corrected. |
+| Leading dot and duplicate metadata | .5 is rejected in ledger syntax. Conflicting/repeated number, date, amount and currency metadata on transactions/postings reports a duplicate and preserves the first value. Ordinary directive metadata still permits last-value overwrite. Probes retain the oracle's equal-account, empty/one-character Latin-1 string and boolean/null singleton exceptions; longer/non-Latin-1 repeated strings remain errors. Full duplicate diagnostic prose keeps the existing MoonBean format. |
+| Compact expressions and missing currency | 2*3 and other tested compact arithmetic are evaluated in metadata/postings. The reviewed Income:Gains -100. posting infers USD from the stock transaction's cost/price weight; the transaction remains in PRINT and count results. |
+| Document trailing slash | The relative docs/ example is fixed: PRINT normalizes its resolved path without the final slash. The report's absolute-path spelling is a distinct oracle behavior: absolute /tmp/ and other absolute trailing slashes remain unchanged. Both forms have regression checks. |
+
+The tracked original reviewer scripts are under scripts/review_r14. All 733 raw ledger fingerprints and their original oracle classifications are retained. Portable materialization reproduces the include/document context, with all 733 oracle exits unchanged. **710 classifications agree**; **23 named boundaries** retain 11 repetitions of the existing AVERAGE/cost-merge extensions and 12 unknown-option mutations accepted by the existing raw-option passthrough. These are explicit differences, not conformance passes. Unknown-option validation remains a separate gap; this rework preserves the existing host-facing raw-option contract.
+
+The main differential adds **1554 checks**: 733 classifications, 244 authored check/PRINT/count triples, and 89 physical lexical diagnostic checks. Recovery cases also compare the actual lexer messages. The reviewed executable fails **385** checks in this same new corpus; the repaired executable passes all of them. The original 20790 checks remain in the runner. [Before failures](r14-rework-before.json), [new regression records](r14-rework-regressions.json), [summary and hashes](r14-rework-summary.json).
+
+A separate 16-case before/after audit of changed rejected PRINT output now has 15 exact matches. Its only remaining difference is the review's already-existing literal NULL metadata rendering (meta19-open); this is outside the new findings and is retained explicitly. Empty metadata and source NULL are not an equivalence claim. The nine flag/quote-recovery cases all match. The reviewer's entire 900 typed-query matrix was retained as a script, not claimed as a rerun. [Separate audit](r14-rework-recovery-audit.json).
+
+### Rework acceptance commands
+
+All ten commands exited 0. These are actual final-run output excerpts.
+
+```text
+$ moon info
+Finished. moon: ran 14 tasks, now up to date
+$ moon check --deny-warn
+Finished. moon: ran 15 tasks, now up to date
+$ moon fmt --check
+Finished. moon: ran 82 tasks, now up to date
+$ moon test --target native
+Total tests: 207, passed: 207, failed: 0.
+$ moon test --target wasm-gc
+Total tests: 207, passed: 207, failed: 0.
+$ moon test --target js
+Total tests: 207, passed: 207, failed: 0.
+$ moon build --release --target native cmd/main
+  sundaysebasidian-byte/moonbean/cmd/main  native  <repo>/_build/native/release/build/cmd/main/main.exe
+$ moon build --release --target wasm-gc tests/clock_host
+  sundaysebasidian-byte/moonbean/tests/clock_host  wasm-gc  <repo>/_build/wasm-gc/release/build/tests/clock_host/clock_host.wasm
+$ node scripts/wasm-clock-test.mjs
+Wasm host clock: 215/215 checks passed
+$ python3 scripts/bql_differential.py --oracle /tmp/moonbean-r4-oracle/bin --ours _build/native/release/build/cmd/main/main.exe
+BQL differential: 22344/22344 checks passed
+```
+
+The result is **22344/22344**, including all original 20790 checks and all 1554 new checks. Passing totals include explicit boundaries and parser resource checks; they are finite evidence rather than full language equivalence. Native, wasm-gc and JS each pass **207/207** unit tests; imported clock checks remain **215/215**, specifically Node-hosted wasm-gc. [Statuses](r14-rework-commands.json), [complete logs](r14-rework-checks.log).
+
+### Rework short interleaved A/B
+
+Only the requested short native/JS comparison was rerun after the final runtime fix. The earlier three-pair Wasm memory packet remains evidence for its earlier source, not for this reworked parser. All **24/24** final process invocations completed all eleven expected stages, with no timeouts or OOM. Baseline e33a3fc and candidate 1dfb5e5 are pristine archived sources. No source/benchmark code changes followed the freeze; the later recovery commit only expands fixture data. Each process uses two warmups and one measured sample per stage. Whole-case order alternates over three pairs; no idle wait or heap flags were used.
+
+```text
+$ python3 scripts/bench-r14.py --baseline e33a3fc --candidate HEAD --short-only --out .oracle-cache/r14-rework/performance-final
+native 1000000 baseline round 3 complete RSS 1255636992
+native 1000000 candidate round 3 complete RSS 1255735296
+js 1000000 candidate round 3 complete RSS 2924625920
+js 1000000 baseline round 3 complete RSS 2944712704
+```
+
+The shared-host one-minute load samples span 4.319–6.560; correctness/differential execution overlapped the early pairs. Each cell below is the median of three within-round candidate/base stage-time ratios; smaller is faster. ORDER BY retains the existing >=100k FIFO benchmark skip.
+
+| Stage | native 100k | JS 100k | native 1M | JS 1M |
+| --- | ---: | ---: | ---: | ---: |
+| parse | 0.921 | 1.082 | 0.915 | 1.052 |
+| booking_FIFO | 0.952 | 1.040 | 1.013 | 0.986 |
+| validate_pad_FIFO | 1.000 | 0.966 | 1.003 | 1.019 |
+| realize | 1.000 | 0.962 | 0.973 | 1.107 |
+| format | 1.049 | 1.033 | 1.057 | 1.020 |
+| aggregate | 1.000 | 1.000 | 1.028 | 1.027 |
+| group | 1.000 | 1.000 | 1.016 | 1.106 |
+| regex | 1.051 | 1.132 | 1.034 | 1.036 |
+| transactions | 1.000 | 0.973 | 1.046 | 1.097 |
+| length | 1.100 | 1.000 | 1.095 | 1.021 |
+| substr | 1.018 | 1.000 | 1.012 | 1.007 |
+
+Observed medians span **0.915–1.132**; the largest is js 100000 regex. All per-round ratios, source/artifact hashes, RSS and load samples are retained. These short shared-host samples do not prove zero performance regression or complete the historical full matrix gate. [Raw measurements](r14-rework-performance.json), [paired ratios](r14-rework-performance-summary.json), [transcript](r14-rework-performance.log).
+
+### Rework closeout
+
+No push or publication occurred. Current source, exact test inputs, historical attempts and final evidence are retained. Superseded acceptance/performance processes were stopped before the final runtime freeze; only this task's processes were terminated. No temporary service or browser tab was opened. The local verified backup receipt, process inventory, df observations, manifest and empty restore map are under .oracle-cache/r14-rework-closeout/. No item was selected for Trash; shared and unknown resources remain untouched.

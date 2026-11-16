@@ -1,0 +1,4626 @@
+[
+  {
+    "feature": "r14-rework-classification",
+    "case": "mut/g17-028-price-total.trunc.beancount",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/mut/g17-028-price-total.trunc.beancount:12: validation.cost: Failed to categorize posting 3\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "mut/g20-107-short-inferred-fifo-1.trunc.beancount",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/mut/g20-107-short-inferred-fifo-1.trunc.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: 'o'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "mut/meta04-tx.beancount",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/mut/meta04-tx.beancount:4: parse.token: Invalid token: '2*3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "mut/meta04-post.beancount",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/mut/meta04-post.beancount:5: parse.token: Invalid token: '2*3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "mut/meta07-tx.beancount",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/mut/meta07-tx.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 4,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "mut/meta07-post.beancount",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/mut/meta07-post.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 5,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "mut/meta37-tx.beancount",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/mut/meta37-tx.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 3,
+        "message": "Duplicate metadata field on entry: KeyValue(key='kk', value=6 USD)"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "mut/meta37-post.beancount",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/mut/meta37-post.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 3,
+        "message": "Duplicate posting metadata field: KeyValue(key='kk', value=6 USD)"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-97",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-97.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'a'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-97",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'a'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-97",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 a \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-97-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-97-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'a'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-97-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'a'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-97-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 a \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-98",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-98.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'b'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-98",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'b'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-98",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 b \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-98-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-98-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'b'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-98-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'b'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-98-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 b \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-99",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-99.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'c'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-99",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'c'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-99",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 c \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-99-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-99-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'c'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-99-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'c'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-99-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 c \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-100",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-100.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'd'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-100",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'd'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-100",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 d \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-100-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-100-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'd'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-100-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'd'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-100-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 d \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-101",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-101.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'e'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-101",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'e'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-101",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 e \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-101-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-101-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'e'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-101-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'e'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-101-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 e \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-102",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-102.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'f'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-102",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'f'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-102",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 f \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-102-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-102-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'f'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-102-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'f'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-102-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 f \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-103",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-103.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'g'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-103",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'g'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-103",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 g \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-103-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-103-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'g'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-103-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'g'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-103-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 g \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-104",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-104.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'h'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-104",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'h'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-104",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 h \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-104-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-104-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'h'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-104-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'h'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-104-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 h \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-105",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-105.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'i'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-105",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'i'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-105",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 i \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-105-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-105-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'i'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-105-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'i'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-105-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 i \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-106",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-106.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'j'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-106",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'j'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-106",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 j \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-106-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-106-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'j'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-106-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'j'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-106-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 j \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-107",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-107.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'k'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-107",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'k'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-107",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 k \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-107-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-107-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'k'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-107-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'k'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-107-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 k \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-108",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-108.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'l'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-108",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'l'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-108",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 l \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-108-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-108-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'l'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-108-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'l'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-108-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 l \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-109",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-109.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'm'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-109",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'm'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-109",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 m \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-109-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-109-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'm'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-109-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'm'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-109-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 m \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-110",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-110.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'n'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-110",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'n'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-110",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 n \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-110-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-110-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'n'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-110-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'n'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-110-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 n \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-111",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-111.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'o'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-111",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'o'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-111",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 o \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-111-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-111-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'o'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-111-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'o'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-111-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 o \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-112",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-112.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'p'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-112",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'p'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-112",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 p \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-112-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-112-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'p'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-112-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'p'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-112-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 p \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-113",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-113.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'q'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-113",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'q'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-113",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 q \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-113-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-113-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'q'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-113-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'q'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-113-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 q \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-114",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-114.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'r'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-114",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'r'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-114",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 r \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-114-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-114-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'r'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-114-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'r'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-114-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 r \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-115",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-115.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 's'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-115",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 's'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-115",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 s \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-115-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-115-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 's'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-115-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 's'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-115-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 s \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-116",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-116.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 't'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-116",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 't'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-116",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 t \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-116-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-116-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 't'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-116-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 't'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-116-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 t \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-117",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-117.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'u'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-117",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'u'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-117",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 u \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-117-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-117-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'u'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-117-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'u'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-117-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 u \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-118",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-118.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'v'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-118",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'v'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-118",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 v \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-118-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-118-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'v'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-118-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'v'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-118-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 v \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-119",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-119.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'w'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-119",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'w'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-119",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 w \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-119-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-119-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'w'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-119-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'w'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-119-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 w \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-120",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-120.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'x'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-120",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'x'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-120",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 x \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-120-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-120-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'x'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-120-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'x'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-120-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 x \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-121",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-121.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'y'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-121",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'y'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-121",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 y \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-121-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-121-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'y'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-121-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'y'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-121-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 y \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-122",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-122.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'z'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-122",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'z'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-122",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 z \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-122-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-122-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'z'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-122-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'z'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-122-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 z \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-48",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-48.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-48",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 0 \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-48-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-48-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-48-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 0 \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-49",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-49.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-49",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 1 \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-49-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-49-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-49-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 1 \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-50",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-50.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-50",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 2 \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-50-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-50-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-50-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 2 \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-51",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-51.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-51",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 3 \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-51-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-51-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-51-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 3 \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-52",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-52.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-52",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 4 \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-52-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-52-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-52-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 4 \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-53",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-53.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-53",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 5 \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-53-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-53-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-53-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 5 \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-54",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-54.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-54",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 6 \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-54-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-54-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-54-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 6 \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-55",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-55.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-55",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 7 \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-55-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-55-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-55-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 7 \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-56",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-56.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-56",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 8 \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-56-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-56-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-56-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 8 \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-57",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-57.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-57",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 9 \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-57-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-57-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserSyntaxError",
+        "line": 2,
+        "message": "syntax error, unexpected NUMBER"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-57-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 9 \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-39",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-39.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '''"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-39",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '''"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-39",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 ' \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-39-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-39-n.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '''"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "flag-39-n",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '''"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-39-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 ' \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-35",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-35.beancount:2: parse.directive: invalid directive after date\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-35",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 # \n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "flag-35-n",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/flag-35-n.beancount:2: parse.directive: invalid directive after date\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "flag-35-n",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 # \"x\"\n\n2024-01-03 * \"n\"\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "truncated-lowercase",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/truncated-lowercase.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'c'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "truncated-lowercase",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'c'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "truncated-lowercase",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 c \n",
+    "oracle": "2024-01-01 open Assets:A\n"
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "recovery",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/recovery.beancount:5: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'render_commas\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "recovery",
+    "ok": false,
+    "ours": "",
+    "oracle": "2024-01-01 open Assets:A\n2024-01-02 open Assets:B\n\n2024-01-03 note Assets:A \"n\"\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "leading_dot",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/leading_dot.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "leading_dot",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "leading_dot",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: 0.5 USD\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "leading_dot",
+    "ok": false,
+    "ours": [
+      [
+        2
+      ]
+    ],
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate metadata field on entry: KeyValue(key='kk', value=6 USD)"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "duplicate",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: 6 USD\n  Assets:A   1 USD\n  Assets:A  -1 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: 5 USD\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "multiply",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/multiply.beancount:3: parse.token: Invalid token: '2*3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "multiply",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: 6 USD\n  Assets:A   1 USD\n  Assets:A  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "multiply",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        2
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "recovery-37-051-query-journal.fuzz.beancount",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/recovery-37-051-query-journal.fuzz.beancount.beancount:24: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 15,
+        "message": "Invalid token: 'Employer\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "recovery-37-051-query-journal.fuzz.beancount",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:Cash                                     USD\n2024-01-01 open Assets:Bank                                     USD\n2024-01-01 open Equity:Opening                                  USD\n2024-01-01 open Income:Salary                                   USD\n2024-01-01 open Expenses:Food                                   USD\n2024-01-01 open Expenses:Rent                                   USD\n",
+    "oracle": "2024-01-01 open Assets:Cash                                     USD\n2024-01-01 open Assets:Bank                                     USD\n2024-01-01 open Equity:Opening                                  USD\n2024-01-01 open Income:Salary                                   USD\n2024-01-01 open Expenses:Food                                   USD\n2024-01-01 open Expenses:Rent                                   USD\n\n2024-01-06 * \"Landlord\" \"January rent\"\n  Assets:Bank    -1200.00 USD\n  Expenses:Rent   1200.00 USD\n\n2024-01-07 * \"Cafe\" \"Coffee\"\n  Assets:Cash    -30.00 USD\n  Expenses:Food   30.00 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "recovery-37-051-query-journal.fuzz.beancount",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        4
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "recovery-72-tx.fuzz.beancount",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/recovery-72-tx.fuzz.beancount.beancount:25: parse.token: Invalid token: '\" #job ^link-2'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 18,
+        "message": "Invalid token: 'lot-a\"}'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "recovery-72-tx.fuzz.beancount",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:Cash\n2024-01-01 open Assets:Broker\n2024-01-01 open Income:Salary\n2024-01-01 open Expenses:Food\n\n2024-01-05 * \"Acme Corp\" \"January salary\" #jan #job ^link-1\n  income: \"2024-01\"\n  Assets:Cash     1000.00 USD\n  Income:Salary  -1000.00 USD\n\n2024-01-06 ! \"Store\" \"Groceries\" #food ^receipt\n  Assets:Cash    -12.50 USD\n  Expenses:Food   12.50 USD\n",
+    "oracle": "2024-01-01 open Assets:Cash\n2024-01-01 open Assets:Broker\n2024-01-01 open Income:Salary\n2024-01-01 open Expenses:Food\n\n2024-01-05 * \"Acme Corp\" \"January salary\" #jan #job ^link-1\n  income: \"2024-01\"\n  Assets:Cash     1000.00 USD\n  Income:Salary  -1000.00 USD\n\n2024-01-06 ! \"Store\" \"Groceries\" #food ^receipt\n  Assets:Cash    -12.50 USD\n  Expenses:Food   12.50 USD\n\n2024-01-08 * \"Just narration\" #plain\n  Assets:Cash     5.00 USD\n  Expenses:Food  -5.00 USD\n\n2024-01-09 * \"Acme Corp\" \"February salary\" #job ^link-2\n  Assets:Cash     900.00 USD\n  Income:Salary  -900.00 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "recovery-72-tx.fuzz.beancount",
+    "ok": false,
+    "ours": [
+      [
+        4
+      ]
+    ],
+    "oracle": [
+      [
+        8
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "g00-full-year-2024.unterm",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/g00-full-year-2024.unterm.beancount:547: parse.token: Invalid token: '\"'\n<repo>/.oracle-cache/r14-rework/corpus/authored/g00-full-year-2024.unterm.beancount:550: validation.balance: Balance failed for 'Assets:Bank:Checking': expected 166600.00 CNY != accumulated 162800.00 CNY (3800.00 too little)\n<repo>/.oracle-cache/r14-rework/corpus/authored/g00-full-year-2024.unterm.beancount:552: validation.balance: Balance failed for 'Assets:Cash': expected 7400.00 CNY != accumulated 800.00 CNY (6600.00 too little)\n<repo>/.oracle-cache/r14-rework/corpus/authored/g00-full-year-2024.unterm.beancount:554: validation.balance: Balance failed for 'Assets:Broker:Stocks': expected 55 AAPL != accumulated 60 AAPL (5 too much)\n<repo>/.oracle-cache/r14-rework/corpus/authored/g00-full-year-2024.unterm.beancount:555: validation.balance: Balance failed for 'Assets:Broker:Cash': expected 1860.00 USD != accumulated 800.00 USD (1060.00 too little)\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 490,
+        "message": "Invalid token: 'Income'"
+      },
+      {
+        "kind": "LexerError",
+        "line": 490,
+        "message": "Invalid token: 'tax\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "g00-full-year-2024.unterm",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:Bank:Checking                            CNY\n2024-01-01 open Assets:Bank:Savings                             CNY\n2024-01-01 open Assets:Cash                                     CNY\n2024-01-01 open Assets:Broker:Stocks                            AAPL \"FIFO\"\n2024-01-01 open Assets:Broker:Cash                              USD\n2024-01-01 open Liabilities:CreditCard                          CNY,USD\n2024-01-01 open Equity:Opening                                  CNY,USD\n2024-01-01 open Income:Salary                                   CNY\n2024-01-01 open Income:Interest                                 CNY\n2024-01-01 open Income:Dividends                                USD\n2024-01-01 open Income:CapitalGains                             USD\n2024-01-01 open Expenses:Housing:Rent                           CNY\n2024-01-01 open Expenses:Food:Groceries                         CNY\n2024-01-01 open Expenses:Food:Dining                            CNY\n2024-01-01 open Expenses:Transport                              CNY\n2024-01-01 open Expenses:Utilities                              CNY\n2024-01-01 open Expenses:Travel                                 CNY\n2024-01-01 open Expenses:Health                                 CNY\n2024-01-01 open Expenses:Books                                  CNY\n2024-01-01 open Expenses:Equipment                              CNY\n2024-01-01 open Expenses:Donations                              CNY\n2024-01-01 open Expenses:Taxes                                  CNY\n\n2024-01-01 commodity CNY\n\n2024-01-01 commodity USD\n\n2024-01-01 commodity AAPL\n\n2024-01-01 * \"Opening balances\"\n  Assets:Bank:Checking      50000.00 CNY\n  Assets:Bank:Savings      120000.00 CNY\n  Assets:Cash                2000.00 CNY\n  Liabilities:CreditCard    -3200.00 CNY\n  Equity:Opening          -168800.00 CNY\n  Assets:Broker:Stocks            40 AAPL {150.00 USD, 2024-01-01}\n  Assets:Broker:Cash         4000.00 USD\n  Equity:Opening           -10000.00 USD\n\n2024-01-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-01-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-01-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-01-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-01-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-01-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-01-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-01-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-01-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-02-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-02-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-02-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-02-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-02-10 * \"Buy shares\" \"First lot of the year\"\n  Assets:Broker:Stocks        20 AAPL {160.00 USD, 2024-02-10}\n  Assets:Broker:Cash    -3200.00 USD\n\n2024-02-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-02-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-02-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-02-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-02-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-03-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-03-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-03-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-03-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-03-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-03-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-03-15 * \"Annual health insurance\" #insurance\n  receipt: \"policy-2024\"\n  Assets:Bank:Checking  -3600.00 CNY\n  Expenses:Health        3600.00 CNY\n\n2024-03-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-03-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-03-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-04-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-04-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-04-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-04-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-04-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-04-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-04-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-04-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-04-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-05-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-05-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-05-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-05-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-05-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-05-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-05-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-05-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-05-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-06-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-06-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-06-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-06-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-06-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-06-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-06-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-06-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-06-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-07-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-07-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-07-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-07-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-07-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-07-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-07-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-07-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-07-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-08-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-08-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-08-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-08-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-08-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-08-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-08-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-08-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-08-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-09-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-09-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-09-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-09-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-09-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-09-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-09-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-09-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-09-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-10-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-10-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-10-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-10-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-10-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-10-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-10-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-10-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-10-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-11-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-11-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-11-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-11-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-11-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-11-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-11-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-11-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-11-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-12-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-12-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-12-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-12-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-12-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-12-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-12-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-12-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-12-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2025-01-01 balance Assets:Bank:Checking                            166600.00 CNY   ; Diff: -3800.00 CNY\n2025-01-01 balance Assets:Bank:Savings                             144000.00 CNY\n2025-01-01 balance Assets:Cash                                     7400.00 CNY   ; Diff: -6600.00 CNY\n2025-01-01 balance Liabilities:CreditCard                          -3200.00 CNY\n2025-01-01 balance Assets:Broker:Stocks                            55 AAPL   ; Diff: 5 AAPL\n2025-01-01 balance Assets:Broker:Cash                              1860.00 USD   ; Diff: -1060.00 USD\n",
+    "oracle": "2024-01-01 open Assets:Bank:Checking                            CNY\n2024-01-01 open Assets:Bank:Savings                             CNY\n2024-01-01 open Assets:Cash                                     CNY\n2024-01-01 open Assets:Broker:Stocks                            AAPL \"FIFO\"\n2024-01-01 open Assets:Broker:Cash                              USD\n2024-01-01 open Liabilities:CreditCard                          CNY,USD\n2024-01-01 open Equity:Opening                                  CNY,USD\n2024-01-01 open Income:Salary                                   CNY\n2024-01-01 open Income:Interest                                 CNY\n2024-01-01 open Income:Dividends                                USD\n2024-01-01 open Income:CapitalGains                             USD\n2024-01-01 open Expenses:Housing:Rent                           CNY\n2024-01-01 open Expenses:Food:Groceries                         CNY\n2024-01-01 open Expenses:Food:Dining                            CNY\n2024-01-01 open Expenses:Transport                              CNY\n2024-01-01 open Expenses:Utilities                              CNY\n2024-01-01 open Expenses:Travel                                 CNY\n2024-01-01 open Expenses:Health                                 CNY\n2024-01-01 open Expenses:Books                                  CNY\n2024-01-01 open Expenses:Equipment                              CNY\n2024-01-01 open Expenses:Donations                              CNY\n2024-01-01 open Expenses:Taxes                                  CNY\n\n2024-01-01 commodity CNY\n\n2024-01-01 commodity USD\n\n2024-01-01 commodity AAPL\n\n2024-01-01 * \"Opening balances\"\n  Assets:Bank:Checking      50000.00 CNY\n  Assets:Bank:Savings      120000.00 CNY\n  Assets:Cash                2000.00 CNY\n  Liabilities:CreditCard    -3200.00 CNY\n  Equity:Opening          -168800.00 CNY\n  Assets:Broker:Stocks            40 AAPL {150.00 USD, 2024-01-01}\n  Assets:Broker:Cash         4000.00 USD\n  Equity:Opening           -10000.00 USD\n\n2024-01-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-01-01 price USD                                  7.10 CNY\n\n2024-01-01 query \"monthly\" \"SELECT year(date), month(date), sum(position) GROUP BY 1, 2\"\n\n2024-01-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-01-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-01-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-01-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-01-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-01-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-01-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-01-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-02-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-02-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-02-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-02-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-02-10 * \"Buy shares\" \"First lot of the year\"\n  Assets:Broker:Stocks        20 AAPL {160.00 USD, 2024-02-10}\n  Assets:Broker:Cash    -3200.00 USD\n\n2024-02-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-02-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-02-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-02-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-02-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-03-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-03-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-03-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-03-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-03-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-03-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-03-15 * \"Annual health insurance\" #insurance\n  receipt: \"policy-2024\"\n  Assets:Bank:Checking  -3600.00 CNY\n  Expenses:Health        3600.00 CNY\n\n2024-03-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-03-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-03-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-04-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-04-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-04-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-04-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-04-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-04-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-04-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-04-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-04-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-05-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-05-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-05-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-05-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-05-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-05-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-05-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-05-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-05-20 * \"Books\"\n  Assets:Bank:Checking  -600.00 CNY\n  Expenses:Books         600.00 CNY\n\n2024-05-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-06-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-06-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-06-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-06-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-06-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-06-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-06-15 * \"Sell shares\" \"Raise cash\"\n  Assets:Broker:Stocks      -15 AAPL {150.00 USD, 2024-01-01} @ 180.00 USD\n  Assets:Broker:Cash    2700.00 USD\n  Income:CapitalGains   -450.00 USD\n\n2024-06-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-06-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-06-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-06-28 price USD                                  7.25 CNY\n\n2024-06-30 * \"Savings interest\"\n  Assets:Bank:Checking   200.00 CNY\n  Income:Interest       -200.00 CNY\n\n2024-06-30 pad Assets:Cash Equity:Opening\n\n2024-06-30 P \"(Padding inserted for Balance of 8000.00 CNY for difference 6600.00 CNY)\"\n  Assets:Cash      6600.00 CNY\n  Equity:Opening  -6600.00 CNY\n\n2024-07-01 balance Assets:Cash                                     8000.00 CNY\n\n2024-07-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-07-01 event \"location\" \"Hangzhou\"\n\n2024-07-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-07-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-07-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-07-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-07-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-07-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-07-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-07-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-08-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-08-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-08-05 * \"Hangzhou\" \"Family trip\" #travel ^trip-2024\n  Assets:Bank:Checking  -5000.00 CNY\n  Expenses:Travel        5000.00 CNY\n\n2024-08-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-08-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-08-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-08-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-08-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-08-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-08-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-09-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-09-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-09-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-09-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-09-10 * \"Store\" \"Work laptop\"\n  receipt: \"laptop-2024-09-10.pdf\"\n  Assets:Bank:Checking  -8000.00 CNY\n  Expenses:Equipment     8000.00 CNY\n\n2024-09-10 document Assets:Bank:Checking \"<repo>/.oracle-cache/r14-rework/corpus/authored/receipts/laptop-2024-09-10.pdf\"\n\n2024-09-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-09-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-09-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-09-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-09-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-10-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-10-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-10-05 * \"Buy shares\" \"Top up holding\"\n  Assets:Broker:Stocks        10 AAPL {170.00 USD, 2024-10-05}\n  Assets:Broker:Cash    -1700.00 USD\n\n2024-10-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-10-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-10-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-10-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-10-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-10-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-10-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-11-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-11-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-11-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-11-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-11-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-11-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-11-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-11-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-11-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-11-25 * \"Bonus\"\n  Assets:Bank:Checking   30000.00 CNY\n  Income:Salary         -30000.00 CNY\n\n2024-12-01 * \"Rent\"\n  Assets:Bank:Checking   -6000.00 CNY\n  Expenses:Housing:Rent   6000.00 CNY\n\n2024-12-02 * \"Savings transfer\"\n  Assets:Bank:Checking  -2000.00 CNY\n  Assets:Bank:Savings    2000.00 CNY\n\n2024-12-08 * \"Groceries\"\n  Assets:Bank:Checking     -800.00 CNY\n  Expenses:Food:Groceries   800.00 CNY\n\n2024-12-10 * \"Transit pass\"\n  Assets:Bank:Checking  -300.00 CNY\n  Expenses:Transport     300.00 CNY\n\n2024-12-12 * \"Dinner\" \"Team dinner\"\n  Liabilities:CreditCard  -700.00 CNY\n  Expenses:Food:Dining     700.00 CNY\n\n2024-12-15 * \"Utilities\"\n  Liabilities:CreditCard  -500.00 CNY\n  Expenses:Utilities       500.00 CNY\n\n2024-12-18 * \"Lunch\"\n  Assets:Cash           -100.00 CNY\n  Expenses:Food:Dining   100.00 CNY\n\n2024-12-20 * \"Credit card payment\"\n  Assets:Bank:Checking    -1200.00 CNY\n  Liabilities:CreditCard   1200.00 CNY\n\n2024-12-20 * \"Charity donation\"\n  Assets:Bank:Checking  -1000.00 CNY\n  Expenses:Donations     1000.00 CNY\n\n2024-12-25 * \"Salary\"\n  Assets:Bank:Checking   20000.00 CNY\n  Income:Salary         -20000.00 CNY\n\n2024-12-31 * \"Savings interest\"\n  Assets:Bank:Checking   200.00 CNY\n  Income:Interest       -200.00 CNY\n\n2024-12-31 price USD                                  7.30 CNY\n2024-12-31 price AAPL                               175.00 USD\n\n2024-12-31 note Assets:Bank:Checking \"Reconciled against the December statement\"\n\n2024-12-31 custom \"budget\" \"food\" 12000.00 CNY 2024-01-01 2024-12-31\n\n2025-01-01 balance Assets:Bank:Checking                            166600.00 CNY   ; Diff: 12000.00 CNY\n2025-01-01 balance Assets:Bank:Savings                             144000.00 CNY\n2025-01-01 balance Assets:Cash                                     7400.00 CNY\n2025-01-01 balance Liabilities:CreditCard                          -3200.00 CNY\n2025-01-01 balance Assets:Broker:Stocks                            55 AAPL\n2025-01-01 balance Assets:Broker:Cash                              1860.00 USD   ; Diff: -60.00 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "g00-full-year-2024.unterm",
+    "ok": false,
+    "ours": [
+      [
+        228
+      ]
+    ],
+    "oracle": [
+      [
+        249
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "g17-028-price-total.trunc",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/g17-028-price-total.trunc.beancount:12: validation.cost: Failed to categorize posting 3\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "g17-028-price-total.trunc",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:Stock                                    HOOL \"FIFO\"\n2024-01-01 open Assets:Cash                                     USD\n2024-01-01 open Income:Gains                                    USD\n\n2024-01-02 * \"Buy shares\"\n  Assets:Stock        10 HOOL {100.00 USD, 2024-01-02}\n  Assets:Cash   -1000.00 USD\n",
+    "oracle": "2024-01-01 open Assets:Stock                                    HOOL \"FIFO\"\n2024-01-01 open Assets:Cash                                     USD\n2024-01-01 open Income:Gains                                    USD\n\n2024-01-02 * \"Buy shares\"\n  Assets:Stock        10 HOOL {100.00 USD, 2024-01-02}\n  Assets:Cash   -1000.00 USD\n\n2024-01-03 * \"Sell with a total price\"\n  Assets:Stock      -5 HOOL {100.00 USD, 2024-01-02} @ 120.00 USD\n  Assets:Cash   600.00 USD\n  Income:Gains    -100 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "g17-028-price-total.trunc",
+    "ok": false,
+    "ours": [
+      [
+        2
+      ]
+    ],
+    "oracle": [
+      [
+        5
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "g20-107-short-inferred-fifo-1.trunc",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/g20-107-short-inferred-fifo-1.trunc.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: 'o'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "g20-107-short-inferred-fifo-1.trunc",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: 'o'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "g20-107-short-inferred-fifo-1.trunc",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:Stock                                    HOOL\n\n2024-01-01 o \n",
+    "oracle": "2024-01-01 open Assets:Stock                                    HOOL\n"
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "quoted-149",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/quoted-149.beancount:4: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'foo\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "quoted-149",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n2024-01-03 open Assets:B\n\n2024-01-04 note Assets:B \"n\"\n"
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "quoted-150",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/quoted-150.beancount:4: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'foo\"bar'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "quoted-150",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n2024-01-03 open Assets:B\n\n2024-01-04 note Assets:B \"n\"\n"
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "quoted-151",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/quoted-151.beancount:2: parse.transaction: unexpected token after transaction header\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'x\"a\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "quoted-152",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/quoted-152.beancount:4: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'render_commas\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "quoted-152",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n2024-01-03 open Assets:B\n\n2024-01-04 note Assets:B \"n\"\n"
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "quoted-153",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/quoted-153.beancount:4: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'foo\"bar;z'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "quoted-153",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n2024-01-03 open Assets:B\n\n2024-01-04 note Assets:B \"n\"\n"
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "quoted-154",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/quoted-154.beancount:4: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'foo\"bar#x'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "quoted-154",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n2024-01-03 open Assets:B\n\n2024-01-04 note Assets:B \"n\"\n"
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "quoted-155",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/quoted-155.beancount:4: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'foo\"bar(x)'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "quoted-155",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n2024-01-03 open Assets:B\n\n2024-01-04 note Assets:B \"n\"\n"
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "quoted-156",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/quoted-156.beancount:4: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: 'foo\"bar,'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "quoted-156",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n2024-01-03 open Assets:B\n\n2024-01-04 note Assets:B \"n\"\n"
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "quoted-157",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/quoted-157.beancount:4: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 4,
+        "message": "Invalid token: 'n\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "quoted-158",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/quoted-158.beancount:4: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 4,
+        "message": "Invalid token: 'n\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "quoted-159",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/quoted-159.beancount:4: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 4,
+        "message": "Invalid token: 'n\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "quoted-160",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/quoted-160.beancount:4: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 4,
+        "message": "Invalid token: 'n\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-161",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-161.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "meta-161",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-161",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: 0.5 USD\n  Assets:A  0 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "meta-161",
+    "ok": false,
+    "ours": [
+      [
+        1
+      ]
+    ],
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-162",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-162.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 4,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "meta-162",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 4,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-162",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  Assets:A  0 USD\n    kk: 0.5 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "meta-162",
+    "ok": false,
+    "ours": [
+      [
+        1
+      ]
+    ],
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-163",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-163.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "meta-163",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-163",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n  kk: 0.5 USD\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-164",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-164.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "meta-164",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-164",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: 0.5\n  Assets:A  0 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "meta-164",
+    "ok": false,
+    "ours": [
+      [
+        1
+      ]
+    ],
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-165",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-165.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 4,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "meta-165",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 4,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-165",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  Assets:A  0 USD\n    kk: 0.5\n",
+    "oracle": "2024-01-01 open Assets:A\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "meta-165",
+    "ok": false,
+    "ours": [
+      [
+        1
+      ]
+    ],
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-166",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-166.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "meta-166",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-166",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n  kk: 0.5\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-167",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-167.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "meta-167",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-167",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: -0.5 USD\n  Assets:A  0 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "meta-167",
+    "ok": false,
+    "ours": [
+      [
+        1
+      ]
+    ],
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-168",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-168.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 4,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "meta-168",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 4,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-168",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  Assets:A  0 USD\n    kk: -0.5 USD\n",
+    "oracle": "2024-01-01 open Assets:A\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "meta-168",
+    "ok": false,
+    "ours": [
+      [
+        1
+      ]
+    ],
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-169",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-169.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "meta-169",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 2,
+        "message": "Invalid token: '.5'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-169",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n  kk: -0.5 USD\n",
+    "oracle": ""
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-170",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-170.beancount:3: parse.token: Invalid token: '2*3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-170",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: 6 USD\n  Assets:A  0 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "meta-170",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        1
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-171",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-171.beancount:4: parse.token: Invalid token: '2*3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-171",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  Assets:A  0 USD\n    kk: 6 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "meta-171",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        1
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-172",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-172.beancount:2: parse.token: Invalid token: '2*3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-172",
+    "ok": false,
+    "ours": "",
+    "oracle": "2024-01-01 open Assets:A\n  kk: 6 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-173",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-173.beancount:3: parse.token: Invalid token: '2*3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-173",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: 6\n  Assets:A  0 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "meta-173",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        1
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-174",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-174.beancount:4: parse.token: Invalid token: '2*3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-174",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  Assets:A  0 USD\n    kk: 6\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "meta-174",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        1
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-175",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-175.beancount:2: parse.token: Invalid token: '2*3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-175",
+    "ok": false,
+    "ours": "",
+    "oracle": "2024-01-01 open Assets:A\n  kk: 6\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-179",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-179.beancount:3: parse.token: Invalid token: '2-3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-179",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: -1 USD\n  Assets:A  0 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "meta-179",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        1
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-180",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-180.beancount:4: parse.token: Invalid token: '2-3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-180",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  Assets:A  0 USD\n    kk: -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "meta-180",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        1
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-181",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-181.beancount:2: parse.token: Invalid token: '2-3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-181",
+    "ok": false,
+    "ours": "",
+    "oracle": "2024-01-01 open Assets:A\n  kk: -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-182",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-182.beancount:3: parse.token: Invalid token: '2*-3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-182",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: -6 USD\n  Assets:A  0 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "meta-182",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        1
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-183",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-183.beancount:4: parse.token: Invalid token: '2*-3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-183",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  Assets:A  0 USD\n    kk: -6 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "meta-183",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        1
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "meta-184",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 1,
+    "oracle_exit": 0,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/meta-184.beancount:2: parse.token: Invalid token: '2*-3'\n",
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "meta-184",
+    "ok": false,
+    "ours": "",
+    "oracle": "2024-01-01 open Assets:A\n  kk: -6 USD\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-185",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-185.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate metadata field on entry: KeyValue(key='kk', value=Decimal('1'))"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-186",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-186.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate posting metadata field: KeyValue(key='kk', value=Decimal('1'))"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-188",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-188.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate metadata field on entry: KeyValue(key='kk', value=1 USD)"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-189",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-189.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate posting metadata field: KeyValue(key='kk', value=1 USD)"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "doc-195",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-05 document Assets:A \"<repo>/.oracle-cache/r14-rework/corpus/mut/docs/\"\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-05 document Assets:A \"<repo>/.oracle-cache/r14-rework/corpus/mut/docs//\"\n"
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "doc-196",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-05 document Assets:A \"<repo>/.oracle-cache/r14-rework/corpus/mut/docs/\"\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-05 document Assets:A \"<repo>/.oracle-cache/r14-rework/corpus/mut/docs/sub/../\"\n"
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "doc-197",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-05 document Assets:A \"<repo>/.oracle-cache/r14-rework/corpus/mut/docs/\"\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-05 document Assets:A \"<repo>/.oracle-cache/r14-rework/corpus/mut/docs\"\n"
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "posting-flag-35",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\" #\n\n2024-01-03 open Assets:B\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  # Assets:A  0 USD\n\n2024-01-03 open Assets:B\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "posting-flag-35",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        1
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "posting-flag-97",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/posting-flag-97.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: 'a'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "posting-flag-97",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: 'a'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "posting-flag-97",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  a Assets:A  0 USD\n\n2024-01-03 open Assets:B\n",
+    "oracle": "2024-01-01 open Assets:A\n2024-01-03 open Assets:B\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "posting-flag-97",
+    "ok": false,
+    "ours": [
+      [
+        1
+      ]
+    ],
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "posting-flag-39",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/posting-flag-39.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: '''"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "posting-flag-39",
+    "ok": false,
+    "ours": "",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: '''"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "posting-flag-39",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  ' Assets:A  0 USD\n\n2024-01-03 open Assets:B\n",
+    "oracle": "2024-01-01 open Assets:A\n2024-01-03 open Assets:B\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "posting-flag-39",
+    "ok": false,
+    "ours": [
+      [
+        1
+      ]
+    ],
+    "oracle": []
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-scalar-203",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-scalar-203.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate metadata field on entry: KeyValue(key='kk', value=Decimal('1.0'))"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "duplicate-scalar-203",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: 1.0\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: 1\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-scalar-204",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-scalar-204.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate posting metadata field: KeyValue(key='kk', value=Decimal('1.0'))"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "duplicate-scalar-204",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  Assets:A  0 USD\n    kk: 1.0\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  Assets:A  0 USD\n    kk: 1\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-scalar-207",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-scalar-207.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate metadata field on entry: KeyValue(key='kk', value=False)"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "duplicate-scalar-207",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: FALSE\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: TRUE\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-scalar-208",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-scalar-208.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate posting metadata field: KeyValue(key='kk', value=False)"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "duplicate-scalar-208",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  Assets:A  0 USD\n    kk: FALSE\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  Assets:A  0 USD\n    kk: TRUE\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-scalar-211",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-scalar-211.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate metadata field on entry: KeyValue(key='kk', value='b')"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "duplicate-scalar-211",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: \"b\"\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  kk: \"a\"\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-scalar-212",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-scalar-212.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate posting metadata field: KeyValue(key='kk', value='b')"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "duplicate-scalar-212",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  Assets:A  0 USD\n    kk: \"b\"\n",
+    "oracle": "2024-01-01 open Assets:A\n\n2024-01-02 * \"n\"\n  Assets:A  0 USD\n    kk: \"a\"\n"
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-scalar-215",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-scalar-215.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate metadata field on entry: KeyValue(key='kk', value='USD')"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-scalar-216",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-scalar-216.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate posting metadata field: KeyValue(key='kk', value='USD')"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-scalar-217",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-scalar-217.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate metadata field on entry: KeyValue(key='kk', value='tag')"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-scalar-218",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-scalar-218.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate posting metadata field: KeyValue(key='kk', value='tag')"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-scalar-219",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-scalar-219.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate metadata field on entry: KeyValue(key='kk', value=datetime.date(2024, 1, 1))"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-scalar-220",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-scalar-220.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate posting metadata field: KeyValue(key='kk', value=datetime.date(2024, 1, 1))"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-string-223",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-string-223.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate metadata field on entry: KeyValue(key='kk', value='ab')"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-string-224",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-string-224.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate posting metadata field: KeyValue(key='kk', value='ab')"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-string-225",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-string-225.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate metadata field on entry: KeyValue(key='kk', value='first')"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-string-226",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-string-226.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate posting metadata field: KeyValue(key='kk', value='first')"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-string-229",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-string-229.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate metadata field on entry: KeyValue(key='kk', value='☃')"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-string-230",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-string-230.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate posting metadata field: KeyValue(key='kk', value='☃')"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-string-231",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-string-231.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate metadata field on entry: KeyValue(key='kk', value='日本')"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-classification",
+    "case": "duplicate-string-232",
+    "ok": false,
+    "conformant": false,
+    "boundary": null,
+    "ours_exit": 0,
+    "oracle_exit": 1,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/duplicate-string-232.beancount: ok\n",
+    "oracle": [
+      {
+        "kind": "ParserError",
+        "line": 2,
+        "message": "Duplicate posting metadata field: KeyValue(key='kk', value='日本')"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "recovery-review-g08-057-bql-prices.unterm",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/recovery-review-g08-057-bql-prices.unterm.beancount:18: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 12,
+        "message": "Invalid token: 'Buy'"
+      },
+      {
+        "kind": "LexerError",
+        "line": 12,
+        "message": "Invalid token: 'shares\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "recovery-review-g08-057-bql-prices.unterm",
+    "ok": false,
+    "ours": "",
+    "oracle": "2024-01-04 price HOOL                               110.00 USD\n\n2024-01-05 * \"Sell with a total price\"\n  Assets:Stock       -5 HOOL {100.00 USD, 2024-01-05} @ 120.00 USD\n  Assets:Cash    600.00 USD\n  Income:Gains  -100.00 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "recovery-review-g08-057-bql-prices.unterm",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        3
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "recovery-review-g17-028-price-total.unterm",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/recovery-review-g17-028-price-total.unterm.beancount:9: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 5,
+        "message": "Invalid token: 'Buy'"
+      },
+      {
+        "kind": "LexerError",
+        "line": 5,
+        "message": "Invalid token: 'shares\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "recovery-review-g17-028-price-total.unterm",
+    "ok": false,
+    "ours": "",
+    "oracle": "\n2024-01-03 * \"Sell with a total price\"\n  Assets:Stock       -5 HOOL {100.00 USD, 2024-01-03} @ 120.00 USD\n  Assets:Cash    600.00 USD\n  Income:Gains  -100.00 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "recovery-review-g17-028-price-total.unterm",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        3
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "recovery-review-g19-021-arithmetic.unterm",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/recovery-review-g19-021-arithmetic.unterm.beancount:11: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 5,
+        "message": "Invalid token: 'Expressions\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "recovery-review-g19-021-arithmetic.unterm",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:Cash                                     USD\n",
+    "oracle": "2024-01-01 open Assets:Cash                                     USD\n\n2024-01-03 balance Assets:Cash                                     10.00 ~ 0.01 USD   ; Diff: -10.00 USD\n\n2024-01-04 * \"Buy shares\"\n  Assets:Stock        5 HOOL {20.00 USD, 2024-01-04}\n  Assets:Cash   -100.00 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "recovery-review-g19-021-arithmetic.unterm",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        2
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "recovery-review-g24-043-options.unterm",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/recovery-review-g24-043-options.unterm.beancount:8: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 3,
+        "message": "Invalid token: 'render_commas\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "recovery-review-g24-043-options.unterm",
+    "ok": false,
+    "ours": "",
+    "oracle": "2024-01-01 open Assets:Cash                                     USD\n2024-01-01 open Equity:Opening                                  USD\n\n2024-01-02 * \"Opening\"\n  Assets:Cash      100.00 USD\n  Equity:Opening  -100.00 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "recovery-review-g24-043-options.unterm",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        2
+      ]
+    ]
+  },
+  {
+    "feature": "r14-rework-lexer-lines",
+    "case": "recovery-review-un-odd-quotes",
+    "ok": false,
+    "ours": "<repo>/.oracle-cache/r14-rework/corpus/authored/recovery-review-un-odd-quotes.beancount:9: parse.token: Invalid token: '\"'\n",
+    "oracle": [
+      {
+        "kind": "LexerError",
+        "line": 6,
+        "message": "Invalid token: 'payee\"'"
+      }
+    ]
+  },
+  {
+    "feature": "r14-rework-print",
+    "case": "recovery-review-un-odd-quotes",
+    "ok": false,
+    "ours": "2024-01-01 open Assets:A                                        USD,EUR\n2024-01-01 open Equity:E\n",
+    "oracle": "2024-01-01 open Assets:A                                        USD,EUR\n2024-01-01 open Equity:E\n\n2024-01-02 * \"payee\" \"narr\"\n  Assets:A   1 USD\n  Equity:E  -1 USD\n"
+  },
+  {
+    "feature": "r14-rework-count",
+    "case": "recovery-review-un-odd-quotes",
+    "ok": false,
+    "ours": [],
+    "oracle": [
+      [
+        2
+      ]
+    ]
+  }
+]

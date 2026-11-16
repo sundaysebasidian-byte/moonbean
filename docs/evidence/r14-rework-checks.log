@@ -1,0 +1,102 @@
+$ moon info
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 14 tasks, now up to date
+
+$ moon check --deny-warn
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 15 tasks, now up to date
+
+$ moon fmt --check
+exit 0
+Finished. moon: ran 82 tasks, now up to date
+
+$ moon test --target native
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Total tests: 207, passed: 207, failed: 0.
+
+$ moon test --target wasm-gc
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Total tests: 207, passed: 207, failed: 0.
+
+$ moon test --target js
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Total tests: 207, passed: 207, failed: 0.
+
+$ moon build --release --target native cmd/main
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 6 tasks, now up to date
+Artifacts:
+  sundaysebasidian-byte/moonbean/cmd/main  native  <repo>/_build/native/release/build/cmd/main/main.exe
+
+$ moon build --release --target wasm-gc tests/clock_host
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 4 tasks, now up to date
+Artifacts:
+  sundaysebasidian-byte/moonbean/tests/clock_host  wasm-gc  <repo>/_build/wasm-gc/release/build/tests/clock_host/clock_host.wasm
+
+$ node scripts/wasm-clock-test.mjs
+exit 0
+{"zone":"UTC","instant":"2024-01-01T00:30:00Z","mode":"local","expected":"2024-01-01","result":["2024-01-01","2024-03-01","2050-06-15","2029-06-15"]}
+{"zone":"UTC","instant":"2024-01-01T00:30:00Z","mode":"unavailable","expected":"2024-01-01","result":["2024-01-01","2024-03-01","2050-06-15","2029-06-15"]}
+{"zone":"UTC","instant":"2024-01-01T00:30:00Z","mode":"invalid","expected":"2024-01-01","result":["2024-01-01","2024-03-01","2050-06-15","2029-06-15"]}
+{"zone":"UTC","instant":"2024-01-01T00:30:00Z","mode":"uninstalled","expected":"2024-01-01","result":["2024-01-01","2024-03-01","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-01-01T00:30:00Z","mode":"local","expected":"2023-12-31","result":["2023-12-31","2023-03-31","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-01-01T00:30:00Z","mode":"unavailable","expected":"2024-01-01","result":["2024-01-01","2024-03-01","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-01-01T00:30:00Z","mode":"invalid","expected":"2024-01-01","result":["2024-01-01","2024-03-01","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-01-01T00:30:00Z","mode":"uninstalled","expected":"2024-01-01","result":["2024-01-01","2024-03-01","2050-06-15","2029-06-15"]}
+{"zone":"Pacific/Kiritimati","instant":"2024-12-31T12:30:00Z","mode":"local","expected":"2025-01-01","result":["2025-01-01","2025-03-01","2050-06-15","2029-06-15"]}
+{"zone":"Pacific/Kiritimati","instant":"2024-12-31T12:30:00Z","mode":"unavailable","expected":"2024-12-31","result":["2024-12-31","2024-03-31","2050-06-15","2029-06-15"]}
+{"zone":"Pacific/Kiritimati","instant":"2024-12-31T12:30:00Z","mode":"invalid","expected":"2024-12-31","result":["2024-12-31","2024-03-31","2050-06-15","2029-06-15"]}
+{"zone":"Pacific/Kiritimati","instant":"2024-12-31T12:30:00Z","mode":"uninstalled","expected":"2024-12-31","result":["2024-12-31","2024-03-31","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-03-10T07:30:00Z","mode":"local","expected":"2024-03-09","result":["2024-03-09","2024-03-09","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-03-10T07:30:00Z","mode":"unavailable","expected":"2024-03-10","result":["2024-03-10","2024-03-10","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-03-10T07:30:00Z","mode":"invalid","expected":"2024-03-10","result":["2024-03-10","2024-03-10","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-03-10T07:30:00Z","mode":"uninstalled","expected":"2024-03-10","result":["2024-03-10","2024-03-10","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-03-10T09:59:00Z","mode":"local","expected":"2024-03-10","result":["2024-03-10","2024-03-10","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-03-10T09:59:00Z","mode":"unavailable","expected":"2024-03-10","result":["2024-03-10","2024-03-10","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-03-10T09:59:00Z","mode":"invalid","expected":"2024-03-10","result":["2024-03-10","2024-03-10","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-03-10T09:59:00Z","mode":"uninstalled","expected":"2024-03-10","result":["2024-03-10","2024-03-10","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-03-10T10:01:00Z","mode":"local","expected":"2024-03-10","result":["2024-03-10","2024-03-10","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-03-10T10:01:00Z","mode":"unavailable","expected":"2024-03-10","result":["2024-03-10","2024-03-10","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-03-10T10:01:00Z","mode":"invalid","expected":"2024-03-10","result":["2024-03-10","2024-03-10","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-03-10T10:01:00Z","mode":"uninstalled","expected":"2024-03-10","result":["2024-03-10","2024-03-10","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-11-03T06:30:00Z","mode":"local","expected":"2024-11-02","result":["2024-11-02","2024-03-02","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-11-03T06:30:00Z","mode":"unavailable","expected":"2024-11-03","result":["2024-11-03","2024-03-03","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-11-03T06:30:00Z","mode":"invalid","expected":"2024-11-03","result":["2024-11-03","2024-03-03","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-11-03T06:30:00Z","mode":"uninstalled","expected":"2024-11-03","result":["2024-11-03","2024-03-03","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-11-03T08:59:00Z","mode":"local","expected":"2024-11-03","result":["2024-11-03","2024-03-03","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-11-03T08:59:00Z","mode":"unavailable","expected":"2024-11-03","result":["2024-11-03","2024-03-03","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-11-03T08:59:00Z","mode":"invalid","expected":"2024-11-03","result":["2024-11-03","2024-03-03","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-11-03T08:59:00Z","mode":"uninstalled","expected":"2024-11-03","result":["2024-11-03","2024-03-03","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-11-03T09:01:00Z","mode":"local","expected":"2024-11-03","result":["2024-11-03","2024-03-03","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-11-03T09:01:00Z","mode":"unavailable","expected":"2024-11-03","result":["2024-11-03","2024-03-03","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-11-03T09:01:00Z","mode":"invalid","expected":"2024-11-03","result":["2024-11-03","2024-03-03","2050-06-15","2029-06-15"]}
+{"zone":"America/Los_Angeles","instant":"2024-11-03T09:01:00Z","mode":"uninstalled","expected":"2024-11-03","result":["2024-11-03","2024-03-03","2050-06-15","2029-06-15"]}
+{"zone":"UTC","instant":"2079-06-15T00:00:00Z","mode":"local","expected":"2079-06-15","result":["2079-06-15","2079-03-15","2050-06-15","2029-06-15"]}
+{"zone":"UTC","instant":"2079-06-15T00:00:00Z","mode":"unavailable","expected":"2079-06-15","result":["2079-06-15","2079-03-15","2050-06-15","2029-06-15"]}
+{"zone":"UTC","instant":"2079-06-15T00:00:00Z","mode":"invalid","expected":"2079-06-15","result":["2079-06-15","2079-03-15","2050-06-15","2029-06-15"]}
+{"zone":"UTC","instant":"2079-06-15T00:00:00Z","mode":"uninstalled","expected":"2079-06-15","result":["2079-06-15","2079-03-15","2050-06-15","2029-06-15"]}
+{"zone":"UTC","instant":"2080-06-15T00:00:00Z","mode":"local","expected":"2080-06-15","result":["2080-06-15","2080-03-15","2050-06-15","2129-06-15"]}
+{"zone":"UTC","instant":"2080-06-15T00:00:00Z","mode":"unavailable","expected":"2080-06-15","result":["2080-06-15","2080-03-15","2050-06-15","2129-06-15"]}
+{"zone":"UTC","instant":"2080-06-15T00:00:00Z","mode":"invalid","expected":"2080-06-15","result":["2080-06-15","2080-03-15","2050-06-15","2129-06-15"]}
+{"zone":"UTC","instant":"2080-06-15T00:00:00Z","mode":"uninstalled","expected":"2080-06-15","result":["2080-06-15","2080-03-15","2050-06-15","2129-06-15"]}
+Wasm host clock: 215/215 checks passed
+
+$ python3 scripts/bql_differential.py --oracle /tmp/moonbean-r4-oracle/bin --ours _build/native/release/build/cmd/main/main.exe
+exit 0
+BQL differential: 22344/22344 checks passed
+

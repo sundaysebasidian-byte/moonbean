@@ -1,0 +1,381 @@
+{
+  "cases": [
+    {
+      "host": "native",
+      "count": 100000,
+      "stages": {
+        "validate_pad_FIFO": {
+          "paired_ratios": [
+            1.0,
+            1.0898876404494382,
+            0.923913043478261
+          ],
+          "median_paired_ratio": 1.0
+        },
+        "realize": {
+          "paired_ratios": [
+            1.0,
+            1.0810810810810811,
+            0.9444444444444445
+          ],
+          "median_paired_ratio": 1.0
+        },
+        "regex": {
+          "paired_ratios": [
+            0.945945945945946,
+            1.076923076923077,
+            1.0512820512820513
+          ],
+          "median_paired_ratio": 1.0512820512820513
+        },
+        "format": {
+          "paired_ratios": [
+            1.0485436893203883,
+            1.070796460176991,
+            0.9636363636363636
+          ],
+          "median_paired_ratio": 1.0485436893203883
+        },
+        "substr": {
+          "paired_ratios": [
+            0.9811320754716981,
+            1.1071428571428572,
+            1.0181818181818183
+          ],
+          "median_paired_ratio": 1.0181818181818183
+        },
+        "transactions": {
+          "paired_ratios": [
+            1.0,
+            1.0,
+            1.0416666666666667
+          ],
+          "median_paired_ratio": 1.0
+        },
+        "parse": {
+          "paired_ratios": [
+            0.9310344827586207,
+            0.8955223880597014,
+            0.9206349206349207
+          ],
+          "median_paired_ratio": 0.9206349206349207
+        },
+        "group": {
+          "paired_ratios": [
+            1.0,
+            1.0,
+            0.984375
+          ],
+          "median_paired_ratio": 1.0
+        },
+        "booking_FIFO": {
+          "paired_ratios": [
+            1.0344827586206895,
+            0.9275362318840579,
+            0.9523809523809523
+          ],
+          "median_paired_ratio": 0.9523809523809523
+        },
+        "length": {
+          "paired_ratios": [
+            1.1,
+            1.125,
+            0.9696969696969697
+          ],
+          "median_paired_ratio": 1.1
+        },
+        "aggregate": {
+          "paired_ratios": [
+            1.0,
+            1.0909090909090908,
+            0.9696969696969697
+          ],
+          "median_paired_ratio": 1.0
+        }
+      }
+    },
+    {
+      "host": "js",
+      "count": 100000,
+      "stages": {
+        "validate_pad_FIFO": {
+          "paired_ratios": [
+            0.965909090909091,
+            1.043010752688172,
+            0.8921568627450981
+          ],
+          "median_paired_ratio": 0.965909090909091
+        },
+        "realize": {
+          "paired_ratios": [
+            0.9615384615384617,
+            0.9642857142857143,
+            0.9
+          ],
+          "median_paired_ratio": 0.9615384615384617
+        },
+        "regex": {
+          "paired_ratios": [
+            0.8292682926829269,
+            1.424242424242424,
+            1.131578947368421
+          ],
+          "median_paired_ratio": 1.131578947368421
+        },
+        "format": {
+          "paired_ratios": [
+            1.032846715328467,
+            0.993421052631579,
+            1.0719178082191783
+          ],
+          "median_paired_ratio": 1.032846715328467
+        },
+        "substr": {
+          "paired_ratios": [
+            1.0612244897959182,
+            0.9137931034482758,
+            1.0
+          ],
+          "median_paired_ratio": 1.0
+        },
+        "transactions": {
+          "paired_ratios": [
+            0.9189189189189191,
+            0.9729729729729729,
+            0.9729729729729729
+          ],
+          "median_paired_ratio": 0.9729729729729729
+        },
+        "parse": {
+          "paired_ratios": [
+            1.0852713178294575,
+            1.0816326530612246,
+            1.0141843971631206
+          ],
+          "median_paired_ratio": 1.0816326530612246
+        },
+        "group": {
+          "paired_ratios": [
+            0.953125,
+            1.0,
+            1.043478260869565
+          ],
+          "median_paired_ratio": 1.0
+        },
+        "booking_FIFO": {
+          "paired_ratios": [
+            1.1136363636363638,
+            1.0399999999999998,
+            1.0204081632653061
+          ],
+          "median_paired_ratio": 1.0399999999999998
+        },
+        "length": {
+          "paired_ratios": [
+            0.857142857142857,
+            1.0,
+            1.2580645161290323
+          ],
+          "median_paired_ratio": 1.0
+        },
+        "aggregate": {
+          "paired_ratios": [
+            1.0,
+            1.0,
+            1.076923076923077
+          ],
+          "median_paired_ratio": 1.0
+        }
+      }
+    },
+    {
+      "host": "native",
+      "count": 1000000,
+      "stages": {
+        "validate_pad_FIFO": {
+          "paired_ratios": [
+            1.003409090909091,
+            0.9911012235817575,
+            1.0065217391304349
+          ],
+          "median_paired_ratio": 1.003409090909091
+        },
+        "realize": {
+          "paired_ratios": [
+            0.9655172413793105,
+            0.9725274725274725,
+            1.0163934426229508
+          ],
+          "median_paired_ratio": 0.9725274725274725
+        },
+        "regex": {
+          "paired_ratios": [
+            1.0,
+            1.0337662337662339,
+            1.6666666666666667
+          ],
+          "median_paired_ratio": 1.0337662337662339
+        },
+        "format": {
+          "paired_ratios": [
+            1.0145454545454546,
+            1.0570918822479929,
+            1.72841726618705
+          ],
+          "median_paired_ratio": 1.0570918822479929
+        },
+        "substr": {
+          "paired_ratios": [
+            0.9909584086799277,
+            1.0124999999999997,
+            1.7367458866544787
+          ],
+          "median_paired_ratio": 1.0124999999999997
+        },
+        "transactions": {
+          "paired_ratios": [
+            1.0458715596330275,
+            0.9956709956709957,
+            1.793859649122807
+          ],
+          "median_paired_ratio": 1.0458715596330275
+        },
+        "parse": {
+          "paired_ratios": [
+            0.915240423797881,
+            0.9250996015936256,
+            0.8946528332003193
+          ],
+          "median_paired_ratio": 0.915240423797881
+        },
+        "group": {
+          "paired_ratios": [
+            1.0159489633173844,
+            1.0063795853269537,
+            1.9193798449612403
+          ],
+          "median_paired_ratio": 1.0159489633173844
+        },
+        "booking_FIFO": {
+          "paired_ratios": [
+            1.0190839694656488,
+            1.0128440366972478,
+            0.9962049335863378
+          ],
+          "median_paired_ratio": 1.0128440366972478
+        },
+        "length": {
+          "paired_ratios": [
+            1.0947712418300655,
+            1.0227272727272727,
+            1.8971962616822429
+          ],
+          "median_paired_ratio": 1.0947712418300655
+        },
+        "aggregate": {
+          "paired_ratios": [
+            1.0276073619631902,
+            1.015527950310559,
+            1.9596273291925466
+          ],
+          "median_paired_ratio": 1.0276073619631902
+        }
+      }
+    },
+    {
+      "host": "js",
+      "count": 1000000,
+      "stages": {
+        "validate_pad_FIFO": {
+          "paired_ratios": [
+            0.9875130072840791,
+            1.019047619047619,
+            1.164090368608799
+          ],
+          "median_paired_ratio": 1.019047619047619
+        },
+        "realize": {
+          "paired_ratios": [
+            0.9144736842105264,
+            1.1068702290076335,
+            1.125984251968504
+          ],
+          "median_paired_ratio": 1.1068702290076335
+        },
+        "regex": {
+          "paired_ratios": [
+            0.7816711590296496,
+            1.0355329949238579,
+            1.181159420289855
+          ],
+          "median_paired_ratio": 1.0355329949238579
+        },
+        "format": {
+          "paired_ratios": [
+            0.9900277008310249,
+            1.0203833282628538,
+            1.049375190490704
+          ],
+          "median_paired_ratio": 1.0203833282628538
+        },
+        "substr": {
+          "paired_ratios": [
+            0.8987538940809968,
+            1.0069444444444444,
+            1.246520874751491
+          ],
+          "median_paired_ratio": 1.0069444444444444
+        },
+        "transactions": {
+          "paired_ratios": [
+            0.9047619047619047,
+            1.0970873786407769,
+            1.3155080213903743
+          ],
+          "median_paired_ratio": 1.0970873786407769
+        },
+        "parse": {
+          "paired_ratios": [
+            1.0517363571934797,
+            1.041432584269663,
+            1.679635761589404
+          ],
+          "median_paired_ratio": 1.0517363571934797
+        },
+        "group": {
+          "paired_ratios": [
+            0.9057142857142858,
+            1.1055194805194806,
+            1.1404399323181051
+          ],
+          "median_paired_ratio": 1.1055194805194806
+        },
+        "booking_FIFO": {
+          "paired_ratios": [
+            0.968,
+            0.9860834990059641,
+            1.128735632183908
+          ],
+          "median_paired_ratio": 0.9860834990059641
+        },
+        "length": {
+          "paired_ratios": [
+            0.9507389162561576,
+            1.0207253886010363,
+            1.1580459770114944
+          ],
+          "median_paired_ratio": 1.0207253886010363
+        },
+        "aggregate": {
+          "paired_ratios": [
+            0.8474178403755869,
+            1.027355623100304,
+            1.196013289036545
+          ],
+          "median_paired_ratio": 1.027355623100304
+        }
+      }
+    }
+  ],
+  "ratio_definition": "Median of three within-round candidate/e33a3fc stage time ratios; lower is faster."
+}

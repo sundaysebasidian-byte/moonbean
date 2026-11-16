@@ -19,7 +19,9 @@ Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运
 | option | booking、容差推断、按币种和通配符默认容差有证据；operating_currency 仅单币种报表转换；account_rounding、render_commas、documents 等未实现的效果逐项披露，不能仅凭解析成功计为兼容 |
 | plugin 与扩展 | 五个内置插件有差分证据，其余 Python 插件警告且不执行；AVERAGE、{*}、裸 FROM balances 库存语义均为扩展 |
 
-0.2.8 补入多行字符串、金额与空值元数据、未闭合字符串诊断、原始行号、空 narration 和零残差自动 posting，并核验 native check 的 document 路径。保留的 9 个复审分类差异对应 oracle 拒绝的 AVERAGE／成本合并扩展。含多行字符串的账本由 fmt 保留原文布局。时钟接入以 Node 上的 wasm-gc 测试为证，链接 host_clock 时必须在实例化时提供 import。已解析的零值／非法回调和未调用 install 的情况使用 UTC。R14 完整差分 20790/20790、三目标各 200 项单测与 215 项时钟检查通过；三组 moonrun 1M FIFO 配对及三组 Node/V8 堆采样完成，native/JS 短程交错 A/B 比值和共享主机限制保存在本轮验收中。
+0.2.8 的 R14 返工修复 flag 字符集、紧贴单词的引号词法与恢复、前导小数点、重复元数据、无空格算式、混合证券交易中的裸数量货币推断，以及相对 document 尾斜杠。未闭合引号的恢复受多行字符串实际闭合位置约束，不承诺逐物理行恢复。733 份复审账本已追踪，其中 23 项为旧有扩展／未知 option 透传边界。当前返工验收与原始内存证据的来源分开列在 R14 验收中。
+
+0.2.8 补入多行字符串、金额与空值元数据、未闭合字符串诊断、原始行号、空 narration 和零残差自动 posting，并核验 native check 的 document 路径。保留的 9 个复审分类差异对应 oracle 拒绝的 AVERAGE／成本合并扩展。含多行字符串的账本由 fmt 保留原文布局。时钟接入以 Node 上的 wasm-gc 测试为证，链接 host_clock 时必须在实例化时提供 import。已解析的零值／非法回调和未调用 install 的情况使用 UTC。R14 返工后完整差分 22344/22344、三目标各 207 项单测与 215 项时钟检查通过；重新完成 24 次 native/JS 短程交错 A/B。早期三组 moonrun／Node 内存配对仅证明其原始候选源码，本次未重跑大规模 Wasm 内存采样；完整证据与共享主机限制见本轮验收。
 
 ## 一致性证据
 
