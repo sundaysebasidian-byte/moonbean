@@ -1,0 +1,63 @@
+{
+  "source": "2024-01-01 open Assets:Cash USD\n2024-01-02 note Assets:Cash \"kept\"\n2024-01-03 note Assets:Cash \"still\"\n2024-01-04 note Assets:Cash \"here\"\n2024-01-05 document Assets:Cash \"receipt.pdf\"\n",
+  "checks": [
+    {
+      "phase": "absent",
+      "results": [
+        {
+          "command": [
+            "_build/native/debug/build/cmd/main/main.exe",
+            "check",
+            "<repo>/.oracle-cache/r14-ci/document-probe/child.beancount"
+          ],
+          "exit": 1,
+          "stdout": "",
+          "stderr": "<repo>/.oracle-cache/r14-ci/document-probe/child.beancount:5: validation.document_missing: File does not exist: \"<repo>/.oracle-cache/r14-ci/document-probe/receipt.pdf\"\n"
+        },
+        {
+          "command": [
+            "/tmp/moonbean-r4-oracle/bin/bean-check",
+            "<repo>/.oracle-cache/r14-ci/document-probe/child.beancount"
+          ],
+          "exit": 1,
+          "stdout": "",
+          "stderr": "<repo>/.oracle-cache/r14-ci/document-probe/child.beancount:5: File does not exist: \"<repo>/.oracle-cache/r14-ci/document-probe/receipt.pdf\"\n\n   2024-01-05 document Assets:Cash \"<repo>/.oracle-cache/r14-ci/document-probe/receipt.pdf\"\n\n\n"
+        }
+      ]
+    },
+    {
+      "phase": "present",
+      "results": [
+        {
+          "command": [
+            "_build/native/debug/build/cmd/main/main.exe",
+            "check",
+            "<repo>/.oracle-cache/r14-ci/document-probe/child.beancount"
+          ],
+          "exit": 0,
+          "stdout": "<repo>/.oracle-cache/r14-ci/document-probe/child.beancount: ok\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "/tmp/moonbean-r4-oracle/bin/bean-check",
+            "<repo>/.oracle-cache/r14-ci/document-probe/child.beancount"
+          ],
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ]
+    }
+  ],
+  "export_exit": 0,
+  "export_errors": [],
+  "export_warnings": [
+    {
+      "file": "<repo>/.oracle-cache/r14-ci/document-probe/child.beancount",
+      "line": 5,
+      "code": "validation.document_unchecked",
+      "message": "Document is metadata only; file existence and contents are not checked"
+    }
+  ]
+}

@@ -1,0 +1,1383 @@
+{
+  "environment": {
+    "os": "macOS-27.2-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "fixture_commit": "f08310ef7e34216253aa887125549c932e92259c",
+    "base_commit": "825c412899e8671af035495c368217d36ff51035",
+    "moon_version": "moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon\nmoonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc\nmoonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+    "node_version": "v22.23.5",
+    "node_binary_sha256": "ff9365ccf73e95b7ac69867418124973addde63043650c0db96bd6a722c53cd8",
+    "python_oracle": {
+      "python": "3.14.7",
+      "beancount": "3.2.3",
+      "beanquery": "0.2.0",
+      "dateutil": "4.0.0"
+    },
+    "harness_python": "3.14.6",
+    "chrome": "157.0.8103.52",
+    "workflows": {
+      ".github/workflows/pages.yml": "39f8a091060cd0ad0a25b904421edf678aaf128b5b7f7dd65b4f853c9b087cc6",
+      ".github/workflows/ci.yml": "70af833cbdc39c9e045434d9bac365fbf705c2179214356d32cc10030d2dcbed"
+    },
+    "provisioning": "Provided MoonBit/oracle reused; Node 22 installed in task-local npm cache; no global installers or policy changes; remote GitHub actions not invoked",
+    "native_cli_sha256": "34d9be45807860b78f532761309bd8fb800acfd8f80ceff3d70bb8d8ec8e5bb1",
+    "runtime_source_reference": "825c412: no MoonBit runtime/interface/module version changes in f08310e"
+  },
+  "workflow_steps": [
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "macos-latest",
+      "step": "Checkout",
+      "status": "LOCAL IDENTITY VERIFIED",
+      "commands": [],
+      "note": "Existing authorized worktree at f08310e; checkout action itself not invoked."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "macos-latest",
+      "step": "Install MoonBit (unix)",
+      "status": "PROVISIONED, INSTALLER NOT RUN",
+      "commands": [],
+      "note": "Reused the explicitly provided /tmp/moon-new; did not run an unpinned installer into the shared user environment."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "macos-latest",
+      "step": "Install MoonBit (windows)",
+      "status": "SKIP: workflow condition",
+      "commands": [],
+      "note": "The workflow excludes this installer on this OS."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "macos-latest",
+      "step": "Toolchain version",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "build-version",
+          "command": [
+            "moon",
+            "version",
+            "--all"
+          ],
+          "exit": 0,
+          "log": "build-version.log",
+          "seconds": 0.05358290672302246
+        },
+        {
+          "id": "build-update",
+          "command": [
+            "moon",
+            "update"
+          ],
+          "exit": 0,
+          "log": "build-update.log",
+          "seconds": 3.8991010189056396
+        }
+      ],
+      "note": "Executed on local macOS 27.2 arm64, not a hosted macos-latest image."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "macos-latest",
+      "step": "Check",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "build-check",
+          "command": [
+            "moon",
+            "check",
+            "--deny-warn",
+            "--target",
+            "all"
+          ],
+          "exit": 0,
+          "log": "build-check.log",
+          "seconds": 0.5578749179840088
+        }
+      ],
+      "note": "Executed on local macOS 27.2 arm64, not a hosted macos-latest image."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "macos-latest",
+      "step": "Build",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "build-build",
+          "command": [
+            "moon",
+            "build",
+            "--target",
+            "all"
+          ],
+          "exit": 0,
+          "log": "build-build.log",
+          "seconds": 1.0056540966033936
+        }
+      ],
+      "note": "Executed on local macOS 27.2 arm64, not a hosted macos-latest image."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "macos-latest",
+      "step": "Test",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "build-test",
+          "command": [
+            "moon",
+            "test",
+            "--target",
+            "all"
+          ],
+          "exit": 0,
+          "log": "build-test.log",
+          "seconds": 1.687061071395874
+        }
+      ],
+      "note": "Executed on local macOS 27.2 arm64, not a hosted macos-latest image."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "macos-latest",
+      "step": "Formatting",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "build-format",
+          "command": [
+            "moon",
+            "fmt",
+            "--check"
+          ],
+          "exit": 0,
+          "log": "build-format.log",
+          "seconds": 0.014448881149291992
+        }
+      ],
+      "note": "Executed on local macOS 27.2 arm64, not a hosted macos-latest image."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "macos-latest",
+      "step": "Generated interfaces are committed",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "build-info",
+          "command": [
+            "moon",
+            "info"
+          ],
+          "exit": 0,
+          "log": "build-info.log",
+          "seconds": 0.2562987804412842
+        },
+        {
+          "id": "build-interface-diff",
+          "command": [
+            "git",
+            "diff",
+            "--exit-code"
+          ],
+          "exit": 0,
+          "log": "build-interface-diff.log",
+          "seconds": 0.013145685195922852
+        }
+      ],
+      "note": "Executed on local macOS 27.2 arm64, not a hosted macos-latest image."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "macos-latest",
+      "step": "README quick start",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "readme-check",
+          "command": [
+            "moon",
+            "run",
+            "cmd/main",
+            "--target",
+            "native",
+            "--",
+            "check",
+            "examples/full-year-2024.beancount"
+          ],
+          "exit": 0,
+          "log": "readme-check.log",
+          "seconds": 2.01247501373291
+        },
+        {
+          "id": "readme-bal",
+          "command": [
+            "moon",
+            "run",
+            "cmd/main",
+            "--target",
+            "native",
+            "--",
+            "bal",
+            "examples/full-year-2024.beancount",
+            "--convert",
+            "CNY"
+          ],
+          "exit": 0,
+          "log": "readme-bal.log",
+          "seconds": 0.06191897392272949
+        },
+        {
+          "id": "readme-query",
+          "command": [
+            "moon",
+            "run",
+            "cmd/main",
+            "--target",
+            "native",
+            "--",
+            "query",
+            "examples/full-year-2024.beancount",
+            "SELECT account, sum(units) FROM postings GROUP BY account ORDER BY account"
+          ],
+          "exit": 0,
+          "log": "readme-query.log",
+          "seconds": 0.04736208915710449
+        },
+        {
+          "id": "readme-fmt",
+          "command": [
+            "moon",
+            "run",
+            "cmd/main",
+            "--target",
+            "native",
+            "--",
+            "fmt",
+            "examples/full-year-2024.beancount"
+          ],
+          "exit": 0,
+          "log": "readme-fmt.log",
+          "seconds": 0.04600095748901367
+        },
+        {
+          "id": "readme-export",
+          "command": [
+            "moon",
+            "run",
+            "cmd/main",
+            "--target",
+            "native",
+            "--",
+            "export",
+            "examples/full-year-2024.beancount",
+            "--json"
+          ],
+          "exit": 0,
+          "log": "readme-export.log",
+          "seconds": 0.05016803741455078
+        }
+      ],
+      "note": "Executed on local macOS 27.2 arm64, not a hosted macos-latest image."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "ubuntu-latest",
+      "step": "Checkout",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "ubuntu-latest",
+      "step": "Install MoonBit (unix)",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "ubuntu-latest",
+      "step": "Install MoonBit (windows)",
+      "status": "SKIP: workflow condition",
+      "commands": [],
+      "note": "The workflow excludes this installer on this OS."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "ubuntu-latest",
+      "step": "Toolchain version",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "ubuntu-latest",
+      "step": "Check",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "ubuntu-latest",
+      "step": "Build",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "ubuntu-latest",
+      "step": "Test",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "ubuntu-latest",
+      "step": "Formatting",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "ubuntu-latest",
+      "step": "Generated interfaces are committed",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "ubuntu-latest",
+      "step": "README quick start",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "windows-latest",
+      "step": "Checkout",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "windows-latest",
+      "step": "Install MoonBit (unix)",
+      "status": "SKIP: workflow condition",
+      "commands": [],
+      "note": "The workflow excludes this installer on this OS."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "windows-latest",
+      "step": "Install MoonBit (windows)",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "windows-latest",
+      "step": "Toolchain version",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "windows-latest",
+      "step": "Check",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "windows-latest",
+      "step": "Build",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "windows-latest",
+      "step": "Test",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "windows-latest",
+      "step": "Formatting",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "windows-latest",
+      "step": "Generated interfaces are committed",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "build",
+      "host": "windows-latest",
+      "step": "README quick start",
+      "status": "NOT RUN on this OS",
+      "commands": [],
+      "note": "Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "playground",
+      "host": "ubuntu-latest",
+      "step": "Checkout",
+      "status": "LOCAL IDENTITY VERIFIED",
+      "commands": [],
+      "note": "Existing worktree; hosted checkout action not invoked."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "playground",
+      "host": "ubuntu-latest",
+      "step": "Install MoonBit",
+      "status": "PROVISIONED, INSTALLER NOT RUN",
+      "commands": [],
+      "note": "Provided pinned toolchain reused."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "playground",
+      "host": "ubuntu-latest",
+      "step": "Set up Node 22",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "playground-node",
+          "command": [
+            "node",
+            "--version"
+          ],
+          "exit": 0,
+          "log": "playground-node.log",
+          "seconds": 0.012747049331665039
+        }
+      ],
+      "note": "Local task-isolated Node 22.23.5; setup-node action itself not invoked."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "playground",
+      "host": "ubuntu-latest",
+      "step": "Build bundle",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "playground-update",
+          "command": [
+            "moon",
+            "update"
+          ],
+          "exit": 0,
+          "log": "playground-update.log",
+          "seconds": 3.6885828971862793
+        },
+        {
+          "id": "playground-build",
+          "command": [
+            "bash",
+            "scripts/build-web.sh"
+          ],
+          "exit": 0,
+          "log": "playground-build.log",
+          "seconds": 0.7418687343597412
+        }
+      ],
+      "note": "Workflow commands executed locally on macOS; Ubuntu image unverified."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "playground",
+      "host": "ubuntu-latest",
+      "step": "Smoke test",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "playground-smoke",
+          "command": [
+            "node",
+            "web/smoke.mjs"
+          ],
+          "exit": 0,
+          "log": "playground-smoke.log",
+          "seconds": 0.17628693580627441
+        }
+      ],
+      "note": "29 checks; Node 22.23.5."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "playground",
+      "host": "ubuntu-latest",
+      "step": "Browser smoke test",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "playground-browser",
+          "command": [
+            "node",
+            "web/dom-smoke.mjs"
+          ],
+          "exit": 0,
+          "log": "playground-browser.log",
+          "seconds": 8.277545928955078
+        }
+      ],
+      "note": "8 tests; isolated headless Chrome 157.0.8103.52, desktop and 390px viewport; local macOS."
+    },
+    {
+      "workflow": "pages.yml",
+      "job": "deploy",
+      "host": "ubuntu-latest",
+      "step": "Checkout",
+      "status": "LOCAL IDENTITY VERIFIED",
+      "commands": [],
+      "note": "Existing worktree; hosted checkout action not invoked."
+    },
+    {
+      "workflow": "pages.yml",
+      "job": "deploy",
+      "host": "ubuntu-latest",
+      "step": "Install MoonBit",
+      "status": "PROVISIONED, INSTALLER NOT RUN",
+      "commands": [],
+      "note": "Provided pinned toolchain reused."
+    },
+    {
+      "workflow": "pages.yml",
+      "job": "deploy",
+      "host": "ubuntu-latest",
+      "step": "Set up Node 22",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "pages-node",
+          "command": [
+            "node",
+            "--version"
+          ],
+          "exit": 0,
+          "log": "pages-node.log",
+          "seconds": 0.01726508140563965
+        }
+      ],
+      "note": "Local task-isolated Node 22.23.5; setup-node action itself not invoked."
+    },
+    {
+      "workflow": "pages.yml",
+      "job": "deploy",
+      "host": "ubuntu-latest",
+      "step": "Build playground",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "pages-update",
+          "command": [
+            "moon",
+            "update"
+          ],
+          "exit": 0,
+          "log": "pages-update.log",
+          "seconds": 4.121205806732178
+        },
+        {
+          "id": "pages-build",
+          "command": [
+            "bash",
+            "scripts/build-web.sh"
+          ],
+          "exit": 0,
+          "log": "pages-build.log",
+          "seconds": 0.1628890037536621
+        }
+      ],
+      "note": "Workflow commands executed locally on macOS; Ubuntu image unverified."
+    },
+    {
+      "workflow": "pages.yml",
+      "job": "deploy",
+      "host": "ubuntu-latest",
+      "step": "Smoke test",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "pages-smoke",
+          "command": [
+            "node",
+            "web/smoke.mjs"
+          ],
+          "exit": 0,
+          "log": "pages-smoke.log",
+          "seconds": 0.17431402206420898
+        }
+      ],
+      "note": "29 checks; Node 22.23.5."
+    },
+    {
+      "workflow": "pages.yml",
+      "job": "deploy",
+      "host": "ubuntu-latest",
+      "step": "Browser smoke test",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "pages-browser",
+          "command": [
+            "node",
+            "web/dom-smoke.mjs"
+          ],
+          "exit": 0,
+          "log": "pages-browser.log",
+          "seconds": 7.476144790649414
+        }
+      ],
+      "note": "8 tests; isolated headless Chrome 157.0.8103.52, desktop and 390px viewport; local macOS."
+    },
+    {
+      "workflow": "pages.yml",
+      "job": "deploy",
+      "host": "ubuntu-latest",
+      "step": "Configure Pages",
+      "status": "NOT RUN: hosted GitHub action",
+      "commands": [],
+      "note": "Remote Pages configuration was not changed."
+    },
+    {
+      "workflow": "pages.yml",
+      "job": "deploy",
+      "host": "ubuntu-latest",
+      "step": "Upload Pages artifact",
+      "status": "LOCAL PACKAGING VERIFIED; REMOTE UPLOAD NOT RUN",
+      "commands": [],
+      "note": "pages-artifact.json verifies all seven files and archive bytes."
+    },
+    {
+      "workflow": "pages.yml",
+      "job": "deploy",
+      "host": "ubuntu-latest",
+      "step": "Deploy Pages",
+      "status": "NOT RUN: user prohibits publishing",
+      "commands": [],
+      "note": "No deployment, push, or publication."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "oracle",
+      "host": "ubuntu-latest",
+      "step": "Checkout",
+      "status": "LOCAL IDENTITY VERIFIED",
+      "commands": [],
+      "note": "Existing worktree; hosted checkout not invoked."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "oracle",
+      "host": "ubuntu-latest",
+      "step": "Install MoonBit",
+      "status": "PROVISIONED, INSTALLER NOT RUN",
+      "commands": [],
+      "note": "Provided toolchain reused."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "oracle",
+      "host": "ubuntu-latest",
+      "step": "Toolchain version",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "oracle-version",
+          "command": [
+            "moon",
+            "version",
+            "--all"
+          ],
+          "exit": 0,
+          "log": "oracle-version.log",
+          "seconds": 0.04187893867492676
+        },
+        {
+          "id": "oracle-update",
+          "command": [
+            "moon",
+            "update"
+          ],
+          "exit": 0,
+          "log": "oracle-update.log",
+          "seconds": 3.421227216720581
+        }
+      ],
+      "note": ""
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "oracle",
+      "host": "ubuntu-latest",
+      "step": "Set up Python 3.14",
+      "status": "PROVISIONED 3.14.7; HOSTED ACTION NOT RUN",
+      "commands": [],
+      "note": "Workflow Python commands resolve to the restored oracle Python 3.14.7; wrapper uses system 3.14.6."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "oracle",
+      "host": "ubuntu-latest",
+      "step": "Run oracle conformance",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "conformance",
+          "command": [
+            "bash",
+            "-o",
+            "pipefail",
+            "-c",
+            "./scripts/oracle.sh --markdown | tee .oracle-cache/r14-ci/conformance.md"
+          ],
+          "exit": 0,
+          "seconds": 253.18750524520874,
+          "stdout": "conformance.stdout.log",
+          "stderr": "conformance.stderr.log"
+        }
+      ],
+      "note": "Pinned restored oracle reused; tee report mapped to .oracle-cache/r14-ci/conformance.md."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "oracle",
+      "host": "ubuntu-latest",
+      "step": "Seeded differential and extended BQL",
+      "status": "PASS locally",
+      "commands": [
+        {
+          "id": "seed-7",
+          "command": [
+            "python3",
+            "scripts/random_differential.py",
+            "--seed",
+            "7",
+            "--out",
+            ".oracle-cache/differential/seed-7",
+            "--oracle",
+            "/tmp/moonbean-r4-oracle/bin",
+            "--allow-known-extensions"
+          ],
+          "exit": 0,
+          "seconds": 299.9235887527466,
+          "stdout": "seed-7.stdout.log",
+          "stderr": "seed-7.stderr.log"
+        },
+        {
+          "id": "seed-20261101",
+          "command": [
+            "python3",
+            "scripts/random_differential.py",
+            "--seed",
+            "20261101",
+            "--out",
+            ".oracle-cache/differential/seed-20261101",
+            "--oracle",
+            "/tmp/moonbean-r4-oracle/bin",
+            "--allow-known-extensions"
+          ],
+          "exit": 0,
+          "seconds": 299.8909800052643,
+          "stdout": "seed-20261101.stdout.log",
+          "stderr": "seed-20261101.stderr.log"
+        },
+        {
+          "id": "reports",
+          "command": [
+            "python3",
+            "scripts/report_differential.py",
+            "--oracle",
+            "/tmp/moonbean-r4-oracle/bin"
+          ],
+          "exit": 0,
+          "seconds": 82.49663186073303,
+          "stdout": "reports.stdout.log",
+          "stderr": "reports.stderr.log"
+        },
+        {
+          "id": "includes",
+          "command": [
+            "python3",
+            "scripts/include_smoke.py"
+          ],
+          "exit": 0,
+          "seconds": 0.1694660186767578,
+          "stdout": "includes.stdout.log",
+          "stderr": "includes.stderr.log"
+        },
+        {
+          "id": "bql",
+          "command": [
+            "python3",
+            "scripts/bql_differential.py",
+            "--oracle",
+            "/tmp/moonbean-r4-oracle/bin"
+          ],
+          "exit": 0,
+          "seconds": 503.5538160800934,
+          "stdout": "bql.stdout.log",
+          "stderr": "bql.stderr.log"
+        }
+      ],
+      "note": "All five commands executed with their default case counts and original flags."
+    },
+    {
+      "workflow": "ci.yml",
+      "job": "oracle",
+      "host": "ubuntu-latest",
+      "step": "Upload conformance report",
+      "status": "LOCAL PACKAGING VERIFIED; REMOTE UPLOAD NOT RUN",
+      "commands": [],
+      "note": "Artifact byte hashes verified; report filename mapped locally. No GitHub upload action invoked."
+    }
+  ],
+  "commands": [
+    {
+      "id": "build-version",
+      "command": [
+        "moon",
+        "version",
+        "--all"
+      ],
+      "exit": 0,
+      "log": "build-version.log",
+      "seconds": 0.05358290672302246,
+      "log_sha256": "e09523215f783fdbdcba85e65fe6f2ccfb9f17f5e58e350961432f7e977c2058"
+    },
+    {
+      "id": "build-update",
+      "command": [
+        "moon",
+        "update"
+      ],
+      "exit": 0,
+      "log": "build-update.log",
+      "seconds": 3.8991010189056396,
+      "log_sha256": "5867fd85b950d30cfa53a965d0f592dbdcc29db13c60388e0a5b24d303b39c72"
+    },
+    {
+      "id": "build-check",
+      "command": [
+        "moon",
+        "check",
+        "--deny-warn",
+        "--target",
+        "all"
+      ],
+      "exit": 0,
+      "log": "build-check.log",
+      "seconds": 0.5578749179840088,
+      "log_sha256": "f0b3824f5585609b0d46fb9f05d70eafde05e764a763176fdf8ed043ff67952f"
+    },
+    {
+      "id": "build-build",
+      "command": [
+        "moon",
+        "build",
+        "--target",
+        "all"
+      ],
+      "exit": 0,
+      "log": "build-build.log",
+      "seconds": 1.0056540966033936,
+      "log_sha256": "4329663ac702545581dbc07e06ec1ef4cb92e59acdde037a45eba03e607e5918"
+    },
+    {
+      "id": "build-test",
+      "command": [
+        "moon",
+        "test",
+        "--target",
+        "all"
+      ],
+      "exit": 0,
+      "log": "build-test.log",
+      "seconds": 1.687061071395874,
+      "log_sha256": "203cb014f20734fc8416f47ea54fd023af0428efd50534b543a7cf439b201a42"
+    },
+    {
+      "id": "build-format",
+      "command": [
+        "moon",
+        "fmt",
+        "--check"
+      ],
+      "exit": 0,
+      "log": "build-format.log",
+      "seconds": 0.014448881149291992,
+      "log_sha256": "30ec13dbdad8330682289e0f37415033da68d27500ec282757b7d943ce8227b5"
+    },
+    {
+      "id": "build-info",
+      "command": [
+        "moon",
+        "info"
+      ],
+      "exit": 0,
+      "log": "build-info.log",
+      "seconds": 0.2562987804412842,
+      "log_sha256": "e498562d5b827e04a6a2bf9cd7d95fcfe26bfd66817379f50adec0bd598ef03b"
+    },
+    {
+      "id": "build-interface-diff",
+      "command": [
+        "git",
+        "diff",
+        "--exit-code"
+      ],
+      "exit": 0,
+      "log": "build-interface-diff.log",
+      "seconds": 0.013145685195922852,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "readme-check",
+      "command": [
+        "moon",
+        "run",
+        "cmd/main",
+        "--target",
+        "native",
+        "--",
+        "check",
+        "examples/full-year-2024.beancount"
+      ],
+      "exit": 0,
+      "log": "readme-check.log",
+      "seconds": 2.01247501373291,
+      "log_sha256": "2704e9cae638ef8bdcece632674a85ddc1a071863982c124aa6424382601981f"
+    },
+    {
+      "id": "readme-bal",
+      "command": [
+        "moon",
+        "run",
+        "cmd/main",
+        "--target",
+        "native",
+        "--",
+        "bal",
+        "examples/full-year-2024.beancount",
+        "--convert",
+        "CNY"
+      ],
+      "exit": 0,
+      "log": "readme-bal.log",
+      "seconds": 0.06191897392272949,
+      "log_sha256": "0afde58e965b4c288d5e1ccc88f96fa6041d67fe1b04c7adec9b7e8722018fd8"
+    },
+    {
+      "id": "readme-query",
+      "command": [
+        "moon",
+        "run",
+        "cmd/main",
+        "--target",
+        "native",
+        "--",
+        "query",
+        "examples/full-year-2024.beancount",
+        "SELECT account, sum(units) FROM postings GROUP BY account ORDER BY account"
+      ],
+      "exit": 0,
+      "log": "readme-query.log",
+      "seconds": 0.04736208915710449,
+      "log_sha256": "57d762be6ff38d2637a0f85b4435f894026084874cbf0bc6ace42b438650c4cd"
+    },
+    {
+      "id": "readme-fmt",
+      "command": [
+        "moon",
+        "run",
+        "cmd/main",
+        "--target",
+        "native",
+        "--",
+        "fmt",
+        "examples/full-year-2024.beancount"
+      ],
+      "exit": 0,
+      "log": "readme-fmt.log",
+      "seconds": 0.04600095748901367,
+      "log_sha256": "e28682615e347cea14c35f976b7459af71b0ae4c4d185dfd231a7814295fa356"
+    },
+    {
+      "id": "readme-export",
+      "command": [
+        "moon",
+        "run",
+        "cmd/main",
+        "--target",
+        "native",
+        "--",
+        "export",
+        "examples/full-year-2024.beancount",
+        "--json"
+      ],
+      "exit": 0,
+      "log": "readme-export.log",
+      "seconds": 0.05016803741455078,
+      "log_sha256": "c1adc931827518974732cb7c909c2658ca2089e6a7a9ef4605593c5e7c2cdc68"
+    },
+    {
+      "id": "playground-node",
+      "command": [
+        "node",
+        "--version"
+      ],
+      "exit": 0,
+      "log": "playground-node.log",
+      "seconds": 0.012747049331665039,
+      "log_sha256": "17e666b140e321b57eec7d7066da9f774ad2457620dc275d6386b5224ab416ac"
+    },
+    {
+      "id": "playground-update",
+      "command": [
+        "moon",
+        "update"
+      ],
+      "exit": 0,
+      "log": "playground-update.log",
+      "seconds": 3.6885828971862793,
+      "log_sha256": "5867fd85b950d30cfa53a965d0f592dbdcc29db13c60388e0a5b24d303b39c72"
+    },
+    {
+      "id": "playground-build",
+      "command": [
+        "bash",
+        "scripts/build-web.sh"
+      ],
+      "exit": 0,
+      "log": "playground-build.log",
+      "seconds": 0.7418687343597412,
+      "log_sha256": "06189d1198b29d52f1df588dc2b0eb1166893dfe1cd7d8e01c94d0d246852211"
+    },
+    {
+      "id": "playground-smoke",
+      "command": [
+        "node",
+        "web/smoke.mjs"
+      ],
+      "exit": 0,
+      "log": "playground-smoke.log",
+      "seconds": 0.17628693580627441,
+      "log_sha256": "7acbfffcfab2f0b88b376c285c2c00154f0134842a882e5aeaa32f256cd2c943"
+    },
+    {
+      "id": "playground-browser",
+      "command": [
+        "node",
+        "web/dom-smoke.mjs"
+      ],
+      "exit": 0,
+      "log": "playground-browser.log",
+      "seconds": 8.277545928955078,
+      "log_sha256": "2d27893d7660cb764635ea5e041060575aa7cfeb2d20fbf8025f82e7f8c8ab48"
+    },
+    {
+      "id": "pages-node",
+      "command": [
+        "node",
+        "--version"
+      ],
+      "exit": 0,
+      "log": "pages-node.log",
+      "seconds": 0.01726508140563965,
+      "log_sha256": "17e666b140e321b57eec7d7066da9f774ad2457620dc275d6386b5224ab416ac"
+    },
+    {
+      "id": "pages-update",
+      "command": [
+        "moon",
+        "update"
+      ],
+      "exit": 0,
+      "log": "pages-update.log",
+      "seconds": 4.121205806732178,
+      "log_sha256": "5867fd85b950d30cfa53a965d0f592dbdcc29db13c60388e0a5b24d303b39c72"
+    },
+    {
+      "id": "pages-build",
+      "command": [
+        "bash",
+        "scripts/build-web.sh"
+      ],
+      "exit": 0,
+      "log": "pages-build.log",
+      "seconds": 0.1628890037536621,
+      "log_sha256": "822f5dce3f9cfdc8e6c557d19c6281a4eb412280ac591493cbf380cf573683fa"
+    },
+    {
+      "id": "pages-smoke",
+      "command": [
+        "node",
+        "web/smoke.mjs"
+      ],
+      "exit": 0,
+      "log": "pages-smoke.log",
+      "seconds": 0.17431402206420898,
+      "log_sha256": "7acbfffcfab2f0b88b376c285c2c00154f0134842a882e5aeaa32f256cd2c943"
+    },
+    {
+      "id": "pages-browser",
+      "command": [
+        "node",
+        "web/dom-smoke.mjs"
+      ],
+      "exit": 0,
+      "log": "pages-browser.log",
+      "seconds": 7.476144790649414,
+      "log_sha256": "2d27893d7660cb764635ea5e041060575aa7cfeb2d20fbf8025f82e7f8c8ab48"
+    },
+    {
+      "id": "oracle-version",
+      "command": [
+        "moon",
+        "version",
+        "--all"
+      ],
+      "exit": 0,
+      "log": "oracle-version.log",
+      "seconds": 0.04187893867492676,
+      "log_sha256": "e09523215f783fdbdcba85e65fe6f2ccfb9f17f5e58e350961432f7e977c2058"
+    },
+    {
+      "id": "oracle-update",
+      "command": [
+        "moon",
+        "update"
+      ],
+      "exit": 0,
+      "log": "oracle-update.log",
+      "seconds": 3.421227216720581,
+      "log_sha256": "5867fd85b950d30cfa53a965d0f592dbdcc29db13c60388e0a5b24d303b39c72"
+    },
+    {
+      "id": "conformance",
+      "command": [
+        "bash",
+        "-o",
+        "pipefail",
+        "-c",
+        "./scripts/oracle.sh --markdown | tee .oracle-cache/r14-ci/conformance.md"
+      ],
+      "exit": 0,
+      "seconds": 253.18750524520874,
+      "stdout": "conformance.stdout.log",
+      "stderr": "conformance.stderr.log",
+      "stdout_sha256": "eb9632a585e36c3889b6816fab6dbb90d701f70f3cee1edb3a51a38e6bc26da7",
+      "stderr_sha256": "38853e3979601bad5422b2287a5c0e89089a6e165ba191f26cc449374f75ea6f"
+    },
+    {
+      "id": "seed-7",
+      "command": [
+        "python3",
+        "scripts/random_differential.py",
+        "--seed",
+        "7",
+        "--out",
+        ".oracle-cache/differential/seed-7",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin",
+        "--allow-known-extensions"
+      ],
+      "exit": 0,
+      "seconds": 299.9235887527466,
+      "stdout": "seed-7.stdout.log",
+      "stderr": "seed-7.stderr.log",
+      "stdout_sha256": "95abea76e8fce9df30f7e94987933edd9cec29ed0ac359c7324a1641386a64dd",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "seed-20261101",
+      "command": [
+        "python3",
+        "scripts/random_differential.py",
+        "--seed",
+        "20261101",
+        "--out",
+        ".oracle-cache/differential/seed-20261101",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin",
+        "--allow-known-extensions"
+      ],
+      "exit": 0,
+      "seconds": 299.8909800052643,
+      "stdout": "seed-20261101.stdout.log",
+      "stderr": "seed-20261101.stderr.log",
+      "stdout_sha256": "3062a08f008a00183f751a6e442d3236926b8f5b60ce2992e13c97171254bfe8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "reports",
+      "command": [
+        "python3",
+        "scripts/report_differential.py",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin"
+      ],
+      "exit": 0,
+      "seconds": 82.49663186073303,
+      "stdout": "reports.stdout.log",
+      "stderr": "reports.stderr.log",
+      "stdout_sha256": "0f8078d60e4f0af1460c86f9c7d3662b034e0321861637fcf7e25b2e81b7ec99",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "includes",
+      "command": [
+        "python3",
+        "scripts/include_smoke.py"
+      ],
+      "exit": 0,
+      "seconds": 0.1694660186767578,
+      "stdout": "includes.stdout.log",
+      "stderr": "includes.stderr.log",
+      "stdout_sha256": "5ea3bdd28cba57004cb25556a781a9667954ad0bd9a01f9d022a42e7138022c0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "bql",
+      "command": [
+        "python3",
+        "scripts/bql_differential.py",
+        "--oracle",
+        "/tmp/moonbean-r4-oracle/bin"
+      ],
+      "exit": 0,
+      "seconds": 503.5538160800934,
+      "stdout": "bql.stdout.log",
+      "stderr": "bql.stderr.log",
+      "stdout_sha256": "84dd463941de6a988dc18f5a9bdab67645e1af6fc25374fdf23bf8b38d499c34",
+      "stderr_sha256": "e2cf3bf19956af9ab021da9c7735c71969a575bdb1f5fd3896cb899c728b4bb4"
+    }
+  ],
+  "bql": {
+    "checks": 22344,
+    "passed": 22344,
+    "raw_sha256": "84dd463941de6a988dc18f5a9bdab67645e1af6fc25374fdf23bf8b38d499c34"
+  },
+  "seeds": [
+    {
+      "seed": 7,
+      "count": 1000,
+      "mismatches": 142,
+      "clean_queries": 468,
+      "non_average_mismatches": 0,
+      "raw_sha256": "07cee557fb23f50110e10ab804025578be5e7be126b1dc6b5084b4c36d8984fe"
+    },
+    {
+      "seed": 20261101,
+      "count": 1000,
+      "mismatches": 142,
+      "clean_queries": 468,
+      "non_average_mismatches": 0,
+      "raw_sha256": "112516563115ae97d06dcff61cea373a4f333b11a90fbc7bd63b20494960af2c"
+    }
+  ],
+  "reports": {
+    "ledgers": 25,
+    "checks": 144,
+    "failures": 0
+  },
+  "artifacts": {
+    "pages-artifact": {
+      "local_status": "verified packaging only; no remote upload or deployment",
+      "files": {
+        "index.html": "8ba17d193688ee52669d43849dff63a7e16dc244dd2ee5afddcd029133d69fae",
+        "lib.js": "ccb849e2d4b9f5bb200e1294264006116ae150b6de7bc32a25e2dee7a50dcff4",
+        "moonbean.js": "9391fc2dedcacf9706e3f2199ffe90943cf149774487cd196ff3444481f0ae40",
+        ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "style.css": "04067782a5be096e25c4c28dec2fad360083450030927f36e640a999fedc7821",
+        "example.js": "6280769a380f9d1ab3525f145d9fc4357ceffbac48d8309354606296dd96d8eb",
+        "app.js": "36b7fd418fd1b490bdf40003040cb1cf8c47f41b979a75d6a3e3a0e065318fd1"
+      },
+      "archive": "pages-artifact.tar",
+      "archive_sha256": "dd3a88c7447b10e96405240cd5a749b66dae8a88b47f193aebf1c96a81a2955f"
+    },
+    "conformance-artifact": {
+      "status": "local packaging verified; no remote artifact upload",
+      "files": {
+        "conformance.md": {
+          "bytes": 7550,
+          "sha256": "eb9632a585e36c3889b6816fab6dbb90d701f70f3cee1edb3a51a38e6bc26da7"
+        },
+        ".oracle-cache/differential/seed-7/results.json": {
+          "bytes": 843581,
+          "sha256": "07cee557fb23f50110e10ab804025578be5e7be126b1dc6b5084b4c36d8984fe"
+        },
+        ".oracle-cache/differential/seed-20261101/results.json": {
+          "bytes": 843588,
+          "sha256": "112516563115ae97d06dcff61cea373a4f333b11a90fbc7bd63b20494960af2c"
+        },
+        ".oracle-cache/differential/reports.json": {
+          "bytes": 13781,
+          "sha256": "3042338a0a5d999fa5629033ed8b0370208b648e75ca31bf031bcdc7335c8104"
+        }
+      },
+      "archive_sha256": "9f3306ccbac22124f0158c3e75cbd91ea8410b272cc369cfc3a4ff63348ecaa6"
+    }
+  }
+}

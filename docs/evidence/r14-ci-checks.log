@@ -1,0 +1,1863 @@
+$ moon version --all
+exit 0
+moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon
+moonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc
+moonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun
+
+Feature flags enabled: rr_moon_mod,rr_moon_pkg
+
+$ moon update
+exit 0
+Registry index updated successfully
+Symbols updated successfully
+
+$ moon check --deny-warn --target all
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 86 tasks, now up to date
+
+$ moon build --target all
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 54 tasks, now up to date
+Artifacts:
+  sundaysebasidian-byte/moonbean/bench                  wasm     <repo>/_build/wasm/debug/build/bench/bench.wasm
+  sundaysebasidian-byte/moonbean/examples/library_demo  wasm     <repo>/_build/wasm/debug/build/examples/library_demo/library_demo.wasm
+  sundaysebasidian-byte/moonbean/playground             wasm     <repo>/_build/wasm/debug/build/playground/playground.wasm
+  sundaysebasidian-byte/moonbean/tests/clock_host       wasm     <repo>/_build/wasm/debug/build/tests/clock_host/clock_host.wasm
+  sundaysebasidian-byte/moonbean/bench                  wasm-gc  <repo>/_build/wasm-gc/debug/build/bench/bench.wasm
+  sundaysebasidian-byte/moonbean/examples/library_demo  wasm-gc  <repo>/_build/wasm-gc/debug/build/examples/library_demo/library_demo.wasm
+  sundaysebasidian-byte/moonbean/playground             wasm-gc  <repo>/_build/wasm-gc/debug/build/playground/playground.wasm
+  sundaysebasidian-byte/moonbean/tests/clock_host       wasm-gc  <repo>/_build/wasm-gc/debug/build/tests/clock_host/clock_host.wasm
+  sundaysebasidian-byte/moonbean/bench                  js       <repo>/_build/js/debug/build/bench/bench.js
+  sundaysebasidian-byte/moonbean/examples/library_demo  js       <repo>/_build/js/debug/build/examples/library_demo/library_demo.js
+  sundaysebasidian-byte/moonbean/playground             js       <repo>/_build/js/debug/build/playground/playground.js
+  sundaysebasidian-byte/moonbean/tests/clock_host       js       <repo>/_build/js/debug/build/tests/clock_host/clock_host.js
+  sundaysebasidian-byte/moonbean/bench                  native   <repo>/_build/native/debug/build/bench/bench.exe
+  sundaysebasidian-byte/moonbean/cmd/main               native   <repo>/_build/native/debug/build/cmd/main/main.exe
+  sundaysebasidian-byte/moonbean/examples/library_demo  native   <repo>/_build/native/debug/build/examples/library_demo/library_demo.exe
+
+$ moon test --target all
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Total tests: 207, passed: 207, failed: 0. [wasm]
+Total tests: 207, passed: 207, failed: 0. [wasm-gc]
+Total tests: 207, passed: 207, failed: 0. [js]
+Total tests: 207, passed: 207, failed: 0. [native]
+
+$ moon fmt --check
+exit 0
+Finished. moon: no work to do
+
+$ moon info
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 14 tasks, now up to date
+
+$ git diff --exit-code
+exit 0
+
+$ moon run cmd/main --target native -- check examples/full-year-2024.beancount
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+examples/full-year-2024.beancount: ok
+
+$ moon run cmd/main --target native -- bal examples/full-year-2024.beancount --convert CNY
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+warning: examples/full-year-2024.beancount:520: validation.document_unchecked: Document is metadata only; file existence and contents are not checked
+Trial Balance
+Account                          Amount
+Assets:Bank:Checking      166600.00 CNY
+Assets:Bank:Savings       144000.00 CNY
+Assets:Broker:Cash         13578.00 CNY
+Assets:Broker:Stocks       70262.50 CNY
+Assets:Cash                 7400.00 CNY
+Equity:Opening           -248400.00 CNY
+Expenses:Books               600.00 CNY
+Expenses:Donations          1000.00 CNY
+Expenses:Equipment          8000.00 CNY
+Expenses:Food:Dining        9600.00 CNY
+Expenses:Food:Groceries     9600.00 CNY
+Expenses:Health             3600.00 CNY
+Expenses:Housing:Rent      72000.00 CNY
+Expenses:Taxes             12000.00 CNY
+Expenses:Transport          3600.00 CNY
+Expenses:Travel             5000.00 CNY
+Expenses:Utilities          6000.00 CNY
+Income:CapitalGains        -3285.00 CNY
+Income:Dividends            -438.00 CNY
+Income:Interest             -400.00 CNY
+Income:Salary            -270000.00 CNY
+Liabilities:CreditCard     -3200.00 CNY
+
+Total                       7117.50 CNY
+
+
+$ moon run cmd/main --target native -- query examples/full-year-2024.beancount SELECT account, sum(units) FROM postings GROUP BY account ORDER BY account
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+warning: <repo>/examples/full-year-2024.beancount:520: validation.document_unchecked: Document is metadata only; file existence and contents are not checked
+account                  sum_units                    
+-----------------------  -----------------------------
+Assets:Bank:Checking     166600.00 CNY                
+Assets:Bank:Savings      144000.00 CNY                
+Assets:Broker:Cash       1860.00 USD                  
+Assets:Broker:Stocks     55 AAPL                      
+Assets:Cash              7400.00 CNY                  
+Equity:Opening           -175400.00 CNY, -10000.00 USD
+Expenses:Books           600.00 CNY                   
+Expenses:Donations       1000.00 CNY                  
+Expenses:Equipment       8000.00 CNY                  
+Expenses:Food:Dining     9600.00 CNY                  
+Expenses:Food:Groceries  9600.00 CNY                  
+Expenses:Health          3600.00 CNY                  
+Expenses:Housing:Rent    72000.00 CNY                 
+Expenses:Taxes           12000.00 CNY                 
+Expenses:Transport       3600.00 CNY                  
+Expenses:Travel          5000.00 CNY                  
+Expenses:Utilities       6000.00 CNY                  
+Income:CapitalGains      -450.00 USD                  
+Income:Dividends         -60.00 USD                   
+Income:Interest          -400.00 CNY                  
+Income:Salary            -270000.00 CNY               
+Liabilities:CreditCard   -3200.00 CNY                 
+
+
+$ moon run cmd/main --target native -- fmt examples/full-year-2024.beancount
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+option "title" "MoonBean household ledger 2024"
+option "operating_currency" "CNY"
+
+2024-01-01 commodity CNY
+2024-01-01 commodity USD
+2024-01-01 commodity AAPL
+
+; Account lifecycle
+2024-01-01 open Assets:Bank:Checking CNY
+2024-01-01 open Assets:Bank:Savings CNY
+2024-01-01 open Assets:Cash CNY
+2024-01-01 open Assets:Broker:Stocks AAPL "FIFO"
+2024-01-01 open Assets:Broker:Cash USD
+2024-01-01 open Liabilities:CreditCard CNY,USD
+2024-01-01 open Equity:Opening CNY,USD
+2024-01-01 open Income:Salary CNY
+2024-01-01 open Income:Interest CNY
+2024-01-01 open Income:Dividends USD
+2024-01-01 open Income:CapitalGains USD
+2024-01-01 open Expenses:Housing:Rent CNY
+2024-01-01 open Expenses:Food:Groceries CNY
+2024-01-01 open Expenses:Food:Dining CNY
+2024-01-01 open Expenses:Transport CNY
+2024-01-01 open Expenses:Utilities CNY
+2024-01-01 open Expenses:Travel CNY
+2024-01-01 open Expenses:Health CNY
+2024-01-01 open Expenses:Books CNY
+2024-01-01 open Expenses:Equipment CNY
+2024-01-01 open Expenses:Donations CNY
+2024-01-01 open Expenses:Taxes CNY
+
+; Opening balances
+2024-01-01 * "Opening balances"
+  Assets:Bank:Checking    50000.00 CNY
+  Assets:Bank:Savings     120000.00 CNY
+  Assets:Cash             2000.00 CNY
+  Assets:Broker:Stocks    40 AAPL {150.00 USD}
+  Assets:Broker:Cash      4000.00 USD
+  Liabilities:CreditCard  -3200.00 CNY
+  Equity:Opening          -168800.00 CNY
+  Equity:Opening          -10000.00 USD
+
+; Monthly household flow
+2024-01-01 * "Rent"
+  Assets:Bank:Checking   -6000.00 CNY
+  Expenses:Housing:Rent  6000.00 CNY
+
+2024-01-02 * "Savings transfer"
+  Assets:Bank:Checking  -2000.00 CNY
+  Assets:Bank:Savings   2000.00 CNY
+
+2024-01-08 * "Groceries"
+  Assets:Bank:Checking     -800.00 CNY
+  Expenses:Food:Groceries  800.00 CNY
+
+2024-01-10 * "Transit pass"
+  Assets:Bank:Checking  -300.00 CNY
+  Expenses:Transport    300.00 CNY
+
+2024-01-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard  -700.00 CNY
+  Expenses:Food:Dining    700.00 CNY
+
+2024-01-15 * "Utilities"
+  Liabilities:CreditCard  -500.00 CNY
+  Expenses:Utilities      500.00 CNY
+
+2024-01-18 * "Lunch"
+  Assets:Cash           -100.00 CNY
+  Expenses:Food:Dining  100.00 CNY
+
+2024-01-20 * "Credit card payment"
+  Assets:Bank:Checking    -1200.00 CNY
+  Liabilities:CreditCard  1200.00 CNY
+
+2024-01-25 * "Salary"
+  Assets:Bank:Checking  20000.00 CNY
+  Income:Salary         -20000.00 CNY
+
+2024-02-01 * "Rent"
+  Assets:Bank:Checking   -6000.00 CNY
+  Expenses:Housing:Rent  6000.00 CNY
+
+2024-02-02 * "Savings transfer"
+  Assets:Bank:Checking  -2000.00 CNY
+  Assets:Bank:Savings   2000.00 CNY
+
+2024-02-08 * "Groceries"
+  Assets:Bank:Checking     -800.00 CNY
+  Expenses:Food:Groceries  800.00 CNY
+
+2024-02-10 * "Transit pass"
+  Assets:Bank:Checking  -300.00 CNY
+  Expenses:Transport    300.00 CNY
+
+2024-02-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard  -700.00 CNY
+  Expenses:Food:Dining    700.00 CNY
+
+2024-02-15 * "Utilities"
+  Liabilities:CreditCard  -500.00 CNY
+  Expenses:Utilities      500.00 CNY
+
+2024-02-18 * "Lunch"
+  Assets:Cash           -100.00 CNY
+  Expenses:Food:Dining  100.00 CNY
+
+2024-02-20 * "Credit card payment"
+  Assets:Bank:Checking    -1200.00 CNY
+  Liabilities:CreditCard  1200.00 CNY
+
+2024-02-25 * "Salary"
+  Assets:Bank:Checking  20000.00 CNY
+  Income:Salary         -20000.00 CNY
+
+2024-03-01 * "Rent"
+  Assets:Bank:Checking   -6000.00 CNY
+  Expenses:Housing:Rent  6000.00 CNY
+
+2024-03-02 * "Savings transfer"
+  Assets:Bank:Checking  -2000.00 CNY
+  Assets:Bank:Savings   2000.00 CNY
+
+2024-03-08 * "Groceries"
+  Assets:Bank:Checking     -800.00 CNY
+  Expenses:Food:Groceries  800.00 CNY
+
+2024-03-10 * "Transit pass"
+  Assets:Bank:Checking  -300.00 CNY
+  Expenses:Transport    300.00 CNY
+
+2024-03-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard  -700.00 CNY
+  Expenses:Food:Dining    700.00 CNY
+
+2024-03-15 * "Utilities"
+  Liabilities:CreditCard  -500.00 CNY
+  Expenses:Utilities      500.00 CNY
+
+2024-03-18 * "Lunch"
+  Assets:Cash           -100.00 CNY
+  Expenses:Food:Dining  100.00 CNY
+
+2024-03-20 * "Credit card payment"
+  Assets:Bank:Checking    -1200.00 CNY
+  Liabilities:CreditCard  1200.00 CNY
+
+2024-03-25 * "Salary"
+  Assets:Bank:Checking  20000.00 CNY
+  Income:Salary         -20000.00 CNY
+
+2024-04-01 * "Rent"
+  Assets:Bank:Checking   -6000.00 CNY
+  Expenses:Housing:Rent  6000.00 CNY
+
+2024-04-02 * "Savings transfer"
+  Assets:Bank:Checking  -2000.00 CNY
+  Assets:Bank:Savings   2000.00 CNY
+
+2024-04-08 * "Groceries"
+  Assets:Bank:Checking     -800.00 CNY
+  Expenses:Food:Groceries  800.00 CNY
+
+2024-04-10 * "Transit pass"
+  Assets:Bank:Checking  -300.00 CNY
+  Expenses:Transport    300.00 CNY
+
+2024-04-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard  -700.00 CNY
+  Expenses:Food:Dining    700.00 CNY
+
+2024-04-15 * "Utilities"
+  Liabilities:CreditCard  -500.00 CNY
+  Expenses:Utilities      500.00 CNY
+
+2024-04-18 * "Lunch"
+  Assets:Cash           -100.00 CNY
+  Expenses:Food:Dining  100.00 CNY
+
+2024-04-20 * "Credit card payment"
+  Assets:Bank:Checking    -1200.00 CNY
+  Liabilities:CreditCard  1200.00 CNY
+
+2024-04-25 * "Salary"
+  Assets:Bank:Checking  20000.00 CNY
+  Income:Salary         -20000.00 CNY
+
+2024-05-01 * "Rent"
+  Assets:Bank:Checking   -6000.00 CNY
+  Expenses:Housing:Rent  6000.00 CNY
+
+2024-05-02 * "Savings transfer"
+  Assets:Bank:Checking  -2000.00 CNY
+  Assets:Bank:Savings   2000.00 CNY
+
+2024-05-08 * "Groceries"
+  Assets:Bank:Checking     -800.00 CNY
+  Expenses:Food:Groceries  800.00 CNY
+
+2024-05-10 * "Transit pass"
+  Assets:Bank:Checking  -300.00 CNY
+  Expenses:Transport    300.00 CNY
+
+2024-05-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard  -700.00 CNY
+  Expenses:Food:Dining    700.00 CNY
+
+2024-05-15 * "Utilities"
+  Liabilities:CreditCard  -500.00 CNY
+  Expenses:Utilities      500.00 CNY
+
+2024-05-18 * "Lunch"
+  Assets:Cash           -100.00 CNY
+  Expenses:Food:Dining  100.00 CNY
+
+2024-05-20 * "Credit card payment"
+  Assets:Bank:Checking    -1200.00 CNY
+  Liabilities:CreditCard  1200.00 CNY
+
+2024-05-25 * "Salary"
+  Assets:Bank:Checking  20000.00 CNY
+  Income:Salary         -20000.00 CNY
+
+2024-06-01 * "Rent"
+  Assets:Bank:Checking   -6000.00 CNY
+  Expenses:Housing:Rent  6000.00 CNY
+
+2024-06-02 * "Savings transfer"
+  Assets:Bank:Checking  -2000.00 CNY
+  Assets:Bank:Savings   2000.00 CNY
+
+2024-06-08 * "Groceries"
+  Assets:Bank:Checking     -800.00 CNY
+  Expenses:Food:Groceries  800.00 CNY
+
+2024-06-10 * "Transit pass"
+  Assets:Bank:Checking  -300.00 CNY
+  Expenses:Transport    300.00 CNY
+
+2024-06-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard  -700.00 CNY
+  Expenses:Food:Dining    700.00 CNY
+
+2024-06-15 * "Utilities"
+  Liabilities:CreditCard  -500.00 CNY
+  Expenses:Utilities      500.00 CNY
+
+2024-06-18 * "Lunch"
+  Assets:Cash           -100.00 CNY
+  Expenses:Food:Dining  100.00 CNY
+
+2024-06-20 * "Credit card payment"
+  Assets:Bank:Checking    -1200.00 CNY
+  Liabilities:CreditCard  1200.00 CNY
+
+2024-06-25 * "Salary"
+  Assets:Bank:Checking  20000.00 CNY
+  Income:Salary         -20000.00 CNY
+
+2024-07-01 * "Rent"
+  Assets:Bank:Checking   -6000.00 CNY
+  Expenses:Housing:Rent  6000.00 CNY
+
+2024-07-02 * "Savings transfer"
+  Assets:Bank:Checking  -2000.00 CNY
+  Assets:Bank:Savings   2000.00 CNY
+
+2024-07-08 * "Groceries"
+  Assets:Bank:Checking     -800.00 CNY
+  Expenses:Food:Groceries  800.00 CNY
+
+2024-07-10 * "Transit pass"
+  Assets:Bank:Checking  -300.00 CNY
+  Expenses:Transport    300.00 CNY
+
+2024-07-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard  -700.00 CNY
+  Expenses:Food:Dining    700.00 CNY
+
+2024-07-15 * "Utilities"
+  Liabilities:CreditCard  -500.00 CNY
+  Expenses:Utilities      500.00 CNY
+
+2024-07-18 * "Lunch"
+  Assets:Cash           -100.00 CNY
+  Expenses:Food:Dining  100.00 CNY
+
+2024-07-20 * "Credit card payment"
+  Assets:Bank:Checking    -1200.00 CNY
+  Liabilities:CreditCard  1200.00 CNY
+
+2024-07-25 * "Salary"
+  Assets:Bank:Checking  20000.00 CNY
+  Income:Salary         -20000.00 CNY
+
+2024-08-01 * "Rent"
+  Assets:Bank:Checking   -6000.00 CNY
+  Expenses:Housing:Rent  6000.00 CNY
+
+2024-08-02 * "Savings transfer"
+  Assets:Bank:Checking  -2000.00 CNY
+  Assets:Bank:Savings   2000.00 CNY
+
+2024-08-08 * "Groceries"
+  Assets:Bank:Checking     -800.00 CNY
+  Expenses:Food:Groceries  800.00 CNY
+
+2024-08-10 * "Transit pass"
+  Assets:Bank:Checking  -300.00 CNY
+  Expenses:Transport    300.00 CNY
+
+2024-08-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard  -700.00 CNY
+  Expenses:Food:Dining    700.00 CNY
+
+2024-08-15 * "Utilities"
+  Liabilities:CreditCard  -500.00 CNY
+  Expenses:Utilities      500.00 CNY
+
+2024-08-18 * "Lunch"
+  Assets:Cash           -100.00 CNY
+  Expenses:Food:Dining  100.00 CNY
+
+2024-08-20 * "Credit card payment"
+  Assets:Bank:Checking    -1200.00 CNY
+  Liabilities:CreditCard  1200.00 CNY
+
+2024-08-25 * "Salary"
+  Assets:Bank:Checking  20000.00 CNY
+  Income:Salary         -20000.00 CNY
+
+2024-09-01 * "Rent"
+  Assets:Bank:Checking   -6000.00 CNY
+  Expenses:Housing:Rent  6000.00 CNY
+
+2024-09-02 * "Savings transfer"
+  Assets:Bank:Checking  -2000.00 CNY
+  Assets:Bank:Savings   2000.00 CNY
+
+2024-09-08 * "Groceries"
+  Assets:Bank:Checking     -800.00 CNY
+  Expenses:Food:Groceries  800.00 CNY
+
+2024-09-10 * "Transit pass"
+  Assets:Bank:Checking  -300.00 CNY
+  Expenses:Transport    300.00 CNY
+
+2024-09-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard  -700.00 CNY
+  Expenses:Food:Dining    700.00 CNY
+
+2024-09-15 * "Utilities"
+  Liabilities:CreditCard  -500.00 CNY
+  Expenses:Utilities      500.00 CNY
+
+2024-09-18 * "Lunch"
+  Assets:Cash           -100.00 CNY
+  Expenses:Food:Dining  100.00 CNY
+
+2024-09-20 * "Credit card payment"
+  Assets:Bank:Checking    -1200.00 CNY
+  Liabilities:CreditCard  1200.00 CNY
+
+2024-09-25 * "Salary"
+  Assets:Bank:Checking  20000.00 CNY
+  Income:Salary         -20000.00 CNY
+
+2024-10-01 * "Rent"
+  Assets:Bank:Checking   -6000.00 CNY
+  Expenses:Housing:Rent  6000.00 CNY
+
+2024-10-02 * "Savings transfer"
+  Assets:Bank:Checking  -2000.00 CNY
+  Assets:Bank:Savings   2000.00 CNY
+
+2024-10-08 * "Groceries"
+  Assets:Bank:Checking     -800.00 CNY
+  Expenses:Food:Groceries  800.00 CNY
+
+2024-10-10 * "Transit pass"
+  Assets:Bank:Checking  -300.00 CNY
+  Expenses:Transport    300.00 CNY
+
+2024-10-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard  -700.00 CNY
+  Expenses:Food:Dining    700.00 CNY
+
+2024-10-15 * "Utilities"
+  Liabilities:CreditCard  -500.00 CNY
+  Expenses:Utilities      500.00 CNY
+
+2024-10-18 * "Lunch"
+  Assets:Cash           -100.00 CNY
+  Expenses:Food:Dining  100.00 CNY
+
+2024-10-20 * "Credit card payment"
+  Assets:Bank:Checking    -1200.00 CNY
+  Liabilities:CreditCard  1200.00 CNY
+
+2024-10-25 * "Salary"
+  Assets:Bank:Checking  20000.00 CNY
+  Income:Salary         -20000.00 CNY
+
+2024-11-01 * "Rent"
+  Assets:Bank:Checking   -6000.00 CNY
+  Expenses:Housing:Rent  6000.00 CNY
+
+2024-11-02 * "Savings transfer"
+  Assets:Bank:Checking  -2000.00 CNY
+  Assets:Bank:Savings   2000.00 CNY
+
+2024-11-08 * "Groceries"
+  Assets:Bank:Checking     -800.00 CNY
+  Expenses:Food:Groceries  800.00 CNY
+
+2024-11-10 * "Transit pass"
+  Assets:Bank:Checking  -300.00 CNY
+  Expenses:Transport    300.00 CNY
+
+2024-11-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard  -700.00 CNY
+  Expenses:Food:Dining    700.00 CNY
+
+2024-11-15 * "Utilities"
+  Liabilities:CreditCard  -500.00 CNY
+  Expenses:Utilities      500.00 CNY
+
+2024-11-18 * "Lunch"
+  Assets:Cash           -100.00 CNY
+  Expenses:Food:Dining  100.00 CNY
+
+2024-11-20 * "Credit card payment"
+  Assets:Bank:Checking    -1200.00 CNY
+  Liabilities:CreditCard  1200.00 CNY
+
+2024-11-25 * "Salary"
+  Assets:Bank:Checking  20000.00 CNY
+  Income:Salary         -20000.00 CNY
+
+2024-12-01 * "Rent"
+  Assets:Bank:Checking   -6000.00 CNY
+  Expenses:Housing:Rent  6000.00 CNY
+
+2024-12-02 * "Savings transfer"
+  Assets:Bank:Checking  -2000.00 CNY
+  Assets:Bank:Savings   2000.00 CNY
+
+2024-12-08 * "Groceries"
+  Assets:Bank:Checking     -800.00 CNY
+  Expenses:Food:Groceries  800.00 CNY
+
+2024-12-10 * "Transit pass"
+  Assets:Bank:Checking  -300.00 CNY
+  Expenses:Transport    300.00 CNY
+
+2024-12-12 * "Dinner" "Team dinner"
+  Liabilities:CreditCard  -700.00 CNY
+  Expenses:Food:Dining    700.00 CNY
+
+2024-12-15 * "Utilities"
+  Liabilities:CreditCard  -500.00 CNY
+  Expenses:Utilities      500.00 CNY
+
+2024-12-18 * "Lunch"
+  Assets:Cash           -100.00 CNY
+  Expenses:Food:Dining  100.00 CNY
+
+2024-12-20 * "Credit card payment"
+  Assets:Bank:Checking    -1200.00 CNY
+  Liabilities:CreditCard  1200.00 CNY
+
+2024-12-25 * "Salary"
+  Assets:Bank:Checking  20000.00 CNY
+  Income:Salary         -20000.00 CNY
+
+; One-off events
+2024-02-10 * "Buy shares" "First lot of the year"
+  Assets:Broker:Stocks  20 AAPL {160.00 USD}
+  Assets:Broker:Cash    -3200.00 USD
+
+2024-03-15 * "Annual health insurance" #insurance
+  receipt: "policy-2024"
+  Assets:Bank:Checking  -3600.00 CNY
+  Expenses:Health       3600.00 CNY
+
+2024-03-20 * "Dividend"
+  Assets:Broker:Cash  60.00 USD
+  Income:Dividends    -60.00 USD
+
+2024-04-10 * "Income tax"
+  Assets:Bank:Checking  -12000.00 CNY
+  Expenses:Taxes        12000.00 CNY
+
+2024-05-20 * "Books"
+  Assets:Bank:Checking  -600.00 CNY
+  Expenses:Books        600.00 CNY
+
+2024-06-15 * "Sell shares" "Raise cash"
+  Assets:Broker:Stocks  -15 AAPL {150.00 USD} @ 180.00 USD
+  Assets:Broker:Cash    2700.00 USD
+  Income:CapitalGains   -450.00 USD
+
+2024-06-30 * "Savings interest"
+  Assets:Bank:Checking  200.00 CNY
+  Income:Interest       -200.00 CNY
+
+; Mid-year cash count: the pad fills the difference to the counted amount
+2024-06-30 pad Assets:Cash Equity:Opening
+2024-07-01 balance Assets:Cash 8000.00 CNY
+
+2024-08-05 * "Hangzhou" "Family trip" #travel ^trip-2024
+  Assets:Bank:Checking  -5000.00 CNY
+  Expenses:Travel       5000.00 CNY
+
+2024-09-10 * "Store" "Work laptop"
+  receipt: "laptop-2024-09-10.pdf"
+  Assets:Bank:Checking  -8000.00 CNY
+  Expenses:Equipment    8000.00 CNY
+
+2024-09-10 document Assets:Bank:Checking "receipts/laptop-2024-09-10.pdf"
+
+2024-10-05 * "Buy shares" "Top up holding"
+  Assets:Broker:Stocks  10 AAPL {170.00 USD}
+  Assets:Broker:Cash    -1700.00 USD
+
+2024-11-25 * "Bonus"
+  Assets:Bank:Checking  30000.00 CNY
+  Income:Salary         -30000.00 CNY
+
+2024-12-20 * "Charity donation"
+  Assets:Bank:Checking  -1000.00 CNY
+  Expenses:Donations    1000.00 CNY
+
+2024-12-31 * "Savings interest"
+  Assets:Bank:Checking  200.00 CNY
+  Income:Interest       -200.00 CNY
+
+; Market data, notes and custom values
+2024-01-01 price USD 7.10 CNY
+2024-06-28 price USD 7.25 CNY
+2024-12-31 price USD 7.30 CNY
+2024-12-31 price AAPL 175.00 USD
+
+2024-07-01 event "location" "Hangzhou"
+2024-12-31 note Assets:Bank:Checking "Reconciled against the December statement"
+2024-12-31 custom "budget" "food" 12000.00 CNY 2024-01-01 2024-12-31
+2024-01-01 query "monthly" "SELECT year(date), month(date), sum(position) GROUP BY 1, 2"
+
+; Year-end assertions (asserted at the start of 2025-01-01)
+2025-01-01 balance Assets:Bank:Checking 166600.00 CNY
+2025-01-01 balance Assets:Bank:Savings 144000.00 CNY
+2025-01-01 balance Assets:Cash 7400.00 CNY
+2025-01-01 balance Liabilities:CreditCard -3200.00 CNY
+2025-01-01 balance Assets:Broker:Stocks 55 AAPL
+2025-01-01 balance Assets:Broker:Cash 1860.00 USD
+
+$ moon run cmd/main --target native -- export examples/full-year-2024.beancount --json
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+warning: examples/full-year-2024.beancount:520: validation.document_unchecked: Document is metadata only; file existence and contents are not checked
+{"file":"examples/full-year-2024.beancount","errors":[],"warnings":[{"file":"examples/full-year-2024.beancount","line":520,"code":"validation.document_unchecked","message":"Document is metadata only; file existence and contents are not checked"}],"accounts":[{"account":"Assets:Bank:Checking","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":9}},{"account":"Assets:Bank:Savings","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":10}},{"account":"Assets:Broker:Cash","open":"2024-01-01","close":null,"currencies":["USD"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":13}},{"account":"Assets:Broker:Stocks","open":"2024-01-01","close":null,"currencies":["AAPL"],"booking":"FIFO","loc":{"file":"examples/full-year-2024.beancount","line":12}},{"account":"Assets:Cash","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":11}},{"account":"Equity:Opening","open":"2024-01-01","close":null,"currencies":["CNY","USD"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":15}},{"account":"Expenses:Books","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":27}},{"account":"Expenses:Donations","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":29}},{"account":"Expenses:Equipment","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":28}},{"account":"Expenses:Food:Dining","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":22}},{"account":"Expenses:Food:Groceries","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":21}},{"account":"Expenses:Health","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":26}},{"account":"Expenses:Housing:Rent","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":20}},{"account":"Expenses:Taxes","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":30}},{"account":"Expenses:Transport","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":23}},{"account":"Expenses:Travel","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":25}},{"account":"Expenses:Utilities","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":24}},{"account":"Income:CapitalGains","open":"2024-01-01","close":null,"currencies":["USD"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":19}},{"account":"Income:Dividends","open":"2024-01-01","close":null,"currencies":["USD"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":18}},{"account":"Income:Interest","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":17}},{"account":"Income:Salary","open":"2024-01-01","close":null,"currencies":["CNY"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":16}},{"account":"Liabilities:CreditCard","open":"2024-01-01","close":null,"currencies":["CNY","USD"],"booking":null,"loc":{"file":"examples/full-year-2024.beancount","line":14}}],"entries":[{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":9},"meta":{},"type":"open","account":"Assets:Bank:Checking","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":10},"meta":{},"type":"open","account":"Assets:Bank:Savings","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":11},"meta":{},"type":"open","account":"Assets:Cash","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":12},"meta":{},"type":"open","account":"Assets:Broker:Stocks","currencies":["AAPL"],"booking":"FIFO"},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":13},"meta":{},"type":"open","account":"Assets:Broker:Cash","currencies":["USD"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":14},"meta":{},"type":"open","account":"Liabilities:CreditCard","currencies":["CNY","USD"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":15},"meta":{},"type":"open","account":"Equity:Opening","currencies":["CNY","USD"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":16},"meta":{},"type":"open","account":"Income:Salary","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":17},"meta":{},"type":"open","account":"Income:Interest","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":18},"meta":{},"type":"open","account":"Income:Dividends","currencies":["USD"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":19},"meta":{},"type":"open","account":"Income:CapitalGains","currencies":["USD"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":20},"meta":{},"type":"open","account":"Expenses:Housing:Rent","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":21},"meta":{},"type":"open","account":"Expenses:Food:Groceries","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":22},"meta":{},"type":"open","account":"Expenses:Food:Dining","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":23},"meta":{},"type":"open","account":"Expenses:Transport","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":24},"meta":{},"type":"open","account":"Expenses:Utilities","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":25},"meta":{},"type":"open","account":"Expenses:Travel","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":26},"meta":{},"type":"open","account":"Expenses:Health","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":27},"meta":{},"type":"open","account":"Expenses:Books","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":28},"meta":{},"type":"open","account":"Expenses:Equipment","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":29},"meta":{},"type":"open","account":"Expenses:Donations","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":30},"meta":{},"type":"open","account":"Expenses:Taxes","currencies":["CNY"],"booking":null},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":4},"meta":{},"type":"commodity","currency":"CNY"},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":5},"meta":{},"type":"commodity","currency":"USD"},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":6},"meta":{},"type":"commodity","currency":"AAPL"},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":33},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Opening balances","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"50000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Bank:Savings","units":{"number":"120000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Cash","units":{"number":"2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Broker:Stocks","units":{"number":"40","currency":"AAPL"},"cost":{"per":"150.00","total":null,"currency":"USD","date":"2024-01-01","label":null,"merge":false},"price":null,"meta":{}},{"flag":null,"account":"Assets:Broker:Cash","units":{"number":"4000.00","currency":"USD"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-3200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Equity:Opening","units":{"number":"-168800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Equity:Opening","units":{"number":"-10000.00","currency":"USD"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":44},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Rent","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Housing:Rent","units":{"number":"6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":539},"meta":{},"type":"price","currency":"USD","amount":{"number":"7.10","currency":"CNY"}},{"date":"2024-01-01","loc":{"file":"examples/full-year-2024.beancount","line":547},"meta":{},"type":"query","name":"monthly","query":"SELECT year(date), month(date), sum(position) GROUP BY 1, 2"},{"date":"2024-01-02","loc":{"file":"examples/full-year-2024.beancount","line":48},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Savings transfer","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Bank:Savings","units":{"number":"2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-01-08","loc":{"file":"examples/full-year-2024.beancount","line":52},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Groceries","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Groceries","units":{"number":"800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-01-10","loc":{"file":"examples/full-year-2024.beancount","line":56},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Transit pass","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Transport","units":{"number":"300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-01-12","loc":{"file":"examples/full-year-2024.beancount","line":60},"meta":{},"type":"transaction","flag":"*","payee":"Dinner","narration":"Team dinner","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-01-15","loc":{"file":"examples/full-year-2024.beancount","line":64},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Utilities","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Utilities","units":{"number":"500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-01-18","loc":{"file":"examples/full-year-2024.beancount","line":68},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Lunch","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Cash","units":{"number":"-100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-01-20","loc":{"file":"examples/full-year-2024.beancount","line":72},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Credit card payment","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-01-25","loc":{"file":"examples/full-year-2024.beancount","line":76},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Salary","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Salary","units":{"number":"-20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-02-01","loc":{"file":"examples/full-year-2024.beancount","line":80},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Rent","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Housing:Rent","units":{"number":"6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-02-02","loc":{"file":"examples/full-year-2024.beancount","line":84},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Savings transfer","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Bank:Savings","units":{"number":"2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-02-08","loc":{"file":"examples/full-year-2024.beancount","line":88},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Groceries","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Groceries","units":{"number":"800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-02-10","loc":{"file":"examples/full-year-2024.beancount","line":92},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Transit pass","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Transport","units":{"number":"300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-02-10","loc":{"file":"examples/full-year-2024.beancount","line":477},"meta":{},"type":"transaction","flag":"*","payee":"Buy shares","narration":"First lot of the year","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Broker:Stocks","units":{"number":"20","currency":"AAPL"},"cost":{"per":"160.00","total":null,"currency":"USD","date":"2024-02-10","label":null,"merge":false},"price":null,"meta":{}},{"flag":null,"account":"Assets:Broker:Cash","units":{"number":"-3200.00","currency":"USD"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-02-12","loc":{"file":"examples/full-year-2024.beancount","line":96},"meta":{},"type":"transaction","flag":"*","payee":"Dinner","narration":"Team dinner","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-02-15","loc":{"file":"examples/full-year-2024.beancount","line":100},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Utilities","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Utilities","units":{"number":"500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-02-18","loc":{"file":"examples/full-year-2024.beancount","line":104},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Lunch","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Cash","units":{"number":"-100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-02-20","loc":{"file":"examples/full-year-2024.beancount","line":108},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Credit card payment","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-02-25","loc":{"file":"examples/full-year-2024.beancount","line":112},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Salary","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Salary","units":{"number":"-20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-03-01","loc":{"file":"examples/full-year-2024.beancount","line":116},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Rent","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Housing:Rent","units":{"number":"6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-03-02","loc":{"file":"examples/full-year-2024.beancount","line":120},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Savings transfer","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Bank:Savings","units":{"number":"2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-03-08","loc":{"file":"examples/full-year-2024.beancount","line":124},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Groceries","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Groceries","units":{"number":"800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-03-10","loc":{"file":"examples/full-year-2024.beancount","line":128},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Transit pass","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Transport","units":{"number":"300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-03-12","loc":{"file":"examples/full-year-2024.beancount","line":132},"meta":{},"type":"transaction","flag":"*","payee":"Dinner","narration":"Team dinner","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-03-15","loc":{"file":"examples/full-year-2024.beancount","line":136},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Utilities","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Utilities","units":{"number":"500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-03-15","loc":{"file":"examples/full-year-2024.beancount","line":481},"meta":{"receipt":"policy-2024"},"type":"transaction","flag":"*","payee":null,"narration":"Annual health insurance","tags":["insurance"],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-3600.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Health","units":{"number":"3600.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-03-18","loc":{"file":"examples/full-year-2024.beancount","line":140},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Lunch","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Cash","units":{"number":"-100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-03-20","loc":{"file":"examples/full-year-2024.beancount","line":144},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Credit card payment","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-03-20","loc":{"file":"examples/full-year-2024.beancount","line":486},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Dividend","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Broker:Cash","units":{"number":"60.00","currency":"USD"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Dividends","units":{"number":"-60.00","currency":"USD"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-03-25","loc":{"file":"examples/full-year-2024.beancount","line":148},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Salary","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Salary","units":{"number":"-20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-04-01","loc":{"file":"examples/full-year-2024.beancount","line":152},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Rent","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Housing:Rent","units":{"number":"6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-04-02","loc":{"file":"examples/full-year-2024.beancount","line":156},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Savings transfer","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Bank:Savings","units":{"number":"2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-04-08","loc":{"file":"examples/full-year-2024.beancount","line":160},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Groceries","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Groceries","units":{"number":"800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-04-10","loc":{"file":"examples/full-year-2024.beancount","line":164},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Transit pass","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Transport","units":{"number":"300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-04-10","loc":{"file":"examples/full-year-2024.beancount","line":490},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Income tax","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-12000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Taxes","units":{"number":"12000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-04-12","loc":{"file":"examples/full-year-2024.beancount","line":168},"meta":{},"type":"transaction","flag":"*","payee":"Dinner","narration":"Team dinner","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-04-15","loc":{"file":"examples/full-year-2024.beancount","line":172},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Utilities","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Utilities","units":{"number":"500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-04-18","loc":{"file":"examples/full-year-2024.beancount","line":176},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Lunch","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Cash","units":{"number":"-100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-04-20","loc":{"file":"examples/full-year-2024.beancount","line":180},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Credit card payment","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-04-25","loc":{"file":"examples/full-year-2024.beancount","line":184},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Salary","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Salary","units":{"number":"-20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-05-01","loc":{"file":"examples/full-year-2024.beancount","line":188},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Rent","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Housing:Rent","units":{"number":"6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-05-02","loc":{"file":"examples/full-year-2024.beancount","line":192},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Savings transfer","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Bank:Savings","units":{"number":"2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-05-08","loc":{"file":"examples/full-year-2024.beancount","line":196},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Groceries","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Groceries","units":{"number":"800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-05-10","loc":{"file":"examples/full-year-2024.beancount","line":200},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Transit pass","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Transport","units":{"number":"300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-05-12","loc":{"file":"examples/full-year-2024.beancount","line":204},"meta":{},"type":"transaction","flag":"*","payee":"Dinner","narration":"Team dinner","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-05-15","loc":{"file":"examples/full-year-2024.beancount","line":208},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Utilities","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Utilities","units":{"number":"500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-05-18","loc":{"file":"examples/full-year-2024.beancount","line":212},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Lunch","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Cash","units":{"number":"-100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-05-20","loc":{"file":"examples/full-year-2024.beancount","line":216},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Credit card payment","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-05-20","loc":{"file":"examples/full-year-2024.beancount","line":494},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Books","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-600.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Books","units":{"number":"600.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-05-25","loc":{"file":"examples/full-year-2024.beancount","line":220},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Salary","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Salary","units":{"number":"-20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-06-01","loc":{"file":"examples/full-year-2024.beancount","line":224},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Rent","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Housing:Rent","units":{"number":"6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-06-02","loc":{"file":"examples/full-year-2024.beancount","line":228},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Savings transfer","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Bank:Savings","units":{"number":"2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-06-08","loc":{"file":"examples/full-year-2024.beancount","line":232},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Groceries","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Groceries","units":{"number":"800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-06-10","loc":{"file":"examples/full-year-2024.beancount","line":236},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Transit pass","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Transport","units":{"number":"300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-06-12","loc":{"file":"examples/full-year-2024.beancount","line":240},"meta":{},"type":"transaction","flag":"*","payee":"Dinner","narration":"Team dinner","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-06-15","loc":{"file":"examples/full-year-2024.beancount","line":244},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Utilities","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Utilities","units":{"number":"500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-06-15","loc":{"file":"examples/full-year-2024.beancount","line":498},"meta":{},"type":"transaction","flag":"*","payee":"Sell shares","narration":"Raise cash","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Broker:Stocks","units":{"number":"-15","currency":"AAPL"},"cost":{"per":"150.00","total":null,"currency":"USD","date":"2024-01-01","label":null,"merge":false},"price":{"number":"180.00","currency":"USD","total":false},"meta":{}},{"flag":null,"account":"Assets:Broker:Cash","units":{"number":"2700.00","currency":"USD"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:CapitalGains","units":{"number":"-450.00","currency":"USD"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-06-18","loc":{"file":"examples/full-year-2024.beancount","line":248},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Lunch","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Cash","units":{"number":"-100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-06-20","loc":{"file":"examples/full-year-2024.beancount","line":252},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Credit card payment","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-06-25","loc":{"file":"examples/full-year-2024.beancount","line":256},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Salary","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Salary","units":{"number":"-20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-06-28","loc":{"file":"examples/full-year-2024.beancount","line":540},"meta":{},"type":"price","currency":"USD","amount":{"number":"7.25","currency":"CNY"}},{"date":"2024-06-30","loc":{"file":"examples/full-year-2024.beancount","line":503},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Savings interest","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Interest","units":{"number":"-200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-06-30","loc":{"file":"examples/full-year-2024.beancount","line":508},"meta":{},"type":"pad","account":"Assets:Cash","source":"Equity:Opening"},{"date":"2024-06-30","loc":{"file":"examples/full-year-2024.beancount","line":508},"meta":{},"type":"transaction","flag":"P","payee":null,"narration":"(Padding inserted for Balance of 8000.00 CNY for difference 6600.00 CNY)","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Cash","units":{"number":"6600.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Equity:Opening","units":{"number":"-6600.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-07-01","loc":{"file":"examples/full-year-2024.beancount","line":509},"meta":{},"type":"balance","account":"Assets:Cash","amount":{"number":"8000.00","currency":"CNY"},"tolerance":null},{"date":"2024-07-01","loc":{"file":"examples/full-year-2024.beancount","line":260},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Rent","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Housing:Rent","units":{"number":"6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-07-01","loc":{"file":"examples/full-year-2024.beancount","line":544},"meta":{},"type":"event","event_type":"location","description":"Hangzhou"},{"date":"2024-07-02","loc":{"file":"examples/full-year-2024.beancount","line":264},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Savings transfer","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Bank:Savings","units":{"number":"2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-07-08","loc":{"file":"examples/full-year-2024.beancount","line":268},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Groceries","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Groceries","units":{"number":"800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-07-10","loc":{"file":"examples/full-year-2024.beancount","line":272},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Transit pass","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Transport","units":{"number":"300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-07-12","loc":{"file":"examples/full-year-2024.beancount","line":276},"meta":{},"type":"transaction","flag":"*","payee":"Dinner","narration":"Team dinner","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-07-15","loc":{"file":"examples/full-year-2024.beancount","line":280},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Utilities","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Utilities","units":{"number":"500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-07-18","loc":{"file":"examples/full-year-2024.beancount","line":284},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Lunch","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Cash","units":{"number":"-100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-07-20","loc":{"file":"examples/full-year-2024.beancount","line":288},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Credit card payment","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-07-25","loc":{"file":"examples/full-year-2024.beancount","line":292},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Salary","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Salary","units":{"number":"-20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-08-01","loc":{"file":"examples/full-year-2024.beancount","line":296},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Rent","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Housing:Rent","units":{"number":"6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-08-02","loc":{"file":"examples/full-year-2024.beancount","line":300},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Savings transfer","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Bank:Savings","units":{"number":"2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-08-05","loc":{"file":"examples/full-year-2024.beancount","line":511},"meta":{},"type":"transaction","flag":"*","payee":"Hangzhou","narration":"Family trip","tags":["travel"],"links":["trip-2024"],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-5000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Travel","units":{"number":"5000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-08-08","loc":{"file":"examples/full-year-2024.beancount","line":304},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Groceries","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Groceries","units":{"number":"800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-08-10","loc":{"file":"examples/full-year-2024.beancount","line":308},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Transit pass","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Transport","units":{"number":"300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-08-12","loc":{"file":"examples/full-year-2024.beancount","line":312},"meta":{},"type":"transaction","flag":"*","payee":"Dinner","narration":"Team dinner","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-08-15","loc":{"file":"examples/full-year-2024.beancount","line":316},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Utilities","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Utilities","units":{"number":"500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-08-18","loc":{"file":"examples/full-year-2024.beancount","line":320},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Lunch","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Cash","units":{"number":"-100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-08-20","loc":{"file":"examples/full-year-2024.beancount","line":324},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Credit card payment","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-08-25","loc":{"file":"examples/full-year-2024.beancount","line":328},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Salary","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Salary","units":{"number":"-20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-09-01","loc":{"file":"examples/full-year-2024.beancount","line":332},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Rent","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Housing:Rent","units":{"number":"6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-09-02","loc":{"file":"examples/full-year-2024.beancount","line":336},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Savings transfer","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Bank:Savings","units":{"number":"2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-09-08","loc":{"file":"examples/full-year-2024.beancount","line":340},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Groceries","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Groceries","units":{"number":"800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-09-10","loc":{"file":"examples/full-year-2024.beancount","line":344},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Transit pass","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Transport","units":{"number":"300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-09-10","loc":{"file":"examples/full-year-2024.beancount","line":515},"meta":{"receipt":"laptop-2024-09-10.pdf"},"type":"transaction","flag":"*","payee":"Store","narration":"Work laptop","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-8000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Equipment","units":{"number":"8000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-09-10","loc":{"file":"examples/full-year-2024.beancount","line":520},"meta":{},"type":"document","account":"Assets:Bank:Checking","filename":"receipts/laptop-2024-09-10.pdf","tags":[],"links":[]},{"date":"2024-09-12","loc":{"file":"examples/full-year-2024.beancount","line":348},"meta":{},"type":"transaction","flag":"*","payee":"Dinner","narration":"Team dinner","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-09-15","loc":{"file":"examples/full-year-2024.beancount","line":352},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Utilities","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Utilities","units":{"number":"500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-09-18","loc":{"file":"examples/full-year-2024.beancount","line":356},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Lunch","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Cash","units":{"number":"-100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-09-20","loc":{"file":"examples/full-year-2024.beancount","line":360},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Credit card payment","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-09-25","loc":{"file":"examples/full-year-2024.beancount","line":364},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Salary","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Salary","units":{"number":"-20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-10-01","loc":{"file":"examples/full-year-2024.beancount","line":368},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Rent","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Housing:Rent","units":{"number":"6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-10-02","loc":{"file":"examples/full-year-2024.beancount","line":372},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Savings transfer","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Bank:Savings","units":{"number":"2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-10-05","loc":{"file":"examples/full-year-2024.beancount","line":522},"meta":{},"type":"transaction","flag":"*","payee":"Buy shares","narration":"Top up holding","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Broker:Stocks","units":{"number":"10","currency":"AAPL"},"cost":{"per":"170.00","total":null,"currency":"USD","date":"2024-10-05","label":null,"merge":false},"price":null,"meta":{}},{"flag":null,"account":"Assets:Broker:Cash","units":{"number":"-1700.00","currency":"USD"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-10-08","loc":{"file":"examples/full-year-2024.beancount","line":376},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Groceries","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Groceries","units":{"number":"800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-10-10","loc":{"file":"examples/full-year-2024.beancount","line":380},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Transit pass","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Transport","units":{"number":"300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-10-12","loc":{"file":"examples/full-year-2024.beancount","line":384},"meta":{},"type":"transaction","flag":"*","payee":"Dinner","narration":"Team dinner","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-10-15","loc":{"file":"examples/full-year-2024.beancount","line":388},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Utilities","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Utilities","units":{"number":"500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-10-18","loc":{"file":"examples/full-year-2024.beancount","line":392},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Lunch","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Cash","units":{"number":"-100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-10-20","loc":{"file":"examples/full-year-2024.beancount","line":396},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Credit card payment","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-10-25","loc":{"file":"examples/full-year-2024.beancount","line":400},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Salary","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Salary","units":{"number":"-20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-11-01","loc":{"file":"examples/full-year-2024.beancount","line":404},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Rent","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Housing:Rent","units":{"number":"6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-11-02","loc":{"file":"examples/full-year-2024.beancount","line":408},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Savings transfer","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Bank:Savings","units":{"number":"2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-11-08","loc":{"file":"examples/full-year-2024.beancount","line":412},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Groceries","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Groceries","units":{"number":"800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-11-10","loc":{"file":"examples/full-year-2024.beancount","line":416},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Transit pass","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Transport","units":{"number":"300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-11-12","loc":{"file":"examples/full-year-2024.beancount","line":420},"meta":{},"type":"transaction","flag":"*","payee":"Dinner","narration":"Team dinner","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-11-15","loc":{"file":"examples/full-year-2024.beancount","line":424},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Utilities","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Utilities","units":{"number":"500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-11-18","loc":{"file":"examples/full-year-2024.beancount","line":428},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Lunch","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Cash","units":{"number":"-100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-11-20","loc":{"file":"examples/full-year-2024.beancount","line":432},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Credit card payment","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-11-25","loc":{"file":"examples/full-year-2024.beancount","line":436},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Salary","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Salary","units":{"number":"-20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-11-25","loc":{"file":"examples/full-year-2024.beancount","line":526},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Bonus","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"30000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Salary","units":{"number":"-30000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-12-01","loc":{"file":"examples/full-year-2024.beancount","line":440},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Rent","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Housing:Rent","units":{"number":"6000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-12-02","loc":{"file":"examples/full-year-2024.beancount","line":444},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Savings transfer","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Assets:Bank:Savings","units":{"number":"2000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-12-08","loc":{"file":"examples/full-year-2024.beancount","line":448},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Groceries","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Groceries","units":{"number":"800.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-12-10","loc":{"file":"examples/full-year-2024.beancount","line":452},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Transit pass","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Transport","units":{"number":"300.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-12-12","loc":{"file":"examples/full-year-2024.beancount","line":456},"meta":{},"type":"transaction","flag":"*","payee":"Dinner","narration":"Team dinner","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"700.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-12-15","loc":{"file":"examples/full-year-2024.beancount","line":460},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Utilities","tags":[],"links":[],"postings":[{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"-500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Utilities","units":{"number":"500.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-12-18","loc":{"file":"examples/full-year-2024.beancount","line":464},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Lunch","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Cash","units":{"number":"-100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Food:Dining","units":{"number":"100.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-12-20","loc":{"file":"examples/full-year-2024.beancount","line":468},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Credit card payment","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Liabilities:CreditCard","units":{"number":"1200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-12-20","loc":{"file":"examples/full-year-2024.beancount","line":530},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Charity donation","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"-1000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Expenses:Donations","units":{"number":"1000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-12-25","loc":{"file":"examples/full-year-2024.beancount","line":472},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Salary","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Salary","units":{"number":"-20000.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-12-31","loc":{"file":"examples/full-year-2024.beancount","line":534},"meta":{},"type":"transaction","flag":"*","payee":null,"narration":"Savings interest","tags":[],"links":[],"postings":[{"flag":null,"account":"Assets:Bank:Checking","units":{"number":"200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}},{"flag":null,"account":"Income:Interest","units":{"number":"-200.00","currency":"CNY"},"cost":null,"price":null,"meta":{}}]},{"date":"2024-12-31","loc":{"file":"examples/full-year-2024.beancount","line":541},"meta":{},"type":"price","currency":"USD","amount":{"number":"7.30","currency":"CNY"}},{"date":"2024-12-31","loc":{"file":"examples/full-year-2024.beancount","line":542},"meta":{},"type":"price","currency":"AAPL","amount":{"number":"175.00","currency":"USD"}},{"date":"2024-12-31","loc":{"file":"examples/full-year-2024.beancount","line":545},"meta":{},"type":"note","account":"Assets:Bank:Checking","comment":"Reconciled against the December statement","tags":[],"links":[]},{"date":"2024-12-31","loc":{"file":"examples/full-year-2024.beancount","line":546},"meta":{},"type":"custom","custom_type":"budget","values":[{"kind":"string","value":"food"},{"kind":"amount","value":{"number":"12000.00","currency":"CNY"}},{"kind":"date","value":"2024-01-01"},{"kind":"date","value":"2024-12-31"}]},{"date":"2025-01-01","loc":{"file":"examples/full-year-2024.beancount","line":550},"meta":{},"type":"balance","account":"Assets:Bank:Checking","amount":{"number":"166600.00","currency":"CNY"},"tolerance":null},{"date":"2025-01-01","loc":{"file":"examples/full-year-2024.beancount","line":551},"meta":{},"type":"balance","account":"Assets:Bank:Savings","amount":{"number":"144000.00","currency":"CNY"},"tolerance":null},{"date":"2025-01-01","loc":{"file":"examples/full-year-2024.beancount","line":552},"meta":{},"type":"balance","account":"Assets:Cash","amount":{"number":"7400.00","currency":"CNY"},"tolerance":null},{"date":"2025-01-01","loc":{"file":"examples/full-year-2024.beancount","line":553},"meta":{},"type":"balance","account":"Liabilities:CreditCard","amount":{"number":"-3200.00","currency":"CNY"},"tolerance":null},{"date":"2025-01-01","loc":{"file":"examples/full-year-2024.beancount","line":554},"meta":{},"type":"balance","account":"Assets:Broker:Stocks","amount":{"number":"55","currency":"AAPL"},"tolerance":null},{"date":"2025-01-01","loc":{"file":"examples/full-year-2024.beancount","line":555},"meta":{},"type":"balance","account":"Assets:Broker:Cash","amount":{"number":"1860.00","currency":"USD"},"tolerance":null}]}
+
+$ node --version
+exit 0
+v22.23.5
+
+$ moon update
+exit 0
+Registry index updated successfully
+Symbols updated successfully
+
+$ bash scripts/build-web.sh
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 11 tasks, now up to date
+Artifacts:
+  sundaysebasidian-byte/moonbean/playground  js  <repo>/_build/js/release/build/playground/playground.js
+built web/dist
+
+$ node web/smoke.mjs
+exit 0
+ok   bundle has no node: imports
+ok   check: the example ledger is valid
+ok   check: errors carry line numbers
+ok   check: include is reported on its own line
+ok   balance_sheet: converts to the operating currency by default
+ok   balance_sheet: includes the earnings accounts and balances
+ok   balance_sheet: unconverted amounts are reported and totals split by currency
+ok   balance_sheet: balanced is null without totals and only the balance sheet reports it
+ok   balance_sheet: empty convert keeps original currencies
+ok   balance_sheet: at limits the report to a date
+ok   income_statement: totals and period start
+ok   trial_balance: every account and no ledger errors
+ok   register: running balance ends at the account balance
+ok   register: subtree includes child accounts
+ok   query: aggregate, HAVING and period balances
+ok   query: engine errors come back as JSON
+ok   reports and queries refuse a ledger with errors
+ok   format: aligns amounts, is idempotent and keeps the ledger
+ok   xss: hostile operating_currency is data, not markup
+ok   xss: hostile narration, payee and metadata survive only as text
+ok   xss: hostile account names and BQL cells escape to text
+ok   bad requests are JSON errors, never exceptions
+ok   odd input does not throw
+ok   lib: exact decimal sums and grouping
+ok   lib: account tree sums children per currency
+ok   lib: display precision rounds half to even and keeps grouping
+ok   income_statement: totals come from the engine
+ok   lib: highlighter keeps the text and marks tokens
+ok   lib: query cells
+29 checks passed
+
+$ node web/dom-smoke.mjs
+exit 0
+ok   the first screen shows the verdict, counts and report totals
+ok   a broken ledger keeps its error path on the default report tab
+ok   no horizontal overflow at 390px
+ok   engine messages that echo ledger text stay text in the diagnostics list
+ok   hostile operating_currency is only an option value
+ok   register shows hostile payee and narration as text
+ok   query cells and the format preview stay text
+ok   the page raised no exceptions
+
+$ node --version
+exit 0
+v22.23.5
+
+$ moon update
+exit 0
+Registry index updated successfully
+Symbols updated successfully
+
+$ bash scripts/build-web.sh
+exit 0
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: no work to do
+Artifacts:
+  sundaysebasidian-byte/moonbean/playground  js  <repo>/_build/js/release/build/playground/playground.js
+built web/dist
+
+$ node web/smoke.mjs
+exit 0
+ok   bundle has no node: imports
+ok   check: the example ledger is valid
+ok   check: errors carry line numbers
+ok   check: include is reported on its own line
+ok   balance_sheet: converts to the operating currency by default
+ok   balance_sheet: includes the earnings accounts and balances
+ok   balance_sheet: unconverted amounts are reported and totals split by currency
+ok   balance_sheet: balanced is null without totals and only the balance sheet reports it
+ok   balance_sheet: empty convert keeps original currencies
+ok   balance_sheet: at limits the report to a date
+ok   income_statement: totals and period start
+ok   trial_balance: every account and no ledger errors
+ok   register: running balance ends at the account balance
+ok   register: subtree includes child accounts
+ok   query: aggregate, HAVING and period balances
+ok   query: engine errors come back as JSON
+ok   reports and queries refuse a ledger with errors
+ok   format: aligns amounts, is idempotent and keeps the ledger
+ok   xss: hostile operating_currency is data, not markup
+ok   xss: hostile narration, payee and metadata survive only as text
+ok   xss: hostile account names and BQL cells escape to text
+ok   bad requests are JSON errors, never exceptions
+ok   odd input does not throw
+ok   lib: exact decimal sums and grouping
+ok   lib: account tree sums children per currency
+ok   lib: display precision rounds half to even and keeps grouping
+ok   income_statement: totals come from the engine
+ok   lib: highlighter keeps the text and marks tokens
+ok   lib: query cells
+29 checks passed
+
+$ node web/dom-smoke.mjs
+exit 0
+ok   the first screen shows the verdict, counts and report totals
+ok   a broken ledger keeps its error path on the default report tab
+ok   no horizontal overflow at 390px
+ok   engine messages that echo ledger text stay text in the diagnostics list
+ok   hostile operating_currency is only an option value
+ok   register shows hostile payee and narration as text
+ok   query cells and the format preview stay text
+ok   the page raised no exceptions
+
+$ moon version --all
+exit 0
+moon 0.1.20261104 (940aa18 2026-11-04) /tmp/moon-new/bin/moon
+moonc v0.10.20+65efd5b93 (2026-11-05) /private/tmp/moon-new/bin/moonc
+moonrun 0.1.20261104 (940aa18 2026-11-04) /private/tmp/moon-new/bin/moonrun
+
+Feature flags enabled: rr_moon_mod,rr_moon_pkg
+
+$ moon update
+exit 0
+Registry index updated successfully
+Symbols updated successfully
+
+$ bash -o pipefail -c ./scripts/oracle.sh --markdown | tee .oracle-cache/r14-ci/conformance.md
+exit 0
+Oracle: beancount 3.2.3 / beanquery 0.2.0
+
+| Ledger | Diagnostics | BQL | Result | Notes |
+| --- | --- | --- | --- | --- |
+| `001-basic.beancount` | pass | pass | PASS |  |
+| `002-multi-currency.beancount` | pass | pass | PASS |  |
+| `003-commodity-prices.beancount` | pass | pass | PASS |  |
+| `004-balance.beancount` | pass | pass | PASS |  |
+| `005-balance-fail.beancount` | pass | pass | PASS |  |
+| `006-pad.beancount` | pass | pass | PASS |  |
+| `007-unused-pad.beancount` | pass | pass | PASS |  |
+| `008-directives.beancount` | pass | pass | PASS |  |
+| `009-open-constraints.beancount` | pass | pass | PASS |  |
+| `010-close.beancount` | pass | pass | PASS |  |
+| `011-close-unopened.beancount` | pass | pass | PASS |  |
+| `012-inactive-account.beancount` | pass | pass | PASS |  |
+| `013-duplicate-open.beancount` | pass | pass | PASS |  |
+| `014-duplicate-close.beancount` | pass | pass | PASS |  |
+| `015-tags-links.beancount` | pass | pass | PASS |  |
+| `016-push-tags.beancount` | pass | pass | PASS |  |
+| `017-pushmeta.beancount` | pass | pass | PASS |  |
+| `018-entry-metadata.beancount` | pass | pass | PASS |  |
+| `019-posting-metadata.beancount` | pass | pass | PASS |  |
+| `020-posting-flags.beancount` | pass | pass | PASS |  |
+| `021-arithmetic.beancount` | pass | pass | PASS |  |
+| `022-interpolate-missing.beancount` | pass | pass | PASS |  |
+| `023-multiple-missing.beancount` | pass | pass | PASS |  |
+| `024-cost-per.beancount` | pass | pass | PASS |  |
+| `025-cost-total.beancount` | pass | pass | PASS |  |
+| `026-cost-date-label.beancount` | pass | pass | PASS |  |
+| `027-price-per.beancount` | pass | pass | PASS |  |
+| `028-price-total.beancount` | pass | pass | PASS |  |
+| `029-booking-fifo.beancount` | pass | pass | PASS |  |
+| `030-booking-lifo.beancount` | pass | pass | PASS |  |
+| `031-booking-hifo.beancount` | pass | pass | PASS |  |
+| `032-booking-strict.beancount` | pass | pass | PASS |  |
+| `033-booking-strict-size.beancount` | pass | pass | PASS |  |
+| `034-booking-none.beancount` | pass | pass | PASS |  |
+| `035-booking-average.beancount` | pass | skip | PASS | beancount 3.2.3 reports 'AVERAGE method is not supported' |
+| `036-booking-insufficient.beancount` | pass | pass | PASS |  |
+| `037-booking-ambiguous.beancount` | pass | pass | PASS |  |
+| `038-unbalanced.beancount` | pass | pass | PASS |  |
+| `039-currency-constraint.beancount` | pass | pass | PASS |  |
+| `040-unknown-account.beancount` | pass | pass | PASS |  |
+| `041-include.beancount` | pass | pass | PASS |  |
+| `042-plugin.beancount` | pass | pass | PASS |  |
+| `043-options.beancount` | pass | pass | PASS |  |
+| `044-tolerance-options.beancount` | pass | pass | PASS |  |
+| `045-comments.beancount` | pass | pass | PASS |  |
+| `046-string-escapes.beancount` | pass | pass | PASS |  |
+| `047-syntax-error.beancount` | pass | pass | PASS |  |
+| `048-duplicate-balance.beancount` | pass | pass | PASS |  |
+| `049-invalid-booking-method.beancount` | pass | pass | PASS |  |
+| `050-query-balances.beancount` | pass | pass | PASS |  |
+| `051-query-journal.beancount` | pass | pass | PASS |  |
+| `052-query-functions.beancount` | pass | pass | PASS |  |
+| `053-query-group-limit.beancount` | pass | pass | PASS |  |
+| `054-tolerance-inference.beancount` | pass | pass | PASS |  |
+| `055-same-day-order.beancount` | pass | pass | PASS |  |
+| `056-custom-values.beancount` | pass | pass | PASS |  |
+| `057-bql-prices.beancount` | pass | pass | PASS |  |
+| `058-cost-merge.beancount` | pass | skip | PASS | beancount 3.2.3 reports 'Cost merging is not supported yet' |
+| `059-plugin-auto-basic.beancount` | pass | pass | PASS |  |
+| `060-plugin-auto-existing.beancount` | pass | pass | PASS |  |
+| `061-plugin-auto-late-open.beancount` | pass | pass | PASS |  |
+| `062-plugin-auto-directives.beancount` | pass | pass | PASS |  |
+| `063-plugin-implicit-cost.beancount` | pass | pass | PASS |  |
+| `064-plugin-implicit-total.beancount` | pass | pass | PASS |  |
+| `065-plugin-implicit-priority.beancount` | pass | pass | PASS |  |
+| `066-plugin-implicit-duplicates.beancount` | pass | pass | PASS |  |
+| `067-plugin-commodity-valid.beancount` | pass | pass | PASS |  |
+| `068-plugin-commodity-missing.beancount` | pass | pass | PASS |  |
+| `069-plugin-commodity-price.beancount` | pass | pass | PASS |  |
+| `070-plugin-unique-valid.beancount` | pass | pass | PASS |  |
+| `071-plugin-unique-conflict.beancount` | pass | pass | PASS |  |
+| `072-plugin-leaf-valid.beancount` | pass | pass | PASS |  |
+| `073-plugin-leaf-invalid.beancount` | pass | pass | PASS |  |
+| `074-plugin-order-prices-first.beancount` | pass | pass | PASS |  |
+| `075-plugin-order-unique-first.beancount` | pass | pass | PASS |  |
+| `076-plugin-combined-all.beancount` | pass | pass | PASS |  |
+| `077-plugin-order-leaf-first.beancount` | pass | pass | PASS |  |
+| `078-plugin-order-auto-first.beancount` | pass | pass | PASS |  |
+| `079-plugin-commodity-exemptions.beancount` | pass | pass | PASS |  |
+| `080-plugin-implicit-short.beancount` | pass | pass | PASS |  |
+| `081-pad-interpolated.beancount` | pass | pass | PASS |  |
+| `082-balance-interpolated.beancount` | pass | pass | PASS |  |
+| `083-auto-pad-interpolated.beancount` | pass | pass | PASS |  |
+| `084-exempt-before-price.beancount` | pass | pass | PASS |  |
+| `085-exempt-after-price.beancount` | pass | pass | PASS |  |
+| `086-exempt-other-account.beancount` | pass | pass | PASS |  |
+| `087-leaf-note.beancount` | pass | pass | PASS |  |
+| `088-leaf-document.beancount` | pass | pass | PASS |  |
+| `089-leaf-close.beancount` | pass | pass | PASS |  |
+| `090-leaf-pad.beancount` | pass | pass | PASS |  |
+| `091-leaf-pad-source.beancount` | pass | pass | PASS |  |
+| `092-leaf-custom.beancount` | pass | pass | PASS |  |
+| `093-short-strict.beancount` | pass | pass | PASS |  |
+| `094-short-fifo.beancount` | pass | pass | PASS |  |
+| `095-short-lifo.beancount` | pass | pass | PASS |  |
+| `096-short-hifo.beancount` | pass | pass | PASS |  |
+| `097-short-strict_with_size.beancount` | pass | pass | PASS |  |
+| `098-short-average.beancount` | pass | pass | PASS |  |
+| `099-implicit-zero.beancount` | pass | pass | PASS |  |
+| `100-pad-costed-sale.beancount` | pass | pass | PASS |  |
+| `101-pad-costed-buy.beancount` | pass | pass | PASS |  |
+| `102-pad-uncosted.beancount` | pass | pass | PASS |  |
+| `103-pad-costed-unused.beancount` | pass | pass | PASS |  |
+| `104-short-inferred-strict-0.beancount` | pass | pass | PASS |  |
+| `105-short-inferred-strict-1.beancount` | pass | pass | PASS |  |
+| `106-short-inferred-fifo-0.beancount` | pass | pass | PASS |  |
+| `107-short-inferred-fifo-1.beancount` | pass | pass | PASS |  |
+| `108-short-inferred-average-0.beancount` | pass | pass | PASS |  |
+| `109-short-inferred-average-1.beancount` | pass | pass | PASS |  |
+| `110-short-inferred-none-0.beancount` | pass | pass | PASS |  |
+| `111-short-inferred-none-1.beancount` | pass | pass | PASS |  |
+| `112-round-zero.beancount` | pass | pass | PASS |  |
+| `113-round-zero.beancount` | pass | pass | PASS |  |
+| `114-bql-strings.beancount` | pass | pass | PASS |  |
+| `115-option-wildcard.beancount` | pass | pass | PASS |  |
+| `116-option-wildcard-inferred.beancount` | pass | pass | PASS |  |
+| `117-bql-tables.beancount` | pass | pass | PASS |  |
+| `118-note-stacks.beancount` | pass | pass | PASS |  |
+| `119-cost-tolerance.beancount` | pass | pass | PASS |  |
+| `120-numeric-metadata.beancount` | pass | pass | PASS |  |
+
+ledgers: 120, compared: 118, passed: 118, failed: 0, extensions: 2
+==> building moonbean (native)
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async`. Set `options("allow-experimental-packages": ["moonbitlang/core/async"])` in the importing package's moon.pkg to acknowledge this dependency.
+Warning: Package `sundaysebasidian-byte/moonbean/cmd/main` depends on experimental package `moonbitlang/core/async/fs`. Set `options("allow-experimental-packages": ["moonbitlang/core/async/fs"])` in the importing package's moon.pkg to acknowledge this dependency.
+Finished. moon: ran 23 tasks, now up to date
+==> oracle beancount 3.2.3, beanquery 0.2.0
+
+$ python3 scripts/random_differential.py --seed 7 --out .oracle-cache/differential/seed-7 --oracle /tmp/moonbean-r4-oracle/bin --allow-known-extensions
+exit 0
+compared 100; mismatches 14
+compared 200; mismatches 28
+compared 300; mismatches 42
+compared 400; mismatches 57
+compared 500; mismatches 71
+compared 600; mismatches 85
+compared 700; mismatches 100
+compared 800; mismatches 114
+compared 900; mismatches 128
+compared 1000; mismatches 142
+{"seed": 7, "count": 1000, "mismatches": 142, "clean_queries": 468, "non_average_mismatches": 0}
+
+$ python3 scripts/random_differential.py --seed 20261101 --out .oracle-cache/differential/seed-20261101 --oracle /tmp/moonbean-r4-oracle/bin --allow-known-extensions
+exit 0
+compared 100; mismatches 14
+compared 200; mismatches 28
+compared 300; mismatches 42
+compared 400; mismatches 57
+compared 500; mismatches 71
+compared 600; mismatches 85
+compared 700; mismatches 100
+compared 800; mismatches 114
+compared 900; mismatches 128
+compared 1000; mismatches 142
+{"seed": 20261101, "count": 1000, "mismatches": 142, "clean_queries": 468, "non_average_mismatches": 0}
+
+$ python3 scripts/report_differential.py --oracle /tmp/moonbean-r4-oracle/bin
+exit 0
+{
+  "ledgers": 25,
+  "checks": 144,
+  "failures": 0,
+  "results": [
+    {
+      "ledger": "convert-chain.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'USD': Decimal('0.00')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "cost-date-label.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'USD': Decimal('0.00')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "cost-total.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'USD': Decimal('0.00')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "display-precision.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'CNY': Decimal('0.0')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "fifo-split.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'USD': Decimal('0.00')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "hifo-select.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'USD': Decimal('0.00')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "insufficient.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "interpolate-cost.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'USD': Decimal('0.00')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "lifo-select.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'USD': Decimal('0.00')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "multiple-missing.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "pad-balance.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'USD': Decimal('0.00')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "report-expense-only.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'CNY': Decimal('0.00')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "report-income-only.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'CNY': Decimal('0.00')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "report-loss.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'CNY': Decimal('0.00')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "report-minimal.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'CNY': Decimal('0.00')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "report-years.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'EUR': Decimal('0.00'), 'USD': Decimal('0.00')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "strict-ambiguous.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "strict-size-partial.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'USD': Decimal('0.00')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "tolerance-0005.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'USD': Decimal('0.000')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "tolerance-0006.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "tolerance-default.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ],
+        [
+          "posting-details",
+          true,
+          ""
+        ],
+        [
+          "bs",
+          true,
+          ""
+        ],
+        [
+          "balance-sheet-identity",
+          true,
+          "{'USD': Decimal('0.000')}"
+        ],
+        [
+          "is",
+          true,
+          ""
+        ],
+        [
+          "export-booked-details",
+          true,
+          ""
+        ],
+        [
+          "journal-booked-details",
+          true,
+          ""
+        ],
+        [
+          "register-booked-details",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "unused-pad.beancount",
+      "checks": [
+        [
+          "existing",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "price-chain",
+      "checks": [
+        [
+          "price-path",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "historical-balance-sheet",
+      "checks": [
+        [
+          "snapshot",
+          true,
+          ""
+        ]
+      ]
+    },
+    {
+      "ledger": "dated-unquoted-stock",
+      "checks": [
+        [
+          "dated-price-path",
+          true,
+          ""
+        ]
+      ]
+    }
+  ]
+}
+
+$ python3 scripts/include_smoke.py
+exit 0
+CLI include self/mutual/absolute cycles, missing file and depth 100: 5/5 PASS
+CLI nested include source locations, absent/present documents and JSON warning contract: PASS
+
+$ python3 scripts/bql_differential.py --oracle /tmp/moonbean-r4-oracle/bin
+exit 0
+BQL differential: 22344/22344 checks passed
+

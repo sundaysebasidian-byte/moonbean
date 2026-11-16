@@ -216,3 +216,125 @@ Observed medians span **0.915–1.132**; the largest is js 100000 regex. All per
 ### Rework closeout
 
 No push or publication occurred. Current source, exact test inputs, historical attempts and final evidence are retained. Superseded acceptance/performance processes were stopped before the final runtime freeze; only this task's processes were terminated. No temporary service or browser tab was opened. The local verified backup receipt, process inventory, df observations, manifest and empty restore map are under .oracle-cache/r14-rework-closeout/. No item was selected for Trash; shared and unknown resources remain untouched.
+
+## CI-only include fixture follow-up (main 825c412)
+
+The earlier acceptance omitted the workflow's include smoke and other CI-only commands. This follow-up reads both .github/workflows/ci.yml and pages.yml and inventories every step, including all OS matrix rows. Fixture repair commit is f08310e on compat-0.2.8; runtime MoonBit files and version 0.2.8 are unchanged from 825c412.
+
+The original include smoke reproducibly exits 1 at its document_unchecked assertion. It now asserts document_missing at child.beancount:5 for an absent document, alongside the original balance/include errors. Each direct/nested include case resets its source. The positive branch creates present-receipt.pdf, checks clean native CLI success without warnings, then checks export's existing pure-library contract: no errors and exactly one document_unchecked warning at child.beancount:5. Neither the document-existence check nor validation behavior was weakened. Independent bean-check probes return 1/1 when the document is absent and 0/0 when it exists. [Before failure](r14-ci-include-before.log), [document probes](r14-ci-document-probe.json).
+
+### Environment and scope
+
+Executed on macOS 27.2 arm64 with the provided Moon 0.1.20261104 / moonc v0.10.20+65efd5b93, a task-local Node 22.23.5, Chrome 157.0.8103.52 and the restored oracle Python 3.14.7 / Beancount 3.2.3 / beanquery 0.2.0 / dateutil 4.0.0. Python commands in the workflow replay resolve to Python 3.14.7; orchestration uses system Python 3.14.6. The supplied MoonBit and oracle installations were reused rather than overwritten by the unpinned setup installers. Node 22 was installed in an isolated local npm cache. Browser tests really launched isolated headless Chrome; no interactive user profile was used.
+
+This is local command execution, not a hosted CI run. Ubuntu/Windows and the hosted macos-latest image are unverified; this host has neither those runners nor Docker. GitHub checkout/setup actions themselves were not invoked. Local artifact archives were constructed and their bytes verified, but remote uploads, configure-pages and deploy-pages actions were not run. Deployment is excluded by the explicit no-publish instruction. The unpinned MoonBit installer/latest hosted toolchain is not claimed as tested.
+
+### Every workflow step
+
+PASS means the indicated commands actually exited 0 locally. The OS column names the workflow matrix/runner; notes distinguish local macOS execution from hosted execution. Conditional, provisioning and hosted-only steps have explicit statuses rather than fabricated passes.
+
+| Workflow/job | OS | Step | Result | Notes |
+| --- | --- | --- | --- | --- |
+| ci.yml/build | macos-latest | Checkout | LOCAL IDENTITY VERIFIED | Existing authorized worktree at f08310e; checkout action itself not invoked. |
+| ci.yml/build | macos-latest | Install MoonBit (unix) | PROVISIONED, INSTALLER NOT RUN | Reused the explicitly provided /tmp/moon-new; did not run an unpinned installer into the shared user environment. |
+| ci.yml/build | macos-latest | Install MoonBit (windows) | SKIP: workflow condition | The workflow excludes this installer on this OS. |
+| ci.yml/build | macos-latest | Toolchain version | PASS locally | Executed on local macOS 27.2 arm64, not a hosted macos-latest image. |
+| ci.yml/build | macos-latest | Check | PASS locally | Executed on local macOS 27.2 arm64, not a hosted macos-latest image. |
+| ci.yml/build | macos-latest | Build | PASS locally | Executed on local macOS 27.2 arm64, not a hosted macos-latest image. |
+| ci.yml/build | macos-latest | Test | PASS locally | Executed on local macOS 27.2 arm64, not a hosted macos-latest image. |
+| ci.yml/build | macos-latest | Formatting | PASS locally | Executed on local macOS 27.2 arm64, not a hosted macos-latest image. |
+| ci.yml/build | macos-latest | Generated interfaces are committed | PASS locally | Executed on local macOS 27.2 arm64, not a hosted macos-latest image. |
+| ci.yml/build | macos-latest | README quick start | PASS locally | Executed on local macOS 27.2 arm64, not a hosted macos-latest image. |
+| ci.yml/build | ubuntu-latest | Checkout | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | ubuntu-latest | Install MoonBit (unix) | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | ubuntu-latest | Install MoonBit (windows) | SKIP: workflow condition | The workflow excludes this installer on this OS. |
+| ci.yml/build | ubuntu-latest | Toolchain version | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | ubuntu-latest | Check | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | ubuntu-latest | Build | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | ubuntu-latest | Test | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | ubuntu-latest | Formatting | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | ubuntu-latest | Generated interfaces are committed | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | ubuntu-latest | README quick start | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | windows-latest | Checkout | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | windows-latest | Install MoonBit (unix) | SKIP: workflow condition | The workflow excludes this installer on this OS. |
+| ci.yml/build | windows-latest | Install MoonBit (windows) | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | windows-latest | Toolchain version | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | windows-latest | Check | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | windows-latest | Build | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | windows-latest | Test | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | windows-latest | Formatting | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | windows-latest | Generated interfaces are committed | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/build | windows-latest | README quick start | NOT RUN on this OS | Only a macOS arm64 host is available; no Linux/Windows runner or Docker installed. |
+| ci.yml/playground | ubuntu-latest | Checkout | LOCAL IDENTITY VERIFIED | Existing worktree; hosted checkout action not invoked. |
+| ci.yml/playground | ubuntu-latest | Install MoonBit | PROVISIONED, INSTALLER NOT RUN | Provided pinned toolchain reused. |
+| ci.yml/playground | ubuntu-latest | Set up Node 22 | PASS locally | Local task-isolated Node 22.23.5; setup-node action itself not invoked. |
+| ci.yml/playground | ubuntu-latest | Build bundle | PASS locally | Workflow commands executed locally on macOS; Ubuntu image unverified. |
+| ci.yml/playground | ubuntu-latest | Smoke test | PASS locally | 29 checks; Node 22.23.5. |
+| ci.yml/playground | ubuntu-latest | Browser smoke test | PASS locally | 8 tests; isolated headless Chrome 157.0.8103.52, desktop and 390px viewport; local macOS. |
+| pages.yml/deploy | ubuntu-latest | Checkout | LOCAL IDENTITY VERIFIED | Existing worktree; hosted checkout action not invoked. |
+| pages.yml/deploy | ubuntu-latest | Install MoonBit | PROVISIONED, INSTALLER NOT RUN | Provided pinned toolchain reused. |
+| pages.yml/deploy | ubuntu-latest | Set up Node 22 | PASS locally | Local task-isolated Node 22.23.5; setup-node action itself not invoked. |
+| pages.yml/deploy | ubuntu-latest | Build playground | PASS locally | Workflow commands executed locally on macOS; Ubuntu image unverified. |
+| pages.yml/deploy | ubuntu-latest | Smoke test | PASS locally | 29 checks; Node 22.23.5. |
+| pages.yml/deploy | ubuntu-latest | Browser smoke test | PASS locally | 8 tests; isolated headless Chrome 157.0.8103.52, desktop and 390px viewport; local macOS. |
+| pages.yml/deploy | ubuntu-latest | Configure Pages | NOT RUN: hosted GitHub action | Remote Pages configuration was not changed. |
+| pages.yml/deploy | ubuntu-latest | Upload Pages artifact | LOCAL PACKAGING VERIFIED; REMOTE UPLOAD NOT RUN | pages-artifact.json verifies all seven files and archive bytes. |
+| pages.yml/deploy | ubuntu-latest | Deploy Pages | NOT RUN: user prohibits publishing | No deployment, push, or publication. |
+| ci.yml/oracle | ubuntu-latest | Checkout | LOCAL IDENTITY VERIFIED | Existing worktree; hosted checkout not invoked. |
+| ci.yml/oracle | ubuntu-latest | Install MoonBit | PROVISIONED, INSTALLER NOT RUN | Provided toolchain reused. |
+| ci.yml/oracle | ubuntu-latest | Toolchain version | PASS locally |  |
+| ci.yml/oracle | ubuntu-latest | Set up Python 3.14 | PROVISIONED 3.14.7; HOSTED ACTION NOT RUN | Workflow Python commands resolve to the restored oracle Python 3.14.7; wrapper uses system 3.14.6. |
+| ci.yml/oracle | ubuntu-latest | Run oracle conformance | PASS locally | Pinned restored oracle reused; tee report mapped to .oracle-cache/r14-ci/conformance.md. |
+| ci.yml/oracle | ubuntu-latest | Seeded differential and extended BQL | PASS locally | All five commands executed with their default case counts and original flags. |
+| ci.yml/oracle | ubuntu-latest | Upload conformance report | LOCAL PACKAGING VERIFIED; REMOTE UPLOAD NOT RUN | Artifact byte hashes verified; report filename mapped locally. No GitHub upload action invoked. |
+
+### Command results
+
+- Check/build/test all targets, formatting, generated interfaces and git diff: exit 0. Tests: **207/207 on each of wasm, wasm-gc, JS and native** (828 total).
+- README quick start: all five actual commands exit 0 (check, converted balance, grouped query, format, JSON export).
+- Playground and Pages: each job's build exits 0, Node smoke **29/29**, browser smoke **8/8** (desktop plus 390px coverage). Both jobs were executed separately.
+- Oracle conformance: **120 ledgers; 118 compared/passed, 0 failed, 2 declared extensions**.
+- Seed 7 and seed 20261101: **1000 each**, **0 non-AVERAGE mismatches**, **142 known AVERAGE-extension differences each**, both exit 0 under the unchanged allow-known-extensions rule; 468 clean-query cases each. These are not 1000 strict equivalence passes.
+- Report differential: **25 groups, 144 checks, 0 failures**.
+- Include smoke: cycles/missing/depth **5/5**, then both direct/nested absent/present document/source-location/JSON contracts pass.
+- Full BQL differential: **22344/22344**, exit 0, with its existing explicit boundary/resource-check distinctions.
+- Local conformance artifact: four required files verified, including hidden .oracle-cache paths. Pages artifact: seven files verified, including .nojekyll. No artifact was uploaded.
+
+Actual output excerpts:
+
+```text
+$ moon test --target all
+Total tests: 207, passed: 207, failed: 0. [wasm]
+Total tests: 207, passed: 207, failed: 0. [wasm-gc]
+Total tests: 207, passed: 207, failed: 0. [js]
+Total tests: 207, passed: 207, failed: 0. [native]
+$ node web/smoke.mjs
+29 checks passed
+$ node web/dom-smoke.mjs
+ok   the page raised no exceptions
+$ node web/smoke.mjs
+29 checks passed
+$ node web/dom-smoke.mjs
+ok   the page raised no exceptions
+$ bash -o pipefail -c ./scripts/oracle.sh --markdown | tee .oracle-cache/r14-ci/conformance.md
+ledgers: 120, compared: 118, passed: 118, failed: 0, extensions: 2
+$ python3 scripts/random_differential.py --seed 7 --out .oracle-cache/differential/seed-7 --oracle /tmp/moonbean-r4-oracle/bin --allow-known-extensions
+compared 1000; mismatches 142
+{"seed": 7, "count": 1000, "mismatches": 142, "clean_queries": 468, "non_average_mismatches": 0}
+$ python3 scripts/random_differential.py --seed 20261101 --out .oracle-cache/differential/seed-20261101 --oracle /tmp/moonbean-r4-oracle/bin --allow-known-extensions
+compared 1000; mismatches 142
+{"seed": 20261101, "count": 1000, "mismatches": 142, "clean_queries": 468, "non_average_mismatches": 0}
+$ python3 scripts/report_differential.py --oracle /tmp/moonbean-r4-oracle/bin
+  "ledgers": 25,
+  "checks": 144,
+  "failures": 0,
+$ python3 scripts/include_smoke.py
+CLI include self/mutual/absolute cycles, missing file and depth 100: 5/5 PASS
+CLI nested include source locations, absent/present documents and JSON warning contract: PASS
+$ python3 scripts/bql_differential.py --oracle /tmp/moonbean-r4-oracle/bin
+BQL differential: 22344/22344 checks passed
+```
+
+[Per-step statuses, versions, workflow/source/artifact/log hashes and summaries](r14-ci-execution.json), [complete command logs](r14-ci-checks.log), [conformance table](r14-ci-conformance.md). The conformance tee target is mapped locally to .oracle-cache/r14-ci/conformance.md to avoid an untracked root file; the packaged artifact retains conformance.md as its logical name. Raw BQL and seeded inputs/results remain in the task cache.
+
+The CI follow-up closeout retains the current source, generated oracle inputs/results, Node 22 tool cache and previous web/dist byte backup. Its verified backup receipt, process inventory, df observations, manifest and empty restore map are in .oracle-cache/r14-ci-closeout/. Only task-owned headless browsers/static servers were opened, and all finished. No shared/user process was stopped, no item was selected for Trash, and no push/publication occurred.

@@ -1,0 +1,9 @@
+CLI include self/mutual/absolute cycles, missing file and depth 100: 5/5 PASS
+Traceback (most recent call last):
+  File "<repo>/scripts/include_smoke.py", line 35, in <module>
+    assert f'{root/file}:{line}: {code}:' in proc.stderr,proc.stderr
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: <repo>/.oracle-cache/differential/include-cases/child.beancount:6: validation.balance: Balance failed for 'Assets:Cash': expected 1 USD != accumulated 0 USD (1 too little)
+<repo>/.oracle-cache/differential/include-cases/root.beancount:3: include.missing: Cannot read include: <repo>/.oracle-cache/differential/include-cases/not-present.beancount
+<repo>/.oracle-cache/differential/include-cases/child.beancount:5: validation.document_missing: File does not exist: "<repo>/.oracle-cache/differential/include-cases/missing-receipt.pdf"
+
