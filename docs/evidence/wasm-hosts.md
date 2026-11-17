@@ -5,10 +5,38 @@ Local evidence on macOS arm64, 2026-11-16, source `90e66689dac426b3d7defc17d7f03
 
 ## Reproduction
 
+Use an already verified executable through `$WASMTIME`, or obtain the pinned
+macOS arm64 binary below. Run from the repository root in Bash; Python 3.12+
+is required for the safe extraction filter. Downloads stay in a fresh directory
+under `/tmp/wasm-hosts/wasmtime/`, outside the interpreter's working directory.
+
+```sh
+set -eu
+mkdir -p /tmp/wasm-hosts/wasmtime
+wasmtime_dir="$(mktemp -d /tmp/wasm-hosts/wasmtime/v50.0.2.XXXXXX)"
+wasmtime_asset=wasmtime-v50.0.2-aarch64-macos
+wasmtime_archive="$wasmtime_dir/$wasmtime_asset.tar.xz"
+curl --fail --location --proto '=https' --proto-redir '=https' \
+  "https://github.com/bytecodealliance/wasmtime/releases/download/v50.0.2/$wasmtime_asset.tar.xz" \
+  --output "$wasmtime_archive"
+printf '%s  %s\n' \
+  42b066764fb5ccd92f4378375202627b457be8ef0e85806784304ce9b07a721a \
+  "$wasmtime_archive" | shasum -a 256 --check
+python3 - "$wasmtime_archive" "$wasmtime_dir" <<'PYTHON'
+import sys, tarfile
+with tarfile.open(sys.argv[1]) as archive:
+    archive.extractall(sys.argv[2], filter="data")
+PYTHON
+export WASMTIME="$wasmtime_dir/$wasmtime_asset/wasmtime"
+"$WASMTIME" --version
+```
+
+With `$WASMTIME` exported, build and run the checks:
+
 ```sh
 export MOON_HOME=/tmp/moon-new PATH=/tmp/moon-new/bin:$PATH
 moon build --release --target wasm-gc examples/library_demo tests/clock_host bench
-export WASMTIME=/tmp/wasm-hosts/wasmtime/v50.0.2-522qxprw/wasmtime-v50.0.2-aarch64-macos/wasmtime
+: "${WASMTIME:?Export the verified Wasmtime executable first}"
 CHROME='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' node scripts/wasm-host-smoke.mjs
 ```
 
