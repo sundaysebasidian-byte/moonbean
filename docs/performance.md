@@ -1,5 +1,28 @@
 # Performance (0.2.7)
 
+## wasm-gc host correctness checks (Unreleased)
+
+The [host smoke evidence](evidence/wasm-hosts.md) adds headless Chrome
+157.0.8103.79 and Wasmtime 50.0.2 (with an explicit test-only platform/time/print
+adapter) to the hosts verified for the small BQL/inventory demo. Its output is
+identical to moonrun 0.1.20261104 and Node 24.18.0. Bare Wasmtime CLI fails to
+resolve MoonBit-specific imports; its benchmark and calendar integration remain
+unverified. Wasmer is not installed.
+
+The existing 8-posting FIFO benchmark completes on moonrun, Node and Chrome,
+including booking and balance/pad checks. Node/Chrome use a synthetic clock and
+compare exact correctness outputs; moonrun's real-clock XOR sinks are checked
+using its actual batch parity. These smoke results provide **no new timings,
+large-ledger memory measurements or performance-gate acceptance**. Historical
+measurements and outstanding gates below retain their original host scope.
+
+```sh
+export MOON_HOME=/tmp/moon-new PATH=/tmp/moon-new/bin:$PATH
+moon build --release --target wasm-gc examples/library_demo tests/clock_host bench
+# Optional: set WASMTIME to a verified local Wasmtime executable.
+node scripts/wasm-host-smoke.mjs
+```
+
 
 ## R13 retained-ledger memory
 

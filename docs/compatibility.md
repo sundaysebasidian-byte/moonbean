@@ -437,9 +437,39 @@ dates and resolved zero/invalid/uninstalled provider modes. Years 2079 and 2080
 exercise the rolling two-digit year boundary. Public Python datetime and a fresh
 dateutil parserinfo under the fixture year check the expected values.
 
-The package also declares its import for the wasm target. Behavioral integration
-coverage currently consists of wasm-gc on Node. Browser, wasmtime and the wasm
-(non-GC) adapter paths await host-specific tests.
+The package also declares its import for the wasm target. The wasm-gc imported
+fixture additionally passes on headless Chrome 157 with custom, zero, invalid and
+uninstalled calendar providers at a fixed epoch. Full timezone/DST and rolling-year
+oracle coverage remains Node-only. Wasmtime calendar integration and the wasm
+(non-GC) adapter paths remain unverified. See the host smoke results below.
+
+## wasm-gc host smoke (0.2.8 source, Unreleased evidence)
+
+Built with Moon 0.1.20261104 on macOS arm64 from `90e6668`. The unchanged
+`examples/library_demo` entry point checks a small ledger, realizes its cash
+inventory, groups posting amounts with BQL and formats the ledger. The runner
+asserts zero errors and exact balances (92 USD cash, -100 USD equity, 8 USD
+expenses), then compares the entire output byte for byte.
+
+| Host | Result and verified scope |
+| --- | --- |
+| moonrun 0.1.20261104 | Pass: reference demo and 8-posting FIFO benchmark, including booking and balance/pad validation. |
+| Node 24.18.0 / V8 13.6.233.17-node.50 | Pass: identical demo; benchmark correctness and four clock-provider modes. |
+| Headless Chrome 157.0.8103.79 / V8 15.7.112.43 | Pass: identical demo and Node results for the benchmark and four clock-provider modes. Uses the existing Pages Chrome driver with isolated profile; instantiates wasm-gc directly, not the Pages JS bundle. |
+| Wasmtime 50.0.2 (`f9a93b049`) with GC, function references and exceptions enabled | Pass: identical demo **with** `scripts/wasmtime-smoke.wat` preloaded for the MoonBit platform/time/print imports. The adapter is test-only and rejects non-ASCII printing. |
+| Bare Wasmtime CLI 50.0.2, same proposal flags | Fail: demo, benchmark and clock fixture cannot instantiate because MoonBit-specific imports are undefined. This is a missing host integration, not evidence of missing GC/exception support or a library defect. |
+| Wasmer | Not runnable: no executable installed; optional download not attempted. |
+
+Reproduce with `node scripts/wasm-host-smoke.mjs` after the release build; set
+`WASMTIME` to the verified executable. [Commands, exact errors, hashes and raw
+output excerpts](evidence/wasm-hosts.md) retain the flags and adapter contract.
+The runner reuses the existing FIFO benchmark and clock fixture. Node/Chrome use
+a synthetic monotonic clock to force one benchmark action per record; moonrun's
+real-time batch counts and XOR sinks are checked against those action counts.
+These are correctness checks, not new timing, large-ledger or performance-gate
+evidence. Wasmtime benchmark/environment and calendar adapters, non-ASCII output
+through this test adapter, other browsers/architectures and non-GC wasm remain
+unverified. No library interfaces changed.
 
 
 ## Historical R13 acceptance status

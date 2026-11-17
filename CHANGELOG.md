@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Verify the wasm-gc BQL/inventory smoke on headless Chrome 157 and Wasmtime 50.0.2 with an explicit test adapter, against identical moonrun/Node outputs. Add a reproducible host runner and raw evidence; document bare Wasmtime's missing MoonBit imports and the remaining calendar/benchmark host limits.
+
 ## 0.2.8
 
 - Parse multiline strings with physical source locations, reject unterminated literals, and preserve whitespace in multiline ledgers during formatting.
