@@ -10,7 +10,7 @@ Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运
 
 ## 兼容终点与当前边界
 
-兼容终点是 beancount 3.2.3 的语法与记账语义，以及 beanquery 0.2.0 全集；0.2.7 尚未达到全集，不作完整兼容声明。[逐项清单](compatibility.md)列出全部 oracle 表/列、函数签名、option 默认值和当前证据与缺口。
+兼容终点是 beancount 3.2.3 的语法与记账语义，以及 beanquery 0.2.0 全集；0.2.8 尚未达到全集，不作完整兼容声明。[逐项清单](compatibility.md)列出全部 oracle 表/列、函数签名、option 默认值和当前证据与缺口。
 
 | 范围 | 当前可核对边界 |
 | --- | --- |
@@ -21,7 +21,7 @@ Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运
 
 0.2.8 的 R14 返工修复 flag 字符集、紧贴单词的引号词法与恢复、前导小数点、重复元数据、无空格算式、混合证券交易中的裸数量货币推断，以及相对 document 尾斜杠。未闭合引号的恢复受多行字符串实际闭合位置约束，不承诺逐物理行恢复。733 份复审账本已追踪，其中 23 项为旧有扩展／未知 option 透传边界。当前返工验收与原始内存证据的来源分开列在 R14 验收中。
 
-0.2.8 补入多行字符串、金额与空值元数据、未闭合字符串诊断、原始行号、空 narration 和零残差自动 posting，并核验 native check 的 document 路径。保留的 9 个复审分类差异对应 oracle 拒绝的 AVERAGE／成本合并扩展。含多行字符串的账本由 fmt 保留原文布局。时钟接入以 Node 上的 wasm-gc 测试为证，链接 host_clock 时必须在实例化时提供 import。已解析的零值／非法回调和未调用 install 的情况使用 UTC。R14 返工后完整差分 22344/22344、三目标各 207 项单测与 215 项时钟检查通过；重新完成 24 次 native/JS 短程交错 A/B。早期三组 moonrun／Node 内存配对仅证明其原始候选源码，本次未重跑大规模 Wasm 内存采样；完整证据与共享主机限制见本轮验收。
+0.2.8 补入多行字符串、金额与空值元数据、未闭合字符串诊断、原始行号、空 narration 和零残差自动 posting，并核验 native check 的 document 路径。保留的 9 个复审分类差异对应 oracle 拒绝的 AVERAGE／成本合并扩展。含多行字符串的账本由 fmt 保留原文布局。时钟接入以 Node 上的 wasm-gc 测试为证；wasm-gc 构建另在 Chrome 157 与 Wasmtime 50.0.2（需测试适配器，裸命令行缺 MoonBit imports）上跑通演示冒烟，完整输出哈希与 moonrun 一致，Wasmer 未安装未测，[宿主证据](evidence/wasm-hosts.md)，链接 host_clock 时必须在实例化时提供 import。已解析的零值／非法回调和未调用 install 的情况使用 UTC。R14 返工后完整差分 22344/22344、三目标各 207 项单测与 215 项时钟检查通过；重新完成 24 次 native/JS 短程交错 A/B。早期三组 moonrun／Node 内存配对仅证明其原始候选源码，本次未重跑大规模 Wasm 内存采样；完整证据与共享主机限制见本轮验收。
 
 ## 一致性证据
 
@@ -31,9 +31,13 @@ Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运
 - R12 保留 4030 项既有检查，并接入独立 R11/R12 A/B 审查用例、日期、负零和 PRINT 逐字节差分；解析健壮性和 256 层/递归运算符资源限制单独计数；实际数量、共享错误类别与剩余拒绝分类见[R12 验收](evidence/r12-acceptance.md)。拒绝检查单独计数。
 - 历史 R10 验收：两个 seed 各 1000 份随机账本：858 份完全一致，142 份仅因 AVERAGE 扩展不同，其余差异为 0。
 - 既有版本的 22 份报表和 lot 回归账本共 144 项检查、5 份迁移边界账本证据保留，未将其计为本轮重跑。
-- R14 native、wasm-gc、JS 单元测试和新增解析差分结果见[本轮验收](evidence/r14-acceptance.md)；today 与 oracle 当天日期比较。Playground 历史证据为 29 项 node 和 8 项无头浏览器检查，本轮未重跑；本候选未推送、未运行远端 CI。
+- R14 native、wasm-gc、JS 单元测试和新增解析差分结果见[本轮验收](evidence/r14-acceptance.md)；today 与 oracle 当天日期比较。Playground 历史证据为 29 项 node 和 8 项无头浏览器检查，本轮未重跑。
 - 0.2.2 历史性能基线：固定种子、100 万 source posting 的 native release 库阶段中位数：解析 1.931 s、FIFO booking 0.505 s、校验含 pad 1.017 s、BQL GROUP BY 0.812 s（Apple M4 / 16 GiB / MoonBit 0.1.20261104；2 次预热、21 次测量）。[原始数组、阶段 profile 与本地趋势检查](performance.md)均可复现；阶段并非互斥，不可相加。旧基线未完成 10 万/100 万 ORDER BY；本轮改为缓存键的稳定 O(n log n) 排序，native 10 万 posting 排序已通过逐行差分，历史门限仍保留大排序跳过项；wasm-gc 的 100 万 FIFO 综合场景因默认 moonrun 堆耗尽未完成。R10 的高负载矩阵未通过，不能作为当前性能结论；R11 曾未通过 JS 百万 FIFO 门限。R12 独立复审修复后的源码冻结于 ed31935，与 main 992eaa2 交错运行相同矩阵，35 组可比较配对在三组完整配对低负载复测后通过原 30% 中位数/RSS 门限；wasm-gc 百万 FIFO 双方均因堆耗尽未完成。结果和原始值详见[R12 结果](evidence/r12-acceptance.md)，按实际结果披露性能限制。
 
+## 生态贡献
+
+- 下游示例：[moonbean-report](https://github.com/sundaysebasidian-byte/moonbean-report)（[mooncakes](https://mooncakes.io/docs/sundaysebasidian-byte/moonbean-report)），通过 mooncakes 依赖已发布的 `moonbean@0.2.8`，用库完成账本校验（出错时退出码非零，可作 CI 校验步骤）、资产负债表和按月收支报表；在两份自编账本（含货币兑换）上与 beancount 3.2.3 / beanquery 0.2.0 对账，资产负债表与月度各项全部一致。含 native/js/wasm-gc 测试与 CI。它由 MoonBean 作者编写，是示例，不代表第三方采用。
+- 目前没有第三方使用记录，也没有向上游 Beancount 提交问题。
 ## 基础与本期工作
 
 2026-10-31 新建仓库，此前没有代码基础；仓库全部提交均为本期工作。技术路线：行级词法 → 指令解析 → booking 与校验 → 报表与 BQL。文件读取由宿主回调提供，当前日期类函数读取宿主时钟。
