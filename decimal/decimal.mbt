@@ -195,7 +195,9 @@ pub fn Decimal::parse(input : String) -> Decimal? {
   if !seen_digit || last_was_comma {
     return None
   }
-  let mut mantissa = @bigint.BigInt::from_string(digits.to_string())
+  let mut mantissa = @string.parse_bigint(digits.to_string()[:]) catch {
+    _ => return None
+  }
   if negative && !mantissa.is_zero() {
     mantissa = mantissa.neg()
   }
