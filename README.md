@@ -74,11 +74,16 @@ node web/dom-smoke.mjs                # 无头 Chrome：账本里的恶意字符
 
 | 面 | 对应 | 说明 |
 | --- | --- | --- |
-| 发布源码 | tag `v0.1.1` | mooncakes 0.1.1 的打包内容与该 tag 指向的提交一致 |
-| mooncakes | `sundaysebasidian-byte/moonbean@0.1.1` | 包内容固定，不随 main 变化 |
-| Pages | 最近一次推送到 main 的构建 | [`pages.yml`](.github/workflows/pages.yml) 每次 push 到 main 都会重新构建，可能领先于 0.1.1 |
+| 默认分支 | `main`，模块版本 `0.2.8` | 持续维护的源码，不等于已发布包 |
+| Git 标签 | [`v0.2.8`](https://github.com/sundaysebasidian-byte/moonbean/tree/v0.2.8)（[`90e6668`](https://github.com/sundaysebasidian-byte/moonbean/commit/90e66689dac426b3d7defc17d7f032b588e70b13)） | 固定的源码快照 |
+| Mooncakes | [`sundaysebasidian-byte/moonbean@0.2.8`](https://mooncakes.io/docs/sundaysebasidian-byte/moonbean@0.2.8/) | 已发布，安装命令见下文 |
+| Pages | `main` 的独立构建 | [`pages.yml`](.github/workflows/pages.yml) 记录部署，不能用它判定包版本 |
 
-定位发布提交：`git rev-list -n 1 v0.1.1`。下面三条命令分别复现三个面：
+测试与性能数字以各自链接中的记录为准，不是对 Mooncakes `0.2.8` 安装包的重新验收。
+
+### 历史复现：`0.1.1`
+
+下列源码测试和安装示例针对 `0.1.1`。请从 `v0.1.1` 标签取示例，不要用 `main` 的示例替换。
 
 ```sh
 # 源码测试
@@ -90,7 +95,7 @@ moon new consumer && cd consumer
 moon add sundaysebasidian-byte/moonbean@0.1.1
 moon run cmd/main
 
-# 线上引擎：打开 Pages；对应的构建见 Actions 中 Pages 工作流的运行记录
+# Pages 独立于上述历史复现：查看工作流的运行记录
 gh run list --workflow pages.yml --limit 1
 ```
 
@@ -99,7 +104,7 @@ gh run list --workflow pages.yml --limit 1
 在其他 MoonBit 模块里添加依赖：
 
 ```sh
-moon add sundaysebasidian-byte/moonbean
+moon add sundaysebasidian-byte/moonbean@0.2.8
 ```
 
 也可以克隆仓库，在根目录开发和运行：
@@ -300,7 +305,7 @@ python3 scripts/bql_differential.py
 python3 scripts/cli_smoke.py
 ```
 
-oracle 脚本只在临时 virtualenv 里安装 GPL 的 beancount 和 beanquery，不链接、不嵌入、不分发。GitHub [CI](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096814) 已通过，包括 Ubuntu、macOS、Windows、Playground 和 oracle；[Pages](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096811) 已部署。链接所示 Pages 构建的线上资源曾与对应本地构建 SHA-256 核验一致，下载后的引擎 29/29 冒烟检查通过；0.1.1 仅本地验证，尚未部署。
+oracle 脚本只在临时 virtualenv 里安装 GPL 的 beancount 和 beanquery，不链接、不嵌入、不分发。历史 [CI](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096814) 覆盖 Ubuntu、macOS、Windows、Playground 和 oracle；历史 [Pages](https://github.com/sundaysebasidian-byte/moonbean/actions/runs/41272096811) 的线上资源曾与对应本地构建做 SHA-256 核对，下载后的引擎 29/29 冒烟检查通过。0.1.1 当时仅做本地验证。以上回执不代表 0.2.8 安装包或当前 Pages 的实测。
 
 ## 性能
 
