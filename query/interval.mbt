@@ -34,13 +34,10 @@ fn query_interval(text : String) -> QueryValue {
   if digits == "" || !digits.iter().all(fn(c) { c.is_ascii_digit() }) {
     return QNull
   }
-  let n = @bigint.BigInt::from_string(
-    if raw.has_prefix("+") {
-      raw[1:].to_owned()
-    } else {
-      raw
-    },
-  )
+  let number = if raw.has_prefix("+") { raw[1:] } else { raw[:] }
+  let n = @string.parse_bigint(number) catch {
+    _ => return QNull
+  }
   let zero = @bigint.BigInt::from_int(0)
   if unit.has_prefix("day") {
     QInterval(zero, n)
