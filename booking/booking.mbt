@@ -243,6 +243,7 @@ fn select_lots(
   need : @decimal.Decimal,
   currency : String,
   spec : @ast.CostSpec,
+  covering_short : Bool,
   booking : String,
   posting : @ast.Posting,
 ) -> (Array[(Int32, @decimal.Decimal)], BookingIssue?) {
@@ -250,6 +251,7 @@ fn select_lots(
   for i in 0..<inv.positions.length() {
     let position = inv.positions[i]
     if position.units.currency == currency &&
+      (if covering_short { position.units.number.is_negative() } else { position.units.number.is_positive() }) &&
       cost_matches_spec(position.cost, spec, need) {
       candidates.push(i)
     }
@@ -281,7 +283,7 @@ fn select_lots(
       )
     }
     let index = candidates[0]
-    let available = inv.positions[index].units.number
+    let available = inv.positions[index].units.number.abs()
     if available.less_than(need) {
       return (
         [],
@@ -299,7 +301,7 @@ fn select_lots(
   if booking == "STRICT_WITH_SIZE" {
     let mut exact = None
     for index in candidates {
-      if inv.positions[index].units.number.equal(need) && exact is None {
+      if inv.positions[index].units.number.abs().equal(need) && exact is None {
         exact = Some(index)
       }
     }
@@ -311,7 +313,7 @@ fn select_lots(
       None =>
         if candidates.length() == 1 {
           let index = candidates[0]
-          if inv.positions[index].units.number.less_than(need) {
+          if inv.positions[index].units.number.abs().less_than(need) {
             return (
               [],
               Some(
@@ -346,7 +348,7 @@ fn select_lots(
     if remaining.is_zero() {
       break
     }
-    let available = inv.positions[index].units.number
+    let available = inv.positions[index].units.number.abs()
     if available.is_positive() {
       let take = min_decimal(remaining, available)
       plan.push((index, take))
@@ -368,7 +370,7 @@ fn select_lots(
 }
 
 ///|
-fn apply_plan(inv : Inventory, plan : Array[(Int32, @decimal.Decimal)]) -> Unit {
+fn apply_plan(inv : Inventory, plan : Array[(Int32, @decimal.Decimal)], covering_short : Bool) -> Unit {
   if plan.length() == 0 {
     return
   }
@@ -382,7 +384,7 @@ fn apply_plan(inv : Inventory, plan : Array[(Int32, @decimal.Decimal)]) -> Unit 
         consumed = entry.1
       }
     }
-    let remaining = position.units.number.sub(consumed)
+    let remaining = if covering_short { position.units.number.add(consumed) } else { position.units.number.sub(consumed) }
     if !remaining.is_zero() {
       inv.positions.push({
         units: @ast.Amount::new(remaining, position.units.currency),
@@ -526,6 +528,7 @@ fn reduce_with_average(
   posting : @ast.Posting,
 ) -> BookingOutcome {
   let need = units.number.abs()
+  let covering_short = units.number.is_positive()
   let average = inv.average_cost(units.currency)
   match average {
     None =>
@@ -540,7 +543,7 @@ fn reduce_with_average(
       let candidates = []
       for i in 0..<inv.positions.length() {
         if inv.positions[i].units.currency == units.currency &&
-          inv.positions[i].units.number.is_positive() {
+          (if covering_short { inv.positions[i].units.number.is_negative() } else { inv.positions[i].units.number.is_positive() }) {
           candidates.push(i)
         }
       }
@@ -550,7 +553,7 @@ fn reduce_with_average(
         if remaining.is_zero() {
           break
         }
-        let take = min_decimal(remaining, inv.positions[index].units.number)
+        let take = min_decimal(remaining, inv.positions[index].units.number.abs())
         plan.push((index, take))
         remaining = remaining.sub(take)
       }
@@ -570,8 +573,8 @@ fn reduce_with_average(
         posting.price,
         Some(cost),
       )
-      apply_plan(inv, plan)
-      outcome_ok(negate_weights(weights), positions=[
+      apply_plan(inv, plan, covering_short)
+      outcome_ok(if covering_short { weights } else { negate_weights(weights) }, positions=[
         Position::new(units, Some(cost)),
       ])
     }
@@ -601,10 +604,16 @@ pub fn book_posting(
       }
       outcome_ok(weights)
     }
-    Some(spec) =>
-      if units.number.signum() >= 0 ||
+    Some(spec) => {
+      let covering_short = units.number.is_positive() &&
+        state.method_for(account, default_method) != "NONE" &&
+        inv.positions.any(fn(p) {
+          p.units.currency == units.currency && p.cost is Some(_) &&
+          p.units.number.is_negative()
+        })
+      if (units.number.signum() >= 0 && !covering_short) ||
         (
-          !spec.merge &&
+          units.number.is_negative() && !spec.merge &&
           !inv.positions.any(fn(p) {
             p.units.currency == units.currency && p.units.number.is_positive()
           }) &&
@@ -665,6 +674,7 @@ pub fn book_posting(
             need,
             units.currency,
             spec,
+            covering_short,
             booking,
             posting,
           )
@@ -686,15 +696,16 @@ pub fn book_posting(
               )
               let positions = plan.map(fn(item) {
                 Position::new(
-                  @ast.Amount::new(item.1.neg(), units.currency),
+                  @ast.Amount::new((if covering_short { item.1 } else { item.1.neg() }), units.currency),
                   inv.positions[item.0].cost,
                 )
               })
-              apply_plan(inv, plan)
-              outcome_ok(negate_weights(weights), positions~)
+              apply_plan(inv, plan, covering_short)
+              outcome_ok(if covering_short { weights } else { negate_weights(weights) }, positions~)
             }
           }
         }
       }
+    }
   }
 }

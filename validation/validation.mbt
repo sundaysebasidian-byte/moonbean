@@ -1059,6 +1059,7 @@ fn process_transaction(
   }
   let weights : Array[@ast.Amount] = []
   let deferred : Array[Int32] = []
+  let short_reductions : Map[Int32, Bool] = Map([])
   let missing : Array[Int32] = []
   // Reductions are booked first so that augmentations in the same transaction
   // cannot change which lots are matched.
@@ -1079,6 +1080,16 @@ fn process_transaction(
               } else if !book_explicit(ctx, entry, i, posting, weights, booked) {
                 booking_failed = true
               }
+            } else if units.number.is_positive() &&
+              ctx.state.method_for(posting.account, ctx.options.booking_method) != "NONE" &&
+              ctx.state.inventory_for(posting.account).positions.any(fn(p) {
+                p.units.currency == units.currency && p.cost is Some(_) &&
+                p.units.number.is_negative()
+              }) {
+              short_reductions[i] = true
+              if !book_explicit(ctx, entry, i, posting, weights, booked) {
+                booking_failed = true
+              }
             }
           None => ()
         }
@@ -1091,7 +1102,7 @@ fn process_transaction(
       Some(units) =>
         match posting.cost {
           Some(spec) =>
-            if !units.number.is_negative() {
+            if !units.number.is_negative() && !short_reductions.contains(i) {
               if needs_cost_inference(spec) {
                 deferred.push(i)
               } else if !book_explicit(ctx, entry, i, posting, weights, booked) {

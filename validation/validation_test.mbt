@@ -778,3 +778,33 @@ test "a public ledger without physical option locations still reports the deprec
   assert_eq(checked.warnings[0].code, "validation.deprecated_option")
   assert_eq(checked.warnings[0].loc.to_string(), "<ledger>:0")
 }
+
+///|
+test "FIFO short covering keeps acquisition dates and balances the remaining lot" {
+  let source =
+    #|2024-01-01 open Assets:Stock HOOL "FIFO"
+    #|2024-01-01 open Assets:Cash USD
+    #|2024-01-02 * "Sell short at 12"
+    #|  Assets:Stock -2 HOOL {12 USD}
+    #|  Assets:Cash 24 USD
+    #|2024-01-03 * "Sell short at 15"
+    #|  Assets:Stock -3 HOOL {15 USD}
+    #|  Assets:Cash 45 USD
+    #|2024-01-04 * "Cover"
+    #|  Assets:Stock 3 HOOL {}
+    #|  Assets:Cash -39 USD
+    #|
+  let result = validated(source)
+  assert_eq(result.errors.length(), 0)
+  let covering = find_transaction(result, "Cover").unwrap()
+  assert_eq(covering.postings.map(fn(p) { p.units.unwrap().to_string() }),
+    ["2 HOOL", "1 HOOL", "-39 USD"])
+  assert_eq(covering.postings[:2].to_array().map(fn(p) {
+    let c = p.cost.unwrap()
+    (c.number_per.unwrap().to_string(), c.date.unwrap().to_string())
+  }), [("12", "2024-01-02"), ("15", "2024-01-03")])
+  let remaining = result.inventory("Assets:Stock").positions
+  assert_eq(remaining.length(), 1)
+  assert_eq(remaining[0].units.to_string(), "-2 HOOL")
+  assert_eq(remaining[0].cost.unwrap().number.to_string(), "15")
+}
