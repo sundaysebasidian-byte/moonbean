@@ -2731,3 +2731,21 @@ test "anonymous singleton table permits calculations on an empty ledger" {
     assert_true(queried(src, "SELECT 1 FROM #where").failure() is Some(@query.Compilation(_)))
   }
 }
+
+///|
+test "opt-in ordered set JSON preserves the legacy raw column" {
+  for (left,right) in [("#z #a","#a #z"),("#z","#z")] {
+    let base = "2024-01-01 * \"order\" "
+    let qa = queried(base + left + "\n", "SELECT sorted_set_json(tags) FROM transactions")
+    let qb = queried(base + right + "\n", "SELECT sorted_set_json(tags) FROM transactions")
+    assert_true(qa.is_ok() && qb.is_ok())
+    assert_eq(qa.rows.length(),1)
+    assert_eq(qa.rows[0][0].to_text(), if left == "#z" { "[\"z\"]" } else { "[\"a\",\"z\"]" })
+    assert_eq(qa.to_json(),qb.to_json())
+  }
+  let legacy : @query.QueryValue = QSet(["z","a"])
+  assert_eq(legacy.to_json(),"[\"z\",\"a\"]")
+  let notes = queried("2024-01-01 open Assets:Cash\n2024-01-01 note Assets:Cash \"memo\" #z #a\n", "SELECT sorted_set_json(tags) FROM #notes")
+  assert_eq(notes.rows[0][0].to_text(),"[\"a\",\"z\"]")
+  assert_true(queried(ledger_source(), "SELECT sorted_set_json(number)").failure() is Some(@query.Compilation(_)))
+}
