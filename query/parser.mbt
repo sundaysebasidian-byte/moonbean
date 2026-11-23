@@ -717,8 +717,15 @@ fn parse_source_base(parser : QueryParser) -> QuerySource? {
     }
   }
   let hashed = parser.match_sym("#")
-  if hashed && (parser.at_end() || parser.peek_sym() == Some(")") || 
-    (parser.index < parser.positions.length() && parser.positions[parser.index] != parser.positions[parser.index - 1] + 1)) {
+  if hashed &&
+    (
+      parser.at_end() ||
+      parser.peek_sym() == Some(")") ||
+      (
+        parser.index < parser.positions.length() &&
+        parser.positions[parser.index] != parser.positions[parser.index - 1] + 1
+      )
+    ) {
     return Some(SrcDirectives(""))
   }
   match parser.take_word() {
@@ -1248,7 +1255,6 @@ fn parse_query(text : String) -> ParsedQuery {
       }
     }
   }
-
 
   let parser = QueryParser::new(tokens, text~, positions~)
   if parser.at_end() {

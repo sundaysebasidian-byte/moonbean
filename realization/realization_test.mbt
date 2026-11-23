@@ -486,7 +486,10 @@ test "financial JSON never leaks a control byte into a quoted string" {
       9 => "\\t"
       10 => "\\n"
       13 => "\\r"
-      _ => "\\u00" + digits[n / 16:n / 16 + 1].to_owned() + digits[n % 16:n % 16 + 1].to_owned()
+      _ =>
+        "\\u00" +
+        digits[n / 16:n / 16 + 1].to_owned() +
+        digits[n % 16:n % 16 + 1].to_owned()
     }
     assert_eq(s, "😀" + escaped + "中")
   }
@@ -494,17 +497,37 @@ test "financial JSON never leaks a control byte into a quoted string" {
 
 ///|
 test "financial statements retain balances under configured account roots" {
-  let realized = realized("option \"name_assets\" \"Actif\"\noption \"name_income\" \"Recettes\"\noption \"name_expenses\" \"Depenses\"\noption \"name_equity\" \"Capital\"\n2024-01-01 open Actif:Cash USD\n2024-01-01 open Recettes:Fees USD\n2024-01-01 open Depenses:Rent USD\n2024-01-02 * \"fees\"\n  Actif:Cash 80 USD\n  Recettes:Fees -80 USD\n2024-01-03 * \"rent\"\n  Depenses:Rent 15 USD\n  Actif:Cash -15 USD\n")
+  let realized = realized(
+    "option \"name_assets\" \"Actif\"\noption \"name_income\" \"Recettes\"\noption \"name_expenses\" \"Depenses\"\noption \"name_equity\" \"Capital\"\n2024-01-01 open Actif:Cash USD\n2024-01-01 open Recettes:Fees USD\n2024-01-01 open Depenses:Rent USD\n2024-01-02 * \"fees\"\n  Actif:Cash 80 USD\n  Recettes:Fees -80 USD\n2024-01-03 * \"rent\"\n  Depenses:Rent 15 USD\n  Actif:Cash -15 USD\n",
+  )
   let trial = @realization.trial_balance(realized)
-  assert_true(row_for(trial.rows,"Actif:Cash") is Some(_))
+  assert_true(row_for(trial.rows, "Actif:Cash") is Some(_))
   let balance = @realization.balance_sheet(realized)
   let income = @realization.income_statement(realized)
-  assert_eq(row_for(trial.rows,"Actif:Cash").unwrap().amount.to_string(), "65 USD")
-  assert_eq(row_for(trial.rows,"Depenses:Rent").unwrap().amount.to_string(), "15 USD")
-  assert_eq(row_for(trial.rows,"Recettes:Fees").unwrap().amount.to_string(), "-80 USD")
-  assert_eq(row_for(balance.rows,"Capital:Earnings:Current").unwrap().amount.to_string(), "-65 USD")
-  assert_eq(row_for(balance.totals,"Total Actif").unwrap().amount.to_string(), "65 USD")
-  assert_eq(row_for(income.totals,"Net Income").unwrap().amount.to_string(), "65 USD")
+  assert_eq(
+    row_for(trial.rows, "Actif:Cash").unwrap().amount.to_string(),
+    "65 USD",
+  )
+  assert_eq(
+    row_for(trial.rows, "Depenses:Rent").unwrap().amount.to_string(),
+    "15 USD",
+  )
+  assert_eq(
+    row_for(trial.rows, "Recettes:Fees").unwrap().amount.to_string(),
+    "-80 USD",
+  )
+  assert_eq(
+    row_for(balance.rows, "Capital:Earnings:Current").unwrap().amount.to_string(),
+    "-65 USD",
+  )
+  assert_eq(
+    row_for(balance.totals, "Total Actif").unwrap().amount.to_string(),
+    "65 USD",
+  )
+  assert_eq(
+    row_for(income.totals, "Net Income").unwrap().amount.to_string(),
+    "65 USD",
+  )
 }
 
 ///|
@@ -515,59 +538,100 @@ test "as-of account metadata does not reveal future account opens or closes" {
   assert_true(early.accounts.get("Assets:New") is None)
   assert_true(early.accounts.get("Assets:Old").unwrap().close_date is None)
   let late = realized(source, at=Some("2024-01-06"))
-  assert_eq(late.account_names(), ["Assets:New","Assets:Old"])
-  assert_eq(late.accounts.get("Assets:Old").unwrap().close_date.unwrap().to_string(), "2024-01-05")
+  assert_eq(late.account_names(), ["Assets:New", "Assets:Old"])
+  assert_eq(
+    late.accounts.get("Assets:Old").unwrap().close_date.unwrap().to_string(),
+    "2024-01-05",
+  )
 }
 
 ///|
 test "dated valuation uses explicit zero and negative prices, but never inverts zero" {
-  let r = realized("2024-01-01 price ABC 2 USD\n2024-01-02 price ABC 0 USD\n2024-01-02 price OIL -2 USD\n2024-01-02 price XYZ 0 EUR\n")
-  assert_true(r.prices.latest("ABC","USD",None) is Some(n) && n.is_zero())
-  assert_eq(r.prices.latest("ABC","USD",None).unwrap().to_string(), "0")
-  assert_eq(r.rate("ABC","USD").unwrap().to_string(), "0")
-  assert_eq(r.rate("USD","ABC").unwrap().to_string(), "0.5")
-  assert_eq(r.rate("OIL","USD").unwrap().to_string(), "-2")
-  assert_eq(r.rate("USD","OIL").unwrap().to_string(), "-0.5")
-  assert_true(r.rate("EUR","XYZ") is None)
-  assert_eq(r.prices.rate("ABC","USD",@ast.Date::parse("2024-01-01")).unwrap().to_string(), "2")
+  let r = realized(
+    "2024-01-01 price ABC 2 USD\n2024-01-02 price ABC 0 USD\n2024-01-02 price OIL -2 USD\n2024-01-02 price XYZ 0 EUR\n",
+  )
+  assert_true(r.prices.latest("ABC", "USD", None) is Some(n) && n.is_zero())
+  assert_eq(r.prices.latest("ABC", "USD", None).unwrap().to_string(), "0")
+  assert_eq(r.rate("ABC", "USD").unwrap().to_string(), "0")
+  assert_eq(r.rate("USD", "ABC").unwrap().to_string(), "0.5")
+  assert_eq(r.rate("OIL", "USD").unwrap().to_string(), "-2")
+  assert_eq(r.rate("USD", "OIL").unwrap().to_string(), "-0.5")
+  assert_true(r.rate("EUR", "XYZ") is None)
+  assert_eq(
+    r.prices
+    .rate("ABC", "USD", @ast.Date::parse("2024-01-01"))
+    .unwrap()
+    .to_string(),
+    "2",
+  )
 }
 
 ///|
 test "market revaluation equity respects its explicit account, independently of earnings" {
   let base = "2024-01-01 open Assets:Shares HOOL\n2024-01-01 open Equity:Paid USD\n2024-01-02 * \"invest\"\n  Assets:Shares 10 HOOL {2 USD}\n  Equity:Paid -20 USD\n2024-01-03 price HOOL 3 USD\n"
-  let source = "option \"account_current_earnings\" \"Profit:This\"\noption \"account_unrealized_gains\" \"Gains:Market\"\n" + base
+  let source = "option \"account_current_earnings\" \"Profit:This\"\noption \"account_unrealized_gains\" \"Gains:Market\"\n" +
+    base
   let r = @realization.balance_sheet(realized(source), convert=Some("USD"))
-  assert_true(row_for(r.rows,"Equity:Gains:Market") is Some(_))
-  assert_eq(row_for(r.rows,"Equity:Gains:Market").unwrap().amount.to_string(), "-10 USD")
-  assert_true(row_for(r.rows,"Equity:Profit:Unrealized") is None)
-  let default_report = @realization.balance_sheet(realized(base), convert=Some("USD"))
-  assert_eq(row_for(default_report.rows, "Equity:Earnings:Unrealized").unwrap().amount.to_string(), "-10 USD")
+  assert_true(row_for(r.rows, "Equity:Gains:Market") is Some(_))
+  assert_eq(
+    row_for(r.rows, "Equity:Gains:Market").unwrap().amount.to_string(),
+    "-10 USD",
+  )
+  assert_true(row_for(r.rows, "Equity:Profit:Unrealized") is None)
+  let default_report = @realization.balance_sheet(
+    realized(base),
+    convert=Some("USD"),
+  )
+  assert_eq(
+    row_for(default_report.rows, "Equity:Earnings:Unrealized").unwrap().amount.to_string(),
+    "-10 USD",
+  )
 }
 
 ///|
 test "register preserves a cent between offsetting large principal payments" {
   let large = "1000000000000000000000000000"
   let source = "2024-01-01 open Assets:Cash USD\n2024-01-01 open Equity:Capital USD\n" +
-    "2024-01-02 * \"principal\"\n  Assets:Cash " + large + " USD\n  Equity:Capital -" + large + " USD\n" +
+    "2024-01-02 * \"principal\"\n  Assets:Cash " +
+    large +
+    " USD\n  Equity:Capital -" +
+    large +
+    " USD\n" +
     "2024-01-03 * \"interest\"\n  Assets:Cash 0.01 USD\n  Equity:Capital -0.01 USD\n" +
-    "2024-01-04 * \"redeem\"\n  Assets:Cash -" + large + " USD\n  Equity:Capital " + large + " USD\n"
+    "2024-01-04 * \"redeem\"\n  Assets:Cash -" +
+    large +
+    " USD\n  Equity:Capital " +
+    large +
+    " USD\n"
   let rows = @realization.register_rows(realized(source), "Assets:Cash")
   assert_eq(rows.length(), 3)
-  assert_eq(rows[1].running.number.to_string(),large + ".01")
-  assert_eq(rows[2].running.to_string(),"0.01 USD")
+  assert_eq(rows[1].running.number.to_string(), large + ".01")
+  assert_eq(rows[2].running.to_string(), "0.01 USD")
 }
 
 ///|
 test "income conversion completeness follows the selected activity, not end inventory" {
   let source = "2024-01-01 open Income:Fees EUR\n2024-01-01 open Assets:Bank EUR\n2024-01-02 * \"paid\"\n  Assets:Bank 10 EUR\n  Income:Fees -10 EUR\n2024-02-02 * \"refund\"\n  Assets:Bank -10 EUR\n  Income:Fees 10 EUR\n"
-  let report = @realization.income_statement(realized(source), start=@ast.Date::parse("2024-02-01"), convert=Some("USD"))
+  let report = @realization.income_statement(
+    realized(source),
+    start=@ast.Date::parse("2024-02-01"),
+    convert=Some("USD"),
+  )
   assert_eq(report.diagnostics.length(), 1)
   assert_eq(report.diagnostics[0].account, "Income:Fees")
   assert_eq(report.diagnostics[0].currency, "EUR")
   assert_true(report.to_json().contains("\"complete\":false"))
-  let empty = @realization.income_statement(realized(source), start=@ast.Date::parse("2025-01-01"), convert=Some("USD"))
+  let empty = @realization.income_statement(
+    realized(source),
+    start=@ast.Date::parse("2025-01-01"),
+    convert=Some("USD"),
+  )
   assert_true(empty.diagnostics.is_empty())
-  let priced = @realization.income_statement(realized(source+"2024-02-03 price EUR 2 USD\n"), start=@ast.Date::parse("2024-02-01"), convert=Some("USD"))
+  let priced = @realization.income_statement(
+    realized(source + "2024-02-03 price EUR 2 USD\n"),
+    start=@ast.Date::parse("2024-02-01"),
+    convert=Some("USD"),
+  )
   assert_true(priced.diagnostics.is_empty())
   assert_eq(priced.rows[0].amount.to_string(), "20 USD")
 }
@@ -576,8 +640,20 @@ test "income conversion completeness follows the selected activity, not end inve
 test "direct inventory aggregates duplicate public lots and removes explicit zero rows" {
   let r = realized("")
   let raw = @booking.Inventory::new()
-  for (n, currency) in [(6, "USD"), (-3, "USD"), (0, "CAD"), (2, "EUR"), (-2, "EUR")] {
-    raw.positions.push(@booking.Position::new(@ast.Amount::new(@decimal.Decimal::from_int(n), currency), None))
+  for
+    (n, currency) in [
+      (6, "USD"),
+      (-3, "USD"),
+      (0, "CAD"),
+      (2, "EUR"),
+      (-2, "EUR"),
+    ] {
+    raw.positions.push(
+      @booking.Position::new(
+        @ast.Amount::new(@decimal.Decimal::from_int(n), currency),
+        None,
+      ),
+    )
   }
   r.inventories["Assets:Public"] = raw
   let normalized = r.combined_inventory("Assets:Public")
@@ -585,7 +661,10 @@ test "direct inventory aggregates duplicate public lots and removes explicit zer
   assert_eq(normalized.positions[0].units.to_string(), "3 USD")
   assert_eq(raw.positions.length(), 5)
   assert_true(r.combined_inventory("Assets:Missing").is_empty())
-  assert_eq(r.combined_inventory("Assets:Public", subtree=true).positions[0].units.to_string(), "3 USD")
+  assert_eq(
+    r.combined_inventory("Assets:Public", subtree=true).positions[0].units.to_string(),
+    "3 USD",
+  )
 }
 
 ///|
@@ -594,8 +673,12 @@ test "human reports honor render_commas without changing machine-readable amount
   let r = realized(source)
   let report = @realization.trial_balance(r)
   let pretty = report.to_text_with_options(r.options)
-  assert_true(pretty.contains("1,234,567.50 USD") && pretty.contains("-1,234,567.50 USD"))
+  assert_true(
+    pretty.contains("1,234,567.50 USD") && pretty.contains("-1,234,567.50 USD"),
+  )
   assert_true(!report.to_json().contains(",567"))
   assert_true(report.to_json().contains("1234567.50"))
-  assert_true(!report.to_text_with_options(@ast.Options::new()).contains(",567"))
+  assert_true(
+    !report.to_text_with_options(@ast.Options::new()).contains(",567"),
+  )
 }

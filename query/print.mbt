@@ -503,7 +503,10 @@ fn print_clear(
   date : @ast.Date,
 ) -> Array[@ast.Entry] {
   let balances : Map[String, @booking.Inventory] = Map([])
-  let pnl = [realized.options.get("name_income").unwrap_or("Income"), realized.options.get("name_expenses").unwrap_or("Expenses")]
+  let pnl = [
+    realized.options.get("name_income").unwrap_or("Income"),
+    realized.options.get("name_expenses").unwrap_or("Expenses"),
+  ]
   for row in posting_rows({ ..realized, entries, }, false) {
     if pnl.contains(@ast.account_root(row.account)) {
       balances

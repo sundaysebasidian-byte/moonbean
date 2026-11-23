@@ -2648,25 +2648,40 @@ test "custom directives expose typed records and metadata for ledger-specific ca
 ///|
 test "ISO payroll week must exist in its ISO year" {
   for text in ["2024-W00-1", "2024-W53-1", "2021-W53-7", "0000-W01-1"] {
-    let r = queried(ledger_source(), "SELECT parse_date('" + text + "', '%G-W%V-%u') LIMIT 1")
+    let r = queried(
+      ledger_source(),
+      "SELECT parse_date('" + text + "', '%G-W%V-%u') LIMIT 1",
+    )
     assert_true(r.failure() is Some(@query.Evaluation(_)))
   }
-  for (s, expected) in [("2020-W53-7","2021-01-03"),("2024-W01-1","2024-01-01"),("2015-W53-4","2015-12-31")] {
-    let r = queried(ledger_source(), "SELECT parse_date('" + s + "', '%G-W%V-%u') LIMIT 1")
+  for
+    (s, expected) in [
+      ("2020-W53-7", "2021-01-03"),
+      ("2024-W01-1", "2024-01-01"),
+      ("2015-W53-4", "2015-12-31"),
+    ] {
+    let r = queried(
+      ledger_source(),
+      "SELECT parse_date('" + s + "', '%G-W%V-%u') LIMIT 1",
+    )
     assert_eq(r.rows[0][0].to_text(), expected)
   }
 }
 
 ///|
 test "strptime preserves escaped locale directives and astral separators" {
-  for (text, pattern, expected) in [
-    ("%x 2024", "%%x %Y", "2024-01-01"),
-    ("%c 2024", "%%c %Y", "2024-01-01"),
-    ("%X 2024", "%%X %Y", "2024-01-01"),
-    ("2024📅07", "%Y📅%m", "2024-07-01"),
-    ("02/29/24", "%x", "2024-02-29"),
-  ] {
-    let r = queried(ledger_source(), "SELECT parse_date('" + text + "', '" + pattern + "') LIMIT 1")
+  for
+    (text, pattern, expected) in [
+      ("%x 2024", "%%x %Y", "2024-01-01"),
+      ("%c 2024", "%%c %Y", "2024-01-01"),
+      ("%X 2024", "%%X %Y", "2024-01-01"),
+      ("2024📅07", "%Y📅%m", "2024-07-01"),
+      ("02/29/24", "%x", "2024-02-29"),
+    ] {
+    let r = queried(
+      ledger_source(),
+      "SELECT parse_date('" + text + "', '" + pattern + "') LIMIT 1",
+    )
     assert_true(r.is_ok())
     assert_eq(r.rows[0][0].to_text(), expected)
   }
@@ -2675,23 +2690,41 @@ test "strptime preserves escaped locale directives and astral separators" {
 ///|
 test "strptime verifies the full UTC offset even when only the date is returned" {
   for offset in ["+07:30:99", "+07:3045", "+0730:45", "+07:30:15.1234567"] {
-    let r = queried(ledger_source(), "SELECT parse_date('2024 " + offset + "', '%Y %z') LIMIT 1")
+    let r = queried(
+      ledger_source(),
+      "SELECT parse_date('2024 " + offset + "', '%Y %z') LIMIT 1",
+    )
     assert_true(r.failure() is Some(@query.Evaluation(_)))
   }
   for offset in ["Z", "+0730", "-07:30", "+073045", "-07:30:15.123456"] {
-    let r = queried(ledger_source(), "SELECT parse_date('2024 " + offset + "', '%Y %z') LIMIT 1")
+    let r = queried(
+      ledger_source(),
+      "SELECT parse_date('2024 " + offset + "', '%Y %z') LIMIT 1",
+    )
     assert_eq(r.rows[0][0].to_text(), "2024-01-01")
   }
 }
 
 ///|
 test "English weekday names must match their requested strptime width" {
-  for (text, pattern) in [("Monday", "%a"), ("Mon", "%A"), ("Fri", "%A"), ("Friday", "%a")] {
-    let r = queried(ledger_source(), "SELECT parse_date('" + text + "', '" + pattern + "') LIMIT 1")
+  for
+    (text, pattern) in [
+      ("Monday", "%a"),
+      ("Mon", "%A"),
+      ("Fri", "%A"),
+      ("Friday", "%a"),
+    ] {
+    let r = queried(
+      ledger_source(),
+      "SELECT parse_date('" + text + "', '" + pattern + "') LIMIT 1",
+    )
     assert_true(r.failure() is Some(@query.Evaluation(_)))
   }
   for (text, pattern) in [("MON", "%a"), ("monday", "%A")] {
-    let r = queried(ledger_source(), "SELECT parse_date('" + text + "', '" + pattern + "') LIMIT 1")
+    let r = queried(
+      ledger_source(),
+      "SELECT parse_date('" + text + "', '" + pattern + "') LIMIT 1",
+    )
     assert_eq(r.rows[0][0].to_text(), "1900-01-01")
   }
 }
@@ -2699,18 +2732,33 @@ test "English weekday names must match their requested strptime width" {
 ///|
 test "positive sign uses the ledger account types rather than English prefixes" {
   let source = "option \"name_assets\" \"Actif\"\noption \"name_income\" \"Recettes\"\noption \"name_expenses\" \"Depenses\"\noption \"name_equity\" \"Capital\"\n2024-01-01 open Actif:Cash USD\n2024-01-01 open Recettes:Fees USD\n2024-01-01 open Depenses:Rent USD\n2024-01-02 * \"fees\"\n  Actif:Cash 80 USD\n  Recettes:Fees -80 USD\n2024-01-03 * \"rent\"\n  Depenses:Rent 15 USD\n  Actif:Cash -15 USD\n"
-  let r = queried(source,"SELECT account,possign(number,account) ORDER BY account")
+  let r = queried(
+    source, "SELECT account,possign(number,account) ORDER BY account",
+  )
   assert_true(r.is_ok())
-  assert_eq(r.rows.map(fn(row) { row[1].to_text() }), ["80","-15","15","80"])
+  assert_eq(r.rows.map(fn(row) { row[1].to_text() }), ["80", "-15", "15", "80"])
 }
 
 ///|
 test "renamed income accounts transfer to equity at OPEN and CLEAR" {
   let source = "option \"name_assets\" \"Actif\"\noption \"name_income\" \"Recettes\"\noption \"name_expenses\" \"Depenses\"\noption \"name_equity\" \"Capital\"\n2024-01-01 open Actif:Cash USD\n2024-01-01 open Recettes:Fees USD\n2024-01-01 open Depenses:Rent USD\n2024-01-02 * \"fees\"\n  Actif:Cash 80 USD\n  Recettes:Fees -80 USD\n2024-01-03 * \"rent\"\n  Depenses:Rent 15 USD\n  Actif:Cash -15 USD\n"
-  for (clause, account) in [("OPEN ON 2024-02-01","Capital:Earnings:Previous"),("CLEAR","Capital:Earnings:Current")] {
-    let r = queried(source, "SELECT account, sum(position) FROM " + clause + " GROUP BY account ORDER BY account")
+  for
+    (clause, account) in [
+      ("OPEN ON 2024-02-01", "Capital:Earnings:Previous"),
+      ("CLEAR", "Capital:Earnings:Current"),
+    ] {
+    let r = queried(
+      source,
+      "SELECT account, sum(position) FROM " +
+      clause +
+      " GROUP BY account ORDER BY account",
+    )
     assert_true(r.is_ok())
-    assert_true(r.rows.any(fn(row) { row[0].to_text() == account && row[1].to_text().contains("-65 USD") }))
+    assert_true(
+      r.rows.any(fn(row) {
+        row[0].to_text() == account && row[1].to_text().contains("-65 USD")
+      }),
+    )
   }
 }
 
@@ -2726,26 +2774,68 @@ test "anonymous singleton table permits calculations on an empty ledger" {
     assert_eq(all.rows[0].length(), 0)
     assert_eq(queried(src, "SELECT 1 FROM # WHERE false").rows.length(), 0)
     assert_eq(queried(src, "SELECT 1 FROM # LIMIT 0").rows.length(), 0)
-    assert_true(queried(src, "SELECT account FROM #").failure() is Some(@query.Compilation(_)))
-    assert_true(queried(src, "SELECT 1 FROM # postings").failure() is Some(@query.Syntax(_)))
-    assert_true(queried(src, "SELECT 1 FROM #where").failure() is Some(@query.Compilation(_)))
+    assert_true(
+      queried(src, "SELECT account FROM #").failure()
+      is Some(@query.Compilation(_)),
+    )
+    assert_true(
+      queried(src, "SELECT 1 FROM # postings").failure()
+      is Some(@query.Syntax(_)),
+    )
+    assert_true(
+      queried(src, "SELECT 1 FROM #where").failure()
+      is Some(@query.Compilation(_)),
+    )
   }
 }
 
 ///|
 test "opt-in ordered set JSON preserves the legacy raw column" {
-  for (left,right) in [("#z #a","#a #z"),("#z","#z")] {
+  for (left, right) in [("#z #a", "#a #z"), ("#z", "#z")] {
     let base = "2024-01-01 * \"order\" "
-    let qa = queried(base + left + "\n", "SELECT sorted_set_json(tags) FROM transactions")
-    let qb = queried(base + right + "\n", "SELECT sorted_set_json(tags) FROM transactions")
+    let qa = queried(
+      base + left + "\n",
+      "SELECT sorted_set_json(tags) FROM transactions",
+    )
+    let qb = queried(
+      base + right + "\n",
+      "SELECT sorted_set_json(tags) FROM transactions",
+    )
     assert_true(qa.is_ok() && qb.is_ok())
-    assert_eq(qa.rows.length(),1)
-    assert_eq(qa.rows[0][0].to_text(), if left == "#z" { "[\"z\"]" } else { "[\"a\",\"z\"]" })
-    assert_eq(qa.to_json(),qb.to_json())
+    assert_eq(qa.rows.length(), 1)
+    assert_eq(
+      qa.rows[0][0].to_text(),
+      if left == "#z" {
+        "[\"z\"]"
+      } else {
+        "[\"a\",\"z\"]"
+      },
+    )
+    assert_eq(qa.to_json(), qb.to_json())
   }
-  let legacy : @query.QueryValue = QSet(["z","a"])
-  assert_eq(legacy.to_json(),"[\"z\",\"a\"]")
-  let notes = queried("2024-01-01 open Assets:Cash\n2024-01-01 note Assets:Cash \"memo\" #z #a\n", "SELECT sorted_set_json(tags) FROM #notes")
-  assert_eq(notes.rows[0][0].to_text(),"[\"a\",\"z\"]")
-  assert_true(queried(ledger_source(), "SELECT sorted_set_json(number)").failure() is Some(@query.Compilation(_)))
+  let legacy : @query.QueryValue = QSet(["z", "a"])
+  assert_eq(legacy.to_json(), "[\"z\",\"a\"]")
+  let notes = queried(
+    "2024-01-01 open Assets:Cash\n2024-01-01 note Assets:Cash \"memo\" #z #a\n",
+    "SELECT sorted_set_json(tags) FROM #notes",
+  )
+  assert_eq(notes.rows[0][0].to_text(), "[\"a\",\"z\"]")
+  assert_true(
+    queried(ledger_source(), "SELECT sorted_set_json(number)").failure()
+    is Some(@query.Compilation(_)),
+  )
+}
+
+///|
+test "a lowercase timezone z is not the UTC designator" {
+  let bad = queried(
+    ledger_source(),
+    "SELECT parse_date('2024 z','%Y %z') LIMIT 1",
+  )
+  let good = queried(
+    ledger_source(),
+    "SELECT parse_date('2024 Z','%Y %z') LIMIT 1",
+  )
+  assert_true(bad.failure() is Some(@query.Evaluation(_)))
+  assert_eq(good.rows[0][0].to_text(), "2024-01-01")
 }

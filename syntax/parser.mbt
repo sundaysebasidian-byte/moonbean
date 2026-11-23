@@ -1792,8 +1792,53 @@ fn parse_custom(
 }
 
 ///|
+// Options have a separate grammar from ledger quantities: the last colon
+// followed by a decimal prefix separates a free-form key and unsigned value.
+fn decimal_option_pair(value : String) -> (String, @decimal.Decimal)? {
+  let mut separator = -1
+  let mut offset = 0
+  for c in value {
+    if c == '\n' {
+      break
+    }
+    if c == ':' &&
+      value.get_char(offset + 1) is Some(first) &&
+      (first == '.' || @decimal.decimal_digit(first) is Some(_)) {
+      separator = offset
+    }
+    offset += if c.to_int() > 0xFFFF { 2 } else { 1 }
+  }
+  if separator < 0 {
+    return None
+  }
+  let number = StringBuilder()
+  for c in value[separator + 1:] {
+    if c == '.' {
+      number.write_char(c)
+    } else if @decimal.decimal_digit(c) is Some(n) {
+      number.write_char((48 + n).unsafe_to_char())
+    } else {
+      break
+    }
+  }
+  @decimal.Decimal::parse(number.to_string()).map(fn(n) {
+    (value[:separator].to_owned(), n)
+  })
+}
+
+///|
 // Beancount 3.2.3 public option descriptor names (see compatibility-inventory.json).
-let ledger_option_names : Array[String] = ["account_current_conversions", "account_current_earnings", "account_previous_balances", "account_previous_conversions", "account_previous_earnings", "account_rounding", "account_unrealized_gains", "allow_deprecated_none_for_tags_and_links", "allow_pipe_separator", "booking_method", "commodities", "conversion_currency", "dcontext", "display_precision", "documents", "filename", "include", "infer_tolerance_from_cost", "inferred_tolerance_default", "inferred_tolerance_multiplier", "input_hash", "insert_pythonpath", "long_string_maxlines", "name_assets", "name_equity", "name_expenses", "name_income", "name_liabilities", "operating_currency", "plugin", "plugin_processing_mode", "render_commas", "title", "tolerance_multiplier", "use_precise_interpolation"]
+let ledger_option_names : Array[String] = [
+  "account_current_conversions", "account_current_earnings", "account_previous_balances",
+  "account_previous_conversions", "account_previous_earnings", "account_rounding",
+  "account_unrealized_gains", "allow_deprecated_none_for_tags_and_links", "allow_pipe_separator",
+  "booking_method", "commodities", "conversion_currency", "dcontext", "display_precision",
+  "documents", "filename", "include", "infer_tolerance_from_cost", "inferred_tolerance_default",
+  "inferred_tolerance_multiplier", "input_hash", "insert_pythonpath", "long_string_maxlines",
+  "name_assets", "name_equity", "name_expenses", "name_income", "name_liabilities",
+  "operating_currency", "plugin", "plugin_processing_mode", "render_commas", "title",
+  "tolerance_multiplier", "use_precise_interpolation",
+]
 
 ///|
 fn apply_option(
@@ -1835,7 +1880,9 @@ fn apply_option(
   } else if name == "tolerance_multiplier" ||
     name == "inferred_tolerance_multiplier" {
     if name == "inferred_tolerance_multiplier" {
-      parser.error(line, "validation.deprecated_option", "Renamed to 'tolerance_multiplier'.")
+      parser.error(
+        line, "validation.deprecated_option", "Renamed to 'tolerance_multiplier'.",
+      )
     }
     let number = if value == "" { "0" } else { value }
     match @decimal.Decimal::parse(number) {
@@ -1847,26 +1894,22 @@ fn apply_option(
           "invalid " + name + " `" + value + "`",
         )
     }
-  } else if name == "inferred_tolerance_default" {
-    let parts = value.split(":")
-    let pair = []
-    for part in parts {
-      pair.push(view_to_string(part))
-    }
-    if pair.length() == 2 && (is_valid_currency(pair[0]) || pair[0] == "*") {
-      match @decimal.Decimal::parse(pair[1]) {
-        Some(n) => options.inferred_tolerance_default.set(pair[0], n)
-        None =>
-          parser.error(
-            line,
-            "parse.option",
-            "invalid inferred_tolerance_default `" + value + "`",
-          )
+  } else if name == "inferred_tolerance_default" || name == "display_precision" {
+    match decimal_option_pair(value) {
+      Some((key, n)) => {
+        let target = if name == "display_precision" {
+          options.display_precision
+        } else {
+          options.inferred_tolerance_default
+        }
+        target.set(key, n)
       }
-    } else {
-      parser.error(
-        line, "parse.option", "inferred_tolerance_default must be CCY:NUMBER",
-      )
+      None =>
+        parser.error(
+          line,
+          "parse.option",
+          "Invalid value '" + value + "' for " + name,
+        )
     }
   } else if name == "infer_tolerance_from_cost" {
     options.infer_tolerance_from_cost = ["true", "on", "1"].contains(
@@ -1887,25 +1930,6 @@ fn apply_option(
     options.documents.push(value)
   } else if name == "render_commas" {
     options.render_commas = ["true", "1", "yes"].contains(value.to_lower())
-  } else if name == "display_precision" {
-    let parts = value.split(":")
-    let pair = []
-    for part in parts {
-      pair.push(view_to_string(part))
-    }
-    if pair.length() == 2 && (is_valid_currency(pair[0]) || pair[0] == "*") {
-      match @decimal.Decimal::parse(pair[1]) {
-        Some(n) => options.display_precision.set(pair[0], n)
-        None =>
-          parser.error(
-            line,
-            "parse.option",
-            "invalid display_precision `" + value + "`",
-          )
-      }
-    } else {
-      parser.error(line, "parse.option", "display_precision must be CCY:NUMBER")
-    }
   }
 }
 

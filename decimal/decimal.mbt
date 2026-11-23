@@ -250,7 +250,10 @@ pub fn Decimal::mantissa(self : Decimal) -> @bigint.BigInt {
 /// when a coarser scale must be forced even at the cost of rounding.
 pub fn Decimal::shift_scale(self : Decimal, k : Int32) -> Decimal {
   if k >= 0 {
-    return { mantissa: bigint_mul_pow10(self.mantissa, k), scale: self.scale + k, }
+    return {
+      mantissa: bigint_mul_pow10(self.mantissa, k),
+      scale: self.scale + k,
+    }
   }
   if self.mantissa.is_zero() {
     return Decimal::zero_scaled(self.scale + k)
@@ -262,7 +265,7 @@ pub fn Decimal::shift_scale(self : Decimal, k : Int32) -> Decimal {
     value = value.div(ten)
     remaining += 1
   }
-  { mantissa: value, scale: self.scale + (k - remaining) }
+  { mantissa: value, scale: self.scale + (k - remaining), }
 }
 
 ///|

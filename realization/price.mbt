@@ -239,4 +239,3 @@ pub fn json_escape(text : String) -> String {
   }
   sb.to_string()
 }
-

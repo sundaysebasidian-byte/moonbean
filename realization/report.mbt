@@ -114,7 +114,10 @@ fn Report::render_text(self : Report, commas : Bool) -> String {
   sb.write_string(self.title)
   sb.write_string("\n")
   let label_width = max_label_width(self.rows, 7)
-  let amount_width = max_amount_width(self.rows.copy() + self.totals.copy(), commas)
+  let amount_width = max_amount_width(
+    self.rows.copy() + self.totals.copy(),
+    commas,
+  )
   sb.write_string(pad_right("Account", label_width))
   sb.write_string("  ")
   sb.write_string(pad_left("Amount", amount_width))
@@ -161,7 +164,9 @@ fn Report::text_with_grouping(self : Report, commas : Bool) -> String {
       None => row
     }
   }
-  { ..self, rows: self.rows.map(display), totals: self.totals.map(display), }.render_text(commas)
+  { ..self, rows: self.rows.map(display), totals: self.totals.map(display), }.render_text(
+    commas,
+  )
 }
 
 ///|
@@ -456,7 +461,12 @@ fn make_report(
     for row in rows {
       // income_rows has already converted every book amount that has a quote.
       if row.amount.currency != target {
-        diagnostics.push({code: "report.conversion_incomplete", account: row.label, currency: row.amount.currency, target})
+        diagnostics.push({
+          code: "report.conversion_incomplete",
+          account: row.label,
+          currency: row.amount.currency,
+          target,
+        })
       }
     }
   } else if convert is Some(target) {
@@ -661,7 +671,9 @@ pub fn balance_sheet(
     for amount in grouped_amounts(changes) {
       if !amount.number.is_zero() {
         rows.push({
-          label: realized.options.equity_account("account_unrealized_gains", "Earnings:Unrealized"),
+          label: realized.options.equity_account(
+            "account_unrealized_gains", "Earnings:Unrealized",
+          ),
           amount,
         })
       }
@@ -764,7 +776,15 @@ pub fn income_statement(
       amount: @ast.Amount::new(row.amount.number.neg(), row.amount.currency),
     })
   }
-  make_report(realized, "Income Statement", rows, totals, convert, [roots[3], roots[4]], activity=true)
+  make_report(
+    realized,
+    "Income Statement",
+    rows,
+    totals,
+    convert,
+    [roots[3], roots[4]],
+    activity=true,
+  )
 }
 
 ///|

@@ -1161,7 +1161,7 @@ fn process_transaction(
 /// used by reports and the query engine.
 pub fn validate_ledger(ledger : @ast.Ledger) -> ValidatedLedger {
   let ctx = Context::new(ledger)
-for diagnostic in ledger.errors {
+  for diagnostic in ledger.errors {
     if diagnostic.code == "validation.deprecated_option" {
       ctx.warnings.push(diagnostic)
     } else {
@@ -1169,6 +1169,28 @@ for diagnostic in ledger.errors {
     }
   }
 
+  // Callers may construct a Ledger directly. Preserve its old advisory warning
+  // for aliases that have no physical parser location.
+  let mut located_aliases = ctx.warnings.length()
+  for (key, _) in ledger.options.raw {
+    if key == "inferred_tolerance_multiplier" {
+      if located_aliases > 0 {
+        located_aliases -= 1
+      } else {
+        let file = if ledger.entries.is_empty() {
+          "<ledger>"
+        } else {
+          ledger.entries[0].loc.file
+        }
+        warning(
+          ctx,
+          "validation.deprecated_option",
+          "Renamed to 'tolerance_multiplier'.",
+          @ast.Loc::new(file, 0),
+        )
+      }
+    }
+  }
   let ordered = sorted_entries(ledger.entries)
   for entry in ordered {
     match entry.directive {
@@ -1293,8 +1315,6 @@ for diagnostic in ledger.errors {
     state: ctx.state,
   }
 }
-
-
 
 ///|
 fn txn_signature(entry : @ast.Entry, txn : @ast.Transaction) -> String {

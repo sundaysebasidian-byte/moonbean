@@ -974,9 +974,42 @@ test "accepts Beancount's one-digit double-comma leading group only" {
 test "misspelled accounting options are diagnosed without keeping them as live settings" {
   let s = "option \"operating_curency\" \"EUR\"\noption \"name_asset\" \"Banque\"\noption \"operating_currency\" \"USD\"\noption \"allow_deprecated_none_for_tags_and_links\" \"TRUE\"\n"
   let ledger = @syntax.parse_source("opts.bean", s)
-  assert_eq(ledger.errors.length(),2)
-  assert_eq(ledger.errors.map(fn(d) {d.loc.line}), [1,2])
-  assert_eq(ledger.errors.map(fn(d) {d.code}), ["parse.option","parse.option"])
+  assert_eq(ledger.errors.length(), 2)
+  assert_eq(ledger.errors.map(fn(d) { d.loc.line }), [1, 2])
+  assert_eq(ledger.errors.map(fn(d) { d.code }), [
+    "parse.option", "parse.option",
+  ])
   assert_true(ledger.options.get("operating_curency") is None)
-  assert_eq(ledger.options.operating_currencies,["USD"])
+  assert_eq(ledger.options.operating_currencies, ["USD"])
+}
+
+///|
+test "per-currency precision and tolerance options use the upstream option-value grammar" {
+  for option in ["display_precision", "inferred_tolerance_default"] {
+    let build = fn(value : String) {
+      "option \"" + option + "\" \"" + value + "\"\n"
+    }
+    let source = build("A:B:.010") +
+      build("USD:1,234") +
+      build("cad:٠.٠٥") +
+      build("EUR:0.002e3") +
+      build("JPY:-0.01") +
+      build("USD:1.2.3")
+    let ledger = @syntax.parse_source("exact.bean", source)
+    assert_eq(ledger.errors.map(fn(e) { e.loc.line }), [5, 6])
+    let map = if option == "display_precision" {
+      ledger.options.display_precision
+    } else {
+      ledger.options.inferred_tolerance_default
+    }
+    for
+      (key, expected) in [
+        ("A:B", "0.010"),
+        ("USD", "1"),
+        ("cad", "0.05"),
+        ("EUR", "0.002"),
+      ] {
+      assert_eq(map.get(key).unwrap().to_string(), expected)
+    }
+  }
 }

@@ -115,7 +115,14 @@ test "single-buffer decimal parser preserves scale and signs" {
 
 ///|
 test "exact decimal rescaling never changes the value when dropping scale" {
-  for (s, n, expected) in [("123.40",-1,"123.4"), ("-12.50",-8,"-12.5"), ("123.45",-1,"123.45"), ("4.2",2,"4.200"), ("0.000",-2,"0.0")] {
+  for
+    (s, n, expected) in [
+      ("123.40", -1, "123.4"),
+      ("-12.50", -8, "-12.5"),
+      ("123.45", -1, "123.45"),
+      ("4.2", 2, "4.200"),
+      ("0.000", -2, "0.0"),
+    ] {
     let before = dec(s)
     let result = before.shift_scale(n)
     assert_eq(result.to_string(), expected)

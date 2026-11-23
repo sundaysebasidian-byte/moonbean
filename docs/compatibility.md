@@ -26,17 +26,17 @@ Defaults and types are oracle values. Repeat means collection accumulation; scal
 | `dcontext` | DisplayContext | `__default__     : sign=1   integer_max=1   fractional_common=_   fractional_max=_   "-0.*" "-0.*" ` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
 | `commodities` | set | `set()` | yes | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
 | `title` | str | `Beancount` | no | Supported storage; presentation title is host-owned (parser tests). |
-| `name_assets` | str | `Assets` | no | Used by account_sortkey; renamed root account syntax/lifecycle taxonomy remains unsupported. Use oracle for those semantics. |
-| `name_liabilities` | str | `Liabilities` | no | Used by account_sortkey; renamed root account syntax/lifecycle taxonomy remains unsupported. Use oracle for those semantics. |
-| `name_equity` | str | `Equity` | no | Used for summary/report equity account labels; full renamed account taxonomy unsupported (realization option regression). |
-| `name_income` | str | `Income` | no | Used by account_sortkey; renamed root account syntax/lifecycle taxonomy remains unsupported. Use oracle for those semantics. |
-| `name_expenses` | str | `Expenses` | no | Used by account_sortkey; renamed root account syntax/lifecycle taxonomy remains unsupported. Use oracle for those semantics. |
+| `name_assets` | str | `Assets` | no | Used by account_sortkey, configured account signs, financial statements and OPEN/CLEAR transfers. Other renamed-root combinations remain unverified. |
+| `name_liabilities` | str | `Liabilities` | no | Used by account_sortkey, configured account signs, financial statements and OPEN/CLEAR transfers. Other renamed-root combinations remain unverified. |
+| `name_equity` | str | `Equity` | no | Used for equity labels and balance-sheet classification; the executable localized-account example exercises summary transfers. |
+| `name_income` | str | `Income` | no | Used by account_sortkey, configured account signs, financial statements and OPEN/CLEAR transfers. Other renamed-root combinations remain unverified. |
+| `name_expenses` | str | `Expenses` | no | Used by account_sortkey, configured account signs, financial statements and OPEN/CLEAR transfers. Other renamed-root combinations remain unverified. |
 | `account_previous_balances` | str | `Opening-Balances` | no | Used by FROM OPEN summary and report prior-earnings labels (period differential / realization option tests); other oracle contexts unverified. |
 | `account_previous_earnings` | str | `Earnings:Previous` | no | Used by FROM OPEN summary and report prior-earnings labels (period differential / realization option tests); other oracle contexts unverified. |
 | `account_previous_conversions` | str | `Conversions:Previous` | no | Used by OPEN prior-period conversion labels. Default-label R12 transformations are verified; arbitrary option combinations remain unverified. |
 | `account_current_earnings` | str | `Earnings:Current` | no | Implemented report current-earnings label (realization option regression); other oracle contexts unverified. |
 | `account_current_conversions` | str | `Conversions:Current` | no | Implemented report conversion/residual label (realization report tests); other oracle contexts unverified. |
-| `account_unrealized_gains` | str | `Earnings:Unrealized` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
+| `account_unrealized_gains` | str | `Earnings:Unrealized` | no | Used for the market-adjustment equity line when converting a balance sheet; other upstream contexts are not claimed. |
 | `account_rounding` | NoneType | `None` | no | Unsupported rounding-account postings; parsed/stored only. Balances/entries may differ; use oracle. |
 | `conversion_currency` | str | `NOTHING` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
 | `display_precision` | dict | `{}` | yes | Implemented for MoonBean report text and report metadata (realization precision test); full oracle precision/rendering policy not proven. |
@@ -46,7 +46,7 @@ Defaults and types are oracle values. Repeat means collection accumulation; scal
 | `infer_tolerance_from_cost` | bool | `False` | no | Supported quantity-precision times cost/price inference, with per-posting 0.5 cap and accumulated currency tolerances (119, object metadata differential); TRUE/True/true/1 enabled. |
 | `documents` | list | `[]` | yes | Unsupported folder discovery and file existence validation; paths stored only. Host must verify receipts. |
 | `operating_currency` | list | `[]` | yes | Stored repeatably; a single value selects report conversion in CLI/playground. Multi-currency oracle report layout unsupported. |
-| `render_commas` | bool | `False` | no | Unsupported comma rendering; boolean parsed/stored only. Amount text differs; host can format numbers. |
+| `render_commas` | bool | `False` | no | Honored by report text when rendering with ledger options (including CLI financial statements); machine JSON stays ungrouped. Other printer contexts are not claimed. |
 | `plugin_processing_mode` | str | `default` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
 | `long_string_maxlines` | int | `64` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
 | `booking_method` | Booking | `Booking.STRICT` | no | Supported for STRICT, STRICT_WITH_SIZE, FIFO, LIFO, HIFO, NONE (029–034); AVERAGE is an extension. |
@@ -55,7 +55,7 @@ Defaults and types are oracle values. Repeat means collection accumulation; scal
 | `use_precise_interpolation` | bool | `False` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
 | `insert_pythonpath` | bool | `False` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
 
-`filename` and `plugin` are oracle read-only option names. MoonBean does not yet mirror all unknown/read-only option errors, value converters or deprecated-option diagnostics. These are explicit diagnostic gaps. Include and plugin directives are distinct from internal option values.
+`filename` and `plugin` are oracle read-only option names. Unknown names are rejected. Exact prose and the full range of value converters/deprecated-option diagnostics have not been audited. These are explicit diagnostic gaps. Include and plugin directives are distinct from internal option values.
 
 ## Directives
 
@@ -87,7 +87,7 @@ Metadata accepts amount values, tested spaced and compact number expressions (in
 
 All 73 R13 classification counterexamples are tracked with source hashes. The fixed supported cases cover unclosed/multiline strings, amount/empty metadata, optional narration, zero-residual automatic postings, standalone indentation and document existence. Nine cases retain AVERAGE or cost-merge extension results because the oracle rejects those features. Diagnostic probes compare check exit status, error families and physical lexer-error positions. Full diagnostic prose and every semantic-error location retain their existing limits. [R14 acceptance](evidence/r14-acceptance.md).
 
-Transaction/posting flags accept ASCII A–Z and `! # % & * ?`; lowercase letters and apostrophes are lexical errors. Bare quantities in the reviewed mixed stock/cash transaction infer the single weight currency. Document PRINT preserves absolute path spelling, while relative paths resolve and normalize without a trailing slash. The tracked R14 rework corpus contains all 733 reviewer ledgers plus 244 authored inputs, with exact PRINT/count and lexical diagnostic checks for the authored cases. Its 23 pre-existing classification boundaries repeat 11 AVERAGE/cost-merge inputs and 12 unknown-option mutations; raw unknown-option passthrough is not oracle validation.
+Transaction/posting flags accept ASCII A–Z and `! # % & * ?`; lowercase letters and apostrophes are lexical errors. Bare quantities in the reviewed mixed stock/cash transaction infer the single weight currency. Document PRINT preserves absolute path spelling, while relative paths resolve and normalize without a trailing slash. The tracked R14 rework corpus contains all 733 reviewer ledgers plus 244 authored inputs, with exact PRINT/count and lexical diagnostic checks for the authored cases. Its 23 pre-existing classification boundaries repeat 11 AVERAGE/cost-merge inputs and 12 unknown-option mutations; those historical unknown-option mutations were passthrough then; this revision rejects unknown option names with a line diagnostic.
 
 ## BQL tables and every oracle column
 
@@ -492,3 +492,5 @@ rerun by Lead. [Historical 0.2.7 acceptance and exact limitations](evidence/r13-
 ## R14 acceptance status
 
 R14 rework passes 207 unit tests on each required target, 215 Node-hosted wasm-gc clock checks, and the complete **22344/22344** differential (previous 20790 plus 1554 review checks). This includes explicit rejection/extension and parser-robustness checks, not only conformance comparisons. The original candidate completed three paired moonrun and Node/V8 memory runs; those are historical source-specific samples. Rework reran 24 short interleaved native/JS process measurements. Ratios, the original Node heap limit and sampled headroom are recorded in [R14 acceptance](evidence/r14-acceptance.md). Moonrun exposes RSS/completion but no public heap-limit statistics.
+
+An [executable localized-ledger walkthrough](../examples/financial-review/README.md) verifies configured account signs, period transfers and the anonymous one-row BQL table.

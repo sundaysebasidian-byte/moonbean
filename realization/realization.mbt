@@ -88,12 +88,15 @@ pub fn realize(
   let accounts = match at {
     None => ledger.accounts
     Some(cutoff) => {
-      let visible : Map[String, @validation.AccountInfo] = {}
+      let visible : Map[String, @validation.AccountInfo] = Map([])
       for (name, info) in ledger.accounts {
         if info.open_date.less_equal(cutoff) {
-          visible[name] = if info.close_date is Some(closed) && cutoff.less_than(closed) {
-            { ..info, close_date: None }
-          } else { info }
+          visible[name] = if info.close_date is Some(closed) &&
+            cutoff.less_than(closed) {
+            { ..info, close_date: None, }
+          } else {
+            info
+          }
         }
       }
       visible
@@ -156,7 +159,9 @@ pub fn RealizedLedger::combined_inventory(
   if !subtree {
     let selected = @booking.Inventory::new()
     if self.inventories.get(account) is Some(raw) {
-      for position in raw.positions { selected.add(position) }
+      for position in raw.positions {
+        selected.add(position)
+      }
     }
     return selected
   }

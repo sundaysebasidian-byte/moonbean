@@ -1,7 +1,10 @@
 ///|
 fn type_argument(actual : String, expected : String) -> Bool {
   actual == expected ||
-  (expected == "text_set_or_null" && ["set", "frozenset", "generic_set", "nonetype"].contains(actual)) ||
+  (
+    expected == "text_set_or_null" &&
+    ["set", "frozenset", "generic_set", "nonetype"].contains(actual)
+  ) ||
   (actual == "nonetype" && expected == "object") ||
   (actual == "inventory" && expected == "dict") ||
   expected == "any" ||

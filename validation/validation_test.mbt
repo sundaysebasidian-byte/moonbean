@@ -753,13 +753,28 @@ test "bare quantity currency follows a stock transaction weight" {
 
 ///|
 test "deprecated tolerance diagnostics retain each physical include location" {
-  let locs = [@ast.Loc::new("section-a.bean", 14), @ast.Loc::new("section-b.bean", 71)]
+  let locs = [
+    @ast.Loc::new("section-a.bean", 14),
+    @ast.Loc::new("section-b.bean", 71),
+  ]
   let source = "option \"inferred_tolerance_multiplier\" \"0.2\"\noption \"inferred_tolerance_multiplier\" \"0.3\"\n"
-  let ledger = @validation.validate_ledger(@syntax.parse_source("combined.bean", source, source_map=locs))
-  assert_eq(ledger.warnings.length(),2)
-  assert_eq(ledger.errors.length(),0)
+  let ledger = @validation.validate_ledger(
+    @syntax.parse_source("combined.bean", source, source_map=locs),
+  )
+  assert_eq(ledger.warnings.length(), 2)
+  assert_eq(ledger.errors.length(), 0)
   for i in 0..<2 {
     assert_eq(ledger.warnings[i].code, "validation.deprecated_option")
     assert_eq(ledger.warnings[i].loc.to_string(), locs[i].to_string())
   }
+}
+
+///|
+test "a public ledger without physical option locations still reports the deprecated alias" {
+  let ledger = @ast.Ledger::new()
+  ledger.options.add_raw("inferred_tolerance_multiplier", "0.25")
+  let checked = @validation.validate_ledger(ledger)
+  assert_eq(checked.warnings.length(), 1)
+  assert_eq(checked.warnings[0].code, "validation.deprecated_option")
+  assert_eq(checked.warnings[0].loc.to_string(), "<ledger>:0")
 }

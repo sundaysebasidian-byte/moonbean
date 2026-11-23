@@ -32,7 +32,12 @@ fn format_header_date(text : String) -> Bool {
     return false
   }
   let tokens = @syntax.tokenize(text)
-  tokens.length() == 2 && tokens[0].kind is Word(normalized) && normalized.length() == 10 && normalized.get_char(4) == Some('-') && normalized.get_char(7) == Some('-') && normalized.iter().all(fn(c) { c.is_ascii_digit() || c == '-' })
+  tokens.length() == 2 &&
+  tokens[0].kind is Word(normalized) &&
+  normalized.length() == 10 &&
+  normalized.get_char(4) == Some('-') &&
+  normalized.get_char(7) == Some('-') &&
+  normalized.iter().all(fn(c) { c.is_ascii_digit() || c == '-' })
 }
 
 ///|
@@ -81,7 +86,7 @@ fn format_is_directive(word : String) -> Bool {
 ///|
 fn format_is_transaction_header(text : String) -> Bool {
   let trimmed = format_trimmed(text)
-let (date, after) = format_split_first(trimmed)
+  let (date, after) = format_split_first(trimmed)
   if !format_header_date(date) || after.is_empty() {
     return false
   }

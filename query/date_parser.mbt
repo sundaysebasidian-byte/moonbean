@@ -41,7 +41,7 @@ fn strptime_date(
   text : String,
   format : String,
 ) -> QueryValue {
-// Expand only real locale directives; %%x means the literal characters %x.
+  // Expand only real locale directives; %%x means the literal characters %x.
   let expanded = StringBuilder()
   let chars = format.iter()
   while chars.next() is Some(c) {
@@ -194,16 +194,29 @@ fn strptime_date(
       'M' => minute = n
       'S' => second = n
       'z' => {
+        // Other textual fields are case-insensitive; the UTC designator is not.
+        if raw == "z" {
+          query_error(
+            ctx, "query.oracle_type_error: ValueError invalid timezone designator",
+          )
+          return QNull
+        }
         let digits = raw.replace_all(old=":", new="")
         if digits != "Z" &&
           (
             bql_parse_int(digits[1:3].to_owned()) > 23 ||
             bql_parse_int(digits[3:5].to_owned()) > 59 ||
-            (digits.length() > 5 && (
-              bql_parse_int(digits[5:7].to_owned()) > 59 ||
-              digits.length() > 14 ||
-              (raw.contains(":") && (raw.get_char(3) != Some(':') || raw.get_char(6) != Some(':')))
-            ))
+            (
+              digits.length() > 5 &&
+              (
+                bql_parse_int(digits[5:7].to_owned()) > 59 ||
+                digits.length() > 14 ||
+                (
+                  raw.contains(":") &&
+                  (raw.get_char(3) != Some(':') || raw.get_char(6) != Some(':'))
+                )
+              )
+            )
           ) {
           query_error(
             ctx, "query.oracle_type_error: ValueError invalid timezone offset",
@@ -217,7 +230,8 @@ fn strptime_date(
         ]
         let mut found = false
         for j in 0..<7 {
-          if raw.to_lower() == (if field == 'A' { names[j] } else { names[j][:3].to_owned() }) {
+          if raw.to_lower() ==
+            (if field == 'A' { names[j] } else { names[j][:3].to_owned() }) {
             weekday = j
             found = true
           }
@@ -283,7 +297,9 @@ fn strptime_date(
       // December 28 always lies in the final ISO week of its own year.
       let jan4 = ordinal(first_thursday_anchor)
       let week_one = jan4 - (jan4 - 1) % 7
-      let max_week = (ordinal(@ast.Date::new(y, 12, 28).unwrap()) - week_one) / 7 + 1
+      let max_week = (ordinal(@ast.Date::new(y, 12, 28).unwrap()) - week_one) /
+        7 +
+        1
       if w < 1 || w > max_week {
         query_error(ctx, "query.oracle_type_error: ValueError invalid ISO week")
         return QNull
