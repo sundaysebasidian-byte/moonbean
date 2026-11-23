@@ -1863,6 +1863,13 @@ fn apply_option(
     )
     return
   }
+  let account_root = ["name_assets", "name_liabilities", "name_equity", "name_income", "name_expenses"].contains(name)
+  let account_leaf = name.has_prefix("account_")
+  if (account_root && (value.contains(":") || !@ast.valid_account_name(value + ":X"))) ||
+    (account_leaf && !@ast.valid_account_name("Assets:" + value)) {
+    parser.error(line, "parse.option", "Invalid account value '" + value + "' for " + name)
+    return
+  }
   parser.ledger.options.add_raw(name, value)
   let options = parser.ledger.options
   if name == "title" {

@@ -1013,3 +1013,28 @@ test "per-currency precision and tolerance options use the upstream option-value
     }
   }
 }
+
+///|
+test "invalid chart options preserve the last usable root and relative account" {
+  let ledger = @syntax.parse_source(
+    "renames.bean",
+    #|option "name_assets" "Actif"
+    #|option "name_assets" "Actif:Cash"
+    #|option "name_income" "lowercase"
+    #|option "account_current_earnings" "Gains:1Q"
+    #|option "account_current_earnings" "gains:P&L"
+    #|option "account_rounding" "1"
+    #|option "account_rounding" ""
+    #|option "name_equity" "𐐀quity"
+    #|
+  )
+  assert_eq(ledger.errors.map(fn(e) { e.loc.line }), [2, 3, 5, 7])
+  assert_true(ledger.errors.all(fn(e) { e.code == "parse.option" }))
+  assert_eq(ledger.options.get("name_assets"), Some("Actif"))
+  assert_eq(ledger.options.get("name_income"), None)
+  assert_eq(ledger.options.account_rounding, Some("1"))
+  assert_eq(
+    ledger.options.equity_account("account_current_earnings", "Other"),
+    "𐐀quity:Gains:1Q",
+  )
+}
