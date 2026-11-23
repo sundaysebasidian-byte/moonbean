@@ -836,3 +836,37 @@ test "only the newest pad applies independently to each currency's first asserti
   assert_true(superseded.errors.any(fn(d) { d.loc.line == 6 && d.code == "validation.balance" }))
   assert_eq(superseded.inventory("Assets:Cash").quantity("USD").to_string(), "30.00")
 }
+
+///|
+test "strict booking allows full liquidation across otherwise ambiguous lots" {
+  for method in ["STRICT", "STRICT_WITH_SIZE"] {
+    let header =
+      "2024-01-01 open Assets:Stock HOOL \"\{method}\"\n" +
+      #|2024-01-01 open Assets:Cash USD
+      #|2024-01-02 * "Buy 2"
+      #|  Assets:Stock 2 HOOL {12 USD}
+      #|  Assets:Cash -24 USD
+      #|2024-01-03 * "Buy 3"
+      #|  Assets:Stock 3 HOOL {15 USD}
+      #|  Assets:Cash -45 USD
+      #|
+    let liquidation = validated(header +
+      #|2024-01-04 * "Sell both"
+      #|  Assets:Stock -5 HOOL {}
+      #|  Assets:Cash
+      #|
+    )
+    assert_eq(liquidation.errors.length(), 0)
+    assert_eq(find_transaction(liquidation, "Sell both").unwrap().postings.map(fn(p) {
+      p.units.unwrap().to_string()
+    }), ["-2 HOOL", "-3 HOOL", "69 USD"])
+    assert_true(liquidation.inventory("Assets:Stock").is_empty())
+    let partial = validated(header +
+      #|2024-01-04 * "Ambiguous partial"
+      #|  Assets:Stock -4 HOOL {}
+      #|  Assets:Cash
+      #|
+    )
+    assert_true(has_error(partial, "validation.booking"))
+  }
+}

@@ -270,6 +270,19 @@ fn select_lots(
     )
   }
   let plan = []
+  if (booking == "STRICT" || booking == "STRICT_WITH_SIZE") &&
+    candidates.length() > 1 {
+    let mut total = @decimal.Decimal::zero()
+    for index in candidates {
+      total = total.add(inv.positions[index].units.number.abs())
+    }
+    if total.equal(need) {
+      for index in candidates {
+        plan.push((index, inv.positions[index].units.number.abs()))
+      }
+      return (plan, None)
+    }
+  }
   if booking == "STRICT" {
     if candidates.length() > 1 {
       return (
