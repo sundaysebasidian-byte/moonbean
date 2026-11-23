@@ -88,7 +88,8 @@ priv struct PadState {
   source : String
   date : @ast.Date
   loc : @ast.Loc
-  mut consumed : Bool
+  checked_currencies : Map[String, Bool]
+  mut inserted : Bool
 }
 
 ///|
@@ -177,34 +178,27 @@ fn directive_rank(directive : @ast.Directive) -> Int32 {
 
 ///|
 fn sorted_entries(entries : Array[@ast.Entry]) -> Array[@ast.Entry] {
-  let result = []
-  for entry in entries {
-    result.push(entry)
-  }
-  let mut i = 1
-  while i < result.length() {
-    let current = result[i]
-    let mut j = i
-    while j > 0 {
-      let prev = result[j - 1]
-      let date_cmp = prev.date.compare(current.date)
-      let rank_cmp = directive_rank(prev.directive).compare(
-        directive_rank(current.directive),
-      )
-      let line_cmp = prev.query_origin.unwrap_or(prev.loc).line.compare(
-        current.query_origin.unwrap_or(current.loc).line,
-      )
-      let should_swap = date_cmp > 0 ||
-        (date_cmp == 0 && (rank_cmp > 0 || (rank_cmp == 0 && line_cmp > 0)))
-      if should_swap {
-        result[j - 1] = current
-        result[j] = prev
-        j = j - 1
-      } else {
-        break
-      }
+  let result = entries.copy()
+  fn compare(a : @ast.Entry, b : @ast.Entry) -> Int32 {
+    let by_date = a.date.compare(b.date)
+    if by_date != 0 {
+      return by_date
     }
-    i = i + 1
+    let by_rank = directive_rank(a.directive).compare(
+      directive_rank(b.directive),
+    )
+    if by_rank != 0 {
+      return by_rank
+    }
+    a.query_origin.unwrap_or(a.loc).line.compare(
+      b.query_origin.unwrap_or(b.loc).line,
+    )
+  }
+  for i in 1..<result.length() {
+    if compare(result[i - 1], result[i]) > 0 {
+      result.mut_view().stable_sort_by(compare)
+      break
+    }
   }
   result
 }
@@ -432,7 +426,8 @@ fn process_pad(ctx : Context, entry : @ast.Entry, pad : @ast.Pad) -> Unit {
     source: pad.source_account,
     date: entry.date,
     loc: entry.loc,
-    consumed: false,
+    checked_currencies: Map([]),
+    inserted: false,
   })
 }
 
@@ -475,7 +470,7 @@ fn accumulated_quantity(
 ///|
 fn balance_tolerance(ctx : Context, balance : @ast.Balance) -> @decimal.Decimal {
   match balance.tolerance {
-    Some(explicit) => explicit.abs()
+    Some(explicit) => explicit
     None =>
       balance.amount.number
       .last_digit_place()
@@ -540,7 +535,7 @@ fn applicable_pad(ctx : Context, account : String, date : @ast.Date) -> Int32? {
   let mut result : Int32? = None
   for i in 0..<ctx.pads.length() {
     let pad = ctx.pads[i]
-    if pad.account == account && !pad.consumed && pad.date.less_equal(date) {
+    if pad.account == account && pad.date.less_equal(date) {
       result = Some(i)
     }
   }
@@ -597,10 +592,12 @@ fn process_balance(
   let difference = balance.amount.number.sub(actual)
   let pad_index = applicable_pad(ctx, balance.account, entry.date)
   match pad_index {
-    Some(index) => {
+    Some(index) if !ctx.pads[index].checked_currencies.contains(
+        balance.amount.currency,
+      ) => {
       let pad = ctx.pads[index]
+      pad.checked_currencies[balance.amount.currency] = true
       if difference.abs().less_equal(tolerance) {
-        // A pad is only consumed when it actually inserts a padding entry.
         return
       }
       for name in ctx.state.accounts.keys().to_array() {
@@ -620,17 +617,20 @@ fn process_balance(
           }
         }
       }
-      pad.consumed = true
+      pad.inserted = true
       ctx.pads[index] = pad
       insert_padding(ctx, pad, balance.amount, difference, entry.loc)
-      return
+      // The two synthesized legs cancel inside the same balance subtree.
+      if !is_subaccount(pad.source, balance.account) {
+        return
+      }
     }
-    None => ()
+    _ => ()
   }
   if difference.abs().less_equal(tolerance) {
     return
   }
-  let direction = if difference.is_positive() {
+  let direction = if !difference.is_negative() {
     "too little"
   } else {
     "too much"
@@ -1059,6 +1059,7 @@ fn process_transaction(
   }
   let weights : Array[@ast.Amount] = []
   let deferred : Array[Int32] = []
+  let short_reductions : Map[Int32, Bool] = Map([])
   let missing : Array[Int32] = []
   // Reductions are booked first so that augmentations in the same transaction
   // cannot change which lots are matched.
@@ -1079,6 +1080,18 @@ fn process_transaction(
               } else if !book_explicit(ctx, entry, i, posting, weights, booked) {
                 booking_failed = true
               }
+            } else if units.number.is_positive() &&
+              ctx.state.method_for(posting.account, ctx.options.booking_method) !=
+              "NONE" &&
+              ctx.state.inventory_for(posting.account).positions.any(fn(p) {
+                p.units.currency == units.currency &&
+                p.cost is Some(_) &&
+                p.units.number.is_negative()
+              }) {
+              short_reductions[i] = true
+              if !book_explicit(ctx, entry, i, posting, weights, booked) {
+                booking_failed = true
+              }
             }
           None => ()
         }
@@ -1091,7 +1104,7 @@ fn process_transaction(
       Some(units) =>
         match posting.cost {
           Some(spec) =>
-            if !units.number.is_negative() {
+            if !units.number.is_negative() && !short_reductions.contains(i) {
               if needs_cost_inference(spec) {
                 deferred.push(i)
               } else if !book_explicit(ctx, entry, i, posting, weights, booked) {
@@ -1122,7 +1135,46 @@ fn process_transaction(
     infer_cost(ctx, entry, deferred[0], postings[deferred[0]], weights)
   }
   entry.inferred_tolerances = Some(infer_transaction_tolerances(ctx, postings))
-  if missing.length() > 1 {
+  let auto_currency : Map[String, Bool] = Map([])
+  let independent_auto = missing.length() > 1 &&
+    missing.all(fn(index) {
+      let p = postings[index]
+      if p.cost is None &&
+        p.price is None &&
+        p.units_currency is Some(c) &&
+        !auto_currency.contains(c) {
+        auto_currency[c] = true
+        true
+      } else {
+        false
+      }
+    })
+  let multi_auto = missing.length() == 1 &&
+    weights.length() > 1 &&
+    postings[missing[0]].units_currency is None &&
+    postings[missing[0]].cost is None &&
+    postings[missing[0]].price is None
+  if multi_auto {
+    let index = missing[0]
+    let p = postings[index]
+    let synthesized = []
+    for weight in weights.copy() {
+      if !weight.number.is_zero() {
+        let item = {
+          ..p,
+          units_currency: Some(weight.currency),
+          meta: p.meta.copy(),
+        }
+        interpolate_missing(ctx, entry, item, weights)
+        synthesized.push(item)
+      }
+    }
+    booked[index] = synthesized
+  } else if independent_auto {
+    for i in missing {
+      interpolate_missing(ctx, entry, postings[i], weights)
+    }
+  } else if missing.length() > 1 {
     let last = missing[missing.length() - 1]
     let target = postings[last].loc
     let loc = if target.line > 0 { target } else { entry.loc }
@@ -1151,8 +1203,52 @@ fn process_transaction(
           }
       }
     }
+    for p in detailed {
+      if p.cost is Some(cost) {
+        if p.units is Some(units) && units.number.is_zero() {
+          error(
+            ctx,
+            "validation.zero_cost_units",
+            "Costed amount cannot be zero",
+            entry.loc,
+          )
+        }
+        if cost.number_per is Some(number) && number.is_negative() {
+          error(
+            ctx,
+            "validation.negative_cost",
+            "Cost is negative: " + number.to_string(),
+            entry.loc,
+          )
+        }
+      }
+    }
     postings.clear()
-    postings.append(detailed)
+    if independent_auto || multi_auto {
+      // Real groups are ordered by their first source posting, not by map keys.
+      let groups : Map[String, Array[@ast.Posting]] = Map([])
+      let group_order = []
+      for p in detailed {
+        let currency = p.cost
+          .bind(fn(c) { c.currency })
+          .unwrap_or(
+            p.price
+            .map(fn(price) { price.amount().currency })
+            .unwrap_or(p.units.map(fn(u) { u.currency }).unwrap_or("")),
+          )
+        if groups.get(currency) is Some(group) {
+          group.push(p)
+        } else {
+          groups[currency] = [p]
+          group_order.push(currency)
+        }
+      }
+      for currency in group_order {
+        postings.append(groups[currency])
+      }
+    } else {
+      postings.append(detailed)
+    }
   }
 }
 
@@ -1162,16 +1258,33 @@ fn process_transaction(
 pub fn validate_ledger(ledger : @ast.Ledger) -> ValidatedLedger {
   let ctx = Context::new(ledger)
   for diagnostic in ledger.errors {
-    ctx.errors.push(diagnostic)
+    if diagnostic.code == "validation.deprecated_option" {
+      ctx.warnings.push(diagnostic)
+    } else {
+      ctx.errors.push(diagnostic)
+    }
   }
-  for pair in ledger.options.raw {
-    if pair.0 == "inferred_tolerance_multiplier" {
-      warning(
-        ctx,
-        "validation.deprecated_option",
-        "Renamed to 'tolerance_multiplier'.",
-        @ast.Loc::new(ledger_file_name(ledger), 0),
-      )
+
+  // Callers may construct a Ledger directly. Preserve its old advisory warning
+  // for aliases that have no physical parser location.
+  let mut located_aliases = ctx.warnings.length()
+  for (key, _) in ledger.options.raw {
+    if key == "inferred_tolerance_multiplier" {
+      if located_aliases > 0 {
+        located_aliases -= 1
+      } else {
+        let file = if ledger.entries.is_empty() {
+          "<ledger>"
+        } else {
+          ledger.entries[0].loc.file
+        }
+        warning(
+          ctx,
+          "validation.deprecated_option",
+          "Renamed to 'tolerance_multiplier'.",
+          @ast.Loc::new(file, 0),
+        )
+      }
     }
   }
   let ordered = sorted_entries(ledger.entries)
@@ -1213,7 +1326,7 @@ pub fn validate_ledger(ledger : @ast.Ledger) -> ValidatedLedger {
     ctx.entries.push(entry)
   }
   for pad in ctx.pads {
-    if !pad.consumed {
+    if !pad.inserted {
       error(ctx, "validation.pad", "Unused Pad entry", pad.loc)
     }
   }
@@ -1296,15 +1409,6 @@ pub fn validate_ledger(ledger : @ast.Ledger) -> ValidatedLedger {
     plugins: ctx.plugins,
     accounts,
     state: ctx.state,
-  }
-}
-
-///|
-fn ledger_file_name(ledger : @ast.Ledger) -> String {
-  if ledger.entries.length() > 0 {
-    ledger.entries[0].loc.file
-  } else {
-    "<ledger>"
   }
 }
 

@@ -245,9 +245,27 @@ pub fn Decimal::mantissa(self : Decimal) -> @bigint.BigInt {
 }
 
 ///|
-/// Multiplies the value by 10^k, preserving the represented value.
+/// Increase precision by padding with zeros, or remove up to -k trailing
+/// coefficient zeros. Never rounds or changes the numeric value; use quantize
+/// when a coarser scale must be forced even at the cost of rounding.
 pub fn Decimal::shift_scale(self : Decimal, k : Int32) -> Decimal {
-  { mantissa: bigint_mul_pow10(self.mantissa, k), scale: self.scale + k, }
+  if k >= 0 {
+    return {
+      mantissa: bigint_mul_pow10(self.mantissa, k),
+      scale: self.scale + k,
+    }
+  }
+  if self.mantissa.is_zero() {
+    return Decimal::zero_scaled(self.scale + k)
+  }
+  let ten = @bigint.BigInt::from_int(10)
+  let mut value = self.mantissa
+  let mut remaining = k
+  while remaining < 0 && value.mod(ten).is_zero() {
+    value = value.div(ten)
+    remaining += 1
+  }
+  { mantissa: value, scale: self.scale + (k - remaining), }
 }
 
 ///|
@@ -356,9 +374,7 @@ pub fn Decimal::div(a : Decimal, b : Decimal) -> Decimal? {
     return None
   }
   if a.mantissa.is_zero() {
-    let ideal = a.scale - b.scale
-    let scale = if ideal > 0 { ideal } else { 0 }
-    return Some({ mantissa: @bigint.BigInt::from_int(0), scale, })
+    return Some(Decimal::zero_scaled(a.scale - b.scale))
   }
   let neg = bigint_sign(a.mantissa) != bigint_sign(b.mantissa)
   let num0 = bigint_abs(a.mantissa)
@@ -379,15 +395,9 @@ pub fn Decimal::div(a : Decimal, b : Decimal) -> Decimal? {
   let result = if terminating {
     let exact_scale = if twos > fives { twos } else { fives }
     let exact_mantissa = bigint_mul_pow10(num, exact_scale).div(den)
-    let scale = if ideal_scale > exact_scale {
-      ideal_scale
-    } else {
-      exact_scale
-    }
-    let mantissa = bigint_mul_pow10(exact_mantissa, scale - exact_scale)
-    let mut d = { mantissa, scale, }
-    d = d.round_to_significant(decimal_precision)
-    d
+    Decimal::new(exact_mantissa, exact_scale)
+    .shift_scale(ideal_scale - exact_scale)
+    .round_to_significant(decimal_precision)
   } else {
     // Adjusted exponent d such that 10^d <= num/den < 10^(d+1).
     let mut exp = digit_count(num) - digit_count(den)
@@ -500,13 +510,19 @@ pub fn Decimal::to_string(self : Decimal) -> String {
 /// Human oriented formatting: trims trailing zeros but keeps at least
 /// `min_scale` fractional digits.
 pub fn Decimal::to_display(self : Decimal, min_scale~ : Int32 = 0) -> String {
+  let minimum = min_scale.max(0)
   let raw = self.to_string()
   let dot = match raw.find(".") {
     Some(i) => i
-    None => return raw
+    None =>
+      return if minimum == 0 { raw } else { raw + "." + "0".repeat(minimum) }
+  }
+  let fractional = raw.length() - dot - 1
+  if fractional < minimum {
+    return raw + "0".repeat(minimum - fractional)
   }
   let mut end = raw.length()
-  while end > dot + 1 + min_scale && raw.get_char(end - 1) == Some('0') {
+  while end > dot + 1 + minimum && raw.get_char(end - 1) == Some('0') {
     end = end - 1
   }
   if end == dot + 1 {

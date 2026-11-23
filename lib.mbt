@@ -65,11 +65,8 @@ fn lib_is_separator(c : Char) -> Bool {
 pub fn path_dirname(path : String) -> String {
   let mut i = path.length() - 1
   while i >= 0 {
-    let c = match path.get_char(i) {
-      Some(c) => c
-      None => break
-    }
-    if lib_is_separator(c) {
+    // Only ASCII separators matter. An offset inside a surrogate pair is not a separator.
+    if path.get_char(i) is Some(c) && lib_is_separator(c) {
       if i == 0 {
         return "/"
       }
@@ -367,8 +364,13 @@ pub fn check_expanded(
   read : (String) -> String?,
 ) -> @validation.ValidatedLedger {
   let expanded = expand_includes(source, base_dir, read, file~)
+  let root_file = if path_dirname(file) == "" {
+    path_join(base_dir, file)
+  } else {
+    path_join("", file)
+  }
   let ledger = check_source(
-    file,
+    root_file,
     expanded.source,
     source_map=expanded.source_map,
   )

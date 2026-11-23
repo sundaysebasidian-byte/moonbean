@@ -56,6 +56,15 @@ def run(ours,oracle):
         a=subprocess.run([ours,'check',path],capture_output=True,text=True,timeout=30)
         boundary=case.get('boundary')
         ok=a.returncode==b['exit'] if not boundary else a.returncode==0 and b['exit']==1
+        if case.get('expect_unknown_option_rejection'):
+            # The old pass-through stopped at R201–250. Require the exact
+            # rejection now, including the original option name and line.
+            unknown = [e for e in b['diagnostics']
+                       if e['kind'] == 'ParserError' and e['message'].startswith('Invalid option: ')]
+            ok = ok and a.returncode == 1 and len(unknown) == 1
+            if ok:
+                e = unknown[0]
+                ok = f"{path}:{e['line']}: parse.option: {e['message']}" in a.stderr.splitlines()
         if i<len(cases):ok=ok and b['exit']==case['review_oracle_exit']
         results.append(dict(feature='r14-rework-classification',case=case.get('name',case.get('path')),ok=ok,conformant=a.returncode==b['exit'],boundary=boundary,ours_exit=a.returncode,oracle_exit=b['exit'],ours=a.stdout+a.stderr,oracle=b['diagnostics']))
         if i<len(cases):continue

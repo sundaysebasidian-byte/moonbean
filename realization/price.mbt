@@ -29,7 +29,7 @@ pub fn PriceDb::add(
   quote : String,
   rate : @decimal.Decimal,
 ) -> Unit {
-  if base == quote || rate.is_zero() {
+  if base == quote {
     return
   }
   self.points.push({ date, base, quote, rate, })
@@ -85,6 +85,42 @@ pub fn PriceDb::latest(
 }
 
 ///|
+fn prefer_price(point : PricePoint, old : PricePoint, base : String) -> Bool {
+  old.date.less_than(point.date) ||
+  (old.date.equal(point.date) && (point.base == base || old.base != base))
+}
+
+///|
+fn oriented_price(point : PricePoint, base : String) -> @decimal.Decimal? {
+  if point.base == base {
+    Some(point.rate)
+  } else {
+    @decimal.Decimal::one().div(point.rate)
+  }
+}
+
+///|
+fn add_graph_edge(
+  graph : Map[String, Map[String, PricePoint]],
+  from : String,
+  to : String,
+  point : PricePoint,
+) -> Unit {
+  let neighbors = match graph.get(from) {
+    Some(points) => points
+    None => {
+      let points : Map[String, PricePoint] = Map([])
+      graph[from] = points
+      points
+    }
+  }
+  match neighbors.get(to) {
+    Some(old) => if prefer_price(point, old, from) { neighbors[to] = point }
+    None => neighbors[to] = point
+  }
+}
+
+///|
 fn PriceDb::edge(
   self : PriceDb,
   base : String,
@@ -98,15 +134,10 @@ fn PriceDb::edge(
         (point.base == quote && point.quote == base)
       ) &&
       date_allows(point.date, at) &&
-      point.rate.is_positive() {
+      (point.base == base || !point.rate.is_zero()) {
       let newer = match latest {
         None => true
-        Some(old) =>
-          old.date.less_than(point.date) ||
-          (
-            old.date.equal(point.date) &&
-            (point.base == base || old.base != base)
-          )
+        Some(old) => prefer_price(point, old, base)
       }
       if newer {
         latest = Some(point)
@@ -114,12 +145,7 @@ fn PriceDb::edge(
     }
   }
   match latest {
-    Some(point) =>
-      if point.base == base {
-        Some(point.rate)
-      } else {
-        @decimal.Decimal::one().div(point.rate)
-      }
+    Some(point) => oriented_price(point, base)
     None => None
   }
 }
@@ -136,18 +162,21 @@ pub fn PriceDb::rate(
   if base == quote {
     return Some(@decimal.Decimal::one())
   }
-  let currencies : Array[String] = []
+  // A one-edge path is already shortest; retain the same bounded decimal product.
+  if self.edge(base, quote, at) is Some(single) {
+    return Some(@decimal.Decimal::one().mul(single))
+  }
+  // Select the dated quote for every real edge in one pass rather than
+  // rescanning the entire archive for every possible currency pairing.
+  let graph : Map[String, Map[String, PricePoint]] = Map([])
   for point in self.points {
     if date_allows(point.date, at) {
-      if !currencies.contains(point.base) {
-        currencies.push(point.base)
-      }
-      if !currencies.contains(point.quote) {
-        currencies.push(point.quote)
+      add_graph_edge(graph, point.base, point.quote, point)
+      if !point.rate.is_zero() {
+        add_graph_edge(graph, point.quote, point.base, point)
       }
     }
   }
-  currencies.sort()
   let queue = [(base, @decimal.Decimal::one())]
   let seen : Map[String, Bool] = Map([])
   seen.set(base, true)
@@ -155,9 +184,12 @@ pub fn PriceDb::rate(
   while index < queue.length() {
     let (currency, accumulated) = queue[index]
     index += 1
-    for next in currencies {
-      if seen.get(next) is None {
-        if self.edge(currency, next, at) is Some(rate) {
+    if graph.get(currency) is Some(neighbors) {
+      let ordered = neighbors.keys().to_array()
+      ordered.sort()
+      for next in ordered {
+        if seen.get(next) is None &&
+          oriented_price(neighbors[next], currency) is Some(rate) {
           let combined = accumulated.mul(rate)
           if next == quote {
             return Some(combined)
@@ -213,23 +245,24 @@ pub fn PriceDb::to_json(self : PriceDb) -> String {
 ///|
 pub fn json_escape(text : String) -> String {
   let sb = StringBuilder()
-  for i in 0..<text.length() {
-    match text.get_char(i) {
-      Some(ch) =>
-        if ch == '"' {
-          sb.write_string("\\\"")
-        } else if ch == '\\' {
-          sb.write_string("\\\\")
-        } else if ch == '\n' {
-          sb.write_string("\\n")
-        } else if ch == '\r' {
-          sb.write_string("\\r")
-        } else if ch == '\t' {
-          sb.write_string("\\t")
+  let hex = "0123456789abcdef"
+  for c in text.iter() {
+    match c {
+      '"' => sb.write_string("\\\"")
+      '\\' => sb.write_string("\\\\")
+      '\n' => sb.write_string("\\n")
+      '\r' => sb.write_string("\\r")
+      '\t' => sb.write_string("\\t")
+      _ => {
+        let n = c.to_int()
+        if n < 32 {
+          sb.write_string("\\u00")
+          sb.write_char(hex.get_char(n / 16).unwrap())
+          sb.write_char(hex.get_char(n % 16).unwrap())
         } else {
-          sb.write_char(ch)
+          sb.write_char(c)
         }
-      None => ()
+      }
     }
   }
   sb.to_string()

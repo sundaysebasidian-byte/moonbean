@@ -9,6 +9,12 @@ priv struct QueryExtension {
 ///|
 let query_extensions : Array[QueryExtension] = [
   {
+    name: "sorted_set_json",
+    args: ["text_set_or_null"],
+    result: "str",
+    aggregate: false,
+  },
+  {
     name: "list_at",
     args: ["list_or_null", "int_or_null"],
     result: "object",

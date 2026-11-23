@@ -69,7 +69,9 @@ fn posting_value(
         Some(@ast.Total(amount)) =>
           Some(
             @ast.Amount::new(
-              if units.number.is_negative() {
+              if units.number.is_zero() {
+                @decimal.Decimal::zero()
+              } else if units.number.is_negative() {
                 amount.number.abs().neg()
               } else {
                 amount.number.abs()
@@ -188,6 +190,7 @@ fn source_rows(
     SrcPostings | SrcFrom(_, _, _, _, _) => posting_rows(realized, origin)
     SrcTransactions => transaction_rows(realized, origin)
     SrcBalances => balance_rows(realized)
+    SrcDirectives("") => relation_rows([], [[]])
     SrcDirectives(table) => directive_rows(realized, table)
     SrcOpen(start, close) => opening_rows(realized, start, close)
     SrcClose(date) =>
@@ -1554,10 +1557,12 @@ fn opening_rows(
   let inventories : Map[String, @booking.Inventory] = Map([])
   let names : Array[String] = []
   let rows : Array[BqlRow] = []
+  let income = realized.options.get("name_income").unwrap_or("Income")
+  let expenses = realized.options.get("name_expenses").unwrap_or("Expenses")
   for row in posting_rows(realized, false) {
     if row.date.less_than(start) {
       let root = @ast.account_root(row.account)
-      let account = if root == "Income" || root == "Expenses" {
+      let account = if root == income || root == expenses {
         realized.options.equity_account(
           "account_previous_earnings", "Earnings:Previous",
         )
@@ -1573,7 +1578,7 @@ fn opening_rows(
           i
         }
       }
-      if root == "Income" || root == "Expenses" {
+      if root == income || root == expenses {
         inventory.add_amount(
           match row.cost {
             Some(c) =>

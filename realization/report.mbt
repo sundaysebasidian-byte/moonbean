@@ -51,8 +51,23 @@ fn pad_left(text : String, width : Int32) -> String {
 }
 
 ///|
-fn amount_text(amount : @ast.Amount) -> String {
-  amount.number.to_string() + " " + amount.currency
+fn amount_text(amount : @ast.Amount, commas~ : Bool = false) -> String {
+  let text = amount.number.to_string()
+  if !commas {
+    return text + " " + amount.currency
+  }
+  let whole_end = text.find(".").unwrap_or(text.length())
+  let start = if text.has_prefix("-") { 1 } else { 0 }
+  let b = StringBuilder()
+  for i in 0..<text.length() {
+    if i > start && i < whole_end && (whole_end - i) % 3 == 0 {
+      b.write_char(',')
+    }
+    b.write_char(text.get_char(i).unwrap())
+  }
+  b.write_char(' ')
+  b.write_string(amount.currency)
+  b.to_string()
 }
 
 ///|
@@ -67,11 +82,11 @@ fn max_label_width(rows : Array[ReportRow], fallback : Int32) -> Int32 {
 }
 
 ///|
-fn max_amount_width(rows : Array[ReportRow]) -> Int32 {
+fn max_amount_width(rows : Array[ReportRow], commas : Bool) -> Int32 {
   let mut width = 1
   for row in rows {
-    if amount_text(row.amount).length() > width {
-      width = amount_text(row.amount).length()
+    if amount_text(row.amount, commas~).length() > width {
+      width = amount_text(row.amount, commas~).length()
     }
   }
   width
@@ -83,30 +98,34 @@ fn render_rows(
   rows : Array[ReportRow],
   label_width : Int32,
   amount_width : Int32,
+  commas : Bool,
 ) -> Unit {
   for row in rows {
     sb.write_string(pad_right(row.label, label_width))
     sb.write_string("  ")
-    sb.write_string(pad_left(amount_text(row.amount), amount_width))
+    sb.write_string(pad_left(amount_text(row.amount, commas~), amount_width))
     sb.write_string("\n")
   }
 }
 
 ///|
-fn Report::render_text(self : Report) -> String {
+fn Report::render_text(self : Report, commas : Bool) -> String {
   let sb = StringBuilder()
   sb.write_string(self.title)
   sb.write_string("\n")
   let label_width = max_label_width(self.rows, 7)
-  let amount_width = max_amount_width(self.rows.copy() + self.totals.copy())
+  let amount_width = max_amount_width(
+    self.rows.copy() + self.totals.copy(),
+    commas,
+  )
   sb.write_string(pad_right("Account", label_width))
   sb.write_string("  ")
   sb.write_string(pad_left("Amount", amount_width))
   sb.write_string("\n")
-  render_rows(sb, self.rows, label_width, amount_width)
+  render_rows(sb, self.rows, label_width, amount_width, commas)
   if self.totals.length() > 0 {
     sb.write_string("\n")
-    render_rows(sb, self.totals, label_width, amount_width)
+    render_rows(sb, self.totals, label_width, amount_width, commas)
   }
   for issue in self.diagnostics {
     sb.write_string(
@@ -127,6 +146,11 @@ fn Report::render_text(self : Report) -> String {
 ///|
 /// Renders using inferred currency precision without changing stored amounts.
 pub fn Report::to_text(self : Report) -> String {
+  self.text_with_grouping(false)
+}
+
+///|
+fn Report::text_with_grouping(self : Report, commas : Bool) -> String {
   fn display(row : ReportRow) -> ReportRow {
     match self.display_scales.get(row.amount.currency) {
       Some(scale) =>
@@ -140,7 +164,9 @@ pub fn Report::to_text(self : Report) -> String {
       None => row
     }
   }
-  { ..self, rows: self.rows.map(display), totals: self.totals.map(display), }.render_text()
+  { ..self, rows: self.rows.map(display), totals: self.totals.map(display), }.render_text(
+    commas,
+  )
 }
 
 ///|
@@ -198,7 +224,7 @@ pub fn Report::to_json(self : Report) -> String {
   self.diagnostics
   .map(fn(d) {
     "{\"code\":\"" +
-    d.code +
+    json_escape(d.code) +
     "\",\"account\":\"" +
     json_escape(d.account) +
     "\",\"currency\":\"" +
@@ -427,10 +453,23 @@ fn make_report(
   totals : Array[ReportRow],
   convert : String?,
   roots : Array[String],
+  activity~ : Bool = false,
 ) -> Report {
   let diagnostics : Array[ConversionIssue] = []
   let seen : Map[String, Bool] = Map([])
-  if convert is Some(target) {
+  if convert is Some(target) && activity {
+    for row in rows {
+      // income_rows has already converted every book amount that has a quote.
+      if row.amount.currency != target {
+        diagnostics.push({
+          code: "report.conversion_incomplete",
+          account: row.label,
+          currency: row.amount.currency,
+          target,
+        })
+      }
+    }
+  } else if convert is Some(target) {
     for account in realized.account_names() {
       if root_allowed(account, roots) {
         for position in realized.inventory(account).positions {
@@ -544,11 +583,18 @@ fn rows_with_root(rows : Array[ReportRow], root : String) -> Array[ReportRow] {
 }
 
 ///|
+fn financial_roots(options : @ast.Options) -> Array[String] {
+  ["Assets", "Liabilities", "Equity", "Income", "Expenses"].map(fn(root) {
+    options.get("name_" + root.to_lower()).unwrap_or(root)
+  })
+}
+
+///|
 pub fn trial_balance(
   realized : RealizedLedger,
   convert~ : String? = None,
 ) -> Report {
-  let all_roots = ["Assets", "Liabilities", "Equity", "Income", "Expenses"]
+  let all_roots = financial_roots(realized.options)
   let rows = built_rows(realized, all_roots, convert)
   let totals = total_row("Total", rows)
   make_report(realized, "Trial Balance", rows, totals, convert, all_roots)
@@ -560,8 +606,8 @@ pub fn balance_sheet(
   convert~ : String? = None,
   start~ : @ast.Date? = None,
 ) -> Report {
-  let roots = ["Assets", "Liabilities", "Equity"]
-  let all = ["Assets", "Liabilities", "Equity", "Income", "Expenses"]
+  let all = financial_roots(realized.options)
+  let roots = [all[0], all[1], all[2]]
   let rows = book_rows(realized, roots, convert, convert is Some(_))
   let mut year = 1
   for entry in realized.entries {
@@ -625,12 +671,9 @@ pub fn balance_sheet(
     for amount in grouped_amounts(changes) {
       if !amount.number.is_zero() {
         rows.push({
-          label: @ast.account_parent(
-            realized.options.equity_account(
-              "account_current_earnings", "Earnings:Current",
-            ),
-          ) +
-          ":Unrealized",
+          label: realized.options.equity_account(
+            "account_unrealized_gains", "Earnings:Unrealized",
+          ),
           amount,
         })
       }
@@ -661,6 +704,8 @@ fn income_rows(
   convert : String?,
 ) -> Array[ReportRow] {
   let rows : Array[ReportRow] = []
+  let all = financial_roots(realized.options)
+  let pnl = [all[3], all[4]]
   for entry in realized.entries {
     let in_period = match start {
       Some(date) => date.less_equal(entry.date)
@@ -670,7 +715,7 @@ fn income_rows(
       match entry.directive {
         DTransaction(txn) =>
           for posting in txn.postings {
-            if root_allowed(posting.account, ["Income", "Expenses"]) {
+            if root_allowed(posting.account, pnl) {
               match posting.units {
                 Some(units) => {
                   let amount = converted_amount(
@@ -714,8 +759,9 @@ pub fn income_statement(
   convert~ : String? = None,
 ) -> Report {
   let rows = income_rows(realized, start, convert)
-  let income = rows_with_root(rows, "Income")
-  let expenses = rows_with_root(rows, "Expenses")
+  let roots = financial_roots(realized.options)
+  let income = rows_with_root(rows, roots[3])
+  let expenses = rows_with_root(rows, roots[4])
   let totals = []
   for row in total_row("Total Income", income) {
     totals.push(row)
@@ -730,9 +776,15 @@ pub fn income_statement(
       amount: @ast.Amount::new(row.amount.number.neg(), row.amount.currency),
     })
   }
-  make_report(realized, "Income Statement", rows, totals, convert, [
-    "Income", "Expenses",
-  ])
+  make_report(
+    realized,
+    "Income Statement",
+    rows,
+    totals,
+    convert,
+    [roots[3], roots[4]],
+    activity=true,
+  )
 }
 
 ///|
@@ -881,7 +933,7 @@ pub fn register_rows(
                   Some(value) => value
                   None => @decimal.Decimal::zero()
                 }
-                let next = previous.add(units.number)
+                let next = report_add(previous, units.number)
                 running.set(units.currency, next)
                 rows.push({
                   date: entry.date,
@@ -986,5 +1038,5 @@ pub fn Report::to_text_with_options(
   for (currency, precision) in options.display_precision {
     scales.set(currency, precision.scale())
   }
-  { ..self, display_scales: scales, }.to_text()
+  { ..self, display_scales: scales, }.text_with_grouping(options.render_commas)
 }

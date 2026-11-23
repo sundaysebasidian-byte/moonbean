@@ -36,22 +36,49 @@ fn parsed_date(
 }
 
 ///|
+fn parsed_ordinal(ctx : QueryContext, number : Int32) -> QueryValue {
+  let date = ordinal_date(number)
+  if date is QNull {
+    query_error(
+      ctx, "query.oracle_type_error: ValueError ordinal date out of range",
+    )
+  }
+  date
+}
+
+///|
 fn strptime_date(
   ctx : QueryContext,
   text : String,
   format : String,
 ) -> QueryValue {
-  let format = format
-    .replace_all(old="%c", new="%a %b %d %H:%M:%S %Y")
-    .replace_all(old="%x", new="%m/%d/%y")
-    .replace_all(old="%X", new="%H:%M:%S")
+  // Expand only real locale directives; %%x means the literal characters %x.
+  let expanded = StringBuilder()
+  let chars = format.iter()
+  while chars.next() is Some(c) {
+    if c == '%' && chars.next() is Some(field) {
+      match field {
+        'c' => expanded.write_string("%a %b %d %H:%M:%S %Y")
+        'x' => expanded.write_string("%m/%d/%y")
+        'X' => expanded.write_string("%H:%M:%S")
+        _ => {
+          expanded.write_char('%')
+          expanded.write_char(field)
+        }
+      }
+    } else {
+      expanded.write_char(c)
+    }
+  }
+  let format = expanded.to_string()
+
   let pattern = StringBuilder()
   pattern.write_char('^')
   let fields : Array[Char] = []
   let mut i = 0
   while i < format.length() {
     let c = format.get_char(i).unwrap()
-    i = i + 1
+    i += if c.to_int() > 0xFFFF { 2 } else { 1 }
     if c == '%' {
       if i == format.length() {
         query_error(ctx, "query.oracle_type_error: ValueError stray percent")
@@ -91,7 +118,10 @@ fn strptime_date(
       pattern.write_char(')')
       fields.push(field)
     } else if python_whitespace(c) {
-      pattern.write_string("[ \t\n\r]+")
+      // CPython's Unicode str.isspace domain (including record separators).
+      pattern.write_string(
+        "[\u0009-\u000d\u001c-\u0020\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+",
+      )
     } else {
       if ".^$*+?{}[]|()\\".contains(c.to_string()) {
         pattern.write_char('\\')
@@ -136,8 +166,19 @@ fn strptime_date(
       'Y' => year = n
       'G' => iso_year = Some(n)
       'y' => year = if n <= 68 { 2000 + n } else { 1900 + n }
-      'm' => month = n
-      'd' => day = n
+      'm' | 'd' => {
+        if n < 1 || n > (if field == 'm' { 12 } else { 31 }) {
+          query_error(
+            ctx, "query.oracle_type_error: ValueError invalid date field",
+          )
+          return QNull
+        }
+        if field == 'm' {
+          month = n
+        } else {
+          day = n
+        }
+      }
       'b' | 'B' =>
         match
           (if (field == 'b' && raw.length() != 3) ||
@@ -156,6 +197,10 @@ fn strptime_date(
         }
       'j' => ordinal_day = Some(n)
       'U' | 'W' | 'V' => {
+        if n > 53 {
+          query_error(ctx, "query.oracle_type_error: ValueError invalid week")
+          return QNull
+        }
         week = Some(n)
         week_kind = field
       }
@@ -169,7 +214,7 @@ fn strptime_date(
         weekday = if field == 'w' { (n + 6) % 7 } else { n - 1 }
       }
       'H' | 'I' => {
-        if field == 'I' && (n < 1 || n > 12) {
+        if (field == 'I' && (n < 1 || n > 12)) || (field == 'H' && n > 23) {
           query_error(ctx, "query.oracle_type_error: ValueError invalid hour")
           return QNull
         }
@@ -178,11 +223,29 @@ fn strptime_date(
       'M' => minute = n
       'S' => second = n
       'z' => {
+        // Other textual fields are case-insensitive; the UTC designator is not.
+        if raw == "z" {
+          query_error(
+            ctx, "query.oracle_type_error: ValueError invalid timezone designator",
+          )
+          return QNull
+        }
         let digits = raw.replace_all(old=":", new="")
         if digits != "Z" &&
           (
             bql_parse_int(digits[1:3].to_owned()) > 23 ||
-            bql_parse_int(digits[3:5].to_owned()) > 59
+            bql_parse_int(digits[3:5].to_owned()) > 59 ||
+            (
+              digits.length() > 5 &&
+              (
+                bql_parse_int(digits[5:7].to_owned()) > 59 ||
+                digits.length() > 14 ||
+                (
+                  raw.contains(":") &&
+                  (raw.get_char(3) != Some(':') || raw.get_char(6) != Some(':'))
+                )
+              )
+            )
           ) {
           query_error(
             ctx, "query.oracle_type_error: ValueError invalid timezone offset",
@@ -196,8 +259,8 @@ fn strptime_date(
         ]
         let mut found = false
         for j in 0..<7 {
-          if raw.to_lower() == names[j] ||
-            raw.to_lower() == names[j][:3].to_owned() {
+          if raw.to_lower() ==
+            (if field == 'A' { names[j] } else { names[j][:3].to_owned() }) {
             weekday = j
             found = true
           }
@@ -241,6 +304,18 @@ fn strptime_date(
     )
     return QNull
   }
+  if ordinal_day is Some(n) {
+    if n < 1 || n > 366 || iso_year is Some(_) {
+      query_error(
+        ctx, "query.oracle_type_error: ValueError invalid day of year",
+      )
+      return QNull
+    }
+    return parsed_ordinal(
+      ctx,
+      ordinal(@ast.Date::new(year, 1, 1).unwrap()) + n - 1,
+    )
+  }
   if has_weekday && week is Some(w) {
     if w > 53 || weekday < 0 || weekday > 6 {
       query_error(ctx, "query.oracle_type_error: ValueError invalid week")
@@ -256,25 +331,33 @@ fn strptime_date(
           return QNull
         }
       }
-      let jan4 = ordinal(@ast.Date::new(y, 1, 4).unwrap())
-      return ordinal_date(jan4 - (jan4 - 1) % 7 + (w - 1) * 7 + weekday)
+      guard @ast.Date::new(y, 1, 4) is Some(first_thursday_anchor) else {
+        query_error(ctx, "query.oracle_type_error: ValueError invalid ISO year")
+        return QNull
+      }
+      // December 28 always lies in the final ISO week of its own year.
+      let jan4 = ordinal(first_thursday_anchor)
+      let week_one = jan4 - (jan4 - 1) % 7
+      let max_week = (ordinal(@ast.Date::new(y, 12, 28).unwrap()) - week_one) /
+        7 +
+        1
+      if w < 1 || w > max_week {
+        query_error(ctx, "query.oracle_type_error: ValueError invalid ISO week")
+        return QNull
+      }
+      return parsed_ordinal(ctx, jan4 - (jan4 - 1) % 7 + (w - 1) * 7 + weekday)
     }
     let jan1 = ordinal(@ast.Date::new(year, 1, 1).unwrap())
     let start = if week_kind == 'U' { 6 } else { 0 }
     let jan_weekday = (jan1 - 1) % 7
     let offset = (weekday - start + 7) % 7
-    return ordinal_date(
-      jan1 + (start - jan_weekday + 7) % 7 + (w - 1) * 7 + offset,
-    )
-  }
-  if ordinal_day is Some(n) {
-    if n < 1 || n > 366 {
-      query_error(
-        ctx, "query.oracle_type_error: ValueError invalid day of year",
-      )
-      return QNull
+    let start_distance = (jan_weekday - start + 7) % 7
+    let days = if w == 0 {
+      offset - start_distance
+    } else {
+      (7 - start_distance) % 7 + (w - 1) * 7 + offset
     }
-    return ordinal_date(ordinal(@ast.Date::new(year, 1, 1).unwrap()) + n - 1)
+    return parsed_ordinal(ctx, jan1 + days)
   }
   parsed_date(ctx, year, month, day)
 }
@@ -426,7 +509,8 @@ fn flexible_date(ctx : QueryContext, input : String) -> QueryValue {
   }
   if !named_month && numbers.is_empty() {
     if weekday is Some(day) {
-      return ordinal_date(
+      return parsed_ordinal(
+        ctx,
         ordinal(today) + (day - (ordinal(today) - 1) % 7 + 7) % 7,
       )
     }

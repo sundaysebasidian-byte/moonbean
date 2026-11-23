@@ -1,0 +1,13 @@
+option "name_assets" "Actif"
+option "name_income" "Recettes"
+option "name_expenses" "Depenses"
+option "name_equity" "Capital"
+2024-01-01 open Actif:Cash USD
+2024-01-01 open Recettes:Fees USD
+2024-01-01 open Depenses:Rent USD
+2024-01-02 * "fees"
+  Actif:Cash 80 USD
+  Recettes:Fees -80 USD
+2024-01-03 * "rent"
+  Depenses:Rent 15 USD
+  Actif:Cash -15 USD

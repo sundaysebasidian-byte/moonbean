@@ -750,3 +750,403 @@ test "bare quantity currency follows a stock transaction weight" {
   let txn = find_transaction(v, "Sell with a total price").unwrap()
   inspect(txn.postings[2].units.unwrap().to_string(), content="-100 USD")
 }
+
+///|
+test "deprecated tolerance diagnostics retain each physical include location" {
+  let locs = [
+    @ast.Loc::new("section-a.bean", 14),
+    @ast.Loc::new("section-b.bean", 71),
+  ]
+  let source = "option \"inferred_tolerance_multiplier\" \"0.2\"\noption \"inferred_tolerance_multiplier\" \"0.3\"\n"
+  let ledger = @validation.validate_ledger(
+    @syntax.parse_source("combined.bean", source, source_map=locs),
+  )
+  assert_eq(ledger.warnings.length(), 2)
+  assert_eq(ledger.errors.length(), 0)
+  for i in 0..<2 {
+    assert_eq(ledger.warnings[i].code, "validation.deprecated_option")
+    assert_eq(ledger.warnings[i].loc.to_string(), locs[i].to_string())
+  }
+}
+
+///|
+test "a public ledger without physical option locations still reports the deprecated alias" {
+  let ledger = @ast.Ledger::new()
+  ledger.options.add_raw("inferred_tolerance_multiplier", "0.25")
+  let checked = @validation.validate_ledger(ledger)
+  assert_eq(checked.warnings.length(), 1)
+  assert_eq(checked.warnings[0].code, "validation.deprecated_option")
+  assert_eq(checked.warnings[0].loc.to_string(), "<ledger>:0")
+}
+
+///|
+test "FIFO short covering keeps acquisition dates and balances the remaining lot" {
+  let source =
+    #|2024-01-01 open Assets:Stock HOOL "FIFO"
+    #|2024-01-01 open Assets:Cash USD
+    #|2024-01-02 * "Sell short at 12"
+    #|  Assets:Stock -2 HOOL {12 USD}
+    #|  Assets:Cash 24 USD
+    #|2024-01-03 * "Sell short at 15"
+    #|  Assets:Stock -3 HOOL {15 USD}
+    #|  Assets:Cash 45 USD
+    #|2024-01-04 * "Cover"
+    #|  Assets:Stock 3 HOOL {}
+    #|  Assets:Cash -39 USD
+    #|
+  let result = validated(source)
+  assert_eq(result.errors.length(), 0)
+  let covering = find_transaction(result, "Cover").unwrap()
+  assert_eq(covering.postings.map(fn(p) { p.units.unwrap().to_string() }), [
+    "2 HOOL", "1 HOOL", "-39 USD",
+  ])
+  assert_eq(
+    covering.postings[:2]
+    .to_owned()
+    .map(fn(p) {
+      let c = p.cost.unwrap()
+      (c.number_per.unwrap().to_string(), c.date.unwrap().to_string())
+    }),
+    [("12", "2024-01-02"), ("15", "2024-01-03")],
+  )
+  let remaining = result.inventory("Assets:Stock").positions
+  assert_eq(remaining.length(), 1)
+  assert_eq(remaining[0].units.to_string(), "-2 HOOL")
+  assert_eq(remaining[0].cost.unwrap().number.to_string(), "15")
+}
+
+///|
+test "only the newest pad applies independently to each currency's first assertion" {
+  let prefix = "2024-01-01 open Assets:Cash\n2024-01-01 open Equity:Opening\n"
+  let ledger = validated(
+    prefix +
+    (
+      #|2024-01-02 pad Assets:Cash Equity:Opening
+      #|2024-01-03 balance Assets:Cash 30.00 USD
+      #|2024-01-03 balance Assets:Cash 20.00 EUR
+      #|2024-01-04 balance Assets:Cash 0 CAD
+      #|2024-01-05 balance Assets:Cash 1 CAD
+      #|
+    ),
+  )
+  assert_eq(ledger.errors.map(fn(d) { (d.code, d.loc.line) }), [
+    ("validation.balance", 7),
+  ])
+  let cash = ledger.inventory("Assets:Cash")
+  assert_eq(cash.quantity("USD").to_string(), "30.00")
+  assert_eq(cash.quantity("EUR").to_string(), "20.00")
+  assert_true(cash.quantity("CAD").is_zero())
+  let superseded = validated(
+    prefix +
+    (
+      #|2024-01-02 pad Assets:Cash Equity:Opening
+      #|2024-01-03 pad Assets:Cash Equity:Opening
+      #|2024-01-04 balance Assets:Cash 30.00 USD
+      #|2024-01-05 balance Assets:Cash 31.00 USD
+      #|
+    ),
+  )
+  assert_true(
+    superseded.errors.any(fn(d) {
+      d.loc.line == 3 && d.code == "validation.pad"
+    }),
+  )
+  assert_true(
+    superseded.errors.any(fn(d) {
+      d.loc.line == 6 && d.code == "validation.balance"
+    }),
+  )
+  assert_eq(
+    superseded.inventory("Assets:Cash").quantity("USD").to_string(),
+    "30.00",
+  )
+}
+
+///|
+test "strict booking allows full liquidation across otherwise ambiguous lots" {
+  for booking_method in ["STRICT", "STRICT_WITH_SIZE"] {
+    let header = "2024-01-01 open Assets:Stock HOOL \"\{booking_method}\"\n" +
+      (
+        #|2024-01-01 open Assets:Cash USD
+        #|2024-01-02 * "Buy 2"
+        #|  Assets:Stock 2 HOOL {12 USD}
+        #|  Assets:Cash -24 USD
+        #|2024-01-03 * "Buy 3"
+        #|  Assets:Stock 3 HOOL {15 USD}
+        #|  Assets:Cash -45 USD
+        #|
+      )
+    let liquidation = validated(
+      header +
+      (
+        #|2024-01-04 * "Sell both"
+        #|  Assets:Stock -5 HOOL {}
+        #|  Assets:Cash
+        #|
+      ),
+    )
+    assert_eq(liquidation.errors.length(), 0)
+    assert_eq(
+      find_transaction(liquidation, "Sell both").unwrap().postings.map(fn(p) {
+        p.units.unwrap().to_string()
+      }),
+      ["-2 HOOL", "-3 HOOL", "69 USD"],
+    )
+    assert_true(liquidation.inventory("Assets:Stock").is_empty())
+    let partial = validated(
+      header +
+      (
+        #|2024-01-04 * "Ambiguous partial"
+        #|  Assets:Stock -4 HOOL {}
+        #|  Assets:Cash
+        #|
+      ),
+    )
+    assert_true(has_error(partial, "validation.booking"))
+  }
+}
+
+///|
+test "one explicitly typed automatic posting per currency balances mixed opening balances" {
+  let source =
+    #|2024-01-01 open Assets:Cash
+    #|2024-01-01 open Equity:Opening
+    #|2024-01-01 open Equity:Euro
+    #|2024-01-02 * "opening"
+    #|  Assets:Cash 10 USD
+    #|  Assets:Cash 5 EUR
+    #|  Equity:Opening USD
+    #|  Equity:Euro EUR
+    #|
+  let checked = validated(source)
+  assert_eq(checked.errors.length(), 0)
+  let txn = find_transaction(checked, "opening").unwrap()
+  assert_eq(
+    txn.postings.map(fn(p) { (p.account, p.units.unwrap().to_string()) }),
+    [
+      ("Assets:Cash", "10 USD"),
+      ("Equity:Opening", "-10 USD"),
+      ("Assets:Cash", "5 EUR"),
+      ("Equity:Euro", "-5 EUR"),
+    ],
+  )
+  assert_eq(checked.inventory("Equity:Euro").quantity("EUR").to_string(), "-5")
+  let malformed = validated(
+    source.replace_all(old="Equity:Euro EUR", new="Equity:Euro USD"),
+  )
+  assert_true(has_error(malformed, "validation.missing"))
+}
+
+///|
+test "an untyped balancing line expands to each nonzero currency group" {
+  let result = validated(
+    (
+      #|2024-01-01 open Assets:Bank
+      #|2024-01-01 open Equity:Opening
+      #|2024-01-02 * "Import multicurrency opening"
+      #|  Assets:Bank 7 EUR
+      #|  Assets:Bank 0 JPY
+      #|  Assets:Bank 10 USD
+      #|  Equity:Opening
+      #|
+    ),
+  )
+  assert_eq(result.errors.length(), 0)
+  let opening = find_transaction(result, "Import multicurrency opening").unwrap()
+  assert_eq(opening.postings.map(fn(p) { p.units.unwrap().to_string() }), [
+    "7 EUR", "-7 EUR", "0 JPY", "10 USD", "-10 USD",
+  ])
+  assert_eq(
+    result.inventory("Equity:Opening").quantity("EUR").to_string(),
+    "-7",
+  )
+  assert_eq(
+    result.inventory("Equity:Opening").quantity("USD").to_string(),
+    "-10",
+  )
+  assert_true(
+    opening.postings[1].meta.get("__automatic__") is Some(@ast.MBool(true)),
+  )
+}
+
+///|
+test "negative basis and zero costed quantity are reported without changing the source transaction" {
+  let result = validated(
+    (
+      #|2024-01-01 open Assets:Inventory
+      #|2024-01-01 open Assets:Bank
+      #|2024-01-02 * "negative basis"
+      #|  Assets:Inventory 2 HOOL {-3 USD}
+      #|  Assets:Bank 6 USD
+      #|2024-01-03 * "zero quantity"
+      #|  Assets:Inventory 0 ABC {1 USD}
+      #|  Assets:Bank 0 USD
+      #|2024-01-04 * "free security"
+      #|  Assets:Inventory 1 ZZZ {0 USD}
+      #|  Assets:Bank 0 USD
+      #|
+    ),
+  )
+  assert_eq(result.errors.map(fn(err) { (err.loc.line, err.code) }), [
+    (3, "validation.negative_cost"),
+    (6, "validation.zero_cost_units"),
+  ])
+  assert_eq(
+    find_transaction(result, "negative basis").unwrap().postings[0].cost.unwrap().number_per
+    .unwrap()
+    .to_string(),
+    "-3",
+  )
+  assert_eq(
+    find_transaction(result, "zero quantity").unwrap().postings[0].units
+    .unwrap()
+    .to_string(),
+    "0 ABC",
+  )
+}
+
+///|
+test "explicit balance tolerance is signed and is not an absolute allowance" {
+  let result = validated(
+    (
+      #|2024-01-01 open Assets:Cash
+      #|2024-01-02 balance Assets:Cash 0 ~ -0.50 USD
+      #|2024-01-03 balance Assets:Cash 0 ~ +0.50 USD
+      #|
+    ),
+  )
+  assert_eq(result.errors.map(fn(e) { (e.loc.line, e.code) }), [
+    (2, "validation.balance"),
+  ])
+  assert_true(result.errors[0].message.contains("0 too little"))
+}
+
+///|
+test "compound lot costs retain both terms and match the calculated acquisition basis" {
+  let hdr =
+    #|2024-01-01 open Assets:Stock HOOL "FIFO"
+    #|2024-01-01 open Assets:Cash
+    #|2024-01-02 * "Buy with a transaction fee"
+    #|  Assets:Stock 4 HOOL {12 # 8 USD}
+    #|  Assets:Cash -56 USD
+    #|
+  let before = @syntax.parse_source("compound.bean", hdr)
+  assert_eq(before.errors.length(), 0)
+  guard before.entries[2].directive is @ast.DTransaction(bought) else {
+    abort("missing buy")
+  }
+  let spec = bought.postings[0].cost.unwrap()
+  assert_eq(spec.to_string(), "{12 # 8 USD}")
+  let v = validated(
+    hdr +
+    (
+      #|2024-01-03 * "Sell match"
+      #|  Assets:Stock -2 HOOL {12 # 4 USD}
+      #|  Assets:Cash 28 USD
+      #|
+    ),
+  )
+  assert_eq(v.errors.length(), 0)
+  let sold = find_transaction(v, "Sell match").unwrap().postings[0]
+  assert_eq(sold.cost.unwrap().number_per.unwrap().to_string(), "14")
+  assert_eq(sold.cost.unwrap().date.unwrap().to_string(), "2024-01-02")
+  let missing_per = validated(
+    hdr.replace_all(old="{12 # 8 USD}", new="{# 56 USD}"),
+  )
+  assert_eq(missing_per.errors.length(), 0)
+  let no_match = validated(
+    hdr +
+    (
+      #|2024-01-03 * "Wrong lot"
+      #|  Assets:Stock -2 HOOL {12 # 3 USD}
+      #|  Assets:Cash 28 USD
+      #|
+    ),
+  )
+  assert_true(has_error(no_match, "validation.booking"))
+}
+
+///|
+test "zero units with an explicit total price do not create currency value" {
+  let ledger = validated(
+    (
+      #|plugin "beancount.plugins.implicit_prices"
+      #|2024-01-01 open Assets:Stock
+      #|2024-01-01 open Assets:Cash
+      #|2024-01-02 * "Empty execution"
+      #|  Assets:Stock 0 HOOL @@ 12 USD
+      #|  Assets:Cash 0 USD
+      #|2024-01-03 * "Actual short sale"
+      #|  Assets:Stock -2 HOOL @@ 12 USD
+      #|  Assets:Cash 12 USD
+      #|
+    ),
+  )
+  assert_eq(ledger.errors.length(), 0)
+  let rates = []
+  for e in ledger.entries {
+    if e.directive is DPrice(p) {
+      rates.push((e.date.to_string(), p.amount.to_string()))
+    }
+  }
+  assert_eq(rates, [("2024-01-02", "0 USD"), ("2024-01-03", "6 USD")])
+}
+
+///|
+test "padding from inside the same asserted subtree cannot make the balance pass" {
+  for source in ["Assets:Cash", "Assets:Cash:Vault"] {
+    let prefix =
+      #|2024-01-01 open Assets:Cash
+      #|2024-01-01 open Assets:Cash:Vault
+      #|2024-01-01 open Assets:Cashflow
+      #|
+    let v = validated(
+      prefix +
+      "2024-01-02 pad Assets:Cash \{source}\n" +
+      "2024-01-03 balance Assets:Cash 12 USD\n",
+    )
+    assert_eq(v.errors.map(fn(e) { (e.code, e.loc.line) }), [
+      ("validation.balance", 5),
+    ])
+    assert_true(v.errors[0].message.contains("12 too little"))
+  }
+  let sibling = validated(
+    (
+      #|2024-01-01 open Assets:Cash
+      #|2024-01-01 open Assets:Cashflow
+      #|2024-01-02 pad Assets:Cash Assets:Cashflow
+      #|2024-01-03 balance Assets:Cash 12 USD
+      #|
+    ),
+  )
+  assert_eq(sibling.errors.length(), 0)
+}
+
+///|
+test "a total price with no units is diagnosed and not used as an interpolation weight" {
+  let earlier = "2024-01-01 open Assets:Stock\n2024-01-01 open Assets:Cash\n2024-01-02 * \"missing units\"\n"
+  let malformed = validated(
+    earlier + "  Assets:Stock @@ 12 USD\n  Assets:Cash -12 USD\n",
+  )
+  assert_eq(malformed.errors.map(fn(e) { (e.code, e.loc.line) }), [
+    ("parse.price", 4),
+  ])
+  let p = find_transaction(malformed, "missing units").unwrap().postings[0]
+  assert_true(p.price is None)
+  assert_eq(p.units.unwrap().to_string(), "12 USD")
+  let typed = validated(
+    earlier + "  Assets:Stock HOOL @@ 12 USD\n  Assets:Cash -12 USD\n",
+  )
+  assert_true(
+    typed.errors.any(fn(e) { e.code == "parse.price" && e.loc.line == 4 }),
+  )
+  assert_true(
+    typed.errors.any(fn(e) {
+      e.code == "validation.unbalanced" && e.loc.line == 3
+    }),
+  )
+  let control = validated(
+    earlier + "  Assets:Stock 2 HOOL @@ 12 USD\n  Assets:Cash -12 USD\n",
+  )
+  assert_eq(control.errors.length(), 0)
+}

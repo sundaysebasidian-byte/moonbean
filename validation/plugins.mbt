@@ -100,7 +100,7 @@ fn implicit_prices(entries : Array[@ast.Entry]) -> Array[@ast.Entry] {
           }
           let amount = match posting.price {
             Some(Total(a)) =>
-              if units.number.is_zero() && a.number.is_zero() {
+              if units.number.is_zero() {
                 Some(@ast.Amount::new(@decimal.Decimal::zero(), a.currency))
               } else {
                 match a.number.div(units.number.abs()) {

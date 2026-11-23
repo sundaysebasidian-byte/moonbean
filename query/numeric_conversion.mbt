@@ -83,22 +83,11 @@ fn python_number_string(
         }
         continue
       }
-      let n = c.to_int()
       if c.is_ascii_digit() || c == '+' || c == '-' || (!integer && c == '.') {
         out.write_char(c)
       } else {
-        let mut digit = -1
-        for start in unicode_decimal_starts {
-          if n >= start && n < start + 10 {
-            digit = n - start
-            break
-          }
-        }
-        if digit >= 0 {
-          out.write_string(digit.to_string())
-        } else {
-          return QNull
-        }
+        // Unicode decimals have already been normalized.
+        return QNull
       }
     }
     match @decimal.Decimal::parse(out.to_string()) {
@@ -119,14 +108,10 @@ fn python_number_string(
 fn normalize_python_digits(input : String) -> String {
   let out = StringBuilder()
   for c in input.iter() {
-    let mut mapped = c
-    for start in unicode_decimal_starts {
-      if c.to_int() >= start && c.to_int() < start + 10 {
-        mapped = (48 + c.to_int() - start).unsafe_to_char()
-        break
-      }
+    match @decimal.decimal_digit(c) {
+      Some(n) => out.write_char((48 + n).unsafe_to_char())
+      None => out.write_char(c)
     }
-    out.write_char(mapped)
   }
   out.to_string()
 }

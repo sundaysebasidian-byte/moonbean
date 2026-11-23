@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## 0.4.0
+
+- Correct FIFO short covering and dated lot basis, including compound acquisition costs; preserve lot metadata in export.
+- Correct multi-currency balancing and padding, negative and Unicode decimal tolerances, custom account roots and included-file option scope.
+- Correct BQL calendar parsing and CSV empty-field output; tighten diagnostics for invalid dates and total quotes missing quantities.
+- Improve the tested reverse-ordered entry sort and larger multi-hop quote lookups. These results do not imply a speedup for every ledger or runtime.
+- See [compatibility notes](docs/compatibility.md) for the tested Beancount and Beanquery scope.
 
 - Verify the wasm-gc BQL/inventory smoke on headless Chrome 157 and Wasmtime 50.0.2 with an explicit test adapter, against identical moonrun/Node outputs. Add a reproducible host runner and raw evidence; document bare Wasmtime's missing MoonBit imports and the remaining calendar/benchmark host limits.
 

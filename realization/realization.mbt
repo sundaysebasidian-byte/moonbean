@@ -24,9 +24,10 @@ fn entry_in_range(entry : @ast.Entry, at : @ast.Date?) -> Bool {
 fn replay_inventories(
   ledger : @validation.ValidatedLedger,
   at : @ast.Date?,
+  accounts : Map[String, @validation.AccountInfo],
 ) -> Map[String, @booking.Inventory] {
   let inventories : Map[String, @booking.Inventory] = Map([])
-  for name in ledger.accounts.keys().to_array() {
+  for name in accounts.keys() {
     inventories.set(name, @booking.Inventory::new())
   }
   for entry in ledger.entries {
@@ -84,12 +85,29 @@ pub fn realize(
       entries.push(entry)
     }
   }
+  let accounts = match at {
+    None => ledger.accounts
+    Some(cutoff) => {
+      let visible : Map[String, @validation.AccountInfo] = Map([])
+      for (name, info) in ledger.accounts {
+        if info.open_date.less_equal(cutoff) {
+          visible[name] = if info.close_date is Some(closed) &&
+            cutoff.less_than(closed) {
+            { ..info, close_date: None, }
+          } else {
+            info
+          }
+        }
+      }
+      visible
+    }
+  }
   {
     entries,
     at,
     options: ledger.options,
-    inventories: replay_inventories(ledger, at),
-    accounts: ledger.accounts,
+    inventories: replay_inventories(ledger, at, accounts),
+    accounts,
     prices: PriceDb::from_entries(entries),
   }
 }
@@ -108,22 +126,7 @@ pub fn RealizedLedger::inventory(
 ///|
 pub fn RealizedLedger::account_names(self : RealizedLedger) -> Array[String] {
   let names = self.inventories.keys().to_array()
-  let mut i = 1
-  while i < names.length() {
-    let current = names[i]
-    let mut j = i
-    while j > 0 {
-      let prev = names[j - 1]
-      if prev.lexical_compare(current) > 0 {
-        names[j - 1] = current
-        names[j] = prev
-        j = j - 1
-      } else {
-        break
-      }
-    }
-    i = i + 1
-  }
+  names.sort_by(fn(a, b) { a.lexical_compare(b) })
   names
 }
 
@@ -153,6 +156,15 @@ pub fn RealizedLedger::combined_inventory(
   account : String,
   subtree~ : Bool = false,
 ) -> @booking.Inventory {
+  if !subtree {
+    let selected = @booking.Inventory::new()
+    if self.inventories.get(account) is Some(raw) {
+      for position in raw.positions {
+        selected.add(position)
+      }
+    }
+    return selected
+  }
   let result = @booking.Inventory::new()
   for name in self.account_names() {
     if name == account || (subtree && is_subaccount(name, account)) {

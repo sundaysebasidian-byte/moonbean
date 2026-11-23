@@ -239,6 +239,11 @@ fn eval_function(
     ("add_business_days", [QDate(date), n]) => business_day_add(ctx, date, n)
     ("business_days_between", [QDate(start), QDate(end)]) =>
       query_int(business_day_count(ordinal(start), ordinal(end)))
+    ("sorted_set_json", [QSet(items) | QFrozenSet(items)]) => {
+      let sorted = items.copy()
+      sorted.sort_by(python_text_compare)
+      QText(QSet(sorted).to_json())
+    }
     ("round_increment", [value, step]) =>
       extension_round_increment(ctx, value, step)
     ("fiscal_year" | "fiscal_quarter", [QDate(date), start]) => {
@@ -424,7 +429,8 @@ fn eval_function(
       )
     ("possign", [value, QText(account)]) => {
       let root = @ast.account_root(account)
-      if root == "Assets" || root == "Expenses" {
+      if root == ctx.realized.options.get("name_assets").unwrap_or("Assets") ||
+        root == ctx.realized.options.get("name_expenses").unwrap_or("Expenses") {
         value
       } else {
         match value {

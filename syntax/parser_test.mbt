@@ -969,3 +969,148 @@ test "accepts Beancount's one-digit double-comma leading group only" {
     assert_true(!parsed.errors.is_empty())
   }
 }
+
+///|
+test "misspelled accounting options are diagnosed without keeping them as live settings" {
+  let s = "option \"operating_curency\" \"EUR\"\noption \"name_asset\" \"Banque\"\noption \"operating_currency\" \"USD\"\noption \"allow_deprecated_none_for_tags_and_links\" \"TRUE\"\n"
+  let ledger = @syntax.parse_source("opts.bean", s)
+  assert_eq(ledger.errors.length(), 2)
+  assert_eq(ledger.errors.map(fn(d) { d.loc.line }), [1, 2])
+  assert_eq(ledger.errors.map(fn(d) { d.code }), [
+    "parse.option", "parse.option",
+  ])
+  assert_true(ledger.options.get("operating_curency") is None)
+  assert_eq(ledger.options.operating_currencies, ["USD"])
+}
+
+///|
+test "per-currency precision and tolerance options use the upstream option-value grammar" {
+  for option in ["display_precision", "inferred_tolerance_default"] {
+    let build = fn(value : String) {
+      "option \"" + option + "\" \"" + value + "\"\n"
+    }
+    let source = build("A:B:.010") +
+      build("USD:1,234") +
+      build("cad:٠.٠٥") +
+      build("EUR:0.002e3") +
+      build("JPY:-0.01") +
+      build("USD:1.2.3")
+    let ledger = @syntax.parse_source("exact.bean", source)
+    assert_eq(ledger.errors.map(fn(e) { e.loc.line }), [5, 6])
+    let map = if option == "display_precision" {
+      ledger.options.display_precision
+    } else {
+      ledger.options.inferred_tolerance_default
+    }
+    for
+      (key, expected) in [
+        ("A:B", "0.010"),
+        ("USD", "1"),
+        ("cad", "0.05"),
+        ("EUR", "0.002"),
+      ] {
+      assert_eq(map.get(key).unwrap().to_string(), expected)
+    }
+  }
+}
+
+///|
+test "invalid chart options preserve the last usable root and relative account" {
+  let ledger = @syntax.parse_source(
+    "renames.bean",
+    (
+      #|option "name_assets" "Actif"
+      #|option "name_assets" "Actif:Cash"
+      #|option "name_income" "lowercase"
+      #|option "account_current_earnings" "Gains:1Q"
+      #|option "account_current_earnings" "gains:P&L"
+      #|option "account_rounding" "1"
+      #|option "account_rounding" ""
+      #|option "name_equity" "𐐀quity"
+      #|
+    ),
+  )
+  assert_eq(ledger.errors.map(fn(e) { e.loc.line }), [2, 3, 5, 7])
+  assert_true(ledger.errors.all(fn(e) { e.code == "parse.option" }))
+  assert_eq(ledger.options.get("name_assets"), Some("Actif"))
+  assert_eq(ledger.options.get("name_income"), None)
+  assert_eq(ledger.options.account_rounding, Some("1"))
+  assert_eq(
+    ledger.options.equity_account("account_current_earnings", "Other"),
+    "𐐀quity:Gains:1Q",
+  )
+}
+
+///|
+test "scalar tolerance uses the Beancount finite decimal option converter" {
+  let cases = [
+    ("1e-3", "0.001"),
+    ("1 e -3", "0.001"),
+    ("٠.٥", "0.5"),
+    ("1_0,00", "1000"),
+    ("1.25e2", "125"),
+    ("", "0"),
+  ]
+  for (raw, expected) in cases {
+    let p = @syntax.parse_source(
+      "opts.bean",
+      "option \"tolerance_multiplier\" \"\{raw}\"\n",
+    )
+    assert_eq(p.errors.length(), 0)
+    assert_eq(p.options.tolerance_multiplier.to_string(), expected)
+  }
+  let malformed = @syntax.parse_source(
+    "bad.bean", "option \"tolerance_multiplier\" \".25\"\noption \"tolerance_multiplier\" \"2e10001\"\n",
+  )
+  assert_eq(malformed.errors.map(fn(e) { e.loc.line }), [2])
+  assert_eq(malformed.options.tolerance_multiplier.to_string(), "0.25")
+}
+
+///|
+test "scalar tolerance accepts surrounding Unicode whitespace only" {
+  for
+    (raw, expected) in [
+      ("\u20031e-2\u2003", "0.01"),
+      ("\u30001.23", "1.23"),
+      (",\u00a0٠.٥\u202f,", "0.5"),
+    ] {
+    let ledger = @syntax.parse_source(
+      "opts.bean",
+      "option \"tolerance_multiplier\" \"\{raw}\"\n",
+    )
+    assert_eq(ledger.errors.length(), 0)
+    assert_eq(ledger.options.tolerance_multiplier.to_string(), expected)
+  }
+  for raw in ["1\u20092", "\u200b1", "\u2003", ",\u00a0٠.٥\u202f_", "1\t2"] {
+    let ledger = @syntax.parse_source(
+      "opts.bean",
+      "option \"tolerance_multiplier\" \"\{raw}\"\n",
+    )
+    assert_eq(ledger.errors.length(), 1)
+  }
+}
+
+///|
+test "total lot cost serialization round trips acquisition date and certificate label" {
+  let input = "2024-01-01 * \"historic purchase\"\n  Assets:Fund 4 HOOL {{56 USD, 2023-12-15, \"Lot A\"}}\n  Assets:Cash -56 USD\n"
+  let ledger = @syntax.parse_source("lots.bean", input)
+  assert_eq(ledger.errors.length(), 0)
+  guard ledger.entries[0].directive is @ast.DTransaction(t) else {
+    abort("no lot")
+  }
+  let spec = t.postings[0].cost.unwrap()
+  let printed = spec.to_string()
+  assert_eq(printed, "{{56 USD, 2023-12-15, \"Lot A\"}}")
+  let output = @syntax.parse_source(
+    "round-trip.bean",
+    input.replace_all(old="{{56 USD, 2023-12-15, \"Lot A\"}}", new=printed),
+  )
+  assert_eq(output.errors.length(), 0)
+  guard output.entries[0].directive is @ast.DTransaction(re) else {
+    abort("lost lot")
+  }
+  let restored = re.postings[0].cost.unwrap()
+  assert_eq(restored.number_total.unwrap().to_string(), "56")
+  assert_eq(restored.date.unwrap().to_string(), "2023-12-15")
+  assert_eq(restored.label, Some("Lot A"))
+}

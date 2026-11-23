@@ -264,6 +264,7 @@ priv struct Parser {
   meta_scopes : Map[String, MetaScope]
   tag_scopes : Map[String, Array[String]]
   pipe_scopes : Map[String, Bool]
+  child_currencies : Array[String]
 }
 
 ///|
@@ -289,6 +290,7 @@ fn Parser::new(
     meta_scopes: {},
     tag_scopes: {},
     pipe_scopes: {},
+    child_currencies: [],
   }
 }
 
@@ -717,6 +719,7 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
   let total = cursor.kind() is LDoubleBrace
   cursor.advance() |> ignore
   let mut number : @decimal.Decimal? = None
+  let mut compound_total : @decimal.Decimal? = None
   let mut seen_amount = false
   let mut currency : String? = None
   let mut date : @ast.Date? = None
@@ -751,10 +754,42 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
           }
           cursor.advance() |> ignore
         }
+        Tag("") => {
+          cursor.advance() |> ignore
+          let amount = if cursor.kind() is Word(next) &&
+            parser.looks_like_number(next) {
+            parse_number_expression(cursor, parser, line)
+          } else {
+            None
+          }
+          guard cursor.kind() is Word(c) && ledger_currency(c) else {
+            parser.error(line, "parse.cost", "expected cost currency after #")
+            return None
+          }
+          cursor.advance() |> ignore
+          if seen_amount {
+            parser.error(line, "parse.cost", "Duplicate cost")
+          } else {
+            seen_amount = true
+            compound_total = amount
+            currency = Some(c)
+          }
+        }
         Word(w) =>
           if parser.looks_like_number(w) {
             guard parse_number_expression(cursor, parser, line) is Some(n) else {
               return None
+            }
+            let has_separator = cursor.kind() is Tag("")
+            let total_component = if has_separator {
+              cursor.advance() |> ignore
+              if cursor.kind() is Word(next) && parser.looks_like_number(next) {
+                parse_number_expression(cursor, parser, line)
+              } else {
+                None
+              }
+            } else {
+              None
             }
             let cur = if cursor.kind() is Word(c) && ledger_currency(c) {
               cursor.advance() |> ignore
@@ -767,7 +802,14 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
             } else {
               seen_amount = true
               number = Some(n)
+              compound_total = total_component
               currency = cur
+              if has_separator && total {
+                parser.error(
+                  line, "parse.cost", "Per-unit cost may not be specified using total cost syntax",
+                )
+                number = total_component
+              }
             }
           } else if parser.date(w) is Some(d) {
             if date is None {
@@ -829,9 +871,13 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
       number
     },
     number_total: if total {
-      number
+      if compound_total is Some(_) {
+        compound_total
+      } else {
+        number
+      }
     } else {
-      None
+      compound_total
     },
     currency,
     date,
@@ -973,6 +1019,14 @@ fn parse_posting(
   }
   if cursor.kind() is At || cursor.kind() is AtAt {
     posting.price = parse_price_annotation(cursor, parser, line)
+    if posting.units is None && posting.price is Some(@ast.Total(amount)) {
+      parser.error(
+        line,
+        "parse.price",
+        "Total price on a posting without units: " + amount.to_string() + ".",
+      )
+      posting.price = None
+    }
   }
   if !cursor.eof() {
     parser.error(
@@ -1792,12 +1846,125 @@ fn parse_custom(
 }
 
 ///|
+// Options have a separate grammar from ledger quantities: the last colon
+// followed by a decimal prefix separates a free-form key and unsigned value.
+fn decimal_option_pair(value : String) -> (String, @decimal.Decimal)? {
+  let mut separator = -1
+  let mut offset = 0
+  for c in value {
+    if c == '\n' {
+      break
+    }
+    if c == ':' &&
+      value.get_char(offset + 1) is Some(first) &&
+      (first == '.' || @decimal.decimal_digit(first) is Some(_)) {
+      separator = offset
+    }
+    offset += if c.to_int() > 0xFFFF { 2 } else { 1 }
+  }
+  if separator < 0 {
+    return None
+  }
+  let number = StringBuilder()
+  for c in value[separator + 1:] {
+    if c == '.' {
+      number.write_char(c)
+    } else if @decimal.decimal_digit(c) is Some(n) {
+      number.write_char((48 + n).unsafe_to_char())
+    } else {
+      break
+    }
+  }
+  @decimal.Decimal::parse(number.to_string()).map(fn(n) {
+    (value[:separator].to_owned(), n)
+  })
+}
+
+///|
+// Beancount 3.2.3 public option descriptor names (see compatibility-inventory.json).
+let ledger_option_names : Array[String] = [
+  "account_current_conversions", "account_current_earnings", "account_previous_balances",
+  "account_previous_conversions", "account_previous_earnings", "account_rounding",
+  "account_unrealized_gains", "allow_deprecated_none_for_tags_and_links", "allow_pipe_separator",
+  "booking_method", "commodities", "conversion_currency", "dcontext", "display_precision",
+  "documents", "filename", "include", "infer_tolerance_from_cost", "inferred_tolerance_default",
+  "inferred_tolerance_multiplier", "input_hash", "insert_pythonpath", "long_string_maxlines",
+  "name_assets", "name_equity", "name_expenses", "name_income", "name_liabilities",
+  "operating_currency", "plugin", "plugin_processing_mode", "render_commas", "title",
+  "tolerance_multiplier", "use_precise_interpolation",
+]
+
+///|
+fn scalar_decimal_option(value : String) -> @decimal.Decimal? {
+  if value == "" {
+    return Some(@decimal.Decimal::zero())
+  }
+  let whitespace = "\t\n\u000b\u000c\r \u001c\u001d\u001e\u001f\u0085\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000"
+  // Beancount removes commas and literal spaces before Decimal trims its
+  // edges. Underscores are ignored later, but cannot expose new whitespace.
+  let cleaned = StringBuilder()
+  for c in value {
+    if c != ',' && c != ' ' {
+      cleaned.write_char(c)
+    }
+  }
+  let compact = StringBuilder()
+  for c in cleaned.to_string().trim(chars=whitespace[:]) {
+    if c == '_' {
+      continue
+    }
+    if whitespace.contains(c.to_string()) {
+      return None
+    }
+    if @decimal.decimal_digit(c) is Some(digit) {
+      compact.write_char((48 + digit).unsafe_to_char())
+    } else {
+      compact.write_char(if c == 'E' { 'e' } else { c })
+    }
+  }
+  let parts = compact.to_string().split("e").to_array()
+  if parts.length() > 2 {
+    return None
+  }
+  guard @decimal.Decimal::parse(parts[0].to_owned()) is Some(number) else {
+    return None
+  }
+  if parts.length() == 1 {
+    return Some(number)
+  }
+  let exponent = parts[1].to_owned()
+  let mut digits = exponent
+  let sign = if exponent.has_prefix("-") { -1 } else { 1 }
+  if exponent.has_prefix("-") || exponent.has_prefix("+") {
+    digits = exponent[1:].to_owned()
+  }
+  if digits.is_empty() {
+    return None
+  }
+  let mut power = 0
+  for c in digits {
+    if !c.is_ascii_digit() {
+      return None
+    }
+    power = power * 10 + c.to_int() - 48
+    if power > 10000 {
+      return None
+    }
+  }
+  Some(@decimal.Decimal::new(number.mantissa(), number.scale() - sign * power))
+}
+
+///|
 fn apply_option(
   parser : Parser,
   name : String,
   value : String,
   line : Int32,
 ) -> Unit {
+  if !ledger_option_names.contains(name) {
+    parser.error(line, "parse.option", "Invalid option: '" + name + "'")
+    return
+  }
   if name == "filename" || name == "plugin" {
     parser.error(line, "parse.option", "option `" + name + "` is read-only")
     return
@@ -1810,8 +1977,35 @@ fn apply_option(
     )
     return
   }
-  parser.ledger.options.add_raw(name, value)
-  let options = parser.ledger.options
+  let account_root = [
+    "name_assets", "name_liabilities", "name_equity", "name_income", "name_expenses",
+  ].contains(name)
+  let account_leaf = name.has_prefix("account_")
+  if (
+      account_root &&
+      (value.contains(":") || !@ast.valid_account_name(value + ":X"))
+    ) ||
+    (account_leaf && !@ast.valid_account_name("Assets:" + value)) {
+    parser.error(
+      line,
+      "parse.option",
+      "Invalid account value '" + value + "' for " + name,
+    )
+    return
+  }
+  let is_root = parser.loc(line).file == parser.file || account_root
+  if !is_root && name == "operating_currency" {
+    parser.child_currencies.push(value)
+    return
+  }
+  // Validate child directives without letting their typed options leak into
+  // the root ledger. Per-file parse controls such as pipes have their own map.
+  let options = if is_root {
+    parser.ledger.options
+  } else {
+    @ast.Options::new()
+  }
+  options.add_raw(name, value)
   if name == "title" {
     options.title = Some(value)
   } else if name == "booking_method" {
@@ -1826,8 +2020,12 @@ fn apply_option(
     }
   } else if name == "tolerance_multiplier" ||
     name == "inferred_tolerance_multiplier" {
-    let number = if value == "" { "0" } else { value }
-    match @decimal.Decimal::parse(number) {
+    if name == "inferred_tolerance_multiplier" {
+      parser.error(
+        line, "validation.deprecated_option", "Renamed to 'tolerance_multiplier'.",
+      )
+    }
+    match scalar_decimal_option(value) {
       Some(n) => options.tolerance_multiplier = n
       None =>
         parser.error(
@@ -1836,26 +2034,22 @@ fn apply_option(
           "invalid " + name + " `" + value + "`",
         )
     }
-  } else if name == "inferred_tolerance_default" {
-    let parts = value.split(":")
-    let pair = []
-    for part in parts {
-      pair.push(view_to_string(part))
-    }
-    if pair.length() == 2 && (is_valid_currency(pair[0]) || pair[0] == "*") {
-      match @decimal.Decimal::parse(pair[1]) {
-        Some(n) => options.inferred_tolerance_default.set(pair[0], n)
-        None =>
-          parser.error(
-            line,
-            "parse.option",
-            "invalid inferred_tolerance_default `" + value + "`",
-          )
+  } else if name == "inferred_tolerance_default" || name == "display_precision" {
+    match decimal_option_pair(value) {
+      Some((key, n)) => {
+        let target = if name == "display_precision" {
+          options.display_precision
+        } else {
+          options.inferred_tolerance_default
+        }
+        target.set(key, n)
       }
-    } else {
-      parser.error(
-        line, "parse.option", "inferred_tolerance_default must be CCY:NUMBER",
-      )
+      None =>
+        parser.error(
+          line,
+          "parse.option",
+          "Invalid value '" + value + "' for " + name,
+        )
     }
   } else if name == "infer_tolerance_from_cost" {
     options.infer_tolerance_from_cost = ["true", "on", "1"].contains(
@@ -1876,25 +2070,6 @@ fn apply_option(
     options.documents.push(value)
   } else if name == "render_commas" {
     options.render_commas = ["true", "1", "yes"].contains(value.to_lower())
-  } else if name == "display_precision" {
-    let parts = value.split(":")
-    let pair = []
-    for part in parts {
-      pair.push(view_to_string(part))
-    }
-    if pair.length() == 2 && (is_valid_currency(pair[0]) || pair[0] == "*") {
-      match @decimal.Decimal::parse(pair[1]) {
-        Some(n) => options.display_precision.set(pair[0], n)
-        None =>
-          parser.error(
-            line,
-            "parse.option",
-            "invalid display_precision `" + value + "`",
-          )
-      }
-    } else {
-      parser.error(line, "parse.option", "display_precision must be CCY:NUMBER")
-    }
   }
 }
 
@@ -2268,6 +2443,18 @@ pub fn parse_source(
     for entry in parser.ledger.entries {
       entry.query_exact_decimal = false
     }
+  }
+  if !parser.child_currencies.is_empty() {
+    let all = parser.ledger.options.operating_currencies
+    let merged = []
+    for currency in all {
+      push_unique(merged, currency)
+    }
+    for currency in parser.child_currencies {
+      push_unique(merged, currency)
+    }
+    all.clear()
+    all.append(merged)
   }
   parser.ledger
 }

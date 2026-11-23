@@ -27,26 +27,17 @@ fn format_starts_indented(text : String) -> Bool {
 }
 
 ///|
-fn format_is_ascii_digit_at(text : String, index : Int32) -> Bool {
-  match text.get_char(index) {
-    Some(c) => c.is_ascii_digit()
-    None => false
+fn format_header_date(text : String) -> Bool {
+  if text.length() < 4 || !text.get_char(0).unwrap().is_ascii_digit() {
+    return false
   }
-}
-
-///|
-fn format_is_date_prefix(text : String) -> Bool {
-  text.length() >= 10 &&
-  format_is_ascii_digit_at(text, 0) &&
-  format_is_ascii_digit_at(text, 1) &&
-  format_is_ascii_digit_at(text, 2) &&
-  format_is_ascii_digit_at(text, 3) &&
-  text.get_char(4) == Some('-') &&
-  format_is_ascii_digit_at(text, 5) &&
-  format_is_ascii_digit_at(text, 6) &&
-  text.get_char(7) == Some('-') &&
-  format_is_ascii_digit_at(text, 8) &&
-  format_is_ascii_digit_at(text, 9)
+  let tokens = @syntax.tokenize(text)
+  tokens.length() == 2 &&
+  tokens[0].kind is Word(normalized) &&
+  normalized.length() == 10 &&
+  normalized.get_char(4) == Some('-') &&
+  normalized.get_char(7) == Some('-') &&
+  normalized.iter().all(fn(c) { c.is_ascii_digit() || c == '-' })
 }
 
 ///|
@@ -95,38 +86,18 @@ fn format_is_directive(word : String) -> Bool {
 ///|
 fn format_is_transaction_header(text : String) -> Bool {
   let trimmed = format_trimmed(text)
-  if !format_is_date_prefix(trimmed) {
+  let (date, after) = format_split_first(trimmed)
+  if !format_header_date(date) || after.is_empty() {
     return false
   }
-  if trimmed.length() < 12 {
-    return false
-  }
-  if trimmed.get_char(10) != Some(' ') && trimmed.get_char(10) != Some('\t') {
-    return false
-  }
-  let after = format_trimmed(format_view(trimmed[11:]))
+
   let word = format_first_token(after)
   !format_is_directive(word)
 }
 
 ///|
-fn format_account_root(word : String) -> String {
-  let mut i = 0
-  while i < word.length() {
-    if word.get_char(i) == Some(':') {
-      return format_view(word[0:i])
-    }
-    i = i + 1
-  }
-  word
-}
-
-///|
 fn format_is_account(word : String) -> Bool {
-  match format_account_root(word) {
-    "Assets" | "Liabilities" | "Equity" | "Income" | "Expenses" => true
-    _ => false
-  }
+  @syntax.is_valid_account(word)
 }
 
 ///|

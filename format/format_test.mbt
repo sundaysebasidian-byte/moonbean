@@ -140,3 +140,35 @@ test "astral posting components retain full Unicode and round-trip" {
     after.postings.map(fn(p) { p.units.unwrap().to_string() }),
   )
 }
+
+///|
+test "every accepted ledger date spelling aligns postings without rewriting its date" {
+  for date in ["2024/1/2", "2024-01-2", "00002024/1-02", "2024-01-02"] {
+    let source = date +
+      " * \"rent\"\n      Expenses:Rent  20 USD\n Assets:Cash -20 USD\n"
+    let expected = date +
+      " * \"rent\"\n  Expenses:Rent  20 USD\n  Assets:Cash    -20 USD\n"
+    assert_eq(@syntax.parse_source("rent.bean", source).errors.length(), 0)
+    assert_eq(@format.format_source(source), expected)
+    assert_eq(@format.format_source(expected), expected)
+  }
+}
+
+///|
+test "localized postings align without reinterpreting metadata as an account" {
+  let input =
+    #|option "name_assets" "Actif"
+    #|option "name_expenses" "Depenses"
+    #|2024-01-03 * "Rent"
+    #|    ! Actif:Cash -15 USD
+    #|  Depenses:Loyer 15 USD
+    #|    note: "rent: July"
+    #|
+  let output = @format.format_source(input)
+  let lines = output.split("\n").to_array()
+  assert_true(lines[3].has_prefix("  ! Actif:Cash"))
+  assert_eq(lines[3].find("-15 USD"), lines[4].find("15 USD"))
+  assert_true(lines[5].has_suffix("note: \"rent: July\""))
+  assert_eq(@syntax.parse_source("fr.bean", output).errors.length(), 0)
+  assert_eq(@format.format_source(output), output)
+}

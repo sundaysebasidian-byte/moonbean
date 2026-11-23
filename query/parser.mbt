@@ -697,6 +697,14 @@ fn parse_expr_list(parser : QueryParser) -> Array[Expr]? {
 }
 
 ///|
+fn is_named_hash_source(word : String) -> Bool {
+  [
+    "postings", "transactions", "entries", "accounts", "balances", "commodities",
+    "documents", "events", "notes", "prices", "queries", "custom",
+  ].contains(word)
+}
+
+///|
 fn parse_source_base(parser : QueryParser) -> QuerySource? {
   if parser.match_sym("(") {
     if !parser.expect_keyword("select") {
@@ -717,13 +725,28 @@ fn parse_source_base(parser : QueryParser) -> QuerySource? {
     }
   }
   let hashed = parser.match_sym("#")
+  if hashed &&
+    (
+      parser.at_end() ||
+      parser.peek_sym() == Some(")") ||
+      (
+        parser.index < parser.positions.length() &&
+        parser.positions[parser.index] != parser.positions[parser.index - 1] + 1
+      )
+    ) {
+    // Only known table names need the adjacency diagnostic. Leave
+    // continuations such as JOIN to the ordinary SELECT parser.
+    if parser.peek_word() is Some(word) && is_named_hash_source(word.to_lower()) {
+      parser.fail(
+        "query.invalid_source: a named source must immediately follow #",
+      )
+      return None
+    }
+    return Some(SrcDirectives(""))
+  }
   match parser.take_word() {
     Some(word) => {
-      if hashed &&
-        ![
-          "postings", "transactions", "entries", "accounts", "balances", "commodities",
-          "documents", "events", "notes", "prices", "queries", "custom",
-        ].contains(word) {
+      if hashed && !is_named_hash_source(word) {
         parser.fail("compilation query.invalid_source `#" + word + "`")
         return None
       }
@@ -1244,17 +1267,7 @@ fn parse_query(text : String) -> ParsedQuery {
       }
     }
   }
-  for i in 0..<(tokens.length() - 1) {
-    if tokens[i] is BSym("#") && positions[i + 1] != positions[i] + 1 {
-      return PqError(
-        "syntax query.invalid_source" +
-        bql_lex_error(text, positions[i]).replace(
-          old="lexical query.invalid_character",
-          new="",
-        ),
-      )
-    }
-  }
+
   let parser = QueryParser::new(tokens, text~, positions~)
   if parser.at_end() {
     return PqError("empty query")

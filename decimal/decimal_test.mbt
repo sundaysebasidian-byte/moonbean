@@ -112,3 +112,57 @@ test "single-buffer decimal parser preserves scale and signs" {
   inspect(@decimal.Decimal::parse("1.2300").unwrap().scale(), content="4")
   inspect(@decimal.Decimal::parse("1,,2") is None, content="true")
 }
+
+///|
+test "exact decimal rescaling never changes the value when dropping scale" {
+  for
+    (s, n, expected) in [
+      ("123.40", -1, "123.4"),
+      ("-12.50", -8, "-12.5"),
+      ("123.45", -1, "123.45"),
+      ("4.2", 2, "4.200"),
+      ("0.000", -2, "0.0"),
+    ] {
+    let before = dec(s)
+    let result = before.shift_scale(n)
+    assert_eq(result.to_string(), expected)
+    assert_true(result.equal(before))
+  }
+}
+
+///|
+test "minimum decimal display scale is honored for round and already fractional amounts" {
+  for
+    (n, scale, expected) in [
+      ("12", 2, "12.00"),
+      ("-2.1", 3, "-2.100"),
+      ("0", 2, "0.00"),
+      ("1.2500", 2, "1.25"),
+      ("1.2031", 2, "1.2031"),
+      ("1.00", -1, "1"),
+    ] {
+    assert_eq(dec(n).to_display(min_scale=scale), expected)
+  }
+}
+
+///|
+test "exact quotient preserves negative ideal scale when every omitted digit is zero" {
+  for
+    (mantissa, scale, denominator, remaining, expected_scale) in [
+      (2, -3, 2, "1000", -3),
+      (1, -2, 2, "50", -1),
+      (3, -1, 4, "7.5", 1),
+    ] {
+    let dividend = @decimal.Decimal::new(
+      dec(mantissa.to_string()).mantissa(),
+      scale,
+    )
+    let d = dividend.div(dec(denominator.to_string())).unwrap()
+    assert_eq(d.to_string(), remaining)
+    assert_eq(d.scale(), expected_scale)
+  }
+  assert_eq(
+    @decimal.Decimal::zero_scaled(-3).div(dec("1")).unwrap().scale(),
+    -3,
+  )
+}
