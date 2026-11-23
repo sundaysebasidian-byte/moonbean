@@ -172,6 +172,10 @@ fn strptime_date(
         }
       'j' => ordinal_day = Some(n)
       'U' | 'W' | 'V' => {
+        if n > 53 {
+          query_error(ctx, "query.oracle_type_error: ValueError invalid week")
+          return QNull
+        }
         week = Some(n)
         week_kind = field
       }
@@ -310,9 +314,13 @@ fn strptime_date(
     let start = if week_kind == 'U' { 6 } else { 0 }
     let jan_weekday = (jan1 - 1) % 7
     let offset = (weekday - start + 7) % 7
-    return ordinal_date(
-      jan1 + (start - jan_weekday + 7) % 7 + (w - 1) * 7 + offset,
-    )
+    let start_distance = (jan_weekday - start + 7) % 7
+    let days = if w == 0 {
+      offset - start_distance
+    } else {
+      (7 - start_distance) % 7 + (w - 1) * 7 + offset
+    }
+    return ordinal_date(jan1 + days)
   }
   if ordinal_day is Some(n) {
     if n < 1 || n > 366 {

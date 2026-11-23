@@ -2839,3 +2839,21 @@ test "a lowercase timezone z is not the UTC designator" {
   assert_true(bad.failure() is Some(@query.Evaluation(_)))
   assert_eq(good.rows[0][0].to_text(), "2024-01-01")
 }
+
+///|
+test "calendar week zero begins on January 1 when aligned" {
+  for (raw, fmt, expected) in [
+    ("2023 00 4", "%Y %U %w", "2023-01-05"),
+    ("2024 00 2", "%Y %W %w", "2024-01-02"),
+    ("2024 00 2", "%Y %U %w", "2024-01-02"),
+    ("2023 00 0", "%Y %W %w", "2023-01-01"),
+    ("2024 01 1", "%Y %W %w", "2024-01-01"),
+  ] {
+    let q = queried("", "SELECT parse_date('\{raw}','\{fmt}') FROM #")
+    assert_eq(q.rows[0][0].to_text(), expected)
+  }
+  for f in ["%U", "%W"] {
+    let q = queried("", "SELECT parse_date('2024 88','%Y \{f}') FROM #")
+    assert_true(q.failure() is Some(@query.Evaluation(_)))
+  }
+}
