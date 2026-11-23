@@ -188,6 +188,7 @@ fn source_rows(
     SrcPostings | SrcFrom(_, _, _, _, _) => posting_rows(realized, origin)
     SrcTransactions => transaction_rows(realized, origin)
     SrcBalances => balance_rows(realized)
+    SrcDirectives("") => relation_rows([], [[]])
     SrcDirectives(table) => directive_rows(realized, table)
     SrcOpen(start, close) => opening_rows(realized, start, close)
     SrcClose(date) =>

@@ -2713,3 +2713,21 @@ test "renamed income accounts transfer to equity at OPEN and CLEAR" {
     assert_true(r.rows.any(fn(row) { row[0].to_text() == account && row[1].to_text().contains("-65 USD") }))
   }
 }
+
+///|
+test "anonymous singleton table permits calculations on an empty ledger" {
+  for src in ["", ledger_source()] {
+    assert_true(queried(src, "SELECT 2*3 FROM #").is_ok())
+    assert_eq(queried(src, "SELECT 2*3 FROM #").rows[0][0].to_text(), "6")
+    assert_eq(queried(src, "SELECT count(*) FROM #;").rows[0][0].to_text(), "1")
+    let all = queried(src, "SELECT * FROM #")
+    assert_eq(all.rows.length(), 1)
+    assert_eq(all.columns.length(), 0)
+    assert_eq(all.rows[0].length(), 0)
+    assert_eq(queried(src, "SELECT 1 FROM # WHERE false").rows.length(), 0)
+    assert_eq(queried(src, "SELECT 1 FROM # LIMIT 0").rows.length(), 0)
+    assert_true(queried(src, "SELECT account FROM #").failure() is Some(@query.Compilation(_)))
+    assert_true(queried(src, "SELECT 1 FROM # postings").failure() is Some(@query.Syntax(_)))
+    assert_true(queried(src, "SELECT 1 FROM #where").failure() is Some(@query.Compilation(_)))
+  }
+}
