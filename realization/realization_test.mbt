@@ -531,3 +531,15 @@ test "dated valuation uses explicit zero and negative prices, but never inverts 
   assert_true(r.rate("EUR","XYZ") is None)
   assert_eq(r.prices.rate("ABC","USD",@ast.Date::parse("2024-01-01")).unwrap().to_string(), "2")
 }
+
+///|
+test "market revaluation equity respects its explicit account, independently of earnings" {
+  let base = "2024-01-01 open Assets:Shares HOOL\n2024-01-01 open Equity:Paid USD\n2024-01-02 * \"invest\"\n  Assets:Shares 10 HOOL {2 USD}\n  Equity:Paid -20 USD\n2024-01-03 price HOOL 3 USD\n"
+  let source = "option \"account_current_earnings\" \"Profit:This\"\noption \"account_unrealized_gains\" \"Gains:Market\"\n" + base
+  let r = @realization.balance_sheet(realized(source), convert=Some("USD"))
+  assert_true(row_for(r.rows,"Equity:Gains:Market") is Some(_))
+  assert_eq(row_for(r.rows,"Equity:Gains:Market").unwrap().amount.to_string(), "-10 USD")
+  assert_true(row_for(r.rows,"Equity:Profit:Unrealized") is None)
+  let default_report = @realization.balance_sheet(realized(base), convert=Some("USD"))
+  assert_eq(row_for(default_report.rows, "Equity:Earnings:Unrealized").unwrap().amount.to_string(), "-10 USD")
+}

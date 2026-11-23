@@ -632,12 +632,7 @@ pub fn balance_sheet(
     for amount in grouped_amounts(changes) {
       if !amount.number.is_zero() {
         rows.push({
-          label: @ast.account_parent(
-            realized.options.equity_account(
-              "account_current_earnings", "Earnings:Current",
-            ),
-          ) +
-          ":Unrealized",
+          label: realized.options.equity_account("account_unrealized_gains", "Earnings:Unrealized"),
           amount,
         })
       }
