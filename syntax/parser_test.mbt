@@ -969,3 +969,14 @@ test "accepts Beancount's one-digit double-comma leading group only" {
     assert_true(!parsed.errors.is_empty())
   }
 }
+
+///|
+test "misspelled accounting options are diagnosed without keeping them as live settings" {
+  let s = "option \"operating_curency\" \"EUR\"\noption \"name_asset\" \"Banque\"\noption \"operating_currency\" \"USD\"\noption \"allow_deprecated_none_for_tags_and_links\" \"TRUE\"\n"
+  let ledger = @syntax.parse_source("opts.bean", s)
+  assert_eq(ledger.errors.length(),2)
+  assert_eq(ledger.errors.map(fn(d) {d.loc.line}), [1,2])
+  assert_eq(ledger.errors.map(fn(d) {d.code}), ["parse.option","parse.option"])
+  assert_true(ledger.options.get("operating_curency") is None)
+  assert_eq(ledger.options.operating_currencies,["USD"])
+}

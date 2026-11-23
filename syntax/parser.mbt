@@ -1792,12 +1792,20 @@ fn parse_custom(
 }
 
 ///|
+// Beancount 3.2.3 public option descriptor names (see compatibility-inventory.json).
+let ledger_option_names : Array[String] = ["account_current_conversions", "account_current_earnings", "account_previous_balances", "account_previous_conversions", "account_previous_earnings", "account_rounding", "account_unrealized_gains", "allow_deprecated_none_for_tags_and_links", "allow_pipe_separator", "booking_method", "commodities", "conversion_currency", "dcontext", "display_precision", "documents", "filename", "include", "infer_tolerance_from_cost", "inferred_tolerance_default", "inferred_tolerance_multiplier", "input_hash", "insert_pythonpath", "long_string_maxlines", "name_assets", "name_equity", "name_expenses", "name_income", "name_liabilities", "operating_currency", "plugin", "plugin_processing_mode", "render_commas", "title", "tolerance_multiplier", "use_precise_interpolation"]
+
+///|
 fn apply_option(
   parser : Parser,
   name : String,
   value : String,
   line : Int32,
 ) -> Unit {
+  if !ledger_option_names.contains(name) {
+    parser.error(line, "parse.option", "Invalid option: '" + name + "'")
+    return
+  }
   if name == "filename" || name == "plugin" {
     parser.error(line, "parse.option", "option `" + name + "` is read-only")
     return
