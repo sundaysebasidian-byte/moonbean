@@ -571,3 +571,19 @@ test "income conversion completeness follows the selected activity, not end inve
   assert_true(priced.diagnostics.is_empty())
   assert_eq(priced.rows[0].amount.to_string(), "20 USD")
 }
+
+///|
+test "direct inventory aggregates duplicate public lots and removes explicit zero rows" {
+  let r = realized("")
+  let raw = @booking.Inventory::new()
+  for (n, currency) in [(6, "USD"), (-3, "USD"), (0, "CAD"), (2, "EUR"), (-2, "EUR")] {
+    raw.positions.push(@booking.Position::new(@ast.Amount::new(@decimal.Decimal::from_int(n), currency), None))
+  }
+  r.inventories["Assets:Public"] = raw
+  let normalized = r.combined_inventory("Assets:Public")
+  assert_eq(normalized.positions.length(), 1)
+  assert_eq(normalized.positions[0].units.to_string(), "3 USD")
+  assert_eq(raw.positions.length(), 5)
+  assert_true(r.combined_inventory("Assets:Missing").is_empty())
+  assert_eq(r.combined_inventory("Assets:Public", subtree=true).positions[0].units.to_string(), "3 USD")
+}

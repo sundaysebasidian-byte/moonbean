@@ -168,6 +168,13 @@ pub fn RealizedLedger::combined_inventory(
   account : String,
   subtree~ : Bool = false,
 ) -> @booking.Inventory {
+  if !subtree {
+    let selected = @booking.Inventory::new()
+    if self.inventories.get(account) is Some(raw) {
+      for position in raw.positions { selected.add(position) }
+    }
+    return selected
+  }
   let result = @booking.Inventory::new()
   for name in self.account_names() {
     if name == account || (subtree && is_subaccount(name, account)) {
