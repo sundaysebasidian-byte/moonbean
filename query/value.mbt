@@ -299,7 +299,8 @@ fn csv_row(output : StringBuilder, fields : Array[String]) -> Unit {
       output.write_char(',')
     }
     let field = fields[i]
-    if field.contains(",") ||
+    if (fields.length() == 1 && field.is_empty()) ||
+      field.contains(",") ||
       field.contains("\"") ||
       field.contains("\r") ||
       field.contains("\n") {

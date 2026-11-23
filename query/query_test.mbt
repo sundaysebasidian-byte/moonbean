@@ -2901,3 +2901,14 @@ test "parsed calendar overflow reports an evaluation error rather than NULL" {
   let q = queried("", "SELECT parse_date('9999 52 5','%G %V %u') FROM #")
   assert_eq(q.rows[0][0].to_text(), "9999-12-31")
 }
+
+///|
+test "CSV keeps an empty singleton amount cell distinct from an empty row" {
+  let result = queried("", "SELECT NULL AS note FROM #")
+  assert_true(result.is_ok())
+  assert_eq(result.to_csv(), Some("note\r\n\"\"\r\n"))
+  assert_eq(queried("", "SELECT NULL AS x, NULL AS y FROM #").to_csv(),
+    Some("x,y\r\n,\r\n"))
+  assert_eq(queried("", "SELECT 'x,y' AS note FROM #").to_csv(),
+    Some("note\r\n\"x,y\"\r\n"))
+}
