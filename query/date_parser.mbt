@@ -36,6 +36,15 @@ fn parsed_date(
 }
 
 ///|
+fn parsed_ordinal(ctx : QueryContext, number : Int32) -> QueryValue {
+  let date = ordinal_date(number)
+  if date is QNull {
+    query_error(ctx, "query.oracle_type_error: ValueError ordinal date out of range")
+  }
+  date
+}
+
+///|
 fn strptime_date(
   ctx : QueryContext,
   text : String,
@@ -286,13 +295,13 @@ fn strptime_date(
     return QNull
   }
   if ordinal_day is Some(n) {
-    if n < 1 || n > 366 {
+    if n < 1 || n > 366 || iso_year is Some(_) {
       query_error(
         ctx, "query.oracle_type_error: ValueError invalid day of year",
       )
       return QNull
     }
-    return ordinal_date(ordinal(@ast.Date::new(year, 1, 1).unwrap()) + n - 1)
+    return parsed_ordinal(ctx, ordinal(@ast.Date::new(year, 1, 1).unwrap()) + n - 1)
   }
   if has_weekday && week is Some(w) {
     if w > 53 || weekday < 0 || weekday > 6 {
@@ -323,7 +332,7 @@ fn strptime_date(
         query_error(ctx, "query.oracle_type_error: ValueError invalid ISO week")
         return QNull
       }
-      return ordinal_date(jan4 - (jan4 - 1) % 7 + (w - 1) * 7 + weekday)
+      return parsed_ordinal(ctx, jan4 - (jan4 - 1) % 7 + (w - 1) * 7 + weekday)
     }
     let jan1 = ordinal(@ast.Date::new(year, 1, 1).unwrap())
     let start = if week_kind == 'U' { 6 } else { 0 }
@@ -335,7 +344,7 @@ fn strptime_date(
     } else {
       (7 - start_distance) % 7 + (w - 1) * 7 + offset
     }
-    return ordinal_date(jan1 + days)
+    return parsed_ordinal(ctx, jan1 + days)
   }
   parsed_date(ctx, year, month, day)
 }
@@ -487,7 +496,7 @@ fn flexible_date(ctx : QueryContext, input : String) -> QueryValue {
   }
   if !named_month && numbers.is_empty() {
     if weekday is Some(day) {
-      return ordinal_date(
+      return parsed_ordinal(ctx, 
         ordinal(today) + (day - (ordinal(today) - 1) % 7 + 7) % 7,
       )
     }

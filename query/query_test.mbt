@@ -2887,3 +2887,17 @@ test "explicit date format treats Unicode separators like Python whitespace" {
   let q = queried("", "SELECT parse_date('2024\u200b02 03','%Y %m %d') FROM #")
   assert_true(q.failure() is Some(@query.Evaluation(_)))
 }
+
+///|
+test "parsed calendar overflow reports an evaluation error rather than NULL" {
+  for (raw, fmt) in [
+    ("9999 52 7", "%G %V %u"), ("9999 366", "%Y %j"),
+    ("9999 53 6", "%Y %W %w"), ("0001 00 0", "%Y %U %w"),
+    ("2024 045 20 3", "%G %j %V %u"),
+  ] {
+    let q = queried("", "SELECT parse_date('\{raw}','\{fmt}') FROM #")
+    assert_true(q.failure() is Some(@query.Evaluation(_)))
+  }
+  let q = queried("", "SELECT parse_date('9999 52 5','%G %V %u') FROM #")
+  assert_eq(q.rows[0][0].to_text(), "9999-12-31")
+}
