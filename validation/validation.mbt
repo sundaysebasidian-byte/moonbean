@@ -178,21 +178,29 @@ fn directive_rank(directive : @ast.Directive) -> Int32 {
 
 ///|
 fn sorted_entries(entries : Array[@ast.Entry]) -> Array[@ast.Entry] {
-  let indexed = []
-  for i in 0..<entries.length() { indexed.push((i, entries[i])) }
-  indexed.sort_by(fn(left, right) {
-    let (i, a) = left
-    let (j, b) = right
-    let date_cmp = a.date.compare(b.date)
-    if date_cmp != 0 { return date_cmp }
-    let rank_cmp = directive_rank(a.directive).compare(directive_rank(b.directive))
-    if rank_cmp != 0 { return rank_cmp }
-    let line_cmp = a.query_origin.unwrap_or(a.loc).line.compare(b.query_origin.unwrap_or(b.loc).line)
-    if line_cmp != 0 { return line_cmp }
-    // Preserves the predecessor's stable order across included files with tied line numbers.
-    i.compare(j)
-  })
-  indexed.map(fn(item) { item.1 })
+  let result = entries.copy()
+  fn compare(a : @ast.Entry, b : @ast.Entry) -> Int32 {
+    let by_date = a.date.compare(b.date)
+    if by_date != 0 {
+      return by_date
+    }
+    let by_rank = directive_rank(a.directive).compare(
+      directive_rank(b.directive),
+    )
+    if by_rank != 0 {
+      return by_rank
+    }
+    a.query_origin.unwrap_or(a.loc).line.compare(
+      b.query_origin.unwrap_or(b.loc).line,
+    )
+  }
+  for i in 1..<result.length() {
+    if compare(result[i - 1], result[i]) > 0 {
+      result.mut_view().stable_sort_by(compare)
+      break
+    }
+  }
+  result
 }
 
 ///|
@@ -584,7 +592,9 @@ fn process_balance(
   let difference = balance.amount.number.sub(actual)
   let pad_index = applicable_pad(ctx, balance.account, entry.date)
   match pad_index {
-    Some(index) if !ctx.pads[index].checked_currencies.contains(balance.amount.currency) => {
+    Some(index) if !ctx.pads[index].checked_currencies.contains(
+        balance.amount.currency,
+      ) => {
       let pad = ctx.pads[index]
       pad.checked_currencies[balance.amount.currency] = true
       if difference.abs().less_equal(tolerance) {
@@ -1071,9 +1081,11 @@ fn process_transaction(
                 booking_failed = true
               }
             } else if units.number.is_positive() &&
-              ctx.state.method_for(posting.account, ctx.options.booking_method) != "NONE" &&
+              ctx.state.method_for(posting.account, ctx.options.booking_method) !=
+              "NONE" &&
               ctx.state.inventory_for(posting.account).positions.any(fn(p) {
-                p.units.currency == units.currency && p.cost is Some(_) &&
+                p.units.currency == units.currency &&
+                p.cost is Some(_) &&
                 p.units.number.is_negative()
               }) {
               short_reductions[i] = true
@@ -1124,16 +1136,19 @@ fn process_transaction(
   }
   entry.inferred_tolerances = Some(infer_transaction_tolerances(ctx, postings))
   let auto_currency : Map[String, Bool] = Map([])
-  let independent_auto = missing.length() > 1 && missing.all(fn(index) {
-    let p = postings[index]
-    if p.cost is None && p.price is None && p.units_currency is Some(c) &&
-      !auto_currency.contains(c) {
-      auto_currency[c] = true
-      true
-    } else {
-      false
-    }
-  })
+  let independent_auto = missing.length() > 1 &&
+    missing.all(fn(index) {
+      let p = postings[index]
+      if p.cost is None &&
+        p.price is None &&
+        p.units_currency is Some(c) &&
+        !auto_currency.contains(c) {
+        auto_currency[c] = true
+        true
+      } else {
+        false
+      }
+    })
   let multi_auto = missing.length() == 1 &&
     weights.length() > 1 &&
     postings[missing[0]].units_currency is None &&
@@ -1145,7 +1160,11 @@ fn process_transaction(
     let synthesized = []
     for weight in weights.copy() {
       if !weight.number.is_zero() {
-        let item = { ..p, units_currency: Some(weight.currency), meta: p.meta.copy() }
+        let item = {
+          ..p,
+          units_currency: Some(weight.currency),
+          meta: p.meta.copy(),
+        }
         interpolate_missing(ctx, entry, item, weights)
         synthesized.push(item)
       }
@@ -1187,10 +1206,20 @@ fn process_transaction(
     for p in detailed {
       if p.cost is Some(cost) {
         if p.units is Some(units) && units.number.is_zero() {
-          error(ctx, "validation.zero_cost_units", "Costed amount cannot be zero", entry.loc)
+          error(
+            ctx,
+            "validation.zero_cost_units",
+            "Costed amount cannot be zero",
+            entry.loc,
+          )
         }
         if cost.number_per is Some(number) && number.is_negative() {
-          error(ctx, "validation.negative_cost", "Cost is negative: " + number.to_string(), entry.loc)
+          error(
+            ctx,
+            "validation.negative_cost",
+            "Cost is negative: " + number.to_string(),
+            entry.loc,
+          )
         }
       }
     }
@@ -1200,9 +1229,13 @@ fn process_transaction(
       let groups : Map[String, Array[@ast.Posting]] = Map([])
       let group_order = []
       for p in detailed {
-        let currency = p.cost.bind(fn(c) { c.currency })
-          .unwrap_or(p.price.map(fn(price) { price.amount().currency })
-          .unwrap_or(p.units.map(fn(u) { u.currency }).unwrap_or("")))
+        let currency = p.cost
+          .bind(fn(c) { c.currency })
+          .unwrap_or(
+            p.price
+            .map(fn(price) { price.amount().currency })
+            .unwrap_or(p.units.map(fn(u) { u.currency }).unwrap_or("")),
+          )
         if groups.get(currency) is Some(group) {
           group.push(p)
         } else {

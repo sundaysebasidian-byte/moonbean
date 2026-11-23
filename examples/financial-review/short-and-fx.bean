@@ -1,0 +1,18 @@
+2024-01-01 open Assets:Bank USD,EUR
+2024-01-01 open Assets:Stock HOOL "FIFO"
+2024-01-01 open Equity:Opening USD,EUR
+
+2024-01-02 * "Carry forward the bank statement"
+  Assets:Bank      100 USD
+  Assets:Bank       45 EUR
+  Equity:Opening
+
+2024-01-03 * "Sell the first lot short"
+  Assets:Stock      -2 HOOL {10 # 4 USD}
+  Assets:Bank       24 USD
+2024-01-04 * "Sell the second lot short"
+  Assets:Stock      -3 HOOL {15 USD}
+  Assets:Bank       45 USD
+2024-01-05 * "Cover two lots"
+  Assets:Stock       3 HOOL {}
+  Assets:Bank      -39 USD

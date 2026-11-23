@@ -756,9 +756,12 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
         }
         Tag("") => {
           cursor.advance() |> ignore
-          let amount = if cursor.kind() is Word(next) && parser.looks_like_number(next) {
+          let amount = if cursor.kind() is Word(next) &&
+            parser.looks_like_number(next) {
             parse_number_expression(cursor, parser, line)
-          } else { None }
+          } else {
+            None
+          }
           guard cursor.kind() is Word(c) && ledger_currency(c) else {
             parser.error(line, "parse.cost", "expected cost currency after #")
             return None
@@ -782,8 +785,12 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
               cursor.advance() |> ignore
               if cursor.kind() is Word(next) && parser.looks_like_number(next) {
                 parse_number_expression(cursor, parser, line)
-              } else { None }
-            } else { None }
+              } else {
+                None
+              }
+            } else {
+              None
+            }
             let cur = if cursor.kind() is Word(c) && ledger_currency(c) {
               cursor.advance() |> ignore
               Some(c)
@@ -798,7 +805,9 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
               compound_total = total_component
               currency = cur
               if has_separator && total {
-                parser.error(line, "parse.cost", "Per-unit cost may not be specified using total cost syntax")
+                parser.error(
+                  line, "parse.cost", "Per-unit cost may not be specified using total cost syntax",
+                )
                 number = total_component
               }
             }
@@ -861,7 +870,15 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
     } else {
       number
     },
-    number_total: if total { if compound_total is Some(_) { compound_total } else { number } } else { compound_total },
+    number_total: if total {
+      if compound_total is Some(_) {
+        compound_total
+      } else {
+        number
+      }
+    } else {
+      compound_total
+    },
     currency,
     date,
     label,
@@ -1002,6 +1019,14 @@ fn parse_posting(
   }
   if cursor.kind() is At || cursor.kind() is AtAt {
     posting.price = parse_price_annotation(cursor, parser, line)
+    if posting.units is None && posting.price is Some(@ast.Total(amount)) {
+      parser.error(
+        line,
+        "parse.price",
+        "Total price on a posting without units: " + amount.to_string() + ".",
+      )
+      posting.price = None
+    }
   }
   if !cursor.eof() {
     parser.error(
@@ -1871,7 +1896,9 @@ let ledger_option_names : Array[String] = [
 
 ///|
 fn scalar_decimal_option(value : String) -> @decimal.Decimal? {
-  if value == "" { return Some(@decimal.Decimal::zero()) }
+  if value == "" {
+    return Some(@decimal.Decimal::zero())
+  }
   let compact = StringBuilder()
   for c in value {
     if [',', '_', ' ', '\t', '\r', '\n', '\u000b', '\u000c'].contains(c) {
@@ -1884,19 +1911,33 @@ fn scalar_decimal_option(value : String) -> @decimal.Decimal? {
     }
   }
   let parts = compact.to_string().split("e").to_array()
-  if parts.length() > 2 { return None }
-  guard @decimal.Decimal::parse(parts[0].to_owned()) is Some(number) else { return None }
-  if parts.length() == 1 { return Some(number) }
+  if parts.length() > 2 {
+    return None
+  }
+  guard @decimal.Decimal::parse(parts[0].to_owned()) is Some(number) else {
+    return None
+  }
+  if parts.length() == 1 {
+    return Some(number)
+  }
   let exponent = parts[1].to_owned()
   let mut digits = exponent
   let sign = if exponent.has_prefix("-") { -1 } else { 1 }
-  if exponent.has_prefix("-") || exponent.has_prefix("+") { digits = exponent[1:].to_owned() }
-  if digits.is_empty() { return None }
+  if exponent.has_prefix("-") || exponent.has_prefix("+") {
+    digits = exponent[1:].to_owned()
+  }
+  if digits.is_empty() {
+    return None
+  }
   let mut power = 0
   for c in digits {
-    if !c.is_ascii_digit() { return None }
+    if !c.is_ascii_digit() {
+      return None
+    }
     power = power * 10 + c.to_int() - 48
-    if power > 10000 { return None }
+    if power > 10000 {
+      return None
+    }
   }
   Some(@decimal.Decimal::new(number.mantissa(), number.scale() - sign * power))
 }
@@ -1924,11 +1965,20 @@ fn apply_option(
     )
     return
   }
-  let account_root = ["name_assets", "name_liabilities", "name_equity", "name_income", "name_expenses"].contains(name)
+  let account_root = [
+    "name_assets", "name_liabilities", "name_equity", "name_income", "name_expenses",
+  ].contains(name)
   let account_leaf = name.has_prefix("account_")
-  if (account_root && (value.contains(":") || !@ast.valid_account_name(value + ":X"))) ||
+  if (
+      account_root &&
+      (value.contains(":") || !@ast.valid_account_name(value + ":X"))
+    ) ||
     (account_leaf && !@ast.valid_account_name("Assets:" + value)) {
-    parser.error(line, "parse.option", "Invalid account value '" + value + "' for " + name)
+    parser.error(
+      line,
+      "parse.option",
+      "Invalid account value '" + value + "' for " + name,
+    )
     return
   }
   let is_root = parser.loc(line).file == parser.file || account_root
@@ -1938,7 +1988,11 @@ fn apply_option(
   }
   // Validate child directives without letting their typed options leak into
   // the root ledger. Per-file parse controls such as pipes have their own map.
-  let options = if is_root { parser.ledger.options } else { @ast.Options::new() }
+  let options = if is_root {
+    parser.ledger.options
+  } else {
+    @ast.Options::new()
+  }
   options.add_raw(name, value)
   if name == "title" {
     options.title = Some(value)
@@ -2381,8 +2435,12 @@ pub fn parse_source(
   if !parser.child_currencies.is_empty() {
     let all = parser.ledger.options.operating_currencies
     let merged = []
-    for currency in all { push_unique(merged, currency) }
-    for currency in parser.child_currencies { push_unique(merged, currency) }
+    for currency in all {
+      push_unique(merged, currency)
+    }
+    for currency in parser.child_currencies {
+      push_unique(merged, currency)
+    }
     all.clear()
     all.append(merged)
   }

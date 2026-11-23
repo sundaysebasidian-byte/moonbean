@@ -2842,13 +2842,14 @@ test "a lowercase timezone z is not the UTC designator" {
 
 ///|
 test "calendar week zero begins on January 1 when aligned" {
-  for (raw, fmt, expected) in [
-    ("2023 00 4", "%Y %U %w", "2023-01-05"),
-    ("2024 00 2", "%Y %W %w", "2024-01-02"),
-    ("2024 00 2", "%Y %U %w", "2024-01-02"),
-    ("2023 00 0", "%Y %W %w", "2023-01-01"),
-    ("2024 01 1", "%Y %W %w", "2024-01-01"),
-  ] {
+  for
+    (raw, fmt, expected) in [
+      ("2023 00 4", "%Y %U %w", "2023-01-05"),
+      ("2024 00 2", "%Y %W %w", "2024-01-02"),
+      ("2024 00 2", "%Y %U %w", "2024-01-02"),
+      ("2023 00 0", "%Y %W %w", "2023-01-01"),
+      ("2024 01 1", "%Y %W %w", "2024-01-01"),
+    ] {
     let q = queried("", "SELECT parse_date('\{raw}','\{fmt}') FROM #")
     assert_eq(q.rows[0][0].to_text(), expected)
   }
@@ -2860,13 +2861,18 @@ test "calendar week zero begins on January 1 when aligned" {
 
 ///|
 test "day of year takes precedence over locale week and never hides bad fields" {
-  let day = queried("", "SELECT parse_date('2024 045 20 3','%Y %j %W %w') FROM #")
+  let day = queried(
+    "", "SELECT parse_date('2024 045 20 3','%Y %j %W %w') FROM #",
+  )
   assert_eq(day.rows[0][0].to_text(), "2024-02-14")
-  for (raw, fmt) in [
-    ("2024 000 20 3", "%Y %j %W %w"), ("2024 367 20 3", "%Y %j %W %w"),
-    ("2024 55 25 100", "%Y %m %d %j"), ("2024 05 88 100", "%Y %m %d %j"),
-    ("2024 25 12", "%Y %H %I"),
-  ] {
+  for
+    (raw, fmt) in [
+      ("2024 000 20 3", "%Y %j %W %w"),
+      ("2024 367 20 3", "%Y %j %W %w"),
+      ("2024 55 25 100", "%Y %m %d %j"),
+      ("2024 05 88 100", "%Y %m %d %j"),
+      ("2024 25 12", "%Y %H %I"),
+    ] {
     let q = queried("", "SELECT parse_date('\{raw}','\{fmt}') FROM #")
     assert_true(q.failure() is Some(@query.Evaluation(_)))
   }
@@ -2874,12 +2880,13 @@ test "day of year takes precedence over locale week and never hides bad fields" 
 
 ///|
 test "explicit date format treats Unicode separators like Python whitespace" {
-  for (raw, fmt) in [
-    ("2024\u202f02\u200303", "%Y %m %d"),
-    ("2024\u000b02\u000c03", "%Y %m %d"),
-    ("2024\u008502\u001c03", "%Y\u00a0%m\u2009%d"),
-    ("2024\u300002\u202903", "%Y %m %d"),
-  ] {
+  for
+    (raw, fmt) in [
+      ("2024\u202f02\u200303", "%Y %m %d"),
+      ("2024\u000b02\u000c03", "%Y %m %d"),
+      ("2024\u008502\u001c03", "%Y\u00a0%m\u2009%d"),
+      ("2024\u300002\u202903", "%Y %m %d"),
+    ] {
     let q = queried("", "SELECT parse_date('\{raw}','\{fmt}') FROM #")
     assert_true(q.is_ok())
     assert_eq(q.rows[0][0].to_text(), "2024-02-03")
@@ -2890,11 +2897,14 @@ test "explicit date format treats Unicode separators like Python whitespace" {
 
 ///|
 test "parsed calendar overflow reports an evaluation error rather than NULL" {
-  for (raw, fmt) in [
-    ("9999 52 7", "%G %V %u"), ("9999 366", "%Y %j"),
-    ("9999 53 6", "%Y %W %w"), ("0001 00 0", "%Y %U %w"),
-    ("2024 045 20 3", "%G %j %V %u"),
-  ] {
+  for
+    (raw, fmt) in [
+      ("9999 52 7", "%G %V %u"),
+      ("9999 366", "%Y %j"),
+      ("9999 53 6", "%Y %W %w"),
+      ("0001 00 0", "%Y %U %w"),
+      ("2024 045 20 3", "%G %j %V %u"),
+    ] {
     let q = queried("", "SELECT parse_date('\{raw}','\{fmt}') FROM #")
     assert_true(q.failure() is Some(@query.Evaluation(_)))
   }
@@ -2907,8 +2917,12 @@ test "CSV keeps an empty singleton amount cell distinct from an empty row" {
   let result = queried("", "SELECT NULL AS note FROM #")
   assert_true(result.is_ok())
   assert_eq(result.to_csv(), Some("note\r\n\"\"\r\n"))
-  assert_eq(queried("", "SELECT NULL AS x, NULL AS y FROM #").to_csv(),
-    Some("x,y\r\n,\r\n"))
-  assert_eq(queried("", "SELECT 'x,y' AS note FROM #").to_csv(),
-    Some("note\r\n\"x,y\"\r\n"))
+  assert_eq(
+    queried("", "SELECT NULL AS x, NULL AS y FROM #").to_csv(),
+    Some("x,y\r\n,\r\n"),
+  )
+  assert_eq(
+    queried("", "SELECT 'x,y' AS note FROM #").to_csv(),
+    Some("note\r\n\"x,y\"\r\n"),
+  )
 }

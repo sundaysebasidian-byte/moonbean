@@ -84,9 +84,9 @@ fn spec_number_per(
       if need.is_zero() {
         None
       } else {
-        total.div(need).map(fn(part) {
-          if per is Some(base) { base.add(part) } else { part }
-        })
+        total
+        .div(need)
+        .map(fn(part) { if per is Some(base) { base.add(part) } else { part } })
       }
   }
 }
@@ -254,7 +254,11 @@ fn select_lots(
   for i in 0..<inv.positions.length() {
     let position = inv.positions[i]
     if position.units.currency == currency &&
-      (if covering_short { position.units.number.is_negative() } else { position.units.number.is_positive() }) &&
+      (if covering_short {
+        position.units.number.is_negative()
+      } else {
+        position.units.number.is_positive()
+      }) &&
       cost_matches_spec(position.cost, spec, need) {
       candidates.push(i)
     }
@@ -386,7 +390,11 @@ fn select_lots(
 }
 
 ///|
-fn apply_plan(inv : Inventory, plan : Array[(Int32, @decimal.Decimal)], covering_short : Bool) -> Unit {
+fn apply_plan(
+  inv : Inventory,
+  plan : Array[(Int32, @decimal.Decimal)],
+  covering_short : Bool,
+) -> Unit {
   if plan.length() == 0 {
     return
   }
@@ -400,7 +408,11 @@ fn apply_plan(inv : Inventory, plan : Array[(Int32, @decimal.Decimal)], covering
         consumed = entry.1
       }
     }
-    let remaining = if covering_short { position.units.number.add(consumed) } else { position.units.number.sub(consumed) }
+    let remaining = if covering_short {
+      position.units.number.add(consumed)
+    } else {
+      position.units.number.sub(consumed)
+    }
     if !remaining.is_zero() {
       inv.positions.push({
         units: @ast.Amount::new(remaining, position.units.currency),
@@ -547,7 +559,11 @@ fn reduce_with_average(
       let candidates = []
       for i in 0..<inv.positions.length() {
         if inv.positions[i].units.currency == units.currency &&
-          (if covering_short { inv.positions[i].units.number.is_negative() } else { inv.positions[i].units.number.is_positive() }) {
+          (if covering_short {
+            inv.positions[i].units.number.is_negative()
+          } else {
+            inv.positions[i].units.number.is_positive()
+          }) {
           candidates.push(i)
         }
       }
@@ -557,7 +573,10 @@ fn reduce_with_average(
         if remaining.is_zero() {
           break
         }
-        let take = min_decimal(remaining, inv.positions[index].units.number.abs())
+        let take = min_decimal(
+          remaining,
+          inv.positions[index].units.number.abs(),
+        )
         plan.push((index, take))
         remaining = remaining.sub(take)
       }
@@ -578,9 +597,14 @@ fn reduce_with_average(
         Some(cost),
       )
       apply_plan(inv, plan, covering_short)
-      outcome_ok(if covering_short { weights } else { negate_weights(weights) }, positions=[
-        Position::new(units, Some(cost)),
-      ])
+      outcome_ok(
+        if covering_short {
+          weights
+        } else {
+          negate_weights(weights)
+        },
+        positions=[Position::new(units, Some(cost))],
+      )
     }
   }
 }
@@ -612,12 +636,14 @@ pub fn book_posting(
       let covering_short = units.number.is_positive() &&
         state.method_for(account, default_method) != "NONE" &&
         inv.positions.any(fn(p) {
-          p.units.currency == units.currency && p.cost is Some(_) &&
+          p.units.currency == units.currency &&
+          p.cost is Some(_) &&
           p.units.number.is_negative()
         })
       if (units.number.signum() >= 0 && !covering_short) ||
         (
-          units.number.is_negative() && !spec.merge &&
+          units.number.is_negative() &&
+          !spec.merge &&
           !inv.positions.any(fn(p) {
             p.units.currency == units.currency && p.units.number.is_positive()
           }) &&
@@ -700,12 +726,26 @@ pub fn book_posting(
               )
               let positions = plan.map(fn(item) {
                 Position::new(
-                  @ast.Amount::new((if covering_short { item.1 } else { item.1.neg() }), units.currency),
+                  @ast.Amount::new(
+                    if covering_short {
+                      item.1
+                    } else {
+                      item.1.neg()
+                    },
+                    units.currency,
+                  ),
                   inv.positions[item.0].cost,
                 )
               })
               apply_plan(inv, plan, covering_short)
-              outcome_ok(if covering_short { weights } else { negate_weights(weights) }, positions~)
+              outcome_ok(
+                if covering_short {
+                  weights
+                } else {
+                  negate_weights(weights)
+                },
+                positions~,
+              )
             }
           }
         }

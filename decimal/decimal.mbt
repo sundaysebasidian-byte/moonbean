@@ -514,7 +514,8 @@ pub fn Decimal::to_display(self : Decimal, min_scale~ : Int32 = 0) -> String {
   let raw = self.to_string()
   let dot = match raw.find(".") {
     Some(i) => i
-    None => return if minimum == 0 { raw } else { raw + "." + "0".repeat(minimum) }
+    None =>
+      return if minimum == 0 { raw } else { raw + "." + "0".repeat(minimum) }
   }
   let fractional = raw.length() - dot - 1
   if fractional < minimum {

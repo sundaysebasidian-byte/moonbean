@@ -39,7 +39,9 @@ fn parsed_date(
 fn parsed_ordinal(ctx : QueryContext, number : Int32) -> QueryValue {
   let date = ordinal_date(number)
   if date is QNull {
-    query_error(ctx, "query.oracle_type_error: ValueError ordinal date out of range")
+    query_error(
+      ctx, "query.oracle_type_error: ValueError ordinal date out of range",
+    )
   }
   date
 }
@@ -117,7 +119,9 @@ fn strptime_date(
       fields.push(field)
     } else if python_whitespace(c) {
       // CPython's Unicode str.isspace domain (including record separators).
-      pattern.write_string("[\u0009-\u000d\u001c-\u0020\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+")
+      pattern.write_string(
+        "[\u0009-\u000d\u001c-\u0020\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+",
+      )
     } else {
       if ".^$*+?{}[]|()\\".contains(c.to_string()) {
         pattern.write_char('\\')
@@ -164,10 +168,16 @@ fn strptime_date(
       'y' => year = if n <= 68 { 2000 + n } else { 1900 + n }
       'm' | 'd' => {
         if n < 1 || n > (if field == 'm' { 12 } else { 31 }) {
-          query_error(ctx, "query.oracle_type_error: ValueError invalid date field")
+          query_error(
+            ctx, "query.oracle_type_error: ValueError invalid date field",
+          )
           return QNull
         }
-        if field == 'm' { month = n } else { day = n }
+        if field == 'm' {
+          month = n
+        } else {
+          day = n
+        }
       }
       'b' | 'B' =>
         match
@@ -301,7 +311,10 @@ fn strptime_date(
       )
       return QNull
     }
-    return parsed_ordinal(ctx, ordinal(@ast.Date::new(year, 1, 1).unwrap()) + n - 1)
+    return parsed_ordinal(
+      ctx,
+      ordinal(@ast.Date::new(year, 1, 1).unwrap()) + n - 1,
+    )
   }
   if has_weekday && week is Some(w) {
     if w > 53 || weekday < 0 || weekday > 6 {
@@ -496,7 +509,8 @@ fn flexible_date(ctx : QueryContext, input : String) -> QueryValue {
   }
   if !named_month && numbers.is_empty() {
     if weekday is Some(day) {
-      return parsed_ordinal(ctx, 
+      return parsed_ordinal(
+        ctx,
         ordinal(today) + (day - (ordinal(today) - 1) % 7 + 7) % 7,
       )
     }

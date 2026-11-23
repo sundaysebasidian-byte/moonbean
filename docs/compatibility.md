@@ -17,7 +17,7 @@ Evidence: `scripts/conformance.py` (ledger fixtures), `scripts/bql_differential.
 
 ## Options
 
-Defaults and types are oracle values. Repeat means collection accumulation; scalar repetition replaces the value. The JSON includes actual repeated-example parser errors/results, including internal output options that the oracle accepts through `option` but applications should not normally set. Each unsupported item below can affect results; use the pinned oracle when that behavior is needed.
+Defaults and types are oracle values. Repeat means collection accumulation; scalar repetition replaces the value. The JSON includes actual repeated-example parser errors/results, including internal output options that the oracle accepts through `option` but applications should not normally set. When loading includes, root scalar settings such as title, tolerance and the default booking method remain authoritative. Operating currencies are accumulated in first-seen order with root values first. Per-file custom account-type taxonomies remain a boundary. Each unsupported item below can affect results; use the pinned oracle when that behavior is needed.
 
 | Name | Oracle type | Default | Repeat | MoonBean boundary |
 | --- | --- | --- | --- | --- |
@@ -41,7 +41,7 @@ Defaults and types are oracle values. Repeat means collection accumulation; scal
 | `conversion_currency` | str | `NOTHING` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
 | `display_precision` | dict | `{}` | yes | Implemented for MoonBean report text and report metadata (realization precision test); full oracle precision/rendering policy not proven. |
 | `inferred_tolerance_default` | dict | `{}` | yes | Supported per-currency and wildcard fallback defaults (044, 115–116); inferred currency tolerance overrides wildcard. Other combinations not exhaustively verified. |
-| `tolerance_multiplier` | Decimal | `0.5` | no | Supported decimal inference (044, 054); not an exhaustive tolerance proof. |
+| `tolerance_multiplier` | Decimal | `0.5` | no | Supported decimal inference (044, 054); finite scalar values accept exponent, grouping and Unicode decimal digits. Non-finite inputs or exponents outside ±10,000 are rejected. |
 | `inferred_tolerance_multiplier` | Decimal | `0.5` | no | Supported deprecated alias, emits warning (044). |
 | `infer_tolerance_from_cost` | bool | `False` | no | Supported quantity-precision times cost/price inference, with per-posting 0.5 cap and accumulated currency tolerances (119, object metadata differential); TRUE/True/true/1 enabled. |
 | `documents` | list | `[]` | yes | Unsupported folder discovery and file existence validation; paths stored only. Host must verify receipts. |
@@ -64,9 +64,9 @@ Defaults and types are oracle values. Repeat means collection accumulation; scal
 | `open` (meta, date, account, currencies, booking) | Syntax, currencies and booking supported (009, 013, 029–034); renamed root options are a gap. |
 | `close` (meta, date, account) | Account lifecycle validation supported (010–014). |
 | `commodity` (meta, date, currency) | Syntax/metadata retained (003); typed commodity table supported (every-column differential). |
-| `pad` (meta, date, account, source_account) | Padding and cost-inventory rejection supported (006, 007, 100–103). |
+| `pad` (meta, date, account, source_account) | The active pad applies to each currency’s first assertion. Its two legs must actually change the asserted subtree. Padding and cost-inventory diagnostics covered by 006, 007, 100–103 and the new accounting tests. |
 | `balance` (meta, date, account, amount, tolerance, diff_amount) | Assertions supported (004, 005, 048); same-day duplicate identity includes currency. The independent review fixture verifies distinct USD/EUR assertions; tolerance combinations remain bounded by fixtures. |
-| `transaction` (meta, date, flag, payee, narration, tags, links, postings) | Booking, metadata and postings supported by conformance fixtures; complete short-position lifecycle not claimed. |
+| `transaction` (meta, date, flag, payee, narration, tags, links, postings) | Booking, metadata and postings covered by conformance fixtures. An executable [FIFO short-cover example](../examples/financial-review/) validates dated reductions and compounded costs; complete short-position lifecycle is not claimed. |
 | `note` (meta, date, account, comment, tags, links) | Account validation and text parsing supported (008, 087); tags/links and stacks retained and queried (118); every oracle error category is not exhaustively verified. |
 | `event` (meta, date, type, description) | Date/type/description parsing and retention supported (008); typed events source supported (every-column differential). |
 | `query` (meta, date, name, query_string) | Date/name/query text retained (008). Check does not execute stored queries, as with bean-check; oracle `.run name` execution unsupported. Call `run_query` explicitly for supported query texts. |

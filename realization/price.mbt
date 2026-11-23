@@ -87,7 +87,7 @@ pub fn PriceDb::latest(
 ///|
 fn prefer_price(point : PricePoint, old : PricePoint, base : String) -> Bool {
   old.date.less_than(point.date) ||
-    (old.date.equal(point.date) && (point.base == base || old.base != base))
+  (old.date.equal(point.date) && (point.base == base || old.base != base))
 }
 
 ///|
@@ -191,7 +191,9 @@ pub fn PriceDb::rate(
         if seen.get(next) is None &&
           oriented_price(neighbors[next], currency) is Some(rate) {
           let combined = accumulated.mul(rate)
-          if next == quote { return Some(combined) }
+          if next == quote {
+            return Some(combined)
+          }
           seen.set(next, true)
           queue.push((next, combined))
         }
