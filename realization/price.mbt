@@ -85,6 +85,42 @@ pub fn PriceDb::latest(
 }
 
 ///|
+fn prefer_price(point : PricePoint, old : PricePoint, base : String) -> Bool {
+  old.date.less_than(point.date) ||
+    (old.date.equal(point.date) && (point.base == base || old.base != base))
+}
+
+///|
+fn oriented_price(point : PricePoint, base : String) -> @decimal.Decimal? {
+  if point.base == base {
+    Some(point.rate)
+  } else {
+    @decimal.Decimal::one().div(point.rate)
+  }
+}
+
+///|
+fn add_graph_edge(
+  graph : Map[String, Map[String, PricePoint]],
+  from : String,
+  to : String,
+  point : PricePoint,
+) -> Unit {
+  let neighbors = match graph.get(from) {
+    Some(points) => points
+    None => {
+      let points : Map[String, PricePoint] = Map([])
+      graph[from] = points
+      points
+    }
+  }
+  match neighbors.get(to) {
+    Some(old) => if prefer_price(point, old, from) { neighbors[to] = point }
+    None => neighbors[to] = point
+  }
+}
+
+///|
 fn PriceDb::edge(
   self : PriceDb,
   base : String,
@@ -101,12 +137,7 @@ fn PriceDb::edge(
       (point.base == base || !point.rate.is_zero()) {
       let newer = match latest {
         None => true
-        Some(old) =>
-          old.date.less_than(point.date) ||
-          (
-            old.date.equal(point.date) &&
-            (point.base == base || old.base != base)
-          )
+        Some(old) => prefer_price(point, old, base)
       }
       if newer {
         latest = Some(point)
@@ -114,12 +145,7 @@ fn PriceDb::edge(
     }
   }
   match latest {
-    Some(point) =>
-      if point.base == base {
-        Some(point.rate)
-      } else {
-        @decimal.Decimal::one().div(point.rate)
-      }
+    Some(point) => oriented_price(point, base)
     None => None
   }
 }
@@ -140,18 +166,17 @@ pub fn PriceDb::rate(
   if self.edge(base, quote, at) is Some(single) {
     return Some(@decimal.Decimal::one().mul(single))
   }
-  let currencies : Array[String] = []
+  // Select the dated quote for every real edge in one pass rather than
+  // rescanning the entire archive for every possible currency pairing.
+  let graph : Map[String, Map[String, PricePoint]] = Map([])
   for point in self.points {
     if date_allows(point.date, at) {
-      if !currencies.contains(point.base) {
-        currencies.push(point.base)
-      }
-      if !currencies.contains(point.quote) {
-        currencies.push(point.quote)
+      add_graph_edge(graph, point.base, point.quote, point)
+      if !point.rate.is_zero() {
+        add_graph_edge(graph, point.quote, point.base, point)
       }
     }
   }
-  currencies.sort()
   let queue = [(base, @decimal.Decimal::one())]
   let seen : Map[String, Bool] = Map([])
   seen.set(base, true)
@@ -159,13 +184,14 @@ pub fn PriceDb::rate(
   while index < queue.length() {
     let (currency, accumulated) = queue[index]
     index += 1
-    for next in currencies {
-      if seen.get(next) is None {
-        if self.edge(currency, next, at) is Some(rate) {
+    if graph.get(currency) is Some(neighbors) {
+      let ordered = neighbors.keys().to_array()
+      ordered.sort()
+      for next in ordered {
+        if seen.get(next) is None &&
+          oriented_price(neighbors[next], currency) is Some(rate) {
           let combined = accumulated.mul(rate)
-          if next == quote {
-            return Some(combined)
-          }
+          if next == quote { return Some(combined) }
           seen.set(next, true)
           queue.push((next, combined))
         }
