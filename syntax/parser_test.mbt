@@ -1067,6 +1067,30 @@ test "scalar tolerance uses the Beancount finite decimal option converter" {
 }
 
 ///|
+test "scalar tolerance accepts surrounding Unicode whitespace only" {
+  for
+    (raw, expected) in [
+      ("\u20031e-2\u2003", "0.01"),
+      ("\u30001.23", "1.23"),
+      (",\u00a0٠.٥\u202f,", "0.5"),
+    ] {
+    let ledger = @syntax.parse_source(
+      "opts.bean",
+      "option \"tolerance_multiplier\" \"\{raw}\"\n",
+    )
+    assert_eq(ledger.errors.length(), 0)
+    assert_eq(ledger.options.tolerance_multiplier.to_string(), expected)
+  }
+  for raw in ["1\u20092", "\u200b1", "\u2003", ",\u00a0٠.٥\u202f_", "1\t2"] {
+    let ledger = @syntax.parse_source(
+      "opts.bean",
+      "option \"tolerance_multiplier\" \"\{raw}\"\n",
+    )
+    assert_eq(ledger.errors.length(), 1)
+  }
+}
+
+///|
 test "total lot cost serialization round trips acquisition date and certificate label" {
   let input = "2024-01-01 * \"historic purchase\"\n  Assets:Fund 4 HOOL {{56 USD, 2023-12-15, \"Lot A\"}}\n  Assets:Cash -56 USD\n"
   let ledger = @syntax.parse_source("lots.bean", input)

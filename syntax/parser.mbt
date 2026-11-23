@@ -1899,10 +1899,22 @@ fn scalar_decimal_option(value : String) -> @decimal.Decimal? {
   if value == "" {
     return Some(@decimal.Decimal::zero())
   }
-  let compact = StringBuilder()
+  let whitespace = "\t\n\u000b\u000c\r \u001c\u001d\u001e\u001f\u0085\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000"
+  // Beancount removes commas and literal spaces before Decimal trims its
+  // edges. Underscores are ignored later, but cannot expose new whitespace.
+  let cleaned = StringBuilder()
   for c in value {
-    if [',', '_', ' ', '\t', '\r', '\n', '\u000b', '\u000c'].contains(c) {
+    if c != ',' && c != ' ' {
+      cleaned.write_char(c)
+    }
+  }
+  let compact = StringBuilder()
+  for c in cleaned.to_string().trim(chars=whitespace[:]) {
+    if c == '_' {
       continue
+    }
+    if whitespace.contains(c.to_string()) {
+      return None
     }
     if @decimal.decimal_digit(c) is Some(digit) {
       compact.write_char((48 + digit).unsafe_to_char())

@@ -41,7 +41,7 @@ Defaults and types are oracle values. Repeat means collection accumulation; scal
 | `conversion_currency` | str | `NOTHING` | no | Unsupported semantics; retained as raw option only. Use oracle for dependent loading, validation or reporting. |
 | `display_precision` | dict | `{}` | yes | Implemented for MoonBean report text and report metadata (realization precision test); full oracle precision/rendering policy not proven. |
 | `inferred_tolerance_default` | dict | `{}` | yes | Supported per-currency and wildcard fallback defaults (044, 115–116); inferred currency tolerance overrides wildcard. Other combinations not exhaustively verified. |
-| `tolerance_multiplier` | Decimal | `0.5` | no | Supported decimal inference (044, 054); finite scalar values accept exponent, grouping and Unicode decimal digits. Non-finite inputs or exponents outside ±10,000 are rejected. |
+| `tolerance_multiplier` | Decimal | `0.5` | no | Supported decimal inference (044, 054); finite scalar values accept exponents, grouping, Unicode decimal digits, and surrounding Unicode whitespace. Non-finite inputs or exponents outside ±10,000 are rejected. |
 | `inferred_tolerance_multiplier` | Decimal | `0.5` | no | Supported deprecated alias, emits warning (044). |
 | `infer_tolerance_from_cost` | bool | `False` | no | Supported quantity-precision times cost/price inference, with per-posting 0.5 cap and accumulated currency tolerances (119, object metadata differential); TRUE/True/true/1 enabled. |
 | `documents` | list | `[]` | yes | Unsupported folder discovery and file existence validation; paths stored only. Host must verify receipts. |
