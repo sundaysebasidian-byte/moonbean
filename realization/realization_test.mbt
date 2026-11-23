@@ -518,3 +518,16 @@ test "as-of account metadata does not reveal future account opens or closes" {
   assert_eq(late.account_names(), ["Assets:New","Assets:Old"])
   assert_eq(late.accounts.get("Assets:Old").unwrap().close_date.unwrap().to_string(), "2024-01-05")
 }
+
+///|
+test "dated valuation uses explicit zero and negative prices, but never inverts zero" {
+  let r = realized("2024-01-01 price ABC 2 USD\n2024-01-02 price ABC 0 USD\n2024-01-02 price OIL -2 USD\n2024-01-02 price XYZ 0 EUR\n")
+  assert_true(r.prices.latest("ABC","USD",None) is Some(n) && n.is_zero())
+  assert_eq(r.prices.latest("ABC","USD",None).unwrap().to_string(), "0")
+  assert_eq(r.rate("ABC","USD").unwrap().to_string(), "0")
+  assert_eq(r.rate("USD","ABC").unwrap().to_string(), "0.5")
+  assert_eq(r.rate("OIL","USD").unwrap().to_string(), "-2")
+  assert_eq(r.rate("USD","OIL").unwrap().to_string(), "-0.5")
+  assert_true(r.rate("EUR","XYZ") is None)
+  assert_eq(r.prices.rate("ABC","USD",@ast.Date::parse("2024-01-01")).unwrap().to_string(), "2")
+}

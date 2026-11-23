@@ -29,7 +29,7 @@ pub fn PriceDb::add(
   quote : String,
   rate : @decimal.Decimal,
 ) -> Unit {
-  if base == quote || rate.is_zero() {
+  if base == quote {
     return
   }
   self.points.push({ date, base, quote, rate, })
@@ -98,7 +98,7 @@ fn PriceDb::edge(
         (point.base == quote && point.quote == base)
       ) &&
       date_allows(point.date, at) &&
-      point.rate.is_positive() {
+      (point.base == base || !point.rate.is_zero()) {
       let newer = match latest {
         None => true
         Some(old) =>
