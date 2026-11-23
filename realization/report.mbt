@@ -884,7 +884,7 @@ pub fn register_rows(
                   Some(value) => value
                   None => @decimal.Decimal::zero()
                 }
-                let next = previous.add(units.number)
+                let next = report_add(previous, units.number)
                 running.set(units.currency, next)
                 rows.push({
                   date: entry.date,

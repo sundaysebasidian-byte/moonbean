@@ -543,3 +543,16 @@ test "market revaluation equity respects its explicit account, independently of 
   let default_report = @realization.balance_sheet(realized(base), convert=Some("USD"))
   assert_eq(row_for(default_report.rows, "Equity:Earnings:Unrealized").unwrap().amount.to_string(), "-10 USD")
 }
+
+///|
+test "register preserves a cent between offsetting large principal payments" {
+  let large = "1000000000000000000000000000"
+  let source = "2024-01-01 open Assets:Cash USD\n2024-01-01 open Equity:Capital USD\n" +
+    "2024-01-02 * \"principal\"\n  Assets:Cash " + large + " USD\n  Equity:Capital -" + large + " USD\n" +
+    "2024-01-03 * \"interest\"\n  Assets:Cash 0.01 USD\n  Equity:Capital -0.01 USD\n" +
+    "2024-01-04 * \"redeem\"\n  Assets:Cash -" + large + " USD\n  Equity:Capital " + large + " USD\n"
+  let rows = @realization.register_rows(realized(source), "Assets:Cash")
+  assert_eq(rows.length(), 3)
+  assert_eq(rows[1].running.number.to_string(),large + ".01")
+  assert_eq(rows[2].running.to_string(),"0.01 USD")
+}
