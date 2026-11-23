@@ -261,6 +261,13 @@ pub fn CostSpec::to_string(self : CostSpec) -> String {
       sb.write_string(" ")
       sb.write_string(c)
     }
+    if self.date is Some(d) {
+      sb.write_string(", " + d.to_string())
+    }
+    if self.label is Some(l) {
+      sb.write_string(", \"" + l.replace_all(old="\\", new="\\\\").replace_all(old="\"", new="\\\"") + "\"")
+    }
+    if self.merge { sb.write_string(", *") }
     sb.write_string("}}")
   } else {
     sb.write_string("{")

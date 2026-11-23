@@ -1055,3 +1055,23 @@ test "scalar tolerance uses the Beancount finite decimal option converter" {
   assert_eq(malformed.errors.map(fn(e) {e.loc.line}), [2])
   assert_eq(malformed.options.tolerance_multiplier.to_string(),"0.25")
 }
+
+///|
+test "total lot cost serialization round trips acquisition date and certificate label" {
+  let input = "2024-01-01 * \"historic purchase\"\n  Assets:Fund 4 HOOL {{56 USD, 2023-12-15, \"Lot A\"}}\n  Assets:Cash -56 USD\n"
+  let ledger = @syntax.parse_source("lots.bean",input)
+  assert_eq(ledger.errors.length(),0)
+  guard ledger.entries[0].directive is @ast.DTransaction(t) else { abort("no lot") }
+  let spec = t.postings[0].cost.unwrap()
+  let printed = spec.to_string()
+  assert_eq(printed, "{{56 USD, 2023-12-15, \"Lot A\"}}")
+  let output = @syntax.parse_source("round-trip.bean",input.replace_all(
+    old="{{56 USD, 2023-12-15, \"Lot A\"}}", new=printed,
+  ))
+  assert_eq(output.errors.length(),0)
+  guard output.entries[0].directive is @ast.DTransaction(re) else { abort("lost lot") }
+  let restored = re.postings[0].cost.unwrap()
+  assert_eq(restored.number_total.unwrap().to_string(),"56")
+  assert_eq(restored.date.unwrap().to_string(),"2023-12-15")
+  assert_eq(restored.label,Some("Lot A"))
+}
