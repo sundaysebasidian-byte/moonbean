@@ -1841,6 +1841,38 @@ let ledger_option_names : Array[String] = [
 ]
 
 ///|
+fn scalar_decimal_option(value : String) -> @decimal.Decimal? {
+  if value == "" { return Some(@decimal.Decimal::zero()) }
+  let compact = StringBuilder()
+  for c in value {
+    if [',', '_', ' ', '\t', '\r', '\n', '\u000b', '\u000c'].contains(c) {
+      continue
+    }
+    if @decimal.decimal_digit(c) is Some(digit) {
+      compact.write_char((48 + digit).unsafe_to_char())
+    } else {
+      compact.write_char(if c == 'E' { 'e' } else { c })
+    }
+  }
+  let parts = compact.to_string().split("e").to_array()
+  if parts.length() > 2 { return None }
+  guard @decimal.Decimal::parse(parts[0].to_owned()) is Some(number) else { return None }
+  if parts.length() == 1 { return Some(number) }
+  let exponent = parts[1].to_owned()
+  let mut digits = exponent
+  let sign = if exponent.has_prefix("-") { -1 } else { 1 }
+  if exponent.has_prefix("-") || exponent.has_prefix("+") { digits = exponent[1:].to_owned() }
+  if digits.is_empty() { return None }
+  let mut power = 0
+  for c in digits {
+    if !c.is_ascii_digit() { return None }
+    power = power * 10 + c.to_int() - 48
+    if power > 10000 { return None }
+  }
+  Some(@decimal.Decimal::new(number.mantissa(), number.scale() - sign * power))
+}
+
+///|
 fn apply_option(
   parser : Parser,
   name : String,
@@ -1891,8 +1923,7 @@ fn apply_option(
         line, "validation.deprecated_option", "Renamed to 'tolerance_multiplier'.",
       )
     }
-    let number = if value == "" { "0" } else { value }
-    match @decimal.Decimal::parse(number) {
+    match scalar_decimal_option(value) {
       Some(n) => options.tolerance_multiplier = n
       None =>
         parser.error(

@@ -1038,3 +1038,20 @@ test "invalid chart options preserve the last usable root and relative account" 
     "𐐀quity:Gains:1Q",
   )
 }
+
+///|
+test "scalar tolerance uses the Beancount finite decimal option converter" {
+  let cases = [
+    ("1e-3","0.001"), ("1 e -3","0.001"), ("٠.٥","0.5"),
+    ("1_0,00","1000"), ("1.25e2","125"), ("","0"),
+  ]
+  for (raw, expected) in cases {
+    let p = @syntax.parse_source("opts.bean","option \"tolerance_multiplier\" \"\{raw}\"\n")
+    assert_eq(p.errors.length(), 0)
+    assert_eq(p.options.tolerance_multiplier.to_string(), expected)
+  }
+  let malformed = @syntax.parse_source("bad.bean",
+    "option \"tolerance_multiplier\" \".25\"\noption \"tolerance_multiplier\" \"2e10001\"\n")
+  assert_eq(malformed.errors.map(fn(e) {e.loc.line}), [2])
+  assert_eq(malformed.options.tolerance_multiplier.to_string(),"0.25")
+}
