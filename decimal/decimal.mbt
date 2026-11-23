@@ -518,13 +518,18 @@ pub fn Decimal::to_string(self : Decimal) -> String {
 /// Human oriented formatting: trims trailing zeros but keeps at least
 /// `min_scale` fractional digits.
 pub fn Decimal::to_display(self : Decimal, min_scale~ : Int32 = 0) -> String {
+  let minimum = min_scale.max(0)
   let raw = self.to_string()
   let dot = match raw.find(".") {
     Some(i) => i
-    None => return raw
+    None => return if minimum == 0 { raw } else { raw + "." + "0".repeat(minimum) }
+  }
+  let fractional = raw.length() - dot - 1
+  if fractional < minimum {
+    return raw + "0".repeat(minimum - fractional)
   }
   let mut end = raw.length()
-  while end > dot + 1 + min_scale && raw.get_char(end - 1) == Some('0') {
+  while end > dot + 1 + minimum && raw.get_char(end - 1) == Some('0') {
     end = end - 1
   }
   if end == dot + 1 {

@@ -129,3 +129,13 @@ test "exact decimal rescaling never changes the value when dropping scale" {
     assert_true(result.equal(before))
   }
 }
+
+///|
+test "minimum decimal display scale is honored for round and already fractional amounts" {
+  for (n, scale, expected) in [
+    ("12", 2, "12.00"), ("-2.1", 3, "-2.100"), ("0", 2, "0.00"),
+    ("1.2500", 2, "1.25"), ("1.2031", 2, "1.2031"), ("1.00", -1, "1"),
+  ] {
+    assert_eq(dec(n).to_display(min_scale=scale), expected)
+  }
+}
