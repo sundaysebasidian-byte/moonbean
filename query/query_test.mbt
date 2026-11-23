@@ -2703,3 +2703,13 @@ test "positive sign uses the ledger account types rather than English prefixes" 
   assert_true(r.is_ok())
   assert_eq(r.rows.map(fn(row) { row[1].to_text() }), ["80","-15","15","80"])
 }
+
+///|
+test "renamed income accounts transfer to equity at OPEN and CLEAR" {
+  let source = "option \"name_assets\" \"Actif\"\noption \"name_income\" \"Recettes\"\noption \"name_expenses\" \"Depenses\"\noption \"name_equity\" \"Capital\"\n2024-01-01 open Actif:Cash USD\n2024-01-01 open Recettes:Fees USD\n2024-01-01 open Depenses:Rent USD\n2024-01-02 * \"fees\"\n  Actif:Cash 80 USD\n  Recettes:Fees -80 USD\n2024-01-03 * \"rent\"\n  Depenses:Rent 15 USD\n  Actif:Cash -15 USD\n"
+  for (clause, account) in [("OPEN ON 2024-02-01","Capital:Earnings:Previous"),("CLEAR","Capital:Earnings:Current")] {
+    let r = queried(source, "SELECT account, sum(position) FROM " + clause + " GROUP BY account ORDER BY account")
+    assert_true(r.is_ok())
+    assert_true(r.rows.any(fn(row) { row[0].to_text() == account && row[1].to_text().contains("-65 USD") }))
+  }
+}
