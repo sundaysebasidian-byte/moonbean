@@ -123,22 +123,7 @@ pub fn RealizedLedger::inventory(
 ///|
 pub fn RealizedLedger::account_names(self : RealizedLedger) -> Array[String] {
   let names = self.inventories.keys().to_array()
-  let mut i = 1
-  while i < names.length() {
-    let current = names[i]
-    let mut j = i
-    while j > 0 {
-      let prev = names[j - 1]
-      if prev.lexical_compare(current) > 0 {
-        names[j - 1] = current
-        names[j] = prev
-        j = j - 1
-      } else {
-        break
-      }
-    }
-    i = i + 1
-  }
+  names.sort_by(fn(a, b) { a.lexical_compare(b) })
   names
 }
 
