@@ -73,7 +73,7 @@ node web/dom-smoke.mjs                # 无头 Chrome：账本里的恶意字符
 ## 版本对应
 
 - 版本以 [Mooncakes 注册表](https://mooncakes.io/docs/sundaysebasidian-byte/moonbean)为准。注册表中的版本是固定快照，不会随默认分支更新。
-- 源码版本见 [moon.mod](moon.mod)。本次更新的可用查询见 [BQL 使用指南](docs/bql_extensions.md)，兼容范围见 [逐项清单](docs/compatibility.md)。
+- 本源码对应 0.4.0，发行说明见 [CHANGELOG](CHANGELOG.md)，版本号见 [moon.mod](moon.mod)。本次更新的可用查询见 [BQL 使用指南](docs/bql_extensions.md)，兼容范围见 [逐项清单](docs/compatibility.md)。
 - 在线 Playground 从默认分支独立构建。部署记录见 [Pages 工作流](.github/workflows/pages.yml)，不能用页面判断包版本。
 - 既有安装需要固定依赖时可继续使用 [0.2.8](https://mooncakes.io/docs/sundaysebasidian-byte/moonbean@0.2.8/)。旧版 0.1.1 的复现请用对应源码标签和示例，不要用 main 的文件替代。
 
