@@ -178,36 +178,21 @@ fn directive_rank(directive : @ast.Directive) -> Int32 {
 
 ///|
 fn sorted_entries(entries : Array[@ast.Entry]) -> Array[@ast.Entry] {
-  let result = []
-  for entry in entries {
-    result.push(entry)
-  }
-  let mut i = 1
-  while i < result.length() {
-    let current = result[i]
-    let mut j = i
-    while j > 0 {
-      let prev = result[j - 1]
-      let date_cmp = prev.date.compare(current.date)
-      let rank_cmp = directive_rank(prev.directive).compare(
-        directive_rank(current.directive),
-      )
-      let line_cmp = prev.query_origin.unwrap_or(prev.loc).line.compare(
-        current.query_origin.unwrap_or(current.loc).line,
-      )
-      let should_swap = date_cmp > 0 ||
-        (date_cmp == 0 && (rank_cmp > 0 || (rank_cmp == 0 && line_cmp > 0)))
-      if should_swap {
-        result[j - 1] = current
-        result[j] = prev
-        j = j - 1
-      } else {
-        break
-      }
-    }
-    i = i + 1
-  }
-  result
+  let indexed = []
+  for i in 0..<entries.length() { indexed.push((i, entries[i])) }
+  indexed.sort_by(fn(left, right) {
+    let (i, a) = left
+    let (j, b) = right
+    let date_cmp = a.date.compare(b.date)
+    if date_cmp != 0 { return date_cmp }
+    let rank_cmp = directive_rank(a.directive).compare(directive_rank(b.directive))
+    if rank_cmp != 0 { return rank_cmp }
+    let line_cmp = a.query_origin.unwrap_or(a.loc).line.compare(b.query_origin.unwrap_or(b.loc).line)
+    if line_cmp != 0 { return line_cmp }
+    // Preserves the predecessor's stable order across included files with tied line numbers.
+    i.compare(j)
+  })
+  indexed.map(fn(item) { item.1 })
 }
 
 ///|
