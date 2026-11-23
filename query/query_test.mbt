@@ -2857,3 +2857,17 @@ test "calendar week zero begins on January 1 when aligned" {
     assert_true(q.failure() is Some(@query.Evaluation(_)))
   }
 }
+
+///|
+test "day of year takes precedence over locale week and never hides bad fields" {
+  let day = queried("", "SELECT parse_date('2024 045 20 3','%Y %j %W %w') FROM #")
+  assert_eq(day.rows[0][0].to_text(), "2024-02-14")
+  for (raw, fmt) in [
+    ("2024 000 20 3", "%Y %j %W %w"), ("2024 367 20 3", "%Y %j %W %w"),
+    ("2024 55 25 100", "%Y %m %d %j"), ("2024 05 88 100", "%Y %m %d %j"),
+    ("2024 25 12", "%Y %H %I"),
+  ] {
+    let q = queried("", "SELECT parse_date('\{raw}','\{fmt}') FROM #")
+    assert_true(q.failure() is Some(@query.Evaluation(_)))
+  }
+}

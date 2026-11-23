@@ -152,8 +152,13 @@ fn strptime_date(
       'Y' => year = n
       'G' => iso_year = Some(n)
       'y' => year = if n <= 68 { 2000 + n } else { 1900 + n }
-      'm' => month = n
-      'd' => day = n
+      'm' | 'd' => {
+        if n < 1 || n > (if field == 'm' { 12 } else { 31 }) {
+          query_error(ctx, "query.oracle_type_error: ValueError invalid date field")
+          return QNull
+        }
+        if field == 'm' { month = n } else { day = n }
+      }
       'b' | 'B' =>
         match
           (if (field == 'b' && raw.length() != 3) ||
@@ -189,7 +194,7 @@ fn strptime_date(
         weekday = if field == 'w' { (n + 6) % 7 } else { n - 1 }
       }
       'H' | 'I' => {
-        if field == 'I' && (n < 1 || n > 12) {
+        if (field == 'I' && (n < 1 || n > 12)) || (field == 'H' && n > 23) {
           query_error(ctx, "query.oracle_type_error: ValueError invalid hour")
           return QNull
         }
@@ -279,6 +284,15 @@ fn strptime_date(
     )
     return QNull
   }
+  if ordinal_day is Some(n) {
+    if n < 1 || n > 366 {
+      query_error(
+        ctx, "query.oracle_type_error: ValueError invalid day of year",
+      )
+      return QNull
+    }
+    return ordinal_date(ordinal(@ast.Date::new(year, 1, 1).unwrap()) + n - 1)
+  }
   if has_weekday && week is Some(w) {
     if w > 53 || weekday < 0 || weekday > 6 {
       query_error(ctx, "query.oracle_type_error: ValueError invalid week")
@@ -321,15 +335,6 @@ fn strptime_date(
       (7 - start_distance) % 7 + (w - 1) * 7 + offset
     }
     return ordinal_date(jan1 + days)
-  }
-  if ordinal_day is Some(n) {
-    if n < 1 || n > 366 {
-      query_error(
-        ctx, "query.oracle_type_error: ValueError invalid day of year",
-      )
-      return QNull
-    }
-    return ordinal_date(ordinal(@ast.Date::new(year, 1, 1).unwrap()) + n - 1)
   }
   parsed_date(ctx, year, month, day)
 }
