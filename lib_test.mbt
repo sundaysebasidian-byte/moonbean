@@ -327,3 +327,17 @@ test "indented include reports grammar errors without losing its referenced file
   assert_eq(ledger.errors.length(), 2)
   assert_eq(ledger.entries.length(), 4)
 }
+
+///|
+test "nested includes resolve relative to a supplementary-character filename" {
+  let requests = []
+  let r = @moonbean.expand_includes("include \"Dir/集📘.bean\"\n", "books", fn(path) {
+    requests.push(path)
+    if path == "books/Dir/集📘.bean" { Some("include \"明細.bean\"\n") }
+    else if path == "books/Dir/明細.bean" { Some("2024-02-01 open Assets:Cash USD\n") }
+    else { None }
+  })
+  assert_eq(requests,["books/Dir/集📘.bean","books/Dir/明細.bean"])
+  assert_eq(r.missing.length(),0)
+  assert_true(r.source.contains("Assets:Cash"))
+}
