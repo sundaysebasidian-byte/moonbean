@@ -24,7 +24,7 @@ fn usage() -> Unit {
     "  moonbean bal|bs|is FILE [--at DATE] [--convert CCY] [--json]\n" +
     "  moonbean register FILE ACCOUNT [--json]\n" +
     "  moonbean dups FILE\n" +
-    "  moonbean query FILE 'BQL' [--at DATE] [--json]\n" +
+    "  moonbean query FILE 'BQL' [--at DATE] [--json | --csv]\n" +
     "  moonbean fmt FILE [--write]\n" +
     "  moonbean export FILE --json\n",
   )
@@ -70,6 +70,7 @@ struct CliOptions {
   mut start : @ast.Date?
   mut convert : String?
   mut json : Bool
+  mut csv : Bool
   mut write : Bool
 }
 
@@ -93,6 +94,7 @@ fn parse_options(command : String, args : Array[String]) -> CliOptions {
     start: None,
     convert: None,
     json: false,
+    csv: false,
     write: false,
   }
   let is_query = command == "query" || command == "register"
@@ -120,6 +122,9 @@ fn parse_options(command : String, args : Array[String]) -> CliOptions {
     } else if arg == "--json" {
       options.json = true
       i = i + 1
+    } else if arg == "--csv" && command == "query" {
+      options.csv = true
+      i += 1
     } else if arg == "--write" {
       options.write = true
       i = i + 1
@@ -134,6 +139,9 @@ fn parse_options(command : String, args : Array[String]) -> CliOptions {
     } else {
       fail("unexpected argument: " + arg)
     }
+  }
+  if options.json && options.csv {
+    fail("--json and --csv are mutually exclusive")
   }
   options
 }
@@ -316,7 +324,15 @@ async fn cmd_query(args : Array[String]) -> Unit {
         print_diagnostics(ledger.errors)
       }
       let result = @moonbean.run_query(ledger, options.bql, at=options.at)
-      if options.json {
+      if options.csv {
+        match result.to_csv() {
+          Some(csv) => println(csv[:csv.length() - 1]) // println restores the final LF.
+          None =>
+            fail(
+              result.error.unwrap_or("CSV is available only for table queries"),
+            )
+        }
+      } else if options.json {
         println(result.to_json())
       } else {
         let text = result.to_text()

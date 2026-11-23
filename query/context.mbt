@@ -8,6 +8,7 @@ priv struct QueryContext {
   mut opens : Map[String, @ast.Entry]?
   mut closes : Map[String, @ast.Entry]?
   mut prices : Map[String, Array[(@ast.Date, @decimal.Decimal)]]?
+  dynamic_regex : Map[String, @string.Regex]
 }
 
 ///|
@@ -24,6 +25,7 @@ fn QueryContext::new(
     opens: None,
     closes: None,
     prices: None,
+    dynamic_regex: Map([]),
   }
 }
 
@@ -368,7 +370,7 @@ fn origin_expr(expr : Expr) -> Bool {
       | "lineno"
       | "location"
       | "posting_flag"
-      | "price"
+      | "price",
     ) => true
     ECall("meta" | "entry_meta" | "any_meta", _) => true
     _ => false
@@ -395,7 +397,7 @@ fn cond_any(cond : Cond, predicate : (Expr) -> Bool) -> Bool {
     CNot(c) => cond_any(c, predicate)
     CAnd(a, b) | COr(a, b) => cond_any(a, predicate) || cond_any(b, predicate)
     CCmp(a, _, b) => expr_any(a, predicate) || expr_any(b, predicate)
-    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) => expr_any(e, predicate)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _, _) => expr_any(e, predicate)
   }
 }
 
@@ -454,7 +456,7 @@ fn representation_expr(expr : Expr) -> Bool {
       | "open_meta"
       | "commodity_meta"
       | "currency_meta",
-      _
+      _,
     ) => true
     _ => false
   }
@@ -504,12 +506,23 @@ fn typed_compare(ctx : QueryContext, a : QueryValue, b : QueryValue) -> Int32? {
 }
 
 ///|
+priv struct RelationCells {
+  columns : Map[String, Int32]
+  values : Array[QueryValue]
+}
+
+///|
+fn RelationCells::get(self : RelationCells, name : String) -> QueryValue? {
+  self.columns.get(name).map(fn(index) { self.values[index] })
+}
+
+///|
 priv struct RowExtra {
   entry : @ast.Entry?
   source : String?
   posting : @ast.Posting?
   mut running : @booking.Inventory?
-  mut cells : Map[String, QueryValue]?
+  mut cells : RelationCells?
 }
 
 ///|
@@ -563,6 +576,39 @@ fn booked_postings(postings : Array[@ast.Posting]) -> Array[@ast.Posting] {
     } else {
       ""
     }
+  }
+  // Keep the existing small-transaction path. For bigger mixed splits, group
+  // once per posting instead of repeatedly constructing weights in a sort.
+  if postings.length() >= 16 {
+    let first = currency(postings[0])
+    let mut mixed = false
+    for i in 1..<postings.length() {
+      if currency(postings[i]) != first {
+        mixed = true
+        break
+      }
+    }
+    if !mixed {
+      return postings
+    }
+    let groups : Map[String, Array[@ast.Posting]] = Map([])
+    let ordered : Array[Array[@ast.Posting]] = []
+    for p in postings {
+      let key = currency(p)
+      match groups.get(key) {
+        Some(group) => group.push(p)
+        None => {
+          let group = [p]
+          groups.set(key, group)
+          ordered.push(group)
+        }
+      }
+    }
+    let result : Array[@ast.Posting] = []
+    for group in ordered {
+      result.append(group)
+    }
+    return result
   }
   let currencies : Array[String] = []
   for p in postings {

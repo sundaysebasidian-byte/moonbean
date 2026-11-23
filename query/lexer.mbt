@@ -7,6 +7,7 @@ priv enum BTok {
   BStr(String)
   BInt(Int32)
   BNum(@decimal.Decimal)
+  BTrailingDecimal(@decimal.Decimal)
   BDate(@ast.Date)
   BSym(String)
   BEof
@@ -33,7 +34,7 @@ fn bql_is_word_char(c : Char) -> Bool {
 }
 
 ///|
-fn bql_read_string(text : String, start : Int32) -> (String, Int32) {
+fn bql_read_string(text : String, start : Int32) -> (String, Int32)? {
   let quote = match bql_char(text, start) {
     Some(c) => c
     None => '"'
@@ -53,12 +54,12 @@ fn bql_read_string(text : String, start : Int32) -> (String, Int32) {
         i = i + 2
         continue
       }
-      return (sb.to_string(), i + 1)
+      return Some((sb.to_string(), i + 1))
     }
     sb.write_char(c)
     i = i + (if c.to_int() > 0xFFFF { 2 } else { 1 })
   }
-  (sb.to_string(), i)
+  None
 }
 
 ///|
@@ -136,7 +137,9 @@ fn bql_number_token(raw : String) -> BTok {
   }
   match @decimal.Decimal::parse(raw) {
     Some(number) =>
-      if bql_has_dot(raw) ||
+      if raw.has_suffix(".") {
+        BTrailingDecimal(number)
+      } else if bql_has_dot(raw) ||
         number.compare(@decimal.Decimal::from_int(2147483647)) > 0 {
         BNum(number)
       } else {
@@ -174,12 +177,18 @@ fn lex_bql(
     }
     positions.push(i)
     if c == '"' || c == '\'' {
-      let (value, next) = bql_read_string(text, i)
+      guard bql_read_string(text, i) is Some((value, next)) else {
+        unsupported.push(
+          "lexical query.unterminated_string" + bql_location(text, i),
+        )
+        break
+      }
       tokens.push(BStr(value))
       i = next
       continue
     }
-    if c.is_ascii_digit() {
+    if c.is_ascii_digit() ||
+      (c == '.' && bql_char(text, i + 1) is Some(next) && next.is_ascii_digit()) {
       let (raw, next) = bql_read_number(text, i)
       tokens.push(bql_number_token(raw))
       i = next
@@ -201,31 +210,6 @@ fn lex_bql(
         }
       }
       let word = sb.to_string()
-      let kind = match word.to_lower() {
-        "like" => "like"
-        "join" => "join"
-        _ => ""
-      }
-      if kind != "" {
-        let mut line = 1
-        let mut column = 1
-        for offset in 0..<start {
-          if bql_char(text, offset) == Some('\n') {
-            line = line + 1
-            column = 1
-          } else {
-            column = column + 1
-          }
-        }
-        unsupported.push(
-          "unsupported query.unsupported." +
-          kind +
-          " at BQL:" +
-          line.to_string() +
-          ":" +
-          column.to_string(),
-        )
-      }
       tokens.push(BWord(word))
       continue
     }
@@ -239,7 +223,12 @@ fn lex_bql(
       }
       None => ""
     }
-    if two == "<=" || two == ">=" || two == "!=" || two == "<>" || two == "==" {
+    if two == "<=" ||
+      two == ">=" ||
+      two == "!=" ||
+      two == "<>" ||
+      two == "==" ||
+      two == "!~" {
       tokens.push(BSym(two))
       i = i + 2
     } else {
@@ -256,6 +245,11 @@ fn lex_bql(
 
 ///|
 fn bql_lex_error(text : String, index : Int32) -> String {
+  "lexical query.invalid_character" + bql_location(text, index)
+}
+
+///|
+fn bql_location(text : String, index : Int32) -> String {
   let mut line = 1
   let mut column = 1
   for offset in 0..<index {
@@ -266,8 +260,5 @@ fn bql_lex_error(text : String, index : Int32) -> String {
       column += 1
     }
   }
-  "lexical query.invalid_character at BQL:" +
-  line.to_string() +
-  ":" +
-  column.to_string()
+  " at BQL:" + line.to_string() + ":" + column.to_string()
 }

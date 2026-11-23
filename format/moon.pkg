@@ -1,4 +1,7 @@
 import {
   "sundaysebasidian-byte/moonbean/syntax",
+}
+
+import {
   "sundaysebasidian-byte/moonbean/validation",
 } for "test"

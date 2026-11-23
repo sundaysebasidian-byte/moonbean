@@ -69,7 +69,8 @@ test("check: errors carry line numbers", () => {
   assert.equal(res.valid, false);
   const byLine = Object.fromEntries(res.errors.map((e) => [e.line, e.code]));
   assert.equal(byLine[2], "validation.unknown_account");
-  assert.equal(byLine[5], "parse.date");
+  // The ledger lexer rejects this invalid calendar token before date parsing.
+  assert.equal(byLine[5], "parse.token");
 });
 
 test("check: include is reported on its own line", () => {

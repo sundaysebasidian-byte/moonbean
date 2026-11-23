@@ -80,6 +80,22 @@ def main():
         oracle = c.oracle_query(args.oracle, ledger, query)
         ok, detail = compare_bql(ours, oracle) if ours else (False, 'moonbean failed')
         results.append(dict(query=query, ok=ok, detail=detail))
+    # The same tagged transaction has two postings but only one transaction row.
+    # Include absent matches so an accidentally ignored filter cannot pass.
+    ledger = 'tests/ledgers/015-tags-links.beancount'
+    transaction_filters = {
+        "SELECT count(*) FROM transactions WHERE narration = 'Coffee'": 1,
+        "SELECT count(*) FROM transactions WHERE narration = 'Missing'": 0,
+        "SELECT count(*) WHERE narration = 'Coffee'": 2,
+        "SELECT count(*) WHERE narration = 'Missing'": 0,
+    }
+    for query, count in transaction_filters.items():
+        oracle = c.oracle_query(args.oracle, ledger, query)
+        ours = c.ours_query(args.ours, ledger, query)
+        ok, detail = compare_bql(ours, oracle) if ours else (False, 'moonbean failed')
+        if oracle is None or oracle[1:] != ([[str(count)]] if count else []):
+            ok, detail = False, 'oracle output differs from expected transaction/posting count'
+        results.append(dict(query=query, ok=ok, detail=detail))
     fixture = json.loads((Path(__file__).resolve().parent.parent / 'tests/bql-strings.json').read_text(encoding='utf-8'))
     for case in fixture['cases']:
         query = case['query']

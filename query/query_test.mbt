@@ -1478,3 +1478,1169 @@ test "amount and empty metadata retain typed query and PRINT values" {
   guard printed.kind is @query.DirectiveText(text) else { abort("PRINT") }
   assert_true(text.contains("  value: 1.00 USD\n  empty: \n"))
 }
+
+///|
+test "NULLIF handles equal and nullable values without altering COALESCE" {
+  let cases = [
+    ("SELECT nullif(10.0,10) LIMIT 1", ""),
+    ("SELECT nullif(10,NULL) LIMIT 1", "10"),
+    ("SELECT nullif(NULL,10) LIMIT 1", ""),
+    ("SELECT nullif('VAT','vat') LIMIT 1", "VAT"),
+    ("SELECT length(nullif('VAT','NET')) LIMIT 1", "3"),
+  ]
+  for (statement, expected) in cases {
+    let q = queried(ledger_source(), statement)
+    assert_true(q.error is None)
+    assert_eq(q.rows.length(), 1)
+    assert_eq(q.rows[0][0].to_text(), expected)
+  }
+}
+
+///|
+test "AVG performs exact accumulation and one decimal division" {
+  let source = "2024-01-01 open Assets:Cash USD\n2024-01-01 open Equity:Start USD\n2024-01-02 * \"lo\"\n  Assets:Cash 0.1 USD\n  Equity:Start -0.1 USD\n2024-01-03 * \"hi\"\n  Assets:Cash 0.2 USD\n  Equity:Start -0.2 USD\n"
+  let q = queried(
+    source, "SELECT avg(number(units)) WHERE account = 'Assets:Cash'",
+  )
+  assert_true(q.error is None)
+  assert_eq(q.rows[0][0].to_text(), "0.15")
+  let empty = queried(
+    source, "SELECT avg(number(units)) WHERE account = 'Assets:Missing'",
+  )
+  assert_true(empty.error is None)
+  assert_eq(empty.rows.length(), 0)
+  let nullable = queried(source, "SELECT avg(NULL)")
+  assert_true(nullable.error is None)
+  assert_true(nullable.rows[0][0] is @query.QNull)
+  let nested = queried(source, "SELECT avg(sum(number(units)))")
+  assert_true(nested.error is Some(_))
+  let integer = queried(source, "SELECT avg(3)")
+  assert_true(integer.error is None)
+  assert_eq(integer.rows[0][0].to_text(), "3")
+}
+
+///|
+test "COUNT_DISTINCT counts scalar identities and discards NULL" {
+  let cases = [
+    ("SELECT count_distinct(account)", "3"),
+    ("SELECT count_distinct(payee)", "0"),
+    ("SELECT count_distinct(NULL)", "0"),
+    ("SELECT count_distinct(currency)", "1"),
+    ("SELECT count_distinct(number(units))", "4"),
+  ]
+  for (statement, expected) in cases {
+    let q = queried(ledger_source(), statement)
+    assert_true(q.error is None)
+    assert_eq(q.rows.length(), 1)
+    assert_eq(q.rows[0][0].to_text(), expected)
+  }
+}
+
+///|
+test "MEDIAN sorts numeric amounts and handles empty/odd/even groups" {
+  let cases = [
+    ("SELECT median(number(units))", "0"),
+    ("SELECT median(number(units)) WHERE account = 'Assets:Cash'", "490"),
+    ("SELECT median(number(units)) WHERE account = 'Expenses:Food'", "20"),
+    ("SELECT median(NULL)", ""),
+  ]
+  for (statement, expected) in cases {
+    let q = queried(ledger_source(), statement)
+    assert_true(q.error is None)
+    assert_eq(q.rows.length(), 1)
+    assert_eq(q.rows[0][0].to_text(), expected)
+  }
+}
+
+///|
+test "COLLECT produces a typed list in input order, retaining nulls" {
+  let q = queried(
+    ledger_source(),
+    "SELECT collect(account) WHERE number(units) > 0",
+  )
+  assert_true(q.error is None)
+  assert_eq(q.rows.length(), 1)
+  assert_eq(q.rows[0][0].to_json(), "[\"Assets:Cash\",\"Expenses:Food\"]")
+  let nested = queried(
+    ledger_source(),
+    "SELECT length(xs) FROM (SELECT collect(payee) AS xs)",
+  )
+  assert_true(nested.error is None)
+  assert_eq(nested.rows[0][0].to_text(), "4")
+  let empty = queried(
+    ledger_source(),
+    "SELECT collect(account) WHERE number(units) = 0",
+  )
+  assert_true(empty.error is None)
+  assert_eq(empty.rows.length(), 0)
+}
+
+///|
+test "non-null endpoints pick the first and last known payee, retaining old LAST" {
+  let source = "2024-01-01 * \"unknown1\"\n2024-01-02 * \"Bob\" \"dentist\"\n2024-01-03 * \"Alice\" \"clinic\"\n2024-01-04 * \"unknown2\"\n"
+  let q = queried(
+    source, "SELECT first_non_null(payee), last_non_null(payee), last(payee) FROM transactions",
+  )
+  assert_true(q.error is None)
+  assert_eq(q.rows[0][0].to_text(), "Bob")
+  assert_eq(q.rows[0][1].to_text(), "Alice")
+  assert_true(q.rows[0][2] is @query.QNull)
+  let missing = queried(source, "SELECT last_non_null(NULL) FROM transactions")
+  assert_true(missing.error is None)
+  assert_true(missing.rows[0][0] is @query.QNull)
+}
+
+///|
+test "OFFSET slices ordered or distinct output without integer overflow" {
+  let page = queried(
+    ledger_source(),
+    "SELECT DISTINCT account ORDER BY account LIMIT 1 OFFSET 1",
+  )
+  assert_true(page.error is None)
+  assert_eq(page.rows.length(), 1)
+  assert_eq(page.rows[0][0].to_text(), "Expenses:Food")
+  let inner = queried(
+    ledger_source(),
+    "SELECT a FROM (SELECT DISTINCT account AS a ORDER BY a OFFSET 1) ORDER BY a",
+  )
+  assert_true(inner.error is None)
+  assert_eq(inner.rows.map(fn(r) { r[0].to_text() }), [
+    "Expenses:Food", "Income:Salary",
+  ])
+  let beyond = queried(
+    ledger_source(),
+    "SELECT account LIMIT 2147483647 OFFSET 2147483647",
+  )
+  assert_true(beyond.error is None)
+  assert_eq(beyond.rows.length(), 0)
+  assert_true(
+    queried(ledger_source(), "SELECT account OFFSET -1").error is Some(_),
+  )
+}
+
+///|
+test "NULLS FIRST and NULLS LAST do not flip on descending sort" {
+  let source = "2024-01-01 * \"a\"\n2024-01-02 * \"Bob\" \"b\"\n2024-01-03 * \"Alice\" \"c\"\n2024-01-04 * \"d\"\n"
+  for
+    (suffix, expected) in [
+      ("ASC NULLS LAST, narration DESC", ["c", "b", "d", "a"]),
+      ("DESC NULLS FIRST, narration ASC", ["a", "d", "b", "c"]),
+      ("ASC", ["a", "d", "c", "b"]),
+    ] {
+    let q = queried(
+      source,
+      "SELECT narration FROM transactions ORDER BY payee " + suffix,
+    )
+    assert_true(q.error is None)
+    assert_eq(q.rows.map(fn(r) { r[0].to_text() }), expected)
+  }
+  assert_true(
+    queried(
+      source, "SELECT narration FROM transactions ORDER BY payee NULLS BOTH",
+    ).error
+    is Some(_),
+  )
+}
+
+///|
+test "SPLIT_TEXT preserves empty fields in literal separated text" {
+  let cases = [
+    (
+      "SELECT split_text('房租::餐饮::','::') LIMIT 1", "[\"房租\",\"餐饮\",\"\"]",
+    ),
+    ("SELECT split_text('',';') LIMIT 1", "[\"\"]"),
+    ("SELECT split_text('a.b.c','.') LIMIT 1", "[\"a\",\"b\",\"c\"]"),
+    ("SELECT split_text('a',NULL) LIMIT 1", "null"),
+    ("SELECT length(split_text('a,b,c',',')) LIMIT 1", "3"),
+  ]
+  for (statement, expected) in cases {
+    let q = queried(ledger_source(), statement)
+    assert_true(q.error is None)
+    assert_eq(q.rows.length(), 1)
+    assert_eq(q.rows[0][0].to_json(), expected)
+  }
+}
+
+///|
+test "JOIN_TEXT composes split or aggregate lists and omits null members" {
+  let q = queried(
+    ledger_source(),
+    "SELECT join_text(split_text('餐饮|交通|','|'), '／') LIMIT 1",
+  )
+  assert_true(q.error is None)
+  assert_eq(q.rows[0][0].to_text(), "餐饮／交通／")
+  let ag = queried(
+    ledger_source(),
+    "SELECT join_text(collect(account), ' / ') WHERE number(units) > 0",
+  )
+  assert_true(ag.error is None)
+  assert_eq(ag.rows[0][0].to_text(), "Assets:Cash / Expenses:Food")
+  let empty = queried(ledger_source(), "SELECT join_text(collect(payee), '-')")
+  assert_true(empty.error is None)
+  assert_eq(empty.rows[0][0].to_text(), "")
+  let invalid = queried(ledger_source(), "SELECT join_text(collect(42), '-')")
+  assert_true(invalid.error is Some(_))
+}
+
+///|
+test "TRIM helpers remove only edge whitespace and preserve interior Unicode" {
+  let cases = [
+    ("SELECT trim('  餐 饮  ') LIMIT 1", "\"餐 饮\""),
+    ("SELECT ltrim('  a  ') LIMIT 1", "\"a  \""),
+    ("SELECT rtrim('  a  ') LIMIT 1", "\"  a\""),
+    ("SELECT trim('  café 　') LIMIT 1", "\"café\""),
+    ("SELECT trim(NULL) LIMIT 1", "null"),
+  ]
+  for (statement, expected) in cases {
+    let q = queried(ledger_source(), statement)
+    assert_true(q.error is None)
+    assert_eq(q.rows.length(), 1)
+    assert_eq(q.rows[0][0].to_json(), expected)
+  }
+}
+
+///|
+test "REPLACE_TEXT substitutes literal characters rather than regex" {
+  let cases = [
+    ("SELECT replace_text('Food.+Food','.+',' / ') LIMIT 1", "\"Food / Food\""),
+    ("SELECT replace_text('账本账本','账本','账') LIMIT 1", "\"账账\""),
+    ("SELECT replace_text('aaa','aa','x') LIMIT 1", "\"xa\""),
+    ("SELECT replace_text('USD','','X') LIMIT 1", "\"USD\""),
+    ("SELECT replace_text('x','x',NULL) LIMIT 1", "null"),
+  ]
+  for (statement, expected) in cases {
+    let q = queried(ledger_source(), statement)
+    assert_true(q.error is None)
+    assert_eq(q.rows.length(), 1)
+    assert_eq(q.rows[0][0].to_json(), expected)
+  }
+}
+
+///|
+test "Literal prefix and suffix helpers are Unicode-safe and composable in WHERE" {
+  let cases = [
+    ("SELECT starts_with('账本/月报','账本') LIMIT 1", "TRUE"),
+    ("SELECT ends_with('账本/月报','月报') LIMIT 1", "TRUE"),
+    ("SELECT ends_with('USD','usd') LIMIT 1", "FALSE"),
+    ("SELECT starts_with('USD','') LIMIT 1", "TRUE"),
+    ("SELECT starts_with(NULL,'A') LIMIT 1", ""),
+    ("SELECT count(*) WHERE starts_with(account,'Assets:')", "2"),
+  ]
+  for (statement, expected) in cases {
+    let q = queried(ledger_source(), statement)
+    assert_true(q.error is None)
+    assert_eq(q.rows.length(), 1)
+    assert_eq(q.rows[0][0].to_text(), expected)
+  }
+}
+
+///|
+test "DATE_FORMAT renders bounded locale-neutral date directives" {
+  let q = queried(
+    ledger_source(),
+    "SELECT date_format(date('2024-02-29'), '%Y/%m/%d: %j, %% and %F') LIMIT 1",
+  )
+  assert_true(q.error is None)
+  assert_eq(q.rows[0][0].to_text(), "2024/02/29: 060, % and 2024-02-29")
+  let early = queried(
+    ledger_source(),
+    "SELECT date_format(date(1,1,1), '%F %j') LIMIT 1",
+  )
+  assert_true(early.error is None)
+  assert_eq(early.rows[0][0].to_text(), "0001-01-01 001")
+  let bad = queried(ledger_source(), "SELECT date_format(date, '%Q') LIMIT 1")
+  assert_true(bad.error is Some(_))
+  let empty = queried(ledger_source(), "SELECT date_format(NULL, '%F') LIMIT 1")
+  assert_true(empty.error is None)
+  assert_true(empty.rows[0][0] is @query.QNull)
+}
+
+///|
+test "Month boundary helpers support leap years and the last representable month" {
+  let cases = [
+    ("SELECT month_end(date(2024,2,1)) LIMIT 1", "2024-02-29"),
+    ("SELECT month_end(date(1900,2,1)) LIMIT 1", "1900-02-28"),
+    ("SELECT month_end(date(9999,12,2)) LIMIT 1", "9999-12-31"),
+    ("SELECT days_in_month(date(2000,2,1)) LIMIT 1", "29"),
+    ("SELECT days_in_month(date(2024,4,1)) LIMIT 1", "30"),
+    ("SELECT month_end(NULL) LIMIT 1", ""),
+  ]
+  for (statement, expected) in cases {
+    let q = queried(ledger_source(), statement)
+    assert_true(q.error is None)
+    assert_eq(q.rows.length(), 1)
+    assert_eq(q.rows[0][0].to_text(), expected)
+  }
+}
+
+///|
+test "CLAMP bounds mixed decimal values and rejects inverted ranges" {
+  for
+    (query, expected) in [
+      ("SELECT clamp(-3,0,10)", "0"),
+      ("SELECT clamp(12,0,10.5)", "10.5"),
+      ("SELECT clamp(2.25,0,10)", "2.25"),
+      ("SELECT clamp(NULL,0,1)", ""),
+    ] {
+    let q = queried(ledger_source(), query + " LIMIT 1")
+    assert_true(q.error is None)
+    assert_eq(q.rows[0][0].to_text(), expected)
+  }
+  assert_true(queried(ledger_source(), "SELECT clamp(2,5,1)").error is Some(_))
+  assert_true(
+    queried(ledger_source(), "SELECT clamp('x',0,1)").error is Some(_),
+  )
+}
+
+///|
+test "RUN SAVED resolves named query directives without recursion or ambiguous matches" {
+  let base = ledger_source() +
+    "2024-01-09 query \"cash summary\" \"SELECT count(*) WHERE account = 'Assets:Cash'\"\n"
+  let q = queried(base, "RUN SAVED 'cash summary'")
+  assert_true(q.error is None)
+  assert_eq(q.rows.length(), 1)
+  assert_eq(q.rows[0][0].to_text(), "2")
+  let missing = queried(base, "RUN SAVED 'Cash summary'")
+  assert_true(missing.error is Some(_))
+  assert_true(missing.error.unwrap().contains("not found"))
+  let dup = queried(
+    base + "2024-01-10 query \"cash summary\" \"SELECT 3\"\n",
+    "RUN SAVED 'cash summary'",
+  )
+  assert_true(dup.error is Some(_))
+  assert_true(dup.error.unwrap().contains("ambiguous"))
+  let cycle = queried(
+    base + "2024-01-10 query \"cycle\" \"RUN SAVED 'cycle'\"\n",
+    "RUN SAVED 'cycle'",
+  )
+  assert_true(cycle.error is Some(_))
+  assert_true(cycle.error.unwrap().contains("nested"))
+}
+
+///|
+test "unterminated query strings reject at their opening quote" {
+  for
+    (query, location) in [
+      ("SELECT 'incomplete", "BQL:1:8"),
+      ("SELECT \"😀", "BQL:1:8"),
+      ("SELECT\n  'a''", "BQL:2:3"),
+      ("RUN SAVED 'summary", "BQL:1:11"),
+    ] {
+    let result = queried(ledger_source(), query)
+    assert_true(result.failure() is Some(@query.Syntax(_)))
+    let message = result.error.unwrap()
+    assert_true(message.has_prefix("lexical query.unterminated_string"))
+    assert_true(message.has_suffix(location))
+  }
+  for
+    (query, expected) in [
+      ("SELECT 'a''b' LIMIT 1", "a''b"),
+      ("SELECT \"a\"\"b\" LIMIT 1", "a\"\"b"),
+      ("SELECT '' LIMIT 1", ""),
+      ("SELECT '😀' LIMIT 1", "😀"),
+    ] {
+    let result = queried(ledger_source(), query)
+    assert_true(result.error is None)
+    assert_eq(result.rows[0][0].to_text(), expected)
+  }
+}
+
+///|
+test "allows one terminal query semicolon but never a second statement" {
+  for
+    query in [
+      "SELECT account LIMIT 1;\n ", "SELECT account FROM (SELECT account LIMIT 1);",
+      "SELECT ';' LIMIT 1;",
+    ] {
+    let result = queried(ledger_source(), query)
+    assert_true(result.error is None)
+    assert_eq(result.rows.length(), 1)
+  }
+  let quoted = queried(ledger_source(), "SELECT ';' LIMIT 1;")
+  assert_eq(quoted.rows[0][0].to_text(), ";")
+  let cmp = queried(ledger_source(), "SELECT 1=1;")
+  assert_true(cmp.error is None)
+  assert_eq(cmp.rows[0][0].to_text(), "TRUE")
+  for
+    query in [
+      "SELECT account LIMIT 1;;", "SELECT account LIMIT 1; SELECT account", "SELECT account FROM (SELECT account LIMIT 1;)",
+    ] {
+    assert_true(
+      queried(ledger_source(), query).failure() is Some(@query.Syntax(_)),
+    )
+  }
+}
+
+///|
+test "classifies actual extension evaluation failures separately from invalid query syntax" {
+  for
+    query in [
+      "SELECT split_text('abc','')", "SELECT date_format(date,'%')", "SELECT date_format(date,'%A')",
+      "SELECT clamp(2,4,1)", "SELECT join_text(collect(1),',')",
+    ] {
+    let result = queried(ledger_source(), query)
+    assert_true(result.failure() is Some(@query.Evaluation(_)))
+    assert_true(result.error.unwrap().has_prefix("evaluation query."))
+  }
+  assert_true(
+    queried(ledger_source(), "SELECT +").failure() is Some(@query.Syntax(_)),
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT split_text(1,'x')").failure()
+    is Some(@query.Compilation(_)),
+  )
+}
+
+///|
+test "null-safe scalar comparisons complement one another in projections and filters" {
+  for
+    (sql, result) in [
+      ("NULL IS DISTINCT FROM NULL", "FALSE"),
+      ("NULL IS NOT DISTINCT FROM NULL", "TRUE"),
+      ("1 IS DISTINCT FROM NULL", "TRUE"),
+      ("NULL IS DISTINCT FROM 1", "TRUE"),
+      ("1.00 IS NOT DISTINCT FROM 1", "TRUE"),
+      ("'1' IS DISTINCT FROM 1", "TRUE"),
+      ("'é' IS DISTINCT FROM 'e'", "TRUE"),
+      ("date('2024-01-01') IS NOT DISTINCT FROM date('2024-01-01')", "TRUE"),
+    ] {
+    let r = queried(ledger_source(), "SELECT " + sql + " LIMIT 1")
+    assert_true(r.error is None)
+    assert_eq(r.rows[0][0].to_text(), result)
+  }
+  assert_eq(
+    queried(
+      ledger_source(),
+      "SELECT count(*) WHERE payee IS NOT DISTINCT FROM NULL",
+    ).rows[0][0].to_text(),
+    "4",
+  )
+  assert_eq(
+    queried(ledger_source(), "SELECT count(*) IS DISTINCT FROM 4").rows[0][0].to_text(),
+    "FALSE",
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT tags IS DISTINCT FROM links").failure()
+    is Some(@query.Compilation(_)),
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT payee IS DISTINCT NULL").failure()
+    is Some(@query.Syntax(_)),
+  )
+}
+
+///|
+test "searched CASE selects the first true branch and skips dead evaluations" {
+  for
+    (query, expected) in [
+      (
+        "CASE WHEN 1=1 THEN 'first' WHEN 2=2 THEN 'second' ELSE 'other' END", "first",
+      ),
+      ("CASE WHEN payee IS NULL THEN 'missing' ELSE payee END", "missing"),
+      ("CASE WHEN 0=1 THEN clamp(2,4,1) ELSE 5.0 END", "5.0"),
+      ("CASE WHEN 0=1 THEN 'ignore' WHEN NULL THEN 'ignore also' END", "NULL"),
+      (
+        "CASE WHEN 1=1 THEN CASE WHEN 1=1 THEN 'inner' END ELSE 'outer' END", "inner",
+      ),
+    ] {
+    let r = queried(ledger_source(), "SELECT " + query + " LIMIT 1")
+    assert_true(r.error is None)
+    if expected == "NULL" {
+      assert_true(r.rows[0][0] is @query.QNull)
+    } else {
+      assert_eq(r.rows[0][0].to_text(), expected)
+    }
+  }
+  let grouped = queried(
+    ledger_source(),
+    "SELECT CASE WHEN count(*)=4 THEN 'yes' ELSE 'no' END AS answer",
+  )
+  assert_eq(grouped.rows[0][0].to_text(), "yes")
+  let grouped_lazy = queried(
+    ledger_source(),
+    "SELECT CASE WHEN count(*)<0 THEN clamp(sum(number(units)),4,1) ELSE 5.0 END",
+  )
+  assert_true(grouped_lazy.error is None)
+  assert_eq(grouped_lazy.rows[0][0].to_text(), "5.0")
+  for
+    q in [
+      "SELECT CASE WHEN 1=1 THEN clamp(2,4,1) ELSE 5.0 END", "SELECT CASE WHEN count(*)>0 THEN clamp(sum(number(units)),4,1) ELSE 5.0 END",
+    ] {
+    let r = queried(ledger_source(), q)
+    assert_true(r.failure() is Some(@query.Evaluation(_)))
+    assert_true(r.error.unwrap().has_prefix("evaluation query.clamp"))
+  }
+  assert_true(
+    queried(ledger_source(), "SELECT CASE WHEN 1=1 THEN 1 ELSE 'x' END").failure()
+    is Some(@query.Compilation(_)),
+  )
+  assert_true(
+    queried(ledger_source(), "SELECT CASE WHEN 1=1 THEN 1").failure()
+    is Some(@query.Syntax(_)),
+  )
+}
+
+///|
+test "weighted average accumulates exact signed products before one decimal division" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT weighted_avg(number(units),abs(number(units))) WHERE account='Assets:Cash'",
+  )
+  assert_true(r.error is None)
+  assert_eq(r.rows[0][0].to_text(), "980")
+  let cancellation = queried(
+    source, "SELECT weighted_avg(number(units),number(units))",
+  )
+  assert_true(cancellation.error is None)
+  assert_true(cancellation.rows[0][0] is @query.QNull)
+  let absent = queried(source, "SELECT weighted_avg(number(units),NULL)")
+  assert_true(absent.error is None)
+  assert_true(absent.rows[0][0] is @query.QNull)
+  let big = queried(
+    source, "SELECT weighted_avg(number(units),100000000000000000000000000000000.001) WHERE account='Assets:Cash'",
+  )
+  assert_true(big.error is None)
+  assert_eq(big.rows[0][0].to_text(), "490")
+  assert_true(
+    queried(source, "SELECT weighted_avg(narration,1)").failure()
+    is Some(@query.Compilation(_)),
+  )
+}
+
+///|
+test "signed zero does not block safe scalar DISTINCT but retains representation boundaries" {
+  let source = "2024-01-01 open Assets:Cash USD\n2024-01-01 open Equity:Start USD\n2024-01-02 * \"Alice\" \"deposit\"\n  Assets:Cash 1 USD\n  Equity:Start -1 USD\n2024-01-03 * \"Alice\" \"cancelled\"\n  Assets:Cash -0.00 USD\n  Equity:Start 0.00 USD\n2024-01-04 * \"unassigned\"\n  Assets:Cash 2 USD\n  Equity:Start -2 USD\n"
+  let distinct = queried(
+    source, "SELECT DISTINCT payee FROM transactions ORDER BY payee",
+  )
+  assert_true(distinct.error is None)
+  assert_eq(distinct.rows.length(), 2)
+  assert_true(distinct.rows[0][0] is @query.QNull)
+  assert_eq(distinct.rows[1][0].to_text(), "Alice")
+  let ordinary = queried(
+    source, "SELECT DISTINCT account, year(date) ORDER BY account",
+  )
+  assert_true(ordinary.error is None)
+  assert_eq(ordinary.rows.length(), 2)
+  for
+    q in [
+      "SELECT DISTINCT position", "SELECT DISTINCT number(units)", "SELECT DISTINCT repr(payee) FROM transactions",
+      "SELECT DISTINCT payee FROM transactions WHERE repr(payee) = 'unused'", "SELECT id FROM #entries",
+    ] {
+    assert_true(queried(source, q).failure() is Some(@query.Unsupported(_)))
+  }
+}
+
+///|
+test "simple pagination preserves errors outside the returned window" {
+  let source = ledger_source()
+  assert_eq(
+    queried(source, "SELECT account LIMIT 2 OFFSET 1").rows[0][0].to_text(),
+    "Income:Salary",
+  )
+  assert_eq(
+    queried(source, "SELECT account LIMIT 2 OFFSET 1").rows[1][0].to_text(),
+    "Expenses:Food",
+  )
+  assert_true(
+    queried(source, "SELECT account LIMIT 1 OFFSET 2147483647").rows.is_empty(),
+  )
+  let q = "SELECT CASE WHEN account='Expenses:Food' THEN clamp(2,4,1) ELSE 5.0 END "
+  for suffix in ["LIMIT 0", "LIMIT 1", "LIMIT 1 OFFSET 3", "OFFSET 2147483647"] {
+    assert_true(
+      queried(source, q + suffix).failure() is Some(@query.Evaluation(_)),
+    )
+  }
+  let ordered = queried(source, "SELECT account ORDER BY account DESC LIMIT 1")
+  assert_eq(ordered.rows[0][0].to_text(), "Income:Salary")
+  let grouped = queried(
+    source, "SELECT account,count(*) GROUP BY account LIMIT 1",
+  )
+  assert_eq(grouped.rows[0][1].to_text(), "2")
+}
+
+///|
+test "projection ordinals cannot wrap to a valid column" {
+  let source = ledger_source()
+  for
+    q in [
+      "SELECT account ORDER BY 4294967297", "SELECT account GROUP BY 4294967297",
+      "SELECT account, currency, sum(number) GROUP BY 1,2 PIVOT BY 4294967297,2",
+      "SELECT account, date ORDER BY 18446744073709551618", "SELECT account ORDER BY 0",
+    ] {
+    let r = queried(source, q)
+    assert_true(r.failure() is Some(@query.Compilation(_)))
+    assert_true(r.error.unwrap().contains("query.invalid_reference"))
+  }
+  let good = queried(source, "SELECT account, date ORDER BY 2,1 LIMIT 2")
+  assert_true(good.error is None)
+  assert_eq(good.rows[0][0].to_text(), "Assets:Cash")
+}
+
+///|
+test "negative regular expressions preserve null instead of applying truth negation" {
+  let source = ledger_source()
+  let r = queried(source, "SELECT account, account !~ 'cAsh' ORDER BY account")
+  assert_true(r.error is None)
+  assert_eq(r.rows[0][1].to_text(), "FALSE")
+  assert_eq(r.rows[2][1].to_text(), "TRUE")
+  let nulls = queried(
+    source, "SELECT payee !~ 'name', NOT payee ~ 'name' LIMIT 1",
+  )
+  assert_true(nulls.error is None)
+  assert_true(nulls.rows[0][0] is @query.QNull)
+  assert_eq(nulls.rows[0][1].to_text(), "TRUE")
+  assert_true(
+    queried(source, "SELECT payee WHERE payee !~ 'name'").rows.is_empty(),
+  )
+  assert_true(
+    queried(
+      source, "SELECT account HAVING first(payee) !~ 'x' GROUP BY account",
+    ).failure()
+    is Some(@query.Syntax(_)),
+  )
+  assert_true(
+    queried(
+      source, "SELECT account GROUP BY account HAVING first(payee) !~ 'x'",
+    ).rows.is_empty(),
+  )
+  assert_true(
+    queried(source, "SELECT 1 !~ 'x'").failure() is Some(@query.Compilation(_)),
+  )
+  assert_true(
+    queried(source, "SELECT account WHERE 1 !~ 'x'").failure()
+    is Some(@query.Compilation(_)),
+  )
+  assert_true(
+    queried(source, "SELECT account !~ '['").failure()
+    is Some(@query.Unsupported(_)),
+  )
+}
+
+///|
+test "decimal literals accept omitted leading and trailing digits without pretending to be integers" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT repr(.5),repr(1.),repr(-.25),repr(.0),repr(2+.5) LIMIT 1",
+  )
+  assert_true(r.error is None)
+  assert_eq(r.rows[0][0].to_text(), "Decimal('0.5')")
+  assert_eq(r.rows[0][1].to_text(), "Decimal('1')")
+  assert_eq(r.rows[0][2].to_text(), "Decimal('-0.25')")
+  assert_eq(r.rows[0][3].to_text(), "Decimal('0.0')")
+  assert_eq(r.rows[0][4].to_text(), "Decimal('2.5')")
+  assert_true(
+    queried(source, "SELECT account LIMIT 1.").failure()
+    is Some(@query.Syntax(_)),
+  )
+  assert_true(
+    queried(source, "SELECT account ORDER BY 1.").failure()
+    is Some(@query.Syntax(_)),
+  )
+  assert_true(queried(source, "SELECT .").failure() is Some(@query.Syntax(_)))
+  assert_true(queried(source, "SELECT 1..2").error is Some(_))
+  let list = queried(source, "SELECT (1.,.5) LIMIT 1")
+  assert_true(
+    list.rows[0][0] is @query.QList([@query.QNumber(_), @query.QNumber(_)]),
+  )
+}
+
+///|
+test "aggregate FILTER computes conditional columns without dropping source groups" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT currency,count(*) FILTER (WHERE number > 0) AS positive,count(*) FILTER (WHERE number < 0) AS negative,sum(number) FILTER (WHERE number > 0) AS total GROUP BY currency",
+  )
+  assert_true(r.error is None)
+  assert_eq(r.rows[0][1].to_text(), "2")
+  assert_eq(r.rows[0][2].to_text(), "2")
+  assert_eq(r.rows[0][3].to_text(), "1020")
+  let empty = queried(
+    source, "SELECT currency,count(*) FILTER (WHERE account='no'),avg(number) FILTER (WHERE account='no') GROUP BY currency",
+  )
+  assert_true(empty.error is None)
+  assert_eq(empty.rows[0][1].to_text(), "0")
+  assert_true(empty.rows[0][2] is @query.QNull)
+  let grouped = queried(
+    source, "SELECT account GROUP BY account HAVING count(*) FILTER (WHERE number > 0) > 0 ORDER BY account",
+  )
+  assert_true(grouped.error is None)
+  assert_eq(grouped.rows.length(), 2)
+  let typed = source +
+    "2024-04-01 * \"pattern\"\n  Expenses:Food 1 USD\n    pat: 7\n  Assets:Cash -1 USD\n"
+  let filter_error = queried(
+    typed, "SELECT count(*) FILTER (WHERE meta('pat') ~ 'x')",
+  )
+  let where_error = queried(typed, "SELECT count(*) WHERE meta('pat') ~ 'x'")
+  assert_true(filter_error.failure() is Some(@query.Evaluation(_)))
+  assert_eq(filter_error.error, where_error.error)
+  assert_true(
+    queried(source, "SELECT length(account) FILTER (WHERE true)").failure()
+    is Some(@query.Compilation(_)),
+  )
+  assert_true(
+    queried(source, "SELECT count(*) FILTER (WHERE count(*) > 0)").failure()
+    is Some(@query.Compilation(_)),
+  )
+  assert_true(
+    queried(source, "SELECT count(*) FILTER (number > 0)").failure()
+    is Some(@query.Syntax(_)),
+  )
+}
+
+///|
+test "saved query table inventories exact directives without executing them" {
+  let source = ledger_source() +
+    "2024-01-03 query \"Unsupported\" \"SELECT imaginary\"\n  owner: \"budget\"\n2024-01-02 query \"Monthly\" \"SELECT account LIMIT 1\"\n2024-01-04 query \"Monthly\" \"SELECT 2\"\n"
+  let r = queried(source, "SELECT * FROM #queries ORDER BY date")
+  assert_true(r.error is None)
+  assert_eq(r.columns, ["date", "name", "query_string"])
+  assert_eq(r.rows.length(), 3)
+  assert_eq(r.rows[0][1].to_text(), "Monthly")
+  assert_eq(r.rows[1][2].to_text(), "SELECT imaginary")
+  let meta = queried(
+    source, "SELECT meta FROM #queries WHERE name='Unsupported'",
+  )
+  assert_true(meta.rows[0][0].to_text().contains("budget"))
+  assert_true(
+    queried(ledger_source(), "SELECT * FROM #queries").rows.is_empty(),
+  )
+  assert_true(
+    queried(source, "SELECT account FROM #queries").failure()
+    is Some(@query.Compilation(_)),
+  )
+  assert_true(queried(source, "RUN SAVED 'Monthly'").error is Some(_))
+}
+
+///|
+test "account subtree matches complete case-sensitive components including the ancestor" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT account_in_subtree('Assets:Bank:Checking','Assets:Bank'),account_in_subtree('Assets:Bank','Assets:Bank'),account_in_subtree('Assets:Bank2','Assets:Bank'),account_in_subtree('Assets:Bank','assets'),account_in_subtree(NULL,'Assets'),account_in_subtree('Assets:Bank','') LIMIT 1",
+  )
+  assert_true(r.error is None)
+  assert_true(
+    r.rows[0]
+    is [
+      @query.QBool(true),
+      @query.QBool(true),
+      @query.QBool(false),
+      @query.QBool(false),
+      @query.QNull,
+      @query.QBool(false),
+    ],
+  )
+  let ledger_rows = queried(
+    source, "SELECT account WHERE account_in_subtree(account,'Assets') ORDER BY date",
+  )
+  assert_eq(ledger_rows.rows.length(), 2)
+  assert_eq(ledger_rows.rows[1][0].to_text(), "Assets:Cash")
+  assert_true(
+    queried(source, "SELECT account_in_subtree(date,'Assets')").failure()
+    is Some(@query.Compilation(_)),
+  )
+}
+
+///|
+test "fiscal calendar uses explicit start month and start-year labels" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT fiscal_year(date('2024-03-31'),4),fiscal_quarter(date('2024-03-31'),4),fiscal_year(date('2024-04-01'),4),fiscal_quarter(date('2024-04-01'),4),fiscal_quarter(date('2024-02-29'),1),fiscal_quarter(date('2024-05-01'),12),fiscal_year(NULL,4) LIMIT 1",
+  )
+  assert_true(r.error is None)
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "2023", "4", "2024", "1", "1", "2", "",
+  ])
+  for
+    q in [
+      "SELECT fiscal_year(date,0)", "SELECT fiscal_quarter(date,13)", "SELECT fiscal_year(date,4294967297)",
+      "SELECT fiscal_year(date('0001-01-01'),2)",
+    ] {
+    assert_true(queried(source, q).failure() is Some(@query.Evaluation(_)))
+  }
+  assert_true(
+    queried(source, "SELECT fiscal_year(date,1.5)").failure()
+    is Some(@query.Compilation(_)),
+  )
+}
+
+///|
+test "Boolean aggregates ignore null without confusing all-null with false" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT bool_or(number>0),bool_and(number>0),bool_and(number IS NOT NULL),bool_or(NULL),bool_and(NULL)",
+  )
+  assert_true(r.error is None)
+  assert_true(
+    r.rows[0]
+    is [
+      @query.QBool(true),
+      @query.QBool(false),
+      @query.QBool(true),
+      @query.QNull,
+      @query.QNull,
+    ],
+  )
+  let mixed = queried(
+    source, "SELECT bool_or(CASE WHEN number>0 THEN TRUE END),bool_and(CASE WHEN number>0 THEN TRUE END),bool_or(FALSE) GROUP BY currency",
+  )
+  assert_true(
+    mixed.rows[0]
+    is [@query.QBool(true), @query.QBool(true), @query.QBool(false)],
+  )
+  let invalid = queried(source, "SELECT bool_or(number)")
+  assert_true(invalid.failure() is Some(@query.Compilation(_)))
+  let late_error = queried(
+    source, "SELECT bool_and(CASE WHEN number>=20 THEN clamp(2,4,1)>0 ELSE FALSE END)",
+  )
+  assert_true(late_error.failure() is Some(@query.Evaluation(_)))
+}
+
+///|
+test "dynamic regex patterns use same case and null contract as literal operators" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT account,account ~ upper(root(account)),account !~ upper(root(account)) ORDER BY account",
+  )
+  assert_true(r.error is None)
+  assert_true(
+    r.rows[0] is [@query.QText(_), @query.QBool(true), @query.QBool(false)],
+  )
+  let from_rows = queried(
+    source, "SELECT account WHERE account !~ lower(leaf(account))",
+  )
+  assert_true(from_rows.error is None)
+  assert_true(from_rows.rows.is_empty())
+  let null_pattern = queried(
+    source, "SELECT account !~ nullif(account,account) LIMIT 1",
+  )
+  assert_true(null_pattern.error is None)
+  assert_true(null_pattern.rows[0][0] is @query.QNull)
+  assert_true(
+    queried(source, "SELECT account ~ upper('[')").failure()
+    is Some(@query.Evaluation(_)),
+  )
+  assert_true(
+    queried(source, "SELECT NULL !~ upper('name')").failure()
+    is Some(@query.Compilation(_)),
+  )
+  let skip = queried(
+    source, "SELECT CASE WHEN FALSE THEN account ~ upper('[') ELSE TRUE END LIMIT 1",
+  )
+  assert_true(skip.error is None)
+  assert_true(skip.rows[0][0] is @query.QBool(true))
+  assert_true(
+    queried(source, "SELECT account ~ year(date)").failure()
+    is Some(@query.Compilation(_)),
+  )
+  assert_true(
+    queried(source, "SELECT account ~ '['").failure()
+    is Some(@query.Unsupported(_)),
+  )
+}
+
+///|
+test "round_increment rounds signed cash amounts to an exact increment using ties to even" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT repr(round_increment(1.025,0.050)),repr(round_increment(1.075,0.050)),repr(round_increment(-1.075,0.050)),repr(round_increment(-0.01,0.05)),repr(round_increment(50000000000000000000000000000.015,0.05)),round_increment(NULL,1) LIMIT 1",
+  )
+  assert_true(r.error is None)
+  assert_eq(r.rows[0][0].to_text(), "Decimal('1.000')")
+  assert_eq(r.rows[0][1].to_text(), "Decimal('1.100')")
+  assert_eq(r.rows[0][2].to_text(), "Decimal('-1.100')")
+  assert_eq(r.rows[0][3].to_text(), "Decimal('-0.00')")
+  assert_eq(
+    r.rows[0][4].to_text(),
+    "Decimal('50000000000000000000000000000.00')",
+  )
+  assert_true(r.rows[0][5] is @query.QNull)
+  assert_true(
+    queried(source, "SELECT round_increment(2,0)").failure()
+    is Some(@query.Evaluation(_)),
+  )
+  assert_true(
+    queried(source, "SELECT round_increment(2,-0.05)").failure()
+    is Some(@query.Evaluation(_)),
+  )
+  assert_true(
+    queried(source, "SELECT round_increment(narration,1)").failure()
+    is Some(@query.Compilation(_)),
+  )
+}
+
+///|
+test "weekday-only business calendar handles weekends, reverse counts and date bounds" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT add_business_days(2024-03-01,1),add_business_days(2024-03-02,1),add_business_days(2024-03-03,-1),add_business_days(2024-03-02,0),add_business_days(2024-03-01,6),business_days_between(2024-03-01,2024-03-04),business_days_between(2024-03-04,2024-03-01),business_days_between(2024-03-02,2024-03-04) LIMIT 1",
+  )
+  assert_true(r.error is None)
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "2024-03-04", "2024-03-04", "2024-03-01", "2024-03-02", "2024-03-11", "1", "-1",
+    "0",
+  ])
+  assert_true(
+    queried(source, "SELECT add_business_days(9999-12-31,1)").failure()
+    is Some(@query.Evaluation(_)),
+  )
+  assert_true(
+    queried(source, "SELECT add_business_days(0001-01-01,-1)").failure()
+    is Some(@query.Evaluation(_)),
+  )
+  assert_true(
+    queried(source, "SELECT add_business_days(date,4294967297)").failure()
+    is Some(@query.Evaluation(_)),
+  )
+  assert_true(
+    queried(source, "SELECT add_business_days(date,1.1)").failure()
+    is Some(@query.Compilation(_)),
+  )
+}
+
+///|
+test "UNION ALL appends compatible top-level selects with source order and duplicates intact" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT account AS name ORDER BY account LIMIT 2 UNION ALL SELECT account WHERE number > 0 ORDER BY account DESC LIMIT 2 UNION ALL SELECT NULL LIMIT 1",
+  )
+  assert_true(r.error is None)
+  assert_eq(r.columns, ["name"])
+  assert_eq(r.rows.length(), 5)
+  assert_eq(r.rows[0][0].to_text(), "Assets:Cash")
+  assert_eq(r.rows[1][0].to_text(), "Assets:Cash")
+  assert_eq(r.rows[2][0].to_text(), "Expenses:Food")
+  assert_true(r.rows[4][0] is @query.QNull)
+  for
+    q in [
+      "SELECT account UNION ALL SELECT account,date", "SELECT NULL UNION ALL SELECT account UNION ALL SELECT date",
+    ] {
+    assert_true(queried(source, q).failure() is Some(@query.Compilation(_)))
+  }
+  for
+    q in [
+      "SELECT account UNION SELECT account", "SELECT account UNION ALL PRINT", "SELECT account FROM (SELECT account UNION ALL SELECT account)",
+    ] {
+    assert_true(queried(source, q).failure() is Some(@query.Syntax(_)))
+  }
+  let late = queried(
+    source, "SELECT 5.0 LIMIT 1 UNION ALL SELECT clamp(2,4,1) LIMIT 1",
+  )
+  assert_true(late.failure() is Some(@query.Evaluation(_)))
+  assert_true(late.rows.is_empty())
+}
+
+///|
+test "associated-value aggregates return first tied row and skip null sort keys" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT arg_max(account,number),arg_min(account,number),arg_max(account,date),arg_min(account,date),arg_max(account,NULL),arg_max(NULL,number)",
+  )
+  assert_true(r.error is None)
+  assert_true(
+    r.rows[0]
+    is [
+      @query.QText("Assets:Cash"),
+      @query.QText("Income:Salary"),
+      @query.QText("Expenses:Food"),
+      @query.QText("Assets:Cash"),
+      @query.QNull,
+      @query.QNull,
+    ],
+  )
+  let late = queried(
+    source, "SELECT arg_max(CASE WHEN number<0 THEN clamp(2,4,1) ELSE 5.0 END, number)",
+  )
+  assert_true(late.failure() is Some(@query.Evaluation(_)))
+  let bad = queried(source, "SELECT arg_max(account,tags)")
+  assert_true(bad.failure() is Some(@query.Compilation(_)))
+}
+
+///|
+test "discrete percentiles rank exact decimal fractions over observed non-null values" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT percentile_disc(number,0),percentile_disc(number,.25),percentile_disc(number,.50),percentile_disc(number,.50000000000000000000000000001),percentile_disc(number,1),percentile_disc(NULL,.5),percentile_disc(number,NULL)",
+  )
+  assert_true(r.error is None)
+  assert_eq(r.rows[0].map(fn(v) { v.to_text() }), [
+    "-1000", "-1000", "-20", "20", "1000", "", "",
+  ])
+  let g = queried(
+    source, "SELECT account,percentile_disc(number,.5) GROUP BY account ORDER BY account",
+  )
+  assert_true(g.error is None)
+  assert_eq(g.rows[0][1].to_text(), "-20")
+  for
+    q in [
+      "SELECT percentile_disc(number,1.01)", "SELECT percentile_disc(number,number)",
+      "SELECT percentile_disc(account,.5)",
+    ] {
+    assert_true(queried(source, q).failure() is Some(@query.Compilation(_)))
+  }
+}
+
+///|
+test "LIKE and JOIN are valid aliases while their operator syntax stays unsupported" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT account AS join, date AS like ORDER BY join,like LIMIT 2",
+  )
+  assert_true(r.error is None)
+  assert_eq(r.columns, ["join", "like"])
+  assert_eq(r.rows[0][0].to_text(), "Assets:Cash")
+  let inner = queried(
+    source, "SELECT join FROM (SELECT account AS join) ORDER BY join LIMIT 1",
+  )
+  assert_true(inner.error is None)
+  assert_eq(inner.rows[0][0].to_text(), "Assets:Cash")
+  for
+    (q, tag) in [
+      ("SELECT account WHERE account LIKE 'Assets%'", "like"),
+      ("SELECT account WHERE account NOT LIKE 'Assets%'", "like"),
+      ("SELECT account FROM postings JOIN postings", "join"),
+    ] {
+    let r = queried(source, q)
+    assert_true(r.failure() is Some(@query.Unsupported(_)))
+    assert_true(r.error.unwrap().contains("query.unsupported." + tag))
+  }
+}
+
+///|
+test "relation row schemas preserve duplicate last aliases and typed values" {
+  let source = ledger_source()
+  let statement = "SELECT k, qty FROM (SELECT account AS k,narration AS k,number AS qty) ORDER BY qty LIMIT 2"
+  let r = queried(source, statement)
+  assert_true(r.error is None)
+  assert_eq(r.rows[0][0].to_text(), "salary")
+  assert_eq(r.rows[0][1].to_text(), "-1000")
+  assert_eq(r.rows[1][0].to_text(), "lunch")
+  assert_true(
+    queried(source, "SELECT unknown FROM (SELECT account)").failure()
+    is Some(@query.Compilation(_)),
+  )
+}
+
+///|
+test "large mixed-currency booking keeps first-encounter groups and posting order within groups" {
+  let source = StringBuilder()
+  source.write_string(
+    "2024-01-01 open Assets:Cash USD, CAD\n2024-01-01 open Income:Salary USD, CAD\n2024-01-02 * \"split\"\n",
+  )
+  for i in 1..<13 {
+    source.write_string(
+      "  Assets:Cash \{i} USD\n  Assets:Cash \{i} CAD\n  Income:Salary -\{i} USD\n  Income:Salary -\{i} CAD\n",
+    )
+  }
+  let r = queried(source.to_string(), "SELECT account,number,currency")
+  assert_true(r.error is None)
+  assert_eq(r.rows.length(), 48)
+  for i in 0..<12 {
+    assert_eq(r.rows[i * 2][1].to_text(), (i + 1).to_string())
+    assert_eq(r.rows[i * 2 + 1][1].to_text(), "-" + (i + 1).to_string())
+    assert_eq(r.rows[i * 2][2].to_text(), "USD")
+    assert_eq(r.rows[24 + i * 2][2].to_text(), "CAD")
+  }
+}
+
+///|
+test "list coordinates provide negative-index and bounded slices for collected data" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT list_at(split_text('a|b|c','|'),-1),list_at(split_text('a','|'),4294967297),list_slice(split_text('a|b|c','|'),-2,4294967297),list_slice(split_text('a|b|c','|'),2,1),list_at(NULL,1) LIMIT 1",
+  )
+  assert_true(r.error is None)
+  assert_true(
+    r.rows[0]
+    is [
+      @query.QText("c"),
+      @query.QNull,
+      @query.QList([@query.QText("b"), @query.QText("c")]),
+      @query.QList([]),
+      @query.QNull,
+    ],
+  )
+  let stat = queried(source, "SELECT int(list_at(collect(year(date)),0))")
+  assert_true(stat.error is None)
+  assert_eq(stat.rows[0][0].to_text(), "2024")
+  assert_true(
+    queried(source, "SELECT list_at(account,0)").failure()
+    is Some(@query.Compilation(_)),
+  )
+  assert_true(
+    queried(source, "SELECT list_slice(split_text(account,':'),1.0,2)").failure()
+    is Some(@query.Compilation(_)),
+  )
+}
+
+///|
+test "global aggregate HAVING filters a single complete summary group" {
+  let source = ledger_source()
+  let yes = queried(source, "SELECT count(*) AS total HAVING count(*)=4")
+  assert_true(yes.error is None)
+  assert_eq(yes.rows[0][0].to_text(), "4")
+  let no = queried(source, "SELECT count(*) HAVING count(*)>4")
+  assert_true(no.error is None)
+  assert_true(no.rows.is_empty())
+  let none = queried(
+    source, "SELECT count(*) WHERE account='missing' HAVING count(*)=0",
+  )
+  assert_true(none.error is None)
+  assert_true(none.rows.is_empty())
+  let mixed = queried(
+    source, "SELECT count(*) HAVING count(*) FILTER (WHERE number>0)=2",
+  )
+  assert_true(mixed.error is None)
+  assert_eq(mixed.rows.length(), 1)
+  for
+    q in [
+      "SELECT count(*) HAVING count(*)>0 AND account='Assets:Cash'", "SELECT account,count(*) HAVING count(*)>0",
+      "SELECT count(*) HAVING TRUE", "SELECT account HAVING count(*)>0",
+    ] {
+    assert_true(queried(source, q).error is Some(_))
+  }
+}
+
+///|
+test "table CSV quotes commas, newlines and double quotes without exposing failed results" {
+  let source = ledger_source()
+  let r = queried(
+    source, "SELECT 'x,y' AS \"label, column\", 'a\"b' AS q, 'first\nsecond' AS multi, NULL AS absent LIMIT 1",
+  )
+  assert_true(r.error is None)
+  assert_eq(
+    r.to_csv(),
+    Some(
+      "\"label, column\",q,multi,absent\r\n\"x,y\",\"a\"\"b\",\"first\nsecond\",\r\n",
+    ),
+  )
+  assert_eq(
+    queried(source, "SELECT account LIMIT 0").to_csv(),
+    Some("account\r\n"),
+  )
+  assert_true(queried(source, "SELECT invalid_column").to_csv() is None)
+  assert_true(queried(source, "PRINT").to_csv() is None)
+}
+
+///|
+test "custom directives expose typed records and metadata for ledger-specific categories" {
+  let source = ledger_source() +
+    "2024-02-05 custom \"budget\" \"Apples\" 20 USD TRUE\n  owner: \"Ana\"\n2024-02-06 custom \"threshold\" 9\n"
+  let r = queried(
+    source, "SELECT date,type,length(values),list_at(values,0) FROM #custom ORDER BY date",
+  )
+  assert_true(r.error is None)
+  assert_eq(r.rows.length(), 2)
+  assert_eq(r.rows[0][1].to_text(), "budget")
+  assert_eq(r.rows[0][2].to_text(), "3")
+  assert_true(r.rows[0][3].to_text().contains("Apples"))
+  let metadata = queried(source, "SELECT meta FROM #custom WHERE type='budget'")
+  assert_true(metadata.rows[0][0].to_text().contains("Ana"))
+  assert_eq(queried(source, "SELECT * FROM #custom LIMIT 0").columns, [
+    "date", "type", "values",
+  ])
+  assert_true(
+    queried(source, "SELECT account FROM #custom").failure()
+    is Some(@query.Compilation(_)),
+  )
+}

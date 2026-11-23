@@ -77,3 +77,66 @@ test "multiline literals retain whitespace through formatting" {
   guard ledger.entries[1].directive is DTransaction(txn) else { abort("txn") }
   assert_eq(txn.narration, "first  \n  second\r\n\nlast")
 }
+
+///|
+test "formats explicit txn and tab-delimited transaction headers" {
+  let source = "2024-01-01 open Assets:Cash USD\n2024-01-01 open Expenses:Food USD\n2024-01-02\ttxn \"lunch\"\n      Expenses:Food  5 USD\n Assets:Cash -5 USD\n2024-01-03   txn \"again\"\n  Expenses:Food  7 USD\n Assets:Cash -7 USD\n"
+  let output = @format.format_source(source)
+  assert_true(output.contains("  Assets:Cash    -5 USD"))
+  assert_true(output.contains("  Assets:Cash    -7 USD"))
+  assert_eq(@format.format_source(output), output)
+  let checked = @validation.validate_ledger(
+    @syntax.parse_source("formatted.bean", output),
+  )
+  assert_true(!checked.has_errors())
+  assert_eq(checked.entries.length(), 4)
+}
+
+///|
+test "multiline records retain exact text while unrelated transactions still align" {
+  let literal_span = "2024-01-02 * \"A  \nmultiline 😀 \n narration \"\n    detail: \"kept  \n span \"\n"
+  let source = "2024-01-01 open Assets:Cash USD\n2024-01-01 open Expenses:Food USD\n" +
+    literal_span +
+    " Expenses:Food 5 USD\n Assets:Cash -5 USD\n" +
+    "2024-01-03 * \"ordinary\"\n       Expenses:Food 7 USD\n Assets:Cash -7 USD\n"
+  let output = @format.format_source(source)
+  assert_true(output.contains(literal_span))
+  assert_true(output.contains("  Assets:Cash    -7 USD"))
+  assert_eq(@format.format_source(output), output)
+  let a = @syntax.parse_source("same.bean", source)
+  let b = @syntax.parse_source("same.bean", output)
+  assert_true(a.errors.is_empty() && b.errors.is_empty())
+  if a.entries[2].directive is DTransaction(x) &&
+    b.entries[2].directive is DTransaction(y) {
+    assert_eq(x.narration, y.narration)
+    assert_eq(x.postings.length(), y.postings.length())
+  } else {
+    fail("missing multiline transaction")
+  }
+}
+
+///|
+test "astral posting components retain full Unicode and round-trip" {
+  let source = "2024-01-01 open Assets:𐐀𐐁-Reserve USD\n2024-01-01 open Expenses:Café USD\n2024-01-01 open Equity:Offset USD\n2024-01-02 * \"Unicode accounts\"\n     ! Assets:𐐀𐐁-Reserve 5.00 USD\n Expenses:Café 4.00 USD\n Equity:Offset -9.00 USD\n"
+  let output = @format.format_source(source)
+  let original = @syntax.parse_source("same.bean", source)
+  let round_trip = @syntax.parse_source("same.bean", output)
+  assert_true(original.errors.is_empty())
+  assert_true(round_trip.errors.is_empty())
+  assert_true(output.contains("! Assets:𐐀𐐁-Reserve"))
+  assert_true(output.contains("  Expenses:Café"))
+  assert_true(output.contains("  Equity:Offset"))
+  assert_eq(@format.format_source(output), output)
+  guard original.entries[3].directive is DTransaction(before) &&
+    round_trip.entries[3].directive is DTransaction(after) else {
+    abort("missing transaction")
+  }
+  assert_eq(
+    before.postings.map(fn(p) { p.account }),
+    after.postings.map(fn(p) { p.account }),
+  )
+  assert_eq(
+    before.postings.map(fn(p) { p.units.unwrap().to_string() }),
+    after.postings.map(fn(p) { p.units.unwrap().to_string() }),
+  )
+}
