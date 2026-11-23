@@ -556,3 +556,18 @@ test "register preserves a cent between offsetting large principal payments" {
   assert_eq(rows[1].running.number.to_string(),large + ".01")
   assert_eq(rows[2].running.to_string(),"0.01 USD")
 }
+
+///|
+test "income conversion completeness follows the selected activity, not end inventory" {
+  let source = "2024-01-01 open Income:Fees EUR\n2024-01-01 open Assets:Bank EUR\n2024-01-02 * \"paid\"\n  Assets:Bank 10 EUR\n  Income:Fees -10 EUR\n2024-02-02 * \"refund\"\n  Assets:Bank -10 EUR\n  Income:Fees 10 EUR\n"
+  let report = @realization.income_statement(realized(source), start=@ast.Date::parse("2024-02-01"), convert=Some("USD"))
+  assert_eq(report.diagnostics.length(), 1)
+  assert_eq(report.diagnostics[0].account, "Income:Fees")
+  assert_eq(report.diagnostics[0].currency, "EUR")
+  assert_true(report.to_json().contains("\"complete\":false"))
+  let empty = @realization.income_statement(realized(source), start=@ast.Date::parse("2025-01-01"), convert=Some("USD"))
+  assert_true(empty.diagnostics.is_empty())
+  let priced = @realization.income_statement(realized(source+"2024-02-03 price EUR 2 USD\n"), start=@ast.Date::parse("2024-02-01"), convert=Some("USD"))
+  assert_true(priced.diagnostics.is_empty())
+  assert_eq(priced.rows[0].amount.to_string(), "20 USD")
+}

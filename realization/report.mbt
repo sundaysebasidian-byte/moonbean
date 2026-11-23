@@ -427,10 +427,18 @@ fn make_report(
   totals : Array[ReportRow],
   convert : String?,
   roots : Array[String],
+  activity~ : Bool = false,
 ) -> Report {
   let diagnostics : Array[ConversionIssue] = []
   let seen : Map[String, Bool] = Map([])
-  if convert is Some(target) {
+  if convert is Some(target) && activity {
+    for row in rows {
+      // income_rows has already converted every book amount that has a quote.
+      if row.amount.currency != target {
+        diagnostics.push({code: "report.conversion_incomplete", account: row.label, currency: row.amount.currency, target})
+      }
+    }
+  } else if convert is Some(target) {
     for account in realized.account_names() {
       if root_allowed(account, roots) {
         for position in realized.inventory(account).positions {
@@ -735,7 +743,7 @@ pub fn income_statement(
       amount: @ast.Amount::new(row.amount.number.neg(), row.amount.currency),
     })
   }
-  make_report(realized, "Income Statement", rows, totals, convert, [roots[3], roots[4]])
+  make_report(realized, "Income Statement", rows, totals, convert, [roots[3], roots[4]], activity=true)
 }
 
 ///|
