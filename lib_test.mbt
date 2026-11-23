@@ -347,3 +347,38 @@ test "nested includes resolve relative to a supplementary-character filename" {
   assert_eq(r.missing.length(), 0)
   assert_true(r.source.contains("Assets:Cash"))
 }
+
+///|
+test "included ledgers cannot override root reports or booking options" {
+  let bank = @moonbean.check_expanded("main.bean","/archive",
+    #|include "child.bean"
+    #|option "title" "Parent"
+    #|option "operating_currency" "USD"
+    #|option "operating_currency" "CAD"
+    #|option "operating_currency" "USD"
+    #|option "tolerance_multiplier" "1.0"
+    #|option "documents" "RootFiles"
+    #|2024-01-01 open Assets:Cash
+    #|
+    ,fn(path) {
+    if path != "/archive/child.bean" { return None }
+    Some(
+      #|option "title" "Child"
+      #|option "operating_currency" "EUR"
+      #|option "operating_currency" "USD"
+      #|option "operating_currency" "EUR"
+      #|option "tolerance_multiplier" "0.25"
+        #|option "booking_method" "LIFO"
+      #|option "documents" "ChildFiles"
+      #|2024-01-01 open Assets:Foreign
+      #|
+    )
+  })
+  assert_eq(bank.errors.length(),0)
+  assert_eq(bank.options.title,Some("Parent"))
+  assert_eq(bank.options.booking_method,"STRICT")
+  assert_eq(bank.options.tolerance_multiplier.to_string(),"1.0")
+  assert_eq(bank.options.operating_currencies,["USD","CAD","EUR"])
+  assert_eq(bank.options.documents,["RootFiles"])
+  assert_eq(bank.entries.length(),2)
+}

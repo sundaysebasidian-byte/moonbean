@@ -364,8 +364,13 @@ pub fn check_expanded(
   read : (String) -> String?,
 ) -> @validation.ValidatedLedger {
   let expanded = expand_includes(source, base_dir, read, file~)
+  let root_file = if path_dirname(file) == "" {
+    path_join(base_dir, file)
+  } else {
+    path_join("", file)
+  }
   let ledger = check_source(
-    file,
+    root_file,
     expanded.source,
     source_map=expanded.source_map,
   )

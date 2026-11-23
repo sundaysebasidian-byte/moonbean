@@ -264,6 +264,7 @@ priv struct Parser {
   meta_scopes : Map[String, MetaScope]
   tag_scopes : Map[String, Array[String]]
   pipe_scopes : Map[String, Bool]
+  child_currencies : Array[String]
 }
 
 ///|
@@ -289,6 +290,7 @@ fn Parser::new(
     meta_scopes: {},
     tag_scopes: {},
     pipe_scopes: {},
+    child_currencies: [],
   }
 }
 
@@ -1929,8 +1931,15 @@ fn apply_option(
     parser.error(line, "parse.option", "Invalid account value '" + value + "' for " + name)
     return
   }
-  parser.ledger.options.add_raw(name, value)
-  let options = parser.ledger.options
+  let is_root = parser.loc(line).file == parser.file || account_root
+  if !is_root && name == "operating_currency" {
+    parser.child_currencies.push(value)
+    return
+  }
+  // Validate child directives without letting their typed options leak into
+  // the root ledger. Per-file parse controls such as pipes have their own map.
+  let options = if is_root { parser.ledger.options } else { @ast.Options::new() }
+  options.add_raw(name, value)
   if name == "title" {
     options.title = Some(value)
   } else if name == "booking_method" {
@@ -2368,6 +2377,14 @@ pub fn parse_source(
     for entry in parser.ledger.entries {
       entry.query_exact_decimal = false
     }
+  }
+  if !parser.child_currencies.is_empty() {
+    let all = parser.ledger.options.operating_currencies
+    let merged = []
+    for currency in all { push_unique(merged, currency) }
+    for currency in parser.child_currencies { push_unique(merged, currency) }
+    all.clear()
+    all.append(merged)
   }
   parser.ledger
 }
