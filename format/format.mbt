@@ -96,23 +96,8 @@ fn format_is_transaction_header(text : String) -> Bool {
 }
 
 ///|
-fn format_account_root(word : String) -> String {
-  let mut i = 0
-  while i < word.length() {
-    if word.get_char(i) == Some(':') {
-      return format_view(word[0:i])
-    }
-    i = i + 1
-  }
-  word
-}
-
-///|
 fn format_is_account(word : String) -> Bool {
-  match format_account_root(word) {
-    "Assets" | "Liabilities" | "Equity" | "Income" | "Expenses" => true
-    _ => false
-  }
+  @syntax.is_valid_account(word)
 }
 
 ///|
