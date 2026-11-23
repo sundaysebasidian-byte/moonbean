@@ -2656,3 +2656,18 @@ test "ISO payroll week must exist in its ISO year" {
     assert_eq(r.rows[0][0].to_text(), expected)
   }
 }
+
+///|
+test "strptime preserves escaped locale directives and astral separators" {
+  for (text, pattern, expected) in [
+    ("%x 2024", "%%x %Y", "2024-01-01"),
+    ("%c 2024", "%%c %Y", "2024-01-01"),
+    ("%X 2024", "%%X %Y", "2024-01-01"),
+    ("2024📅07", "%Y📅%m", "2024-07-01"),
+    ("02/29/24", "%x", "2024-02-29"),
+  ] {
+    let r = queried(ledger_source(), "SELECT parse_date('" + text + "', '" + pattern + "') LIMIT 1")
+    assert_true(r.is_ok())
+    assert_eq(r.rows[0][0].to_text(), expected)
+  }
+}

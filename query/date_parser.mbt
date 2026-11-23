@@ -41,17 +41,33 @@ fn strptime_date(
   text : String,
   format : String,
 ) -> QueryValue {
-  let format = format
-    .replace_all(old="%c", new="%a %b %d %H:%M:%S %Y")
-    .replace_all(old="%x", new="%m/%d/%y")
-    .replace_all(old="%X", new="%H:%M:%S")
+// Expand only real locale directives; %%x means the literal characters %x.
+  let expanded = StringBuilder()
+  let chars = format.iter()
+  while chars.next() is Some(c) {
+    if c == '%' && chars.next() is Some(field) {
+      match field {
+        'c' => expanded.write_string("%a %b %d %H:%M:%S %Y")
+        'x' => expanded.write_string("%m/%d/%y")
+        'X' => expanded.write_string("%H:%M:%S")
+        _ => {
+          expanded.write_char('%')
+          expanded.write_char(field)
+        }
+      }
+    } else {
+      expanded.write_char(c)
+    }
+  }
+  let format = expanded.to_string()
+
   let pattern = StringBuilder()
   pattern.write_char('^')
   let fields : Array[Char] = []
   let mut i = 0
   while i < format.length() {
     let c = format.get_char(i).unwrap()
-    i = i + 1
+    i += if c.to_int() > 0xFFFF { 2 } else { 1 }
     if c == '%' {
       if i == format.length() {
         query_error(ctx, "query.oracle_type_error: ValueError stray percent")
