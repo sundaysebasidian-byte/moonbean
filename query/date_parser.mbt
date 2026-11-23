@@ -198,7 +198,12 @@ fn strptime_date(
         if digits != "Z" &&
           (
             bql_parse_int(digits[1:3].to_owned()) > 23 ||
-            bql_parse_int(digits[3:5].to_owned()) > 59
+            bql_parse_int(digits[3:5].to_owned()) > 59 ||
+            (digits.length() > 5 && (
+              bql_parse_int(digits[5:7].to_owned()) > 59 ||
+              digits.length() > 14 ||
+              (raw.contains(":") && (raw.get_char(3) != Some(':') || raw.get_char(6) != Some(':')))
+            ))
           ) {
           query_error(
             ctx, "query.oracle_type_error: ValueError invalid timezone offset",

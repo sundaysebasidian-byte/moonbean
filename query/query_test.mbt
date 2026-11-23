@@ -2671,3 +2671,15 @@ test "strptime preserves escaped locale directives and astral separators" {
     assert_eq(r.rows[0][0].to_text(), expected)
   }
 }
+
+///|
+test "strptime verifies the full UTC offset even when only the date is returned" {
+  for offset in ["+07:30:99", "+07:3045", "+0730:45", "+07:30:15.1234567"] {
+    let r = queried(ledger_source(), "SELECT parse_date('2024 " + offset + "', '%Y %z') LIMIT 1")
+    assert_true(r.failure() is Some(@query.Evaluation(_)))
+  }
+  for offset in ["Z", "+0730", "-07:30", "+073045", "-07:30:15.123456"] {
+    let r = queried(ledger_source(), "SELECT parse_date('2024 " + offset + "', '%Y %z') LIMIT 1")
+    assert_eq(r.rows[0][0].to_text(), "2024-01-01")
+  }
+}
