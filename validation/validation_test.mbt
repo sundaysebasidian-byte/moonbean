@@ -808,3 +808,31 @@ test "FIFO short covering keeps acquisition dates and balances the remaining lot
   assert_eq(remaining[0].units.to_string(), "-2 HOOL")
   assert_eq(remaining[0].cost.unwrap().number.to_string(), "15")
 }
+
+///|
+test "only the newest pad applies independently to each currency's first assertion" {
+  let prefix = "2024-01-01 open Assets:Cash\n2024-01-01 open Equity:Opening\n"
+  let ledger = validated(prefix +
+    #|2024-01-02 pad Assets:Cash Equity:Opening
+    #|2024-01-03 balance Assets:Cash 30.00 USD
+    #|2024-01-03 balance Assets:Cash 20.00 EUR
+    #|2024-01-04 balance Assets:Cash 0 CAD
+    #|2024-01-05 balance Assets:Cash 1 CAD
+    #|
+  )
+  assert_eq(ledger.errors.map(fn(d) { (d.code, d.loc.line) }), [("validation.balance",7)])
+  let cash = ledger.inventory("Assets:Cash")
+  assert_eq(cash.quantity("USD").to_string(), "30.00")
+  assert_eq(cash.quantity("EUR").to_string(), "20.00")
+  assert_true(cash.quantity("CAD").is_zero())
+  let superseded = validated(prefix +
+    #|2024-01-02 pad Assets:Cash Equity:Opening
+    #|2024-01-03 pad Assets:Cash Equity:Opening
+    #|2024-01-04 balance Assets:Cash 30.00 USD
+    #|2024-01-05 balance Assets:Cash 31.00 USD
+    #|
+  )
+  assert_true(superseded.errors.any(fn(d) { d.loc.line == 3 && d.code == "validation.pad" }))
+  assert_true(superseded.errors.any(fn(d) { d.loc.line == 6 && d.code == "validation.balance" }))
+  assert_eq(superseded.inventory("Assets:Cash").quantity("USD").to_string(), "30.00")
+}

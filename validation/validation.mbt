@@ -88,7 +88,8 @@ priv struct PadState {
   source : String
   date : @ast.Date
   loc : @ast.Loc
-  mut consumed : Bool
+  checked_currencies : Map[String, Bool]
+  mut inserted : Bool
 }
 
 ///|
@@ -432,7 +433,8 @@ fn process_pad(ctx : Context, entry : @ast.Entry, pad : @ast.Pad) -> Unit {
     source: pad.source_account,
     date: entry.date,
     loc: entry.loc,
-    consumed: false,
+    checked_currencies: Map([]),
+    inserted: false,
   })
 }
 
@@ -540,7 +542,7 @@ fn applicable_pad(ctx : Context, account : String, date : @ast.Date) -> Int32? {
   let mut result : Int32? = None
   for i in 0..<ctx.pads.length() {
     let pad = ctx.pads[i]
-    if pad.account == account && !pad.consumed && pad.date.less_equal(date) {
+    if pad.account == account && pad.date.less_equal(date) {
       result = Some(i)
     }
   }
@@ -597,10 +599,10 @@ fn process_balance(
   let difference = balance.amount.number.sub(actual)
   let pad_index = applicable_pad(ctx, balance.account, entry.date)
   match pad_index {
-    Some(index) => {
+    Some(index) if !ctx.pads[index].checked_currencies.contains(balance.amount.currency) => {
       let pad = ctx.pads[index]
+      pad.checked_currencies[balance.amount.currency] = true
       if difference.abs().less_equal(tolerance) {
-        // A pad is only consumed when it actually inserts a padding entry.
         return
       }
       for name in ctx.state.accounts.keys().to_array() {
@@ -620,12 +622,12 @@ fn process_balance(
           }
         }
       }
-      pad.consumed = true
+      pad.inserted = true
       ctx.pads[index] = pad
       insert_padding(ctx, pad, balance.amount, difference, entry.loc)
       return
     }
-    None => ()
+    _ => ()
   }
   if difference.abs().less_equal(tolerance) {
     return
@@ -1241,7 +1243,7 @@ pub fn validate_ledger(ledger : @ast.Ledger) -> ValidatedLedger {
     ctx.entries.push(entry)
   }
   for pad in ctx.pads {
-    if !pad.consumed {
+    if !pad.inserted {
       error(ctx, "validation.pad", "Unused Pad entry", pad.loc)
     }
   }
