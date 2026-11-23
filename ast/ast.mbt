@@ -254,7 +254,7 @@ pub fn CostSpec::is_empty_spec(self : CostSpec) -> Bool {
 ///|
 pub fn CostSpec::to_string(self : CostSpec) -> String {
   let sb = StringBuilder()
-  if self.number_total is Some(total) {
+  if self.number_per is None && self.number_total is Some(total) {
     sb.write_string("{{")
     sb.write_string(total.to_string())
     if self.currency is Some(c) {
@@ -267,6 +267,9 @@ pub fn CostSpec::to_string(self : CostSpec) -> String {
     let mut first = true
     if self.number_per is Some(number) {
       sb.write_string(number.to_string())
+      if self.number_total is Some(total) {
+        sb.write_string(" # " + total.to_string())
+      }
       if self.currency is Some(c) {
         sb.write_string(" ")
         sb.write_string(c)

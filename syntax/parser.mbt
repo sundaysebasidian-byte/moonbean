@@ -717,6 +717,7 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
   let total = cursor.kind() is LDoubleBrace
   cursor.advance() |> ignore
   let mut number : @decimal.Decimal? = None
+  let mut compound_total : @decimal.Decimal? = None
   let mut seen_amount = false
   let mut currency : String? = None
   let mut date : @ast.Date? = None
@@ -751,11 +752,36 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
           }
           cursor.advance() |> ignore
         }
+        Tag("") => {
+          cursor.advance() |> ignore
+          let amount = if cursor.kind() is Word(next) && parser.looks_like_number(next) {
+            parse_number_expression(cursor, parser, line)
+          } else { None }
+          guard cursor.kind() is Word(c) && ledger_currency(c) else {
+            parser.error(line, "parse.cost", "expected cost currency after #")
+            return None
+          }
+          cursor.advance() |> ignore
+          if seen_amount {
+            parser.error(line, "parse.cost", "Duplicate cost")
+          } else {
+            seen_amount = true
+            compound_total = amount
+            currency = Some(c)
+          }
+        }
         Word(w) =>
           if parser.looks_like_number(w) {
             guard parse_number_expression(cursor, parser, line) is Some(n) else {
               return None
             }
+            let has_separator = cursor.kind() is Tag("")
+            let total_component = if has_separator {
+              cursor.advance() |> ignore
+              if cursor.kind() is Word(next) && parser.looks_like_number(next) {
+                parse_number_expression(cursor, parser, line)
+              } else { None }
+            } else { None }
             let cur = if cursor.kind() is Word(c) && ledger_currency(c) {
               cursor.advance() |> ignore
               Some(c)
@@ -767,7 +793,12 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
             } else {
               seen_amount = true
               number = Some(n)
+              compound_total = total_component
               currency = cur
+              if has_separator && total {
+                parser.error(line, "parse.cost", "Per-unit cost may not be specified using total cost syntax")
+                number = total_component
+              }
             }
           } else if parser.date(w) is Some(d) {
             if date is None {
@@ -828,11 +859,7 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
     } else {
       number
     },
-    number_total: if total {
-      number
-    } else {
-      None
-    },
+    number_total: if total { if compound_total is Some(_) { compound_total } else { number } } else { compound_total },
     currency,
     date,
     label,

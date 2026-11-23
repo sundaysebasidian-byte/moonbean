@@ -950,3 +950,40 @@ test "explicit balance tolerance is signed and is not an absolute allowance" {
   assert_eq(result.errors.map(fn(e) { (e.loc.line,e.code) }), [(2,"validation.balance")])
   assert_true(result.errors[0].message.contains("0 too little"))
 }
+
+///|
+test "compound lot costs retain both terms and match the calculated acquisition basis" {
+  let hdr =
+    #|2024-01-01 open Assets:Stock HOOL "FIFO"
+    #|2024-01-01 open Assets:Cash
+    #|2024-01-02 * "Buy with a transaction fee"
+    #|  Assets:Stock 4 HOOL {12 # 8 USD}
+    #|  Assets:Cash -56 USD
+    #|
+  let before = @syntax.parse_source("compound.bean", hdr)
+  assert_eq(before.errors.length(), 0)
+  guard before.entries[2].directive is @ast.DTransaction(bought) else {
+    abort("missing buy")
+  }
+  let spec = bought.postings[0].cost.unwrap()
+  assert_eq(spec.to_string(), "{12 # 8 USD}")
+  let v = validated(hdr +
+    #|2024-01-03 * "Sell match"
+    #|  Assets:Stock -2 HOOL {12 # 4 USD}
+    #|  Assets:Cash 28 USD
+    #|
+  )
+  assert_eq(v.errors.length(), 0)
+  let sold = find_transaction(v,"Sell match").unwrap().postings[0]
+  assert_eq(sold.cost.unwrap().number_per.unwrap().to_string(), "14")
+  assert_eq(sold.cost.unwrap().date.unwrap().to_string(), "2024-01-02")
+  let missing_per = validated(hdr.replace_all(old="{12 # 8 USD}",new="{# 56 USD}"))
+  assert_eq(missing_per.errors.length(), 0)
+  let no_match = validated(hdr +
+    #|2024-01-03 * "Wrong lot"
+    #|  Assets:Stock -2 HOOL {12 # 3 USD}
+    #|  Assets:Cash 28 USD
+    #|
+  )
+  assert_true(has_error(no_match,"validation.booking"))
+}

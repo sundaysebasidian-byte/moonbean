@@ -78,12 +78,15 @@ fn spec_number_per(
   spec : @ast.CostSpec,
   need : @decimal.Decimal,
 ) -> @decimal.Decimal? {
-  match spec.number_per {
-    Some(number) => Some(number)
-    None =>
-      match spec.number_total {
-        Some(total) => if need.is_zero() { None } else { total.div(need) }
-        None => None
+  match (spec.number_per, spec.number_total) {
+    (per, None) => per
+    (per, Some(total)) =>
+      if need.is_zero() {
+        None
+      } else {
+        total.div(need).map(fn(part) {
+          if per is Some(base) { base.add(part) } else { part }
+        })
       }
   }
 }
@@ -475,19 +478,7 @@ fn resolve_cost(
   units : @ast.Amount,
   txn_date : @ast.Date,
 ) -> @ast.Cost? {
-  let number = match spec.number_per {
-    Some(number) => Some(number)
-    None =>
-      match spec.number_total {
-        Some(total) =>
-          if units.number.is_zero() {
-            None
-          } else {
-            total.div(units.number.abs())
-          }
-        None => None
-      }
-  }
+  let number = spec_number_per(spec, units.number.abs())
   match number {
     Some(number) =>
       match spec.currency {
