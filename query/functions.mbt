@@ -424,7 +424,8 @@ fn eval_function(
       )
     ("possign", [value, QText(account)]) => {
       let root = @ast.account_root(account)
-      if root == "Assets" || root == "Expenses" {
+      if root == ctx.realized.options.get("name_assets").unwrap_or("Assets") ||
+        root == ctx.realized.options.get("name_expenses").unwrap_or("Expenses") {
         value
       } else {
         match value {
