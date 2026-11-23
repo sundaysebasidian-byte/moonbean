@@ -2644,3 +2644,15 @@ test "custom directives expose typed records and metadata for ledger-specific ca
     is Some(@query.Compilation(_)),
   )
 }
+
+///|
+test "ISO payroll week must exist in its ISO year" {
+  for text in ["2024-W00-1", "2024-W53-1", "2021-W53-7", "0000-W01-1"] {
+    let r = queried(ledger_source(), "SELECT parse_date('" + text + "', '%G-W%V-%u') LIMIT 1")
+    assert_true(r.failure() is Some(@query.Evaluation(_)))
+  }
+  for (s, expected) in [("2020-W53-7","2021-01-03"),("2024-W01-1","2024-01-01"),("2015-W53-4","2015-12-31")] {
+    let r = queried(ledger_source(), "SELECT parse_date('" + s + "', '%G-W%V-%u') LIMIT 1")
+    assert_eq(r.rows[0][0].to_text(), expected)
+  }
+}

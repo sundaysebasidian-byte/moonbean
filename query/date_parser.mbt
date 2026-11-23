@@ -256,7 +256,18 @@ fn strptime_date(
           return QNull
         }
       }
-      let jan4 = ordinal(@ast.Date::new(y, 1, 4).unwrap())
+      guard @ast.Date::new(y, 1, 4) is Some(first_thursday_anchor) else {
+        query_error(ctx, "query.oracle_type_error: ValueError invalid ISO year")
+        return QNull
+      }
+      // December 28 always lies in the final ISO week of its own year.
+      let jan4 = ordinal(first_thursday_anchor)
+      let week_one = jan4 - (jan4 - 1) % 7
+      let max_week = (ordinal(@ast.Date::new(y, 12, 28).unwrap()) - week_one) / 7 + 1
+      if w < 1 || w > max_week {
+        query_error(ctx, "query.oracle_type_error: ValueError invalid ISO week")
+        return QNull
+      }
       return ordinal_date(jan4 - (jan4 - 1) % 7 + (w - 1) * 7 + weekday)
     }
     let jan1 = ordinal(@ast.Date::new(year, 1, 1).unwrap())
