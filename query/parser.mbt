@@ -697,6 +697,14 @@ fn parse_expr_list(parser : QueryParser) -> Array[Expr]? {
 }
 
 ///|
+fn is_named_hash_source(word : String) -> Bool {
+  [
+    "postings", "transactions", "entries", "accounts", "balances", "commodities",
+    "documents", "events", "notes", "prices", "queries", "custom",
+  ].contains(word)
+}
+
+///|
 fn parse_source_base(parser : QueryParser) -> QuerySource? {
   if parser.match_sym("(") {
     if !parser.expect_keyword("select") {
@@ -726,15 +734,19 @@ fn parse_source_base(parser : QueryParser) -> QuerySource? {
         parser.positions[parser.index] != parser.positions[parser.index - 1] + 1
       )
     ) {
+    // Only known table names need the adjacency diagnostic. Leave
+    // continuations such as JOIN to the ordinary SELECT parser.
+    if parser.peek_word() is Some(word) && is_named_hash_source(word.to_lower()) {
+      parser.fail(
+        "query.invalid_source: a named source must immediately follow #",
+      )
+      return None
+    }
     return Some(SrcDirectives(""))
   }
   match parser.take_word() {
     Some(word) => {
-      if hashed &&
-        ![
-          "postings", "transactions", "entries", "accounts", "balances", "commodities",
-          "documents", "events", "notes", "prices", "queries", "custom",
-        ].contains(word) {
+      if hashed && !is_named_hash_source(word) {
         parser.fail("compilation query.invalid_source `#" + word + "`")
         return None
       }

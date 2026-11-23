@@ -2790,6 +2790,35 @@ test "anonymous singleton table permits calculations on an empty ledger" {
 }
 
 ///|
+test "anonymous hash source rejects separated names with a source syntax diagnostic" {
+  for
+    sql in [
+      "SELECT count(*) FROM # transactions", "SELECT count(*) FROM #\npostings",
+      "SELECT 2+3 FROM #\tentries",
+    ] {
+    let result = queried("", sql)
+    guard result.failure() is Some(@query.Syntax(detail)) else {
+      abort("expected a source syntax error")
+    }
+    assert_true(detail.contains("query.invalid_source"))
+    assert_true(detail.contains("BQL:"))
+  }
+  let singleton = queried("", "SELECT 2+3 FROM #\nWHERE true LIMIT 1")
+  assert_true(singleton.is_ok())
+  assert_eq(singleton.rows[0][0].to_text(), "5")
+}
+
+///|
+test "anonymous hash source preserves the JOIN diagnostic" {
+  let result = queried("", "SELECT 5 FROM # JOIN postings")
+  assert_true(result.failure() is Some(@query.Unsupported(_)))
+  assert_eq(
+    result.error,
+    Some("unsupported query.unsupported.join at BQL:1:17"),
+  )
+}
+
+///|
 test "opt-in ordered set JSON preserves the legacy raw column" {
   for (left, right) in [("#z #a", "#a #z"), ("#z", "#z")] {
     let base = "2024-01-01 * \"order\" "

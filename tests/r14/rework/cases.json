@@ -1384,13 +1384,13 @@
     "path": "mut/g01-105-short-inferred-strict-1.uni.beancount",
     "sha256": "2c914d3d3262fac3e397681155ff862d86da37efde95aeac15032215d34a22a8",
     "review_oracle_exit": 1,
-    "boundary": "pre-existing unknown-option passthrough"
+    "expect_unknown_option_rejection": true
   },
   {
     "path": "mut/g01-105-short-inferred-strict-1.long.beancount",
     "sha256": "0e1a4ee4dc4a062a699668916b9c2ec90041c61a102816e7a46dd5a35aaa8e80",
     "review_oracle_exit": 1,
-    "boundary": "pre-existing unknown-option passthrough"
+    "expect_unknown_option_rejection": true
   },
   {
     "path": "mut/g02-small.crlf.beancount",
@@ -1651,13 +1651,13 @@
     "path": "mut/g08-057-bql-prices.uni.beancount",
     "sha256": "8184a1db7a11d6a54fb2885997811cc34d922fdd24b7c54abe618eb3ad68d3a8",
     "review_oracle_exit": 1,
-    "boundary": "pre-existing unknown-option passthrough"
+    "expect_unknown_option_rejection": true
   },
   {
     "path": "mut/g08-057-bql-prices.long.beancount",
     "sha256": "511599e5400d828e72a8b2231f13fe384d2033f2e941c2fa2c26f266255d050c",
     "review_oracle_exit": 1,
-    "boundary": "pre-existing unknown-option passthrough"
+    "expect_unknown_option_rejection": true
   },
   {
     "path": "mut/g09-099-implicit-zero.crlf.beancount",
@@ -1853,13 +1853,13 @@
     "path": "mut/g13-109-short-inferred-average-1.uni.beancount",
     "sha256": "7cb041f636ffa10d47a4c8cbf374da53af5c0e914badfe98d219b66e7eac171e",
     "review_oracle_exit": 1,
-    "boundary": "pre-existing unknown-option passthrough"
+    "expect_unknown_option_rejection": true
   },
   {
     "path": "mut/g13-109-short-inferred-average-1.long.beancount",
     "sha256": "6fb68c5bf0e6be5afc4cced12e9fe61e03ca23c9dfe67970fdf53a54baa9a858",
     "review_oracle_exit": 1,
-    "boundary": "pre-existing unknown-option passthrough"
+    "expect_unknown_option_rejection": true
   },
   {
     "path": "mut/g14-027-price-per.crlf.beancount",
@@ -2120,13 +2120,13 @@
     "path": "mut/g20-107-short-inferred-fifo-1.uni.beancount",
     "sha256": "41aed90e41ab64d3c3d39335603a88349cf57261810147212a0bc1b321ce8d5a",
     "review_oracle_exit": 1,
-    "boundary": "pre-existing unknown-option passthrough"
+    "expect_unknown_option_rejection": true
   },
   {
     "path": "mut/g20-107-short-inferred-fifo-1.long.beancount",
     "sha256": "1f6c54728b9c5a0c10f0afb2b47a91bfc53ee1292601cbf0b24ff9fb37a36678",
     "review_oracle_exit": 1,
-    "boundary": "pre-existing unknown-option passthrough"
+    "expect_unknown_option_rejection": true
   },
   {
     "path": "mut/g21-082-balance-interpolated.crlf.beancount",
@@ -2202,13 +2202,13 @@
     "path": "mut/g22-111-short-inferred-none-1.uni.beancount",
     "sha256": "53f3bbe86df916191f0cef1a58d3e32a6288cd7a43545195ea7268c8773e006e",
     "review_oracle_exit": 1,
-    "boundary": "pre-existing unknown-option passthrough"
+    "expect_unknown_option_rejection": true
   },
   {
     "path": "mut/g22-111-short-inferred-none-1.long.beancount",
     "sha256": "45f656f8cd4f6a71dd7b6446705db3f28763de7028be469cc6fc456d63a64607",
     "review_oracle_exit": 1,
-    "boundary": "pre-existing unknown-option passthrough"
+    "expect_unknown_option_rejection": true
   },
   {
     "path": "mut/g23-020-posting-flags.crlf.beancount",
@@ -2284,13 +2284,13 @@
     "path": "mut/g24-043-options.uni.beancount",
     "sha256": "3ea82a4ee6d5a846bac9f04c02d7f5eadd76cefeb204048f9ae6772eed639238",
     "review_oracle_exit": 1,
-    "boundary": "pre-existing unknown-option passthrough"
+    "expect_unknown_option_rejection": true
   },
   {
     "path": "mut/g24-043-options.long.beancount",
     "sha256": "7087588fdafaa66053958a16daea1b1104adc5b2d908e693b1b13cfe1eaecd0d",
     "review_oracle_exit": 1,
-    "boundary": "pre-existing unknown-option passthrough"
+    "expect_unknown_option_rejection": true
   },
   {
     "path": "mut/g25-041-include.crlf.beancount",
