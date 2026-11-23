@@ -245,9 +245,24 @@ pub fn Decimal::mantissa(self : Decimal) -> @bigint.BigInt {
 }
 
 ///|
-/// Multiplies the value by 10^k, preserving the represented value.
+/// Increase precision by padding with zeros, or remove up to -k trailing
+/// coefficient zeros. Never rounds or changes the numeric value; use quantize
+/// when a coarser scale must be forced even at the cost of rounding.
 pub fn Decimal::shift_scale(self : Decimal, k : Int32) -> Decimal {
-  { mantissa: bigint_mul_pow10(self.mantissa, k), scale: self.scale + k, }
+  if k >= 0 {
+    return { mantissa: bigint_mul_pow10(self.mantissa, k), scale: self.scale + k, }
+  }
+  if self.mantissa.is_zero() {
+    return Decimal::zero_scaled(self.scale + k)
+  }
+  let ten = @bigint.BigInt::from_int(10)
+  let mut value = self.mantissa
+  let mut remaining = k
+  while remaining < 0 && value.mod(ten).is_zero() {
+    value = value.div(ten)
+    remaining += 1
+  }
+  { mantissa: value, scale: self.scale + (k - remaining) }
 }
 
 ///|
