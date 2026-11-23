@@ -544,11 +544,18 @@ fn rows_with_root(rows : Array[ReportRow], root : String) -> Array[ReportRow] {
 }
 
 ///|
+fn financial_roots(options : @ast.Options) -> Array[String] {
+  ["Assets", "Liabilities", "Equity", "Income", "Expenses"].map(fn(root) {
+    options.get("name_" + root.to_lower()).unwrap_or(root)
+  })
+}
+
+///|
 pub fn trial_balance(
   realized : RealizedLedger,
   convert~ : String? = None,
 ) -> Report {
-  let all_roots = ["Assets", "Liabilities", "Equity", "Income", "Expenses"]
+  let all_roots = financial_roots(realized.options)
   let rows = built_rows(realized, all_roots, convert)
   let totals = total_row("Total", rows)
   make_report(realized, "Trial Balance", rows, totals, convert, all_roots)
@@ -560,8 +567,8 @@ pub fn balance_sheet(
   convert~ : String? = None,
   start~ : @ast.Date? = None,
 ) -> Report {
-  let roots = ["Assets", "Liabilities", "Equity"]
-  let all = ["Assets", "Liabilities", "Equity", "Income", "Expenses"]
+  let all = financial_roots(realized.options)
+  let roots = [all[0], all[1], all[2]]
   let rows = book_rows(realized, roots, convert, convert is Some(_))
   let mut year = 1
   for entry in realized.entries {
@@ -661,6 +668,8 @@ fn income_rows(
   convert : String?,
 ) -> Array[ReportRow] {
   let rows : Array[ReportRow] = []
+  let all = financial_roots(realized.options)
+  let pnl = [all[3], all[4]]
   for entry in realized.entries {
     let in_period = match start {
       Some(date) => date.less_equal(entry.date)
@@ -670,7 +679,7 @@ fn income_rows(
       match entry.directive {
         DTransaction(txn) =>
           for posting in txn.postings {
-            if root_allowed(posting.account, ["Income", "Expenses"]) {
+            if root_allowed(posting.account, pnl) {
               match posting.units {
                 Some(units) => {
                   let amount = converted_amount(
@@ -714,8 +723,9 @@ pub fn income_statement(
   convert~ : String? = None,
 ) -> Report {
   let rows = income_rows(realized, start, convert)
-  let income = rows_with_root(rows, "Income")
-  let expenses = rows_with_root(rows, "Expenses")
+  let roots = financial_roots(realized.options)
+  let income = rows_with_root(rows, roots[3])
+  let expenses = rows_with_root(rows, roots[4])
   let totals = []
   for row in total_row("Total Income", income) {
     totals.push(row)
@@ -730,9 +740,7 @@ pub fn income_statement(
       amount: @ast.Amount::new(row.amount.number.neg(), row.amount.currency),
     })
   }
-  make_report(realized, "Income Statement", rows, totals, convert, [
-    "Income", "Expenses",
-  ])
+  make_report(realized, "Income Statement", rows, totals, convert, [roots[3], roots[4]])
 }
 
 ///|

@@ -491,3 +491,18 @@ test "financial JSON never leaks a control byte into a quoted string" {
     assert_eq(s, "😀" + escaped + "中")
   }
 }
+
+///|
+test "financial statements retain balances under configured account roots" {
+  let realized = realized("option \"name_assets\" \"Actif\"\noption \"name_income\" \"Recettes\"\noption \"name_expenses\" \"Depenses\"\noption \"name_equity\" \"Capital\"\n2024-01-01 open Actif:Cash USD\n2024-01-01 open Recettes:Fees USD\n2024-01-01 open Depenses:Rent USD\n2024-01-02 * \"fees\"\n  Actif:Cash 80 USD\n  Recettes:Fees -80 USD\n2024-01-03 * \"rent\"\n  Depenses:Rent 15 USD\n  Actif:Cash -15 USD\n")
+  let trial = @realization.trial_balance(realized)
+  assert_true(row_for(trial.rows,"Actif:Cash") is Some(_))
+  let balance = @realization.balance_sheet(realized)
+  let income = @realization.income_statement(realized)
+  assert_eq(row_for(trial.rows,"Actif:Cash").unwrap().amount.to_string(), "65 USD")
+  assert_eq(row_for(trial.rows,"Depenses:Rent").unwrap().amount.to_string(), "15 USD")
+  assert_eq(row_for(trial.rows,"Recettes:Fees").unwrap().amount.to_string(), "-80 USD")
+  assert_eq(row_for(balance.rows,"Capital:Earnings:Current").unwrap().amount.to_string(), "-65 USD")
+  assert_eq(row_for(balance.totals,"Total Actif").unwrap().amount.to_string(), "65 USD")
+  assert_eq(row_for(income.totals,"Net Income").unwrap().amount.to_string(), "65 USD")
+}
