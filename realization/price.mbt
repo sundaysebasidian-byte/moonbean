@@ -136,6 +136,10 @@ pub fn PriceDb::rate(
   if base == quote {
     return Some(@decimal.Decimal::one())
   }
+  // A one-edge path is already shortest; retain the same bounded decimal product.
+  if self.edge(base, quote, at) is Some(single) {
+    return Some(@decimal.Decimal::one().mul(single))
+  }
   let currencies : Array[String] = []
   for point in self.points {
     if date_allows(point.date, at) {
