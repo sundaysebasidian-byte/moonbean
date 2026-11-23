@@ -382,6 +382,7 @@ fn eval_expr(ctx : QueryContext, expr : Expr, row : BqlRow) -> QueryValue {
     EBool(value) => QBool(value)
     ECall(name, args) =>
       match (name, args) {
+        ("__case", _) => eval_case(args, fn(arg) { eval_expr(ctx, arg, row) })
         ("meta" | "entry_meta", [arg]) =>
           match eval_expr(ctx, arg, row) {
             QText(key) => {
@@ -492,11 +493,8 @@ fn eval_expr(ctx : QueryContext, expr : Expr, row : BqlRow) -> QueryValue {
 ///|
 fn cond_holds(ctx : QueryContext, cond : Cond, row : BqlRow) -> Bool {
   match cond {
-    CRegex(e, _, regex) =>
-      match eval_expr(ctx, e, row) {
-        QText(s) => regex.execute(s) is Some(_)
-        _ => false
-      }
+    CRegex(_, _, _, _) =>
+      truth(eval_predicate(ctx, cond, fn(e) { eval_expr(ctx, e, row) }))
     CTrue => true
     CNot(inner) => !cond_holds(ctx, inner, row)
     CAnd(left, right) =>
@@ -572,7 +570,7 @@ fn contains_sum(expr : Expr) -> Bool {
   match expr {
     EPredicate(c) => !aggregate_free_cond(c)
     EBinary(left, _, right) => contains_sum(left) || contains_sum(right)
-    ECall("sum" | "count" | "first" | "last" | "min" | "max", _) => true
+    ECall(name, _) if aggregate_name(name) => true
     ECall(_, args) => {
       for arg in args {
         if contains_sum(arg) {
@@ -624,6 +622,12 @@ fn eval_aggregate(
   rows : Array[BqlRow],
 ) -> QueryValue {
   match expr {
+    ECall("__filter_aggregate", [call, EPredicate(condition)]) =>
+      eval_aggregate(
+        ctx,
+        call,
+        rows.filter(fn(row) { cond_holds(ctx, condition, row) }),
+      )
     ECall("first" | "last" | "min" | "max", [arg]) => {
       let mut result = QNull
       for row in rows {
@@ -658,6 +662,104 @@ fn eval_aggregate(
         0
       }
       query_int(count)
+    }
+    ECall("percentile_disc", [arg, fraction]) => {
+      guard literal_value(fraction) is Some(v) && value_number(v) is Some(q) else {
+        return QNull
+      }
+      let values = extension_numeric_values(ctx, arg, rows)
+      if values.is_empty() {
+        return QNull
+      }
+      values.sort_by(fn(a, b) { a.compare(b) })
+      let one = @bigint.BigInt::from_int(1)
+      let denominator = @bigint.BigInt::from_int(10).pow(
+        @bigint.BigInt::from_int(q.scale()),
+      )
+      let rank = (
+          q.mantissa() * @bigint.BigInt::from_int(values.length()) +
+          denominator -
+          one
+        ) /
+        denominator
+      QNumber(values[query_integer(QInt(rank)).unwrap().max(1) - 1])
+    }
+    ECall("arg_max" | "arg_min", [payload, key]) => {
+      let maximum = expr is ECall("arg_max", _)
+      let mut best = QNull
+      let mut selected = QNull
+      for row in rows {
+        let value = eval_expr(ctx, payload, row)
+        let candidate = eval_expr(ctx, key, row)
+        if candidate is QNull {
+          continue
+        }
+        if best is QNull ||
+          (
+            value_compare(candidate, best) is Some(order) &&
+            (if maximum { order > 0 } else { order < 0 })
+          ) {
+          best = candidate
+          selected = value
+        }
+      }
+      selected
+    }
+    ECall("bool_or" | "bool_and", [arg]) => {
+      let either = expr is ECall("bool_or", _)
+      let mut seen = false
+      let mut found = !either
+      for row in rows {
+        if eval_expr(ctx, arg, row) is QBool(b) {
+          seen = true
+          found = if either { found || b } else { found && b }
+        }
+      }
+      if seen {
+        QBool(found)
+      } else {
+        QNull
+      }
+    }
+    ECall("avg", [arg]) =>
+      extension_mean(extension_numeric_values(ctx, arg, rows))
+    ECall("weighted_avg", [value, weight]) =>
+      extension_weighted_mean(ctx, value, weight, rows)
+    ECall("count_distinct", [arg]) => {
+      let seen : Map[String, Bool] = Map([])
+      for row in rows {
+        let v = eval_expr(ctx, arg, row)
+        if !(v is QNull) {
+          seen[distinct_key(v)] = true
+        }
+      }
+      query_int(seen.length())
+    }
+    ECall("median", [arg]) => {
+      let values = extension_numeric_values(ctx, arg, rows)
+      if values.is_empty() {
+        return QNull
+      }
+      values.sort_by(fn(a, b) { a.compare(b) })
+      let mid = values.length() / 2
+      if values.length() % 2 == 1 {
+        QNumber(values[mid])
+      } else {
+        extension_mean([values[mid - 1], values[mid]])
+      }
+    }
+    ECall("collect", [arg]) =>
+      QList(rows.map(fn(row) { eval_expr(ctx, arg, row) }))
+    ECall("first_non_null" | "last_non_null", [arg]) => {
+      let mut result = QNull
+      for row in rows {
+        let value = eval_expr(ctx, arg, row)
+        if !(value is QNull) &&
+          (result is QNull || expr is ECall("last_non_null", _)) {
+          result = value
+        }
+      }
+      result
     }
     ECall("sum", [arg]) =>
       match arg {
@@ -766,8 +868,10 @@ fn eval_grouped(
       op,
       eval_grouped(ctx, right, rows),
     )
+  } else if expr is ECall("__case", args) {
+    eval_case(args, fn(arg) { eval_grouped(ctx, arg, rows) })
   } else if expr is ECall(name, args) && contains_sum(expr) {
-    if ["sum", "count", "first", "last", "min", "max"].contains(name) {
+    if aggregate_name(name) {
       eval_aggregate(ctx, expr, rows)
     } else if !rows.is_empty() {
       eval_expr(
@@ -948,7 +1052,13 @@ fn sort_outputs(
   indices.sort_by(fn(a, b) {
     for i in 0..<orders.length() {
       let slot = if reuse { projected[i] } else { i }
-      let order = sort_value_compare(ctx, keys[a][slot], keys[b][slot])
+      let left = keys[a][slot]
+      let right = keys[b][slot]
+      if orders[i].nulls_first is Some(first) &&
+        (left is QNull) != (right is QNull) {
+        return if (left is QNull) == first { -1 } else { 1 }
+      }
+      let order = sort_value_compare(ctx, left, right)
       if order != 0 {
         return if orders[i].descending { -order } else { order }
       }
@@ -1007,7 +1117,22 @@ fn run_select(
   query : SelectQuery,
   diagnostics : Array[@ast.Diagnostic],
 ) -> QueryResult {
-  if (query.distinct || query_any(query, representation_expr)) &&
+  let typed_distinct = query.distinct &&
+    query.projections.any(fn(e) {
+      // These exact scalar domains cannot carry the sign or repr of a Decimal zero.
+      !["str", "date", "int", "bool", "nonetype"].contains(
+        expression_type(e, query.source, []),
+      )
+    })
+  let representation_filter = match query.source {
+    SrcFrom(filter, _, _, _, _) => cond_any(filter, representation_expr)
+    _ => false
+  }
+  if (
+      typed_distinct ||
+      query_any(query, representation_expr) ||
+      (query.distinct && representation_filter)
+    ) &&
     realized.entries.any(fn(e) { !e.query_exact_decimal }) {
     return {
       kind: Table,
@@ -1066,6 +1191,36 @@ fn run_select(
       rows.push(row)
     }
   }
+  // Preserve evaluation even for discarded rows: a later projection can still fail.
+  // Only the ordinary, unsorted path can discard output before materialization.
+  if query.orders.is_empty() &&
+    !query.distinct &&
+    query.pivot is None &&
+    query.having is CTrue &&
+    query.groups.is_empty() &&
+    !query.projections.any(contains_sum) &&
+    (query.offset > 0 || query.limit is Some(_)) {
+    let result_rows = []
+    let max_rows = query.limit.unwrap_or(rows.length())
+    for i in 0..<rows.length() {
+      let row = rows[i]
+      if i >= query.offset && result_rows.length() < max_rows {
+        result_rows.push(
+          query.projections.map(fn(expr) { eval_expr(ctx, expr, row) }),
+        )
+      } else {
+        for expr in query.projections {
+          eval_expr(ctx, expr, row) |> ignore
+        }
+      }
+    }
+    return {
+      kind: Table,
+      columns: query.labels,
+      rows: result_rows,
+      error: ctx.error,
+    }
+  }
   let built = build_output(ctx, query, rows)
   ctx.aggregate_row = all_rows.last()
   let mut outputs = built.filter(fn(output) {
@@ -1087,16 +1242,22 @@ fn run_select(
     }
     outputs = unique
   }
-  match query.limit {
-    Some(limit) =>
-      if outputs.length() > limit {
-        let truncated : Array[OutputRow] = []
-        for i in 0..<limit {
-          truncated.push(outputs[i])
-        }
-        outputs = truncated
-      }
-    None => ()
+  let start = if query.offset < outputs.length() {
+    query.offset
+  } else {
+    outputs.length()
+  }
+  let remaining = outputs.length() - start
+  let length = match query.limit {
+    Some(limit) if limit < remaining => limit
+    _ => remaining
+  }
+  if start != 0 || length != outputs.length() {
+    let sliced = []
+    for i in start..<(start + length) {
+      sliced.push(outputs[i])
+    }
+    outputs = sliced
   }
   let columns = query.labels
   let result_rows : Array[Array[QueryValue]] = []
@@ -1184,15 +1345,57 @@ fn run_journal(
 }
 
 ///|
+fn resolve_saved(
+  realized : @realization.RealizedLedger,
+  name : String,
+) -> ParsedQuery {
+  let mut text = None
+  for entry in realized.entries {
+    if entry.directive is DQuery(q) && q.name == name {
+      if text is Some(_) {
+        return PqError("saved query is ambiguous: " + name)
+      }
+      text = Some(q.query)
+    }
+  }
+  guard text is Some(source) else {
+    return PqError("saved query not found: " + name)
+  }
+  parse_query(source)
+}
+
+///|
 pub fn run_query(
   realized : @realization.RealizedLedger,
   text : String,
   diagnostics~ : Array[@ast.Diagnostic] = [],
 ) -> QueryResult {
-  match parse_query(text) {
+  let entry = match parse_query(text) {
+    PqSaved(name) => resolve_saved(realized, name)
+    other => other
+  }
+  match entry {
+    PqSaved(_) =>
+      {
+        kind: Table,
+        columns: [],
+        rows: [],
+        error: Some("nested RUN SAVED is not supported"),
+      }
     PqError(message) =>
       { kind: Table, columns: [], rows: [], error: Some(message), }
     PqSelect(query) => run_select(realized, query, diagnostics)
+    PqUnionAll(branches) => {
+      let rows = []
+      for branch in branches {
+        let result = run_select(realized, branch, diagnostics)
+        if result.error is Some(_) {
+          return { kind: Table, columns: [], rows: [], error: result.error, }
+        }
+        rows.append(result.rows)
+      }
+      { kind: Table, columns: branches[0].labels, rows, error: None, }
+    }
     PqPrint(filter, period) => run_print(realized, filter, period, diagnostics)
     PqJournal(account, limit) => run_journal(realized, account, limit)
   }
@@ -1315,11 +1518,8 @@ fn arithmetic(
 ///|
 fn grouped_cond(ctx : QueryContext, cond : Cond, rows : Array[BqlRow]) -> Bool {
   match cond {
-    CRegex(e, _, regex) =>
-      match eval_grouped(ctx, e, rows) {
-        QText(s) => regex.execute(s) is Some(_)
-        _ => false
-      }
+    CRegex(_, _, _, _) =>
+      truth(eval_predicate(ctx, cond, fn(e) { eval_grouped(ctx, e, rows) }))
     CTrue => true
     CNot(c) => !grouped_cond(ctx, c, rows)
     CAnd(a, b) => grouped_cond(ctx, a, rows) && grouped_cond(ctx, b, rows)
@@ -1584,7 +1784,9 @@ fn directive_rows(
     } else {
       table == "entries" ||
       table == kind + "s" ||
-      (table == "commodities" && kind == "commodity")
+      (table == "commodities" && kind == "commodity") ||
+      (table == "queries" && kind == "query") ||
+      (table == "custom" && kind == "custom")
     }
     if !selected {
       continue
@@ -1665,6 +1867,7 @@ fn directive_column(
       return QText(
         match entry.directive {
           DEvent(e) => if table == "events" { e.event_type } else { "event" }
+          DCustom(c) if table == "custom" => c.custom_type
           _ => directive_type(entry)
         },
       )
@@ -1713,6 +1916,18 @@ fn directive_column(
     DOpen(e) => if name == "account" { QText(e.account) } else { QNull }
     DClose(e) => if name == "account" { QText(e.account) } else { QNull }
     DCommodity(e) => if name == "name" { QText(e.currency) } else { QNull }
+    DCustom(c) =>
+      if name == "values" {
+        QList(c.values.map(custom_value_record))
+      } else {
+        QNull
+      }
+    DQuery(e) =>
+      match name {
+        "name" => QText(e.name)
+        "query_string" => QText(e.query)
+        _ => QNull
+      }
     DPrice(e) =>
       match name {
         "currency" => QText(e.currency)

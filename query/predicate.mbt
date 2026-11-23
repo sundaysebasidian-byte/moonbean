@@ -38,10 +38,10 @@ fn eval_predicate(
       }
     }
     CIsNull(e, negated) => QBool((evaluate(e) is QNull) != negated)
-    CRegex(e, _, regex) =>
+    CRegex(e, _, regex, negated) =>
       match evaluate(e) {
         QNull => QNull
-        QText(s) => QBool(regex.execute(s) is Some(_))
+        QText(s) => QBool((regex.execute(s) is Some(_)) != negated)
         _ => {
           query_error(
             ctx, "query.oracle_type_error: TypeError regex requires string",
@@ -67,7 +67,7 @@ fn projection_condition_types(
       projection_condition_types(b, source, errors)
     }
     CIsNull(e, _) | CTruthy(e) => expression_type(e, source, errors) |> ignore
-    CRegex(e, _, _) => {
+    CRegex(e, _, _, _) => {
       let t = expression_type(e, source, errors)
       if t != "str" && t != "object" {
         errors.push("compilation query.invalid_signature: regex " + t)
@@ -100,7 +100,8 @@ fn condition_label(cond : Cond) -> String {
     CCmp(a, op, b) => oracle_expr_label(a) + op + oracle_expr_label(b)
     CIsNull(e, n) =>
       oracle_expr_label(e) + (if n { " IS NOT NULL" } else { " IS NULL" })
-    CRegex(e, p, _) => oracle_expr_label(e) + "~'" + p + "'"
+    CRegex(e, p, _, negated) =>
+      oracle_expr_label(e) + (if negated { "!~'" } else { "~'" }) + p + "'"
   }
 }
 
@@ -115,7 +116,8 @@ fn same_condition(a : Cond, b : Cond) -> Bool {
     (CCmp(a, op, b), CCmp(c, p, d)) =>
       op == p && same_expr(a, c) && same_expr(b, d)
     (CIsNull(a, n), CIsNull(b, m)) => n == m && same_expr(a, b)
-    (CRegex(a, p, _), CRegex(b, q, _)) => p == q && same_expr(a, b)
+    (CRegex(a, p, _, na), CRegex(b, q, _, nb)) =>
+      p == q && na == nb && same_expr(a, b)
     _ => false
   }
 }

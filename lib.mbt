@@ -18,13 +18,18 @@ fn lib_is_space(c : Char) -> Bool {
 }
 
 ///|
+fn lib_starts_indented(line : String) -> Bool {
+  line.get_char(0) is Some(c) && lib_is_space(c)
+}
+
+///|
 fn lib_include_target(line : String) -> String? {
   let text = lib_trim(line)
   if text.length() < 8 {
     return None
   }
   let head = lib_view(text[0:7])
-  if head.to_lower() != "include" {
+  if head != "include" {
     return None
   }
   if !lib_is_space(
@@ -237,6 +242,10 @@ pub fn IncludeExpander::next(self : IncludeExpander) -> String? {
       Some(relative) => {
         let path = path_join(frame.base, relative)
         let loc = @ast.Loc::new(frame.file, first + 1)
+        if lib_starts_indented(line) {
+          // The reference reports an indentation error and still registers the include.
+          self.retain_line(line, loc)
+        }
         if self.frames.any(fn(f) { f.file == path }) {
           self.errors.push(
             @ast.Diagnostic::new(
@@ -265,6 +274,20 @@ pub fn IncludeExpander::next(self : IncludeExpander) -> String? {
 }
 
 ///|
+fn IncludeExpander::retain_line(
+  self : IncludeExpander,
+  line : String,
+  loc : @ast.Loc,
+) -> Unit {
+  self.output.push(line)
+  let mut index = 0
+  for _ in line.split("\n") {
+    self.source_map.push(@ast.Loc::new(loc.file, loc.line + index))
+    index += 1
+  }
+}
+
+///|
 /// Supplies a requested file; None retains the directive and records include.missing.
 pub fn IncludeExpander::provide(
   self : IncludeExpander,
@@ -284,11 +307,8 @@ pub fn IncludeExpander::provide(
         })
       None => {
         self.missing.push(path)
-        self.output.push(line)
-        let mut index = 0
-        for _ in line.split("\n") {
-          self.source_map.push(@ast.Loc::new(loc.file, loc.line + index))
-          index += 1
+        if !lib_starts_indented(line) {
+          self.retain_line(line, loc)
         }
         self.errors.push(
           @ast.Diagnostic::new(

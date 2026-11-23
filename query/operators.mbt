@@ -5,6 +5,7 @@ fn literal_value(expr : Expr) -> QueryValue? {
     EDate(d) => Some(QDate(d))
     EBool(b) => Some(QBool(b))
     ENull => Some(QNull)
+    EValue(QNumber(n)) => Some(QNumber(n))
     ENum(n) =>
       Some(if n.scale() == 0 { QInt(n.mantissa()) } else { QNumber(n) })
     _ => None

@@ -11,6 +11,17 @@ fn oracle_expr_label(expr : Expr) -> String {
 }
 
 ///|
+fn projection_ordinal(n : @decimal.Decimal, columns : Int32) -> Int32? {
+  if n.scale() != 0 ||
+    n.compare(@decimal.Decimal::from_int(1)) < 0 ||
+    n.compare(@decimal.Decimal::from_int(columns)) > 0 {
+    None
+  } else {
+    Some(bql_parse_int(n.to_string()) - 1)
+  }
+}
+
+///|
 fn resolve_reference(
   parser : QueryParser,
   expr : Expr,
@@ -18,13 +29,16 @@ fn resolve_reference(
   names : Array[String],
   clause : String,
 ) -> Expr {
+  if expr is EValue(QNumber(_)) {
+    parser.fail("expected an integer column reference")
+    return expr
+  }
   if expr is ENum(n) {
     if n.scale() != 0 {
       parser.fail("expected an integer column reference")
       return expr
     }
-    let index = bql_parse_int(n.to_string())
-    if index < 1 || index > projections.length() {
+    guard projection_ordinal(n, projections.length()) is Some(index) else {
       parser.fail(
         "compilation query.invalid_reference: invalid " +
         clause +
@@ -33,7 +47,7 @@ fn resolve_reference(
       )
       return expr
     }
-    return projections[index - 1]
+    return projections[index]
   }
   if expr is ECol(name) {
     for i = names.length() - 1; i >= 0; i = i - 1 {
@@ -50,13 +64,13 @@ fn relation_rows(
   names : Array[String],
   values : Array[Array[QueryValue]],
 ) -> Array[BqlRow] {
+  let columns : Map[String, Int32] = Map([])
+  for i in 0..<names.length() {
+    columns.set(names[i], i)
+  }
   values.map(fn(values) {
-    let cells : Map[String, QueryValue] = Map([])
-    for i in 0..<names.length() {
-      cells.set(names[i], values[i])
-    }
     let extra = new_row_extra(None, None, None)
-    extra.cells = Some(cells)
+    extra.cells = Some({ columns, values, })
     let units = @ast.Amount::new(@decimal.Decimal::zero(), "")
     {
       extra: Some(extra),
@@ -89,9 +103,8 @@ fn parse_pivot_reference(
     None => return 0
   }
   if expr is ENum(n) && n.scale() == 0 {
-    let index = bql_parse_int(n.to_string())
-    if index >= 1 && index <= projections.length() {
-      return index - 1
+    if projection_ordinal(n, projections.length()) is Some(index) {
+      return index
     }
   } else if expr is ECol(name) {
     for i = names.length() - 1; i >= 0; i = i - 1 {
@@ -247,7 +260,7 @@ fn resolve_quoted_condition(cond : Cond, source : QuerySource) -> Cond {
     }
     CIsNull(e, negated) => CIsNull(resolve_quoted(e, source), negated)
     CTruthy(e) => CTruthy(resolve_quoted(e, source))
-    CRegex(e, pattern, regex) =>
-      CRegex(resolve_quoted(e, source), pattern, regex)
+    CRegex(e, pattern, regex, negated) =>
+      CRegex(resolve_quoted(e, source), pattern, regex, negated)
   }
 }

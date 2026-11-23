@@ -184,6 +184,12 @@ fn eval_function(
     }
     return QNull
   }
+  if (name, values) is ("__distinct" | "__not_distinct", [a, b]) {
+    return QBool(membership_equal(a, b) == (name == "__not_distinct"))
+  }
+  if (name, values) is ("nullif", [a, b]) {
+    return if membership_equal(a, b) { QNull } else { a }
+  }
   if values.any(fn(v) { v is QNull }) {
     return QNull
   }
@@ -199,6 +205,27 @@ fn eval_function(
     return QNull
   }
   match (name, values) {
+    ("__dynamic_regex", [QText(text), QText(pattern), QBool(negated)]) => {
+      let regex = match ctx.dynamic_regex.get(pattern) {
+        Some(compiled) => Some(compiled)
+        None => {
+          let compiled = query_regex(ctx, pattern, true)
+          if compiled is Some(re) && ctx.dynamic_regex.length() < 32 {
+            ctx.dynamic_regex.set(pattern, re)
+          }
+          compiled
+        }
+      }
+      if regex is Some(regex) {
+        QBool((regex.execute(text) is Some(_)) != negated)
+      } else {
+        QNull
+      }
+    }
+    ("__dynamic_regex", _) => {
+      query_error(ctx, "query.oracle_type_error: TypeError regex requires text")
+      QNull
+    }
     ("__in" | "__notin", [item, container]) =>
       match membership(ctx, item, container) {
         QBool(b) => QBool(if name == "__notin" { !b } else { b })
@@ -209,6 +236,110 @@ fn eval_function(
         (Some(a), Some(b)) => QBool(a >= 0 && b <= 0)
         _ => QNull
       }
+    ("add_business_days", [QDate(date), n]) => business_day_add(ctx, date, n)
+    ("business_days_between", [QDate(start), QDate(end)]) =>
+      query_int(business_day_count(ordinal(start), ordinal(end)))
+    ("round_increment", [value, step]) =>
+      extension_round_increment(ctx, value, step)
+    ("fiscal_year" | "fiscal_quarter", [QDate(date), start]) => {
+      guard query_integer(start) is Some(month) && month >= 1 && month <= 12 else {
+        query_error(
+          ctx, "evaluation query.fiscal_calendar: start month must be 1 through 12",
+        )
+        return QNull
+      }
+      if name == "fiscal_quarter" {
+        query_int((date.month + 12 - month) % 12 / 3 + 1)
+      } else if date.year == 1 && date.month < month {
+        query_error(
+          ctx, "evaluation query.fiscal_calendar: start year precedes 1",
+        )
+        QNull
+      } else {
+        query_int(if date.month < month { date.year - 1 } else { date.year })
+      }
+    }
+    ("account_in_subtree", [QText(account), QText(ancestor)]) =>
+      QBool(
+        ancestor != "" &&
+        (account == ancestor || account.has_prefix(ancestor + ":")),
+      )
+    ("list_at", [QList(items), QInt(index)]) => {
+      let width = @bigint.BigInt::from_int(items.length())
+      if index < width.neg() || index >= width {
+        QNull
+      } else {
+        items[list_coordinate(index, items.length())]
+      }
+    }
+    ("list_slice", [QList(items), QInt(lo), QInt(hi)]) => {
+      let start = list_coordinate(lo, items.length())
+      let end = list_coordinate(hi, items.length())
+      QList(items[start:end.max(start)].to_owned())
+    }
+    ("split_text", [QText(text), QText(sep)]) =>
+      if sep == "" {
+        query_error(
+          ctx, "evaluation query.split_text: separator must be non-empty",
+        )
+        QNull
+      } else {
+        QList(text.split(sep).map(fn(s) { QText(s.to_owned()) }).to_array())
+      }
+    ("join_text", [QList(items), QText(sep)]) => {
+      let parts = []
+      for item in items {
+        match item {
+          QText(s) => parts.push(s)
+          QNull => ()
+          _ => {
+            query_error(
+              ctx, "evaluation query.join_text: list items must be strings or NULL",
+            )
+            return QNull
+          }
+        }
+      }
+      QText(parts.join(sep))
+    }
+    ("trim", [QText(s)]) => extension_trim(s, true, true)
+    ("ltrim", [QText(s)]) => extension_trim(s, true, false)
+    ("rtrim", [QText(s)]) => extension_trim(s, false, true)
+    ("replace_text", [QText(s), QText(old), QText(new)]) =>
+      QText(if old == "" { s } else { s.replace_all(old~, new~) })
+    ("starts_with", [QText(s), QText(prefix)]) => QBool(s.has_prefix(prefix))
+    ("ends_with", [QText(s), QText(suffix)]) => QBool(s.has_suffix(suffix))
+    ("date_format", [QDate(d), QText(pattern)]) =>
+      extension_date_format(ctx, d, pattern)
+    ("month_end", [QDate(d)]) =>
+      QDate(
+        @ast.Date::new(
+          d.year,
+          d.month,
+          @ast.Date::days_in_month(d.year, d.month),
+        ).unwrap(),
+      )
+    ("days_in_month", [QDate(d)]) =>
+      query_int(@ast.Date::days_in_month(d.year, d.month))
+    ("clamp", [n, low, high]) => {
+      guard value_number(n) is Some(n) &&
+        value_number(low) is Some(lo) &&
+        value_number(high) is Some(hi) else {
+        return QNull
+      }
+      if hi.less_than(lo) {
+        query_error(
+          ctx, "evaluation query.clamp: lower bound exceeds upper bound",
+        )
+        QNull
+      } else if n.less_than(lo) {
+        QNumber(lo)
+      } else if hi.less_than(n) {
+        QNumber(hi)
+      } else {
+        QNumber(n)
+      }
+    }
     ("parse_date", [QText(text)]) => flexible_date(ctx, text)
     ("parse_date", [QText(text), QText(format)]) =>
       strptime_date(ctx, text, format)

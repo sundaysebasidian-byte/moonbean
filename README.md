@@ -4,7 +4,7 @@
 
 **[在线 Playground](https://sundaysebasidian-byte.github.io/moonbean/)**：在浏览器里粘贴或打开账本，查看诊断、资产负债表、损益表、流水和 BQL 查询结果。账本只在本机浏览器里处理，不会上传。
 
-*English:* MoonBean is a clean-room, Apache-2.0 implementation of a Beancount v3 compatible plain-text accounting engine in MoonBit: parser, exact decimals, lot booking, validation, reports and a BQL subset. The library is pure (no file system), runs on native, wasm-gc and JavaScript, and powers an offline browser playground. It is checked against beancount 3.2.3 as an external black-box oracle.
+*English:* MoonBean is a clean-room, Apache-2.0 implementation of a plain-text accounting engine for Beancount ledgers in MoonBit: parser, exact decimals, lot booking, validation, reports and a BQL subset. The library is pure (no file system), runs on native, wasm-gc and JavaScript, and powers an offline browser playground. It is checked against beancount 3.2.3 as an external black-box oracle.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/assets/playground-dark.png">
@@ -22,7 +22,7 @@
 
 可直接使用的范围是仅依赖已实现指令、booking 方法和下列原生插件（其余账户须显式声明）的纯文本账本，以及本文和 [conformance](docs/conformance.md) 列出的 BQL 子集。120 份自编账本的对比不是对任意 Beancount/Fava 账本的保证；Fava 的界面、扩展、上传附件和 Python 插件运行环境不在本引擎内。迁移前运行 `moonbean check FILE`，并审阅警告和报表。
 
-[迁移示例](examples/migration/) 均为本项目独立编写，确定行为如下：
+[迁移示例](examples/migration/) 均为本项目独立编写。下表保留早期记录；当前行为以兼容清单和命令实际输出为准：
 
 | 示例 | 行为、位置与原因 |
 | --- | --- |
@@ -43,7 +43,7 @@ moonbean query examples/migration/queries.beancount 'SELECT account PIVOT curren
 
 include 展开保留每行的源文件和行号；诊断指向原始语句，包括多级 include 中的语句。
 
-BQL 位置相对于查询文本（从 1 开始的行与 UTF-16 列），不是保存它的账本行号；库的 `QueryResult.error` 保留上述错误码和位置，`failure()` 返回 `Unsupported`。不支持项须改写为已支持的单一 postings 查询，或继续在外部 beanquery/Fava 执行；不会近似执行子查询、JOIN 或 PIVOT。以上示例由 `python3 scripts/migration_smoke.py` 实测，原始输出见 [迁移证据](docs/evidence/migration.json)。
+BQL 位置相对于查询文本（从 1 开始的行与 UTF-16 列），不是保存它的账本行号；库的 `QueryResult.error` 保留上述错误码和位置，`failure()` 返回 `Unsupported`。不支持项须改写为已支持的单一 postings 查询，或继续在外部 beanquery/Fava 执行；不会近似执行不支持的语法。上述历史示例中的 FROM 子查询限制已经缩小；当前边界见兼容清单。原始记录由 `python3 scripts/migration_smoke.py` 实测，原始输出见 [迁移证据](docs/evidence/migration.json)。
 
 ## Playground
 
@@ -72,27 +72,10 @@ node web/dom-smoke.mjs                # 无头 Chrome：账本里的恶意字符
 
 ## 版本对应
 
-| 面 | 对应 | 说明 |
-| --- | --- | --- |
-| 发布源码 | tag `v0.1.1` | mooncakes 0.1.1 的打包内容与该 tag 指向的提交一致 |
-| mooncakes | `sundaysebasidian-byte/moonbean@0.1.1` | 包内容固定，不随 main 变化 |
-| Pages | 最近一次推送到 main 的构建 | [`pages.yml`](.github/workflows/pages.yml) 每次 push 到 main 都会重新构建，可能领先于 0.1.1 |
-
-定位发布提交：`git rev-list -n 1 v0.1.1`。下面三条命令分别复现三个面：
-
-```sh
-# 源码测试
-git checkout v0.1.1
-moon test --target all
-
-# 安装包调用：在仓库外新建模块，复制 examples/library_demo 的 main.mbt 和 moon.pkg 到 cmd/main
-moon new consumer && cd consumer
-moon add sundaysebasidian-byte/moonbean@0.1.1
-moon run cmd/main
-
-# 线上引擎：打开 Pages；对应的构建见 Actions 中 Pages 工作流的运行记录
-gh run list --workflow pages.yml --limit 1
-```
+- 版本以 [Mooncakes 注册表](https://mooncakes.io/docs/sundaysebasidian-byte/moonbean)为准。注册表中的版本是固定快照，不会随默认分支更新。
+- 源码版本见 [moon.mod](moon.mod)。本次更新的可用查询见 [BQL 使用指南](docs/bql_extensions.md)，兼容范围见 [逐项清单](docs/compatibility.md)。
+- 在线 Playground 从默认分支独立构建。部署记录见 [Pages 工作流](.github/workflows/pages.yml)，不能用页面判断包版本。
+- 既有安装需要固定依赖时可继续使用 [0.2.8](https://mooncakes.io/docs/sundaysebasidian-byte/moonbean@0.2.8/)。旧版 0.1.1 的复现请用对应源码标签和示例，不要用 main 的文件替代。
 
 ## 安装
 
@@ -127,11 +110,15 @@ moon run cmd/main --target native -- is examples/full-year-2024.beancount
 moon run cmd/main --target native -- register examples/full-year-2024.beancount Assets:Bank:Checking
 moon run cmd/main --target native -- dups examples/full-year-2024.beancount
 
-# BQL 查询，输出文本或 JSON
+# BQL 查询，输出文本、JSON 或 CSV
 moon run cmd/main --target native -- query examples/full-year-2024.beancount \
   'SELECT account, sum(units) FROM postings GROUP BY account ORDER BY account'
 moon run cmd/main --target native -- query examples/full-year-2024.beancount \
   'SELECT account, sum(units) FROM postings GROUP BY account ORDER BY account' --json
+
+# 导出指定查询的表格
+moon run cmd/main --target native -- query examples/full-year-2024.beancount \
+  'SELECT date, account, number LIMIT 20' --csv
 
 # 格式化（默认打印到标准输出，加 --write 原地写回）
 moon run cmd/main --target native -- fmt examples/full-year-2024.beancount
@@ -346,13 +333,13 @@ MoonBean 不是现有账本库的移植或封装，解析器、decimal、booking
 
 - 上述 5 个内置插件原生执行；其他插件只记录并给出警告，不运行 Python。
 - `document` 不检查文件是否存在；未实现的 option 不会改变行为。
-- BQL 按逐项清单实现：子查询、PIVOT 和 31 个标量签名未实现，JOIN/SQL LIKE 不属于已验证的 oracle 语法；数值算术区分 int/Decimal，不含通用 Amount/Inventory 运算。正则用 MoonBit core 的 Regex 子集，非法或不支持的模式会明确报错并保留位置。BQL 字符串的反斜杠和重复引号与 oracle 一样保留原字符，不按 Python 或 C 转义解码。
+- BQL 按逐项清单实现：支持已覆盖的 FROM 子查询和 PIVOT BY，用法及限制见兼容清单；JOIN 和 SQL LIKE 不支持。数值算术区分 int/Decimal，不含通用 Amount/Inventory 运算。正则用 MoonBit core 的 Regex 子集，非法或不支持的模式会明确报错并保留位置。BQL 字符串的反斜杠和重复引号与 oracle 一样保留原字符，不按 Python 或 C 转义解码。
 - Playground 一次只处理一段文本，不加载 `include`。
 
 路线图：
 
 1. 插件扩展点（宿主可以注册自定义校验和变换）。
-2. 更完整的 BQL（完整对象运算、子查询、PIVOT、金额运算、期间转换的归一化）；LIKE/JOIN 不属于 beanquery 0.2.0 的已验证语法。
+2. 更完整的 BQL（完整对象运算、金额运算、期间转换的归一化）；LIKE/JOIN 不属于 beanquery 0.2.0 的已验证语法。
 3. `account_rounding` 的输出语义。
 4. 更大账本的增量 realize 和缓存。
 
@@ -378,9 +365,9 @@ moon info && git diff --exit-code
 ./scripts/build-web.sh && node web/smoke.mjs && node web/dom-smoke.mjs
 ```
 
-`moon test --target all` 覆盖 wasm、wasm-gc、js、native 四个后端，每个后端 132 个测试。`web/dom-smoke.mjs` 需要本机装有 Chrome（可用环境变量 `CHROME` 指定路径）。CI 在 ubuntu、macOS、Windows 上运行同一组命令，另有 playground 和 oracle 两个 job。
+`moon test --target all` 覆盖 wasm、wasm-gc、js、native 四个后端；测试结果以对应源码的运行记录为准。`web/dom-smoke.mjs` 需要本机装有 Chrome（可用环境变量 `CHROME` 指定路径）。CI 在 ubuntu、macOS、Windows 上运行同一组命令，另有 playground 和 oracle 两个 job。
 
-## 0.2.3 compatibility boundary
+## Historical 0.2.3 compatibility boundary
 
 The endpoint is beancount 3.2.3 plus beanquery 0.2.0 in full; this candidate has not reached it. [The compatibility matrix](docs/compatibility.md) lists every advertised table/column, function signature and option, with evidence, reasons, impact and alternatives for remaining gaps. All ten source schemas now have typed columns, including dict/directive/id/discrepancy values and tagged notes. Position DISTINCT preserves representation differences and uses hash lookup. Source-resolved signatures distinguish int/decimal and set/frozenset; 74 scalar signatures have evaluators, while 31 remain unimplemented. A registered signature is not proof of full value-domain equivalence.
 

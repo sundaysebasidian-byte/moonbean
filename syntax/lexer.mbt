@@ -38,6 +38,7 @@ fn is_delimiter(c : Char) -> Bool {
   c == '}' ||
   c == '@' ||
   c == '~' ||
+  c == '|' ||
   c == ',' ||
   c == '#' ||
   c == '^' ||
@@ -46,8 +47,79 @@ fn is_delimiter(c : Char) -> Bool {
 }
 
 ///|
+fn tag_char(c : Char) -> Bool {
+  c.is_ascii_alphabetic() ||
+  c.is_ascii_digit() ||
+  c == '-' ||
+  c == '_' ||
+  c == '/' ||
+  c == '.'
+}
+
+///|
+// Longest slash-prefixed commodity token. A numeric divisor has no letter.
+fn futures_end(text : String, start : Int32) -> Int32 {
+  let mut i = start + 1
+  let mut end = start
+  let mut letter = false
+  while text.get_char(i) is Some(c) {
+    if c >= 'A' && c <= 'Z' {
+      letter = true
+    } else if !c.is_ascii_digit() &&
+      c != '.' &&
+      c != '_' &&
+      c != '-' &&
+      c != '\'' {
+      break
+    }
+    i += 1
+    if letter && (c.is_ascii_alphabetic() || c.is_ascii_digit()) {
+      end = i
+    }
+  }
+  end
+}
+
+///|
 fn is_digit(c : Char) -> Bool {
   c.is_ascii_digit()
+}
+
+///|
+// A ledger date has three digit fields and at least four year digits.
+// Keep Date::parse's ISO-only contract for BQL and external callers.
+fn date_token(text : String, start : Int32) -> (TokenKind, Int32)? {
+  guard text.get_char(start + 3) is Some(fourth) && fourth.is_ascii_digit() else {
+    return None
+  }
+  let mut i = start
+  let parts = []
+  for field in 0..<3 {
+    let begin = i
+    let mut value = 0
+    while text.get_char(i) is Some(c) && c.is_ascii_digit() {
+      // Values over 9999 cannot be valid; saturate instead of overflowing.
+      if value <= 9999 {
+        value = value * 10 + c.to_int() - '0'.to_int()
+      }
+      i += 1
+    }
+    if i == begin || (field == 0 && i - begin < 4) {
+      return None
+    }
+    parts.push(value)
+    if field < 2 {
+      let sep = text.get_char(i)
+      if sep != Some('-') && sep != Some('/') {
+        return None
+      }
+      i += 1
+    }
+  }
+  match @ast.Date::new(parts[0], parts[1], parts[2]) {
+    Some(date) => Some((Word(date.to_string()), i))
+    None => Some((Invalid(text[start:i].to_owned()), i))
+  }
 }
 
 ///|
@@ -166,6 +238,11 @@ fn tokenize_guarded(
       i = i + 1
       continue
     }
+    if c == '|' {
+      tokens.push({ kind: Word("|"), pos: i, })
+      i += 1
+      continue
+    }
     if c == '*' {
       tokens.push({ kind: Star, pos: i, })
       i = i + 1
@@ -179,7 +256,7 @@ fn tokenize_guarded(
           Some(d) => d
           None => break
         }
-        if is_delimiter(d) {
+        if !tag_char(d) {
           break
         }
         j = j + (if d.to_int() > 0xFFFF { 2 } else { 1 })
@@ -191,6 +268,8 @@ fn tokenize_guarded(
       }
       if c == '#' {
         tokens.push({ kind: Tag(value), pos: i, })
+      } else if value == "" {
+        tokens.push({ kind: Invalid("^"), pos: i, })
       } else {
         tokens.push({ kind: Link(value), pos: i, })
       }
@@ -205,7 +284,7 @@ fn tokenize_guarded(
         (
           word.get_char(0) is Some(first) &&
           (first.is_ascii_digit() || first == '-' || first == '+') &&
-          @decimal.Decimal::parse(word) is Some(_)
+          @decimal.Decimal::parse(normal_ledger_number(word)) is Some(_)
         )
       ) {
       tokens.push({ kind: Word("-"), pos: i, })
@@ -215,6 +294,19 @@ fn tokenize_guarded(
     if (c == '-' || c == '+') && text.get_char(i + 1) == Some('.') {
       tokens.push({ kind: Word(c.to_string()), pos: i, })
       i += 1
+      continue
+    }
+    if c == '/' {
+      let next = futures_end(text, i)
+      if next > i {
+        tokens.push({ kind: Word(text[i:next].to_owned()), pos: i, })
+        i = next
+        continue
+      }
+    }
+    if is_digit(c) && date_token(text, i) is Some((kind, next)) {
+      tokens.push({ kind, pos: i, })
+      i = next
       continue
     }
     let number_start = if is_digit(c) {
@@ -239,6 +331,10 @@ fn tokenize_guarded(
         None => break
       }
       if d == ',' {
+        if number_start && double_leading_group(text, start, j) {
+          j += 2
+          continue
+        }
         let mut join = false
         if number_start && j + 1 < len {
           match text.get_char(j + 1) {
@@ -307,7 +403,10 @@ fn tokenize_guarded(
         c <= 'Z' &&
         text_word.length() > 1 &&
         !text_word.contains(":") &&
-        !is_valid_currency(text_word)
+        text_word != "TRUE" &&
+        text_word != "FALSE" &&
+        text_word != "NULL" &&
+        !ledger_currency(text_word)
       ) {
       tokens.push({ kind: Invalid(text_word), pos: start, })
       i = j
@@ -337,6 +436,33 @@ fn tokenize_guarded(
   }
   tokens.push({ kind: Eof, pos: len, })
   tokens
+}
+
+///|
+fn double_leading_group(text : String, start : Int32, comma : Int32) -> Bool {
+  let first = if text.get_char(start) == Some('+') ||
+    text.get_char(start) == Some('-') {
+    start + 1
+  } else {
+    start
+  }
+  comma == first + 1 &&
+  text.get_char(first) is Some(digit) &&
+  digit.is_ascii_digit() &&
+  text.get_char(comma) == Some(',') &&
+  text.get_char(comma + 1) == Some(',') &&
+  text.get_char(comma + 2) is Some(next) &&
+  next.is_ascii_digit()
+}
+
+///|
+fn normal_ledger_number(text : String) -> String {
+  let comma = if text.has_prefix("-") || text.has_prefix("+") { 2 } else { 1 }
+  if double_leading_group(text, 0, comma) {
+    text[:comma].to_owned() + text[comma + 1:].to_owned()
+  } else {
+    text
+  }
 }
 
 ///|
@@ -405,6 +531,9 @@ fn multiline_line_end(
 /// Return the physical newline boundary that ends a logical source line.
 pub fn logical_line_end(source : String, start~ : Int32 = 0) -> Int32 {
   let end = physical_line_end(source, start)
+  if ignored_heading(source[start:end].to_owned()) {
+    return end
+  }
   let tokens = tokenize(source[start:end].to_owned())
   if tokens.length() > 1 &&
     tokens[tokens.length() - 2].kind is Invalid(raw) &&
@@ -412,6 +541,18 @@ pub fn logical_line_end(source : String, start~ : Int32 = 0) -> Int32 {
     multiline_line_end(source, start + tokens[tokens.length() - 2].pos, end)
   } else {
     end
+  }
+}
+
+///|
+fn ignored_heading(line : String) -> Bool {
+  guard line.get_char(0) is Some(first) && line.get_char(1) is Some(next) else {
+    return false
+  }
+  match first {
+    '*' | ':' | '!' | '&' | '?' | '%' => true
+    '#' => !tag_char(next)
+    _ => false
   }
 }
 

@@ -3,7 +3,7 @@
 
 name = "sundaysebasidian-byte/moonbean"
 
-version = "0.2.8"
+version = "0.3.0"
 
 readme = "README.md"
 
@@ -22,4 +22,4 @@ keywords = [
 
 preferred_target = "wasm-gc"
 
-description = "A Beancount v3 compatible plain-text double-entry accounting engine in MoonBit: parser, booking, validation, reports and BQL queries, embeddable in native, wasm and js."
+description = "A plain-text double-entry accounting engine for Beancount ledgers in MoonBit. Includes booking, validation, reports and selected BQL features; see docs/compatibility.md for tested coverage."

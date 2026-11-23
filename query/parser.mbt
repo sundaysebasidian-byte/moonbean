@@ -33,13 +33,14 @@ priv enum Cond {
   CCmp(Expr, String, Expr)
   CIsNull(Expr, Bool)
   CTruthy(Expr)
-  CRegex(Expr, String, @string.Regex)
+  CRegex(Expr, String, @string.Regex, Bool)
 }
 
 ///|
 priv struct OrderSpec {
   expr : Expr
   descending : Bool
+  nulls_first : Bool?
 }
 
 ///|
@@ -67,13 +68,16 @@ priv struct SelectQuery {
   groups : Array[Expr]
   orders : Array[OrderSpec]
   limit : Int32?
+  offset : Int32
 }
 
 ///|
 priv enum ParsedQuery {
   PqSelect(SelectQuery)
+  PqUnionAll(Array[SelectQuery])
   PqPrint(Cond, QuerySource)
   PqJournal(String, Int32?)
+  PqSaved(String)
   PqError(String)
 }
 
@@ -208,7 +212,7 @@ fn QueryParser::take_int(self : QueryParser) -> Int32? {
       self.advance() |> ignore
       Some(value)
     }
-    BNum(_) => {
+    BNum(_) | BTrailingDecimal(_) => {
       self.fail("expected an integer")
       None
     }
@@ -225,6 +229,9 @@ fn parse_primary(parser : QueryParser) -> Expr? {
     BWord(word) => {
       parser.advance() |> ignore
       let lower = word.to_lower()
+      if lower == "case" && parser.peek_is_keyword("when") {
+        return parse_searched_case(parser)
+      }
       if parser.match_sym("(") {
         if lower == "count" && parser.match_keyword("distinct") {
           parser.fail("DISTINCT is not valid in COUNT arguments")
@@ -255,8 +262,7 @@ fn parse_primary(parser : QueryParser) -> Expr? {
             return None
           }
         }
-        if ["sum", "count", "first", "last", "min", "max"].contains(lower) &&
-          args.any(contains_sum) {
+        if aggregate_name(lower) && args.any(contains_sum) {
           parser.fail("compilation query.invalid_aggregate")
           return None
         }
@@ -274,8 +280,33 @@ fn parse_primary(parser : QueryParser) -> Expr? {
             }
           }
         }
-        if lower == "coalesce" || oracle_signatures.any(fn(s) { s.0 == lower }) {
-          Some(ECall(lower, args))
+        if lower == "coalesce" ||
+          extension_name(lower) ||
+          oracle_signatures.any(fn(s) { s.0 == lower }) {
+          let call = ECall(lower, args)
+          if !parser.match_keyword("filter") {
+            return Some(call)
+          }
+          if !aggregate_name(lower) {
+            parser.fail(
+              "compilation query.invalid_aggregate: FILTER requires an aggregate",
+            )
+            return None
+          }
+          if !parser.expect_sym("(") || !parser.expect_keyword("where") {
+            return None
+          }
+          guard parse_cond_or(parser) is Some(condition) &&
+            parser.expect_sym(")") else {
+            return None
+          }
+          if !aggregate_free_cond(condition) {
+            parser.fail(
+              "compilation query.invalid_aggregate: no aggregate inside FILTER",
+            )
+            return None
+          }
+          Some(ECall("__filter_aggregate", [call, EPredicate(condition)]))
         } else {
           parser.fail(
             "compilation query.invalid_signature: unknown function `" +
@@ -353,6 +384,10 @@ fn parse_primary(parser : QueryParser) -> Expr? {
     BNum(number) => {
       parser.advance() |> ignore
       Some(ENum(number))
+    }
+    BTrailingDecimal(number) => {
+      parser.advance() |> ignore
+      Some(EValue(QNumber(number)))
     }
     BDate(date) => {
       parser.advance() |> ignore
@@ -456,6 +491,30 @@ fn parse_binary(parser : QueryParser, min_prec : Int32) -> Expr? {
 }
 
 ///|
+fn parse_searched_case(parser : QueryParser) -> Expr? {
+  let args = []
+  while parser.match_keyword("when") {
+    guard parse_cond_or(parser) is Some(condition) &&
+      parser.expect_keyword("then") else {
+      return None
+    }
+    guard parse_expr(parser) is Some(value) else { return None }
+    args.push(EPredicate(condition))
+    args.push(value)
+  }
+  if parser.match_keyword("else") {
+    guard parse_expr(parser) is Some(value) else { return None }
+    args.push(value)
+  } else {
+    args.push(ENull)
+  }
+  if !parser.expect_keyword("end") {
+    return None
+  }
+  Some(ECall("__case", args))
+}
+
+///|
 fn parse_expr(parser : QueryParser) -> Expr? {
   match parse_cond_or(parser) {
     Some(CTruthy(expr)) => Some(expr)
@@ -468,7 +527,18 @@ fn parse_expr(parser : QueryParser) -> Expr? {
 fn parse_cond_atom(parser : QueryParser) -> Cond? {
   match parse_binary(parser, 1) {
     Some(left) =>
-      if parser.match_keyword("between") {
+      if parser.match_keyword("like") ||
+        (
+          parser.peek_is_keyword("not") &&
+          parser.tokens.get(parser.index + 1) is Some(BWord(word)) &&
+          word.to_lower() == "like"
+        ) {
+        if parser.match_keyword("not") {
+          parser.advance() |> ignore
+        }
+        parser.fail("unsupported query.unsupported.like")
+        None
+      } else if parser.match_keyword("between") {
         let low = match parse_binary(parser, 1) {
           Some(e) => e
           None => return None
@@ -494,9 +564,15 @@ fn parse_cond_atom(parser : QueryParser) -> Cond? {
         parse_binary(parser, 1).map(fn(right) {
           CTruthy(ECall("__notin", [left, right]))
         })
-      } else if parser.match_sym("~") {
-        match parser.advance() {
+      } else if parser.peek_sym() == Some("~") ||
+        parser.peek_sym() == Some("!~") {
+        let negated = parser.match_sym("!~")
+        if !negated {
+          parser.advance() |> ignore
+        }
+        match parser.peek() {
           BStr(pattern) => {
+            parser.advance() |> ignore
             let regex = @string.Regex(
               "(?i:" + scoped_case_pattern(pattern) + ")",
             ) catch {
@@ -507,16 +583,27 @@ fn parse_cond_atom(parser : QueryParser) -> Cond? {
                 return None
               }
             }
-            Some(CRegex(left, pattern, regex))
+            Some(CRegex(left, pattern, regex, negated))
           }
-          _ => {
-            parser.fail("regex requires a literal pattern")
-            None
-          }
+          _ =>
+            parse_binary(parser, 1).map(fn(pattern) {
+              CTruthy(ECall("__dynamic_regex", [left, pattern, EBool(negated)]))
+            })
         }
       } else if parser.match_keyword("is") {
         let negated = parser.match_keyword("not")
-        if parser.expect_keyword("null") {
+        if parser.match_keyword("distinct") {
+          if !parser.expect_keyword("from") {
+            return None
+          }
+          parse_binary(parser, 1).map(fn(right) {
+            CTruthy(
+              ECall(if negated { "__not_distinct" } else { "__distinct" }, [
+                left, right,
+              ]),
+            )
+          })
+        } else if parser.expect_keyword("null") {
           Some(CIsNull(left, negated))
         } else {
           None
@@ -635,7 +722,7 @@ fn parse_source_base(parser : QueryParser) -> QuerySource? {
       if hashed &&
         ![
           "postings", "transactions", "entries", "accounts", "balances", "commodities",
-          "documents", "events", "notes", "prices",
+          "documents", "events", "notes", "prices", "queries", "custom",
         ].contains(word) {
         parser.fail("compilation query.invalid_source `#" + word + "`")
         return None
@@ -655,7 +742,9 @@ fn parse_source_base(parser : QueryParser) -> QuerySource? {
         | "documents"
         | "events"
         | "notes"
-        | "prices" => Some(SrcDirectives(word.to_lower()))
+        | "prices"
+        | "queries"
+        | "custom" => Some(SrcDirectives(word.to_lower()))
         _ => {
           parser.fail("unknown FROM source `" + word + "`")
           None
@@ -748,7 +837,9 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   let names = projections.mapi(fn(i, _) { aliases[i].unwrap_or(expressions[i]) })
   let labels = projections.mapi(fn(i, e) {
     aliases[i].unwrap_or(
-      if expr_any(e, fn(e) { e is ECall("__quoted", _) }) {
+      if expr_any(e, fn(e) {
+          e is ECall("__quoted" | "__case" | "__filter_aggregate", _)
+        }) {
         expressions[i]
       } else {
         expr_label(e)
@@ -825,7 +916,18 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
           let expr = resolve_reference(
             parser, expr, projections, names, "ORDER-BY",
           )
-          orders.push({ expr, descending, })
+          let nulls_first = if parser.match_keyword("nulls") {
+            if parser.match_keyword("first") {
+              Some(true)
+            } else if parser.match_keyword("last") {
+              Some(false)
+            } else {
+              return PqError("expected FIRST or LAST after NULLS")
+            }
+          } else {
+            None
+          }
+          orders.push({ expr, descending, nulls_first, })
         }
         None =>
           return PqError(
@@ -873,7 +975,20 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
         )
     }
   }
-  if !parser.at_end() && parser.peek_sym() != Some(")") {
+  let offset = if parser.match_keyword("offset") {
+    guard parser.take_int() is Some(value) && value >= 0 else {
+      return PqError("OFFSET must be a non-negative integer")
+    }
+    value
+  } else {
+    0
+  }
+  if parser.match_keyword("join") {
+    return PqError("unsupported query.unsupported.join")
+  }
+  if !parser.at_end() &&
+    parser.peek_sym() != Some(")") &&
+    !parser.peek_is_keyword("union") {
     return PqError("unexpected input after query")
   }
   if parser.error is Some(message) {
@@ -891,8 +1006,16 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
   filter = resolve_quoted_condition(filter, source)
   having = resolve_quoted_condition(having, source)
   let implicit_groups = groups.is_empty()
-  if implicit_groups && has_having {
-    return PqError("HAVING requires explicit GROUP BY")
+  if implicit_groups &&
+    has_having &&
+    (
+      !projections.any(contains_sum) ||
+      projections.any(unaggregated_column) ||
+      unaggregated_condition(having)
+    ) {
+    return PqError(
+      "HAVING without GROUP BY requires an aggregate projection and no row-level columns",
+    )
   }
   if has_having && aggregate_free_cond(having) {
     return PqError(
@@ -1000,6 +1123,7 @@ fn parse_select(parser : QueryParser) -> ParsedQuery {
     groups,
     orders,
     limit,
+    offset,
   })
 }
 
@@ -1041,12 +1165,62 @@ fn parse_legacy_journal(parser : QueryParser) -> ParsedQuery {
 }
 
 ///|
+fn parse_union_all(parser : QueryParser) -> ParsedQuery {
+  let first = parse_select(parser)
+  guard first is PqSelect(head) && parser.match_keyword("union") else {
+    return first
+  }
+  let branches = [head]
+  while true {
+    if !parser.expect_keyword("all") || !parser.expect_keyword("select") {
+      return PqError(parser.error.unwrap_or("UNION ALL requires SELECT"))
+    }
+    match parse_select(parser) {
+      PqSelect(query) => branches.push(query)
+      other => return other
+    }
+    if !parser.match_keyword("union") {
+      break
+    }
+  }
+  let expected = Array::make(head.projections.length(), "nonetype")
+  for branch in branches {
+    if branch.pivot is Some(_) ||
+      branch.projections.length() != expected.length() {
+      return PqError(
+        "compilation query.invalid_union: branches require equal columns and no PIVOT",
+      )
+    }
+    for i in 0..<expected.length() {
+      let kind = expression_type(branch.projections[i], branch.source, [])
+      if kind == "nonetype" {
+        continue
+      }
+      if expected[i] == "nonetype" {
+        expected[i] = kind
+      } else if expected[i] != kind {
+        return PqError(
+          "compilation query.invalid_union: branch column types differ",
+        )
+      }
+    }
+  }
+  PqUnionAll(branches)
+}
+
+///|
 fn parse_query(text : String) -> ParsedQuery {
   let unsupported : Array[String] = []
   let positions : Array[Int32] = []
   let tokens = lex_bql(text, unsupported~, positions~)
   if unsupported.length() > 0 {
     return PqError(unsupported[0])
+  }
+  // A terminator ends the outer statement only; interior semicolons still fail parsing.
+  if tokens.length() > 1 && tokens[tokens.length() - 2] is BSym(";") {
+    tokens.pop() |> ignore
+    positions.pop() |> ignore
+    tokens[tokens.length() - 1] = BEof
   }
   if tokens.length() > 256 {
     let mut nesting = 0
@@ -1058,7 +1232,7 @@ fn parse_query(text : String) -> ParsedQuery {
         BSym("+" | "-" | "*" | "/" | "%" | "=" | "<" | ">" | "!=" | "<=" | ">=") =>
           operators = operators + 1
         BWord(w) =>
-          if ["not", "and", "or"].contains(w.to_lower()) {
+          if ["not", "and", "or", "case"].contains(w.to_lower()) {
             operators = operators + 1
           }
         _ => ()
@@ -1089,9 +1263,22 @@ fn parse_query(text : String) -> ParsedQuery {
     Some(word) =>
       match word.to_lower() {
         "print" => parse_print(parser)
-        "select" => parse_select(parser)
+        "select" => parse_union_all(parser)
         "balances" => parse_balances(parser)
         "journal" => parse_journal(parser)
+        "run" => {
+          if !parser.match_keyword("saved") {
+            return PqError("expected SAVED after RUN")
+          }
+          guard parser.peek() is BStr(name) && name != "" else {
+            return PqError("RUN SAVED needs a quoted name")
+          }
+          parser.advance() |> ignore
+          if !parser.at_end() {
+            return PqError("unexpected input after RUN SAVED")
+          }
+          PqSaved(name)
+        }
         _ => PqError("unknown statement `" + word + "`")
       }
     None => PqError("query must start with SELECT, BALANCES or JOURNAL")
@@ -1154,6 +1341,7 @@ fn parse_balances(parser : QueryParser) -> ParsedQuery {
           {
             expr: ECall("account_sortkey", [ECol("account")]),
             descending: false,
+            nulls_first: None,
           },
         ],
       })
@@ -1174,7 +1362,7 @@ fn transaction_expr(expr : Expr) -> Bool {
       | "tags"
       | "links"
       | "accounts"
-      | "meta"
+      | "meta",
     ) => true
     ECol(_) => false
     ECall("sum", _) => false
@@ -1191,7 +1379,7 @@ fn transaction_cond(cond : Cond) -> Bool {
     CNot(c) => transaction_cond(c)
     CAnd(a, b) | COr(a, b) => transaction_cond(a) && transaction_cond(b)
     CCmp(a, _, b) => transaction_expr(a) && transaction_expr(b)
-    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) => transaction_expr(e)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _, _) => transaction_expr(e)
   }
 }
 
@@ -1211,6 +1399,8 @@ fn table_columns(table : String) -> Array[String] {
     "events" => ["meta", "date", "type", "description"]
     "notes" => ["meta", "date", "account", "comment", "tags", "links"]
     "prices" => ["meta", "date", "currency", "amount"]
+    "queries" => ["meta", "date", "name", "query_string"]
+    "custom" => ["meta", "date", "type", "values"]
     _ => []
   }
 }
@@ -1220,6 +1410,8 @@ fn table_star(table : String) -> Array[String] {
   match table {
     "entries" => table_columns(table)
     "prices" => ["date", "currency", "amount"]
+    "queries" => ["date", "name", "query_string"]
+    "custom" => ["date", "type", "values"]
     "events" => ["date", "type", "description"]
     "documents" => ["date", "account", "filename", "tags", "links"]
     "balances" => ["date", "account", "amount", "tolerance", "discrepancy"]
@@ -1246,7 +1438,7 @@ fn table_cond(cond : Cond, table : String) -> Bool {
     CNot(c) => table_cond(c, table)
     CAnd(a, b) | COr(a, b) => table_cond(a, table) && table_cond(b, table)
     CCmp(a, _, b) => table_expr(a, table) && table_expr(b, table)
-    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) => table_expr(e, table)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _, _) => table_expr(e, table)
   }
 }
 
@@ -1261,7 +1453,7 @@ fn posting_expr(expr : Expr) -> Bool {
       | "discrepancy"
       | "comment"
       | "open"
-      | "close"
+      | "close",
     ) => false
     ECall(_, args) => args.all(posting_expr)
     EBinary(a, _, b) => posting_expr(a) && posting_expr(b)
@@ -1276,7 +1468,7 @@ fn posting_cond(cond : Cond) -> Bool {
     CNot(c) => posting_cond(c)
     CAnd(a, b) | COr(a, b) => posting_cond(a) && posting_cond(b)
     CCmp(a, _, b) => posting_expr(a) && posting_expr(b)
-    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) => posting_expr(e)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _, _) => posting_expr(e)
   }
 }
 
@@ -1287,7 +1479,7 @@ fn aggregate_free_cond(cond : Cond) -> Bool {
     CNot(c) => aggregate_free_cond(c)
     CAnd(a, b) | COr(a, b) => aggregate_free_cond(a) && aggregate_free_cond(b)
     CCmp(a, _, b) => !contains_sum(a) && !contains_sum(b)
-    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) => !contains_sum(e)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _, _) => !contains_sum(e)
   }
 }
 
@@ -1296,7 +1488,7 @@ fn unaggregated_column(expr : Expr) -> Bool {
   match expr {
     EPredicate(c) => unaggregated_condition(c)
     ECol(_) => true
-    ECall("sum" | "count" | "first" | "last" | "min" | "max", _) => false
+    ECall(name, _) if aggregate_name(name) => false
     ECall(_, args) => args.any(unaggregated_column)
     EBinary(a, _, b) => unaggregated_column(a) || unaggregated_column(b)
     _ => false
@@ -1331,7 +1523,7 @@ fn unaggregated_condition(cond : Cond) -> Bool {
     CAnd(a, b) | COr(a, b) =>
       unaggregated_condition(a) || unaggregated_condition(b)
     CCmp(a, _, b) => unaggregated_column(a) || unaggregated_column(b)
-    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _) => unaggregated_column(e)
+    CIsNull(e, _) | CTruthy(e) | CRegex(e, _, _, _) => unaggregated_column(e)
   }
 }
 
@@ -1499,7 +1691,7 @@ fn parse_journal(parser : QueryParser) -> ParsedQuery {
             "query.oracle_type_error: PatternError invalid journal regex",
           )
       }
-      CRegex(ECol("account"), pattern, regex)
+      CRegex(ECol("account"), pattern, regex, false)
     }
     None => CTrue
   }
@@ -1552,6 +1744,7 @@ fn parse_journal(parser : QueryParser) -> ParsedQuery {
     groups: [],
     orders: [],
     limit: None,
+    offset: 0,
     having: CTrue,
     distinct: false,
     pivot: None,
