@@ -2871,3 +2871,19 @@ test "day of year takes precedence over locale week and never hides bad fields" 
     assert_true(q.failure() is Some(@query.Evaluation(_)))
   }
 }
+
+///|
+test "explicit date format treats Unicode separators like Python whitespace" {
+  for (raw, fmt) in [
+    ("2024\u202f02\u200303", "%Y %m %d"),
+    ("2024\u000b02\u000c03", "%Y %m %d"),
+    ("2024\u008502\u001c03", "%Y\u00a0%m\u2009%d"),
+    ("2024\u300002\u202903", "%Y %m %d"),
+  ] {
+    let q = queried("", "SELECT parse_date('\{raw}','\{fmt}') FROM #")
+    assert_true(q.is_ok())
+    assert_eq(q.rows[0][0].to_text(), "2024-02-03")
+  }
+  let q = queried("", "SELECT parse_date('2024\u200b02 03','%Y %m %d') FROM #")
+  assert_true(q.failure() is Some(@query.Evaluation(_)))
+}

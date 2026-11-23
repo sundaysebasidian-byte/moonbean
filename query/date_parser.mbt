@@ -107,7 +107,8 @@ fn strptime_date(
       pattern.write_char(')')
       fields.push(field)
     } else if python_whitespace(c) {
-      pattern.write_string("[ \t\n\r]+")
+      // CPython's Unicode str.isspace domain (including record separators).
+      pattern.write_string("[\u0009-\u000d\u001c-\u0020\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+")
     } else {
       if ".^$*+?{}[]|()\\".contains(c.to_string()) {
         pattern.write_char('\\')
