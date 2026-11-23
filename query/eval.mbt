@@ -69,7 +69,9 @@ fn posting_value(
         Some(@ast.Total(amount)) =>
           Some(
             @ast.Amount::new(
-              if units.number.is_negative() {
+              if units.number.is_zero() {
+                @decimal.Decimal::zero()
+              } else if units.number.is_negative() {
                 amount.number.abs().neg()
               } else {
                 amount.number.abs()

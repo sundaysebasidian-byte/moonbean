@@ -987,3 +987,27 @@ test "compound lot costs retain both terms and match the calculated acquisition 
   )
   assert_true(has_error(no_match,"validation.booking"))
 }
+
+///|
+test "zero units with an explicit total price do not create currency value" {
+  let ledger = validated(
+    #|plugin "beancount.plugins.implicit_prices"
+    #|2024-01-01 open Assets:Stock
+    #|2024-01-01 open Assets:Cash
+    #|2024-01-02 * "Empty execution"
+    #|  Assets:Stock 0 HOOL @@ 12 USD
+    #|  Assets:Cash 0 USD
+    #|2024-01-03 * "Actual short sale"
+    #|  Assets:Stock -2 HOOL @@ 12 USD
+    #|  Assets:Cash 12 USD
+    #|
+  )
+  assert_eq(ledger.errors.length(),0)
+  let rates = []
+  for e in ledger.entries {
+    if e.directive is DPrice(p) {
+      rates.push((e.date.to_string(),p.amount.to_string()))
+    }
+  }
+  assert_eq(rates,[("2024-01-02","0 USD"),("2024-01-03","6 USD")])
+}

@@ -54,7 +54,7 @@ fn price_weight(
     PerUnit(amount) =>
       @ast.Amount::new(units.mul(amount.number), amount.currency)
     Total(amount) => {
-      let sign = if units.signum() < 0 { -1 } else { 1 }
+      let sign = units.signum()
       @ast.Amount::new(
         amount.number.mul(@decimal.Decimal::from_int(sign)),
         amount.currency,
