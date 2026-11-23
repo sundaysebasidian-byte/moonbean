@@ -1196,6 +1196,16 @@ fn process_transaction(
           }
       }
     }
+    for p in detailed {
+      if p.cost is Some(cost) {
+        if p.units is Some(units) && units.number.is_zero() {
+          error(ctx, "validation.zero_cost_units", "Costed amount cannot be zero", entry.loc)
+        }
+        if cost.number_per is Some(number) && number.is_negative() {
+          error(ctx, "validation.negative_cost", "Cost is negative: " + number.to_string(), entry.loc)
+        }
+      }
+    }
     postings.clear()
     if independent_auto || multi_auto {
       // Real groups are ordered by their first source posting, not by map keys.

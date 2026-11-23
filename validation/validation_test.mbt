@@ -914,3 +914,27 @@ test "an untyped balancing line expands to each nonzero currency group" {
   assert_eq(result.inventory("Equity:Opening").quantity("USD").to_string(), "-10")
   assert_true(opening.postings[1].meta.get("__automatic__") is Some(@ast.MBool(true)))
 }
+
+///|
+test "negative basis and zero costed quantity are reported without changing the source transaction" {
+  let result = validated(
+    #|2024-01-01 open Assets:Inventory
+    #|2024-01-01 open Assets:Bank
+    #|2024-01-02 * "negative basis"
+    #|  Assets:Inventory 2 HOOL {-3 USD}
+    #|  Assets:Bank 6 USD
+    #|2024-01-03 * "zero quantity"
+    #|  Assets:Inventory 0 ABC {1 USD}
+    #|  Assets:Bank 0 USD
+    #|2024-01-04 * "free security"
+    #|  Assets:Inventory 1 ZZZ {0 USD}
+    #|  Assets:Bank 0 USD
+    #|
+  )
+  assert_eq(result.errors.map(fn(err) {(err.loc.line,err.code)}),
+    [(3,"validation.negative_cost"),(6,"validation.zero_cost_units")])
+  assert_eq(find_transaction(result,"negative basis").unwrap().postings[0]
+    .cost.unwrap().number_per.unwrap().to_string(), "-3")
+  assert_eq(find_transaction(result,"zero quantity").unwrap().postings[0]
+    .units.unwrap().to_string(), "0 ABC")
+}
