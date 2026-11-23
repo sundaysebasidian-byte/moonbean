@@ -1135,7 +1135,22 @@ fn process_transaction(
     infer_cost(ctx, entry, deferred[0], postings[deferred[0]], weights)
   }
   entry.inferred_tolerances = Some(infer_transaction_tolerances(ctx, postings))
-  if missing.length() > 1 {
+  let auto_currency : Map[String, Bool] = Map([])
+  let independent_auto = missing.length() > 1 && missing.all(fn(index) {
+    let p = postings[index]
+    if p.cost is None && p.price is None && p.units_currency is Some(c) &&
+      !auto_currency.contains(c) {
+      auto_currency[c] = true
+      true
+    } else {
+      false
+    }
+  })
+  if independent_auto {
+    for i in missing {
+      interpolate_missing(ctx, entry, postings[i], weights)
+    }
+  } else if missing.length() > 1 {
     let last = missing[missing.length() - 1]
     let target = postings[last].loc
     let loc = if target.line > 0 { target } else { entry.loc }
@@ -1165,7 +1180,27 @@ fn process_transaction(
       }
     }
     postings.clear()
-    postings.append(detailed)
+    if independent_auto {
+      // Real groups are ordered by their first source posting, not by map keys.
+      let groups : Map[String, Array[@ast.Posting]] = Map([])
+      let group_order = []
+      for p in detailed {
+        let currency = p.cost.bind(fn(c) { c.currency })
+          .unwrap_or(p.price.map(fn(price) { price.amount().currency })
+          .unwrap_or(p.units.map(fn(u) { u.currency }).unwrap_or("")))
+        if groups.get(currency) is Some(group) {
+          group.push(p)
+        } else {
+          groups[currency] = [p]
+          group_order.push(currency)
+        }
+      }
+      for currency in group_order {
+        postings.append(groups[currency])
+      }
+    } else {
+      postings.append(detailed)
+    }
   }
 }
 

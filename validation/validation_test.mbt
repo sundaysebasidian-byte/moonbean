@@ -870,3 +870,26 @@ test "strict booking allows full liquidation across otherwise ambiguous lots" {
     assert_true(has_error(partial, "validation.booking"))
   }
 }
+
+///|
+test "one explicitly typed automatic posting per currency balances mixed opening balances" {
+  let source =
+    #|2024-01-01 open Assets:Cash
+    #|2024-01-01 open Equity:Opening
+    #|2024-01-01 open Equity:Euro
+    #|2024-01-02 * "opening"
+    #|  Assets:Cash 10 USD
+    #|  Assets:Cash 5 EUR
+    #|  Equity:Opening USD
+    #|  Equity:Euro EUR
+    #|
+  let checked = validated(source)
+  assert_eq(checked.errors.length(), 0)
+  let txn = find_transaction(checked, "opening").unwrap()
+  assert_eq(txn.postings.map(fn(p) {(p.account,p.units.unwrap().to_string())}),
+    [("Assets:Cash","10 USD"),("Equity:Opening","-10 USD"),
+     ("Assets:Cash","5 EUR"),("Equity:Euro","-5 EUR")])
+  assert_eq(checked.inventory("Equity:Euro").quantity("EUR").to_string(), "-5")
+  let malformed = validated(source.replace_all(old="Equity:Euro EUR",new="Equity:Euro USD"))
+  assert_true(has_error(malformed, "validation.missing"))
+}
