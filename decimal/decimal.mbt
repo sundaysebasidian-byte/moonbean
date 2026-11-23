@@ -374,9 +374,7 @@ pub fn Decimal::div(a : Decimal, b : Decimal) -> Decimal? {
     return None
   }
   if a.mantissa.is_zero() {
-    let ideal = a.scale - b.scale
-    let scale = if ideal > 0 { ideal } else { 0 }
-    return Some({ mantissa: @bigint.BigInt::from_int(0), scale, })
+    return Some(Decimal::zero_scaled(a.scale - b.scale))
   }
   let neg = bigint_sign(a.mantissa) != bigint_sign(b.mantissa)
   let num0 = bigint_abs(a.mantissa)
@@ -397,15 +395,9 @@ pub fn Decimal::div(a : Decimal, b : Decimal) -> Decimal? {
   let result = if terminating {
     let exact_scale = if twos > fives { twos } else { fives }
     let exact_mantissa = bigint_mul_pow10(num, exact_scale).div(den)
-    let scale = if ideal_scale > exact_scale {
-      ideal_scale
-    } else {
-      exact_scale
-    }
-    let mantissa = bigint_mul_pow10(exact_mantissa, scale - exact_scale)
-    let mut d = { mantissa, scale, }
-    d = d.round_to_significant(decimal_precision)
-    d
+    Decimal::new(exact_mantissa, exact_scale)
+    .shift_scale(ideal_scale - exact_scale)
+    .round_to_significant(decimal_precision)
   } else {
     // Adjusted exponent d such that 10^d <= num/den < 10^(d+1).
     let mut exp = digit_count(num) - digit_count(den)
