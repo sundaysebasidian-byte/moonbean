@@ -32,6 +32,7 @@ pub(all) struct QueryResult {
 }
 pub fn QueryResult::failure(Self) -> QueryError?
 pub fn QueryResult::is_ok(Self) -> Bool
+pub fn QueryResult::to_csv(Self) -> String?
 pub fn QueryResult::to_json(Self) -> String
 pub fn QueryResult::to_text(Self) -> String
 

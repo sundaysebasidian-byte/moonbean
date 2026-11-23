@@ -67,6 +67,9 @@ pub fn is_valid_currency(currency : String) -> Bool {
     Some(c) => c
     None => return false
   }
+  if first == '/' {
+    return futures_end(currency, 0) == currency.length()
+  }
   if !(first >= 'A' && first <= 'Z') {
     return false
   }
@@ -89,6 +92,21 @@ pub fn is_valid_currency(currency : String) -> Bool {
 }
 
 ///|
+// Unquoted ledger currencies also exclude lexer literals and ending punctuation.
+fn ledger_currency(currency : String) -> Bool {
+  guard is_valid_currency(currency) &&
+    currency != "TRUE" &&
+    currency != "FALSE" &&
+    currency != "NULL" else {
+    return false
+  }
+  guard currency.get_char(currency.length() - 1) is Some(last) else {
+    return false
+  }
+  (last >= 'A' && last <= 'Z') || last.is_ascii_digit()
+}
+
+///|
 fn is_booking_method(booking : String) -> Bool {
   booking == "STRICT" ||
   booking == "STRICT_WITH_SIZE" ||
@@ -101,8 +119,19 @@ fn is_booking_method(booking : String) -> Bool {
 
 ///|
 fn meta_key_from_word(word : String) -> String? {
-  if word.length() > 2 && word.get_char(word.length() - 1) == Some(':') {
-    Some(word.unsafe_substring(start=0, end=word.length() - 1))
+  if word.length() < 3 || !word.has_suffix(":") {
+    return None
+  }
+  guard word.get_char(0) is Some(first) && first >= 'a' && first <= 'z' else {
+    return None
+  }
+  let key = word.unsafe_substring(start=0, end=word.length() - 1)
+  if key
+    .iter()
+    .all(fn(c) {
+      c.is_ascii_alphabetic() || c.is_ascii_digit() || c == '-' || c == '_'
+    }) {
+    Some(key)
   } else {
     None
   }
@@ -112,9 +141,11 @@ fn meta_key_from_word(word : String) -> String? {
 fn meta_value(tok : Token) -> @ast.MetaValue? {
   match tok.kind {
     Str(s) => Some(@ast.MString(s))
-    Tag(t) => Some(@ast.MTag(t))
+    Tag(t) if t != "" => Some(@ast.MTag(t))
     Word(w) =>
-      if w == "TRUE" {
+      if w == "NULL" {
+        Some(@ast.MNull)
+      } else if w == "TRUE" {
         Some(@ast.MBool(true))
       } else if w == "FALSE" {
         Some(@ast.MBool(false))
@@ -127,7 +158,7 @@ fn meta_value(tok : Token) -> @ast.MetaValue? {
               None =>
                 if w.contains(":") && lexical_account(w) {
                   Some(@ast.MAccount(w))
-                } else if is_valid_currency(w) {
+                } else if ledger_currency(w) {
                   Some(@ast.MCurrency(w))
                 } else {
                   None
@@ -230,8 +261,9 @@ priv struct Parser {
   numbers : Map[String, @decimal.Decimal]
   dates : Map[String, @ast.Date]
   ledger : @ast.Ledger
-  meta_stack : @ast.Meta
-  tag_stack : Array[String]
+  meta_scopes : Map[String, MetaScope]
+  tag_scopes : Map[String, Array[String]]
+  pipe_scopes : Map[String, Bool]
 }
 
 ///|
@@ -254,8 +286,9 @@ fn Parser::new(
     numbers: {},
     dates: {},
     ledger: @ast.Ledger::new(),
-    meta_stack: @ast.Meta::new(),
-    tag_stack: [],
+    meta_scopes: {},
+    tag_scopes: {},
+    pipe_scopes: {},
   }
 }
 
@@ -279,31 +312,84 @@ fn Parser::error(
 }
 
 ///|
-fn Parser::active_tags(self : Parser) -> Array[String] {
-  self.tag_stack.copy()
+fn Parser::active_tags(self : Parser, line : Int32) -> Array[String] {
+  match self.tag_scopes.get(self.loc(line).file) {
+    Some(tags) => {
+      let unique = []
+      for tag in tags {
+        push_unique(unique, tag)
+      }
+      unique
+    }
+    None => []
+  }
+}
+
+///|
+fn Parser::push_tag(self : Parser, line : Int32, tag : String) -> Unit {
+  let file = self.loc(line).file
+  match self.tag_scopes.get(file) {
+    Some(tags) => tags.push(tag)
+    None => self.tag_scopes[file] = [tag]
+  }
+}
+
+///|
+priv struct MetaScope {
+  active : @ast.Meta
+  history : Map[String, Array[@ast.MetaValue]]
 }
 
 ///|
 fn Parser::push_stack_meta(
   self : Parser,
+  file : String,
   key : String,
   value : @ast.MetaValue,
 ) -> Unit {
-  self.meta_stack.set(key, value)
+  let scope = match self.meta_scopes.get(file) {
+    Some(scope) => scope
+    None => {
+      let scope = { active: @ast.Meta::new(), history: {}, }
+      self.meta_scopes.set(file, scope)
+      scope
+    }
+  }
+  match scope.history.get(key) {
+    Some(values) => values.push(value)
+    None => scope.history.set(key, [value])
+  }
+  scope.active.set(key, value)
 }
 
 ///|
-fn Parser::pop_stack_meta(self : Parser, key : String) -> Unit {
-  self.meta_stack.remove(key)
+fn Parser::pop_stack_meta(self : Parser, file : String, key : String) -> Bool {
+  guard self.meta_scopes.get(file) is Some(scope) else { return false }
+  match scope.history.get(key) {
+    Some(values) => {
+      values.remove(values.length() - 1) |> ignore
+      if values.length() == 0 {
+        scope.history.remove(key)
+        scope.active.remove(key)
+      } else {
+        scope.active.set(key, values[values.length() - 1])
+      }
+      true
+    }
+    None => false
+  }
 }
 
 ///|
-fn Parser::pop_tag(self : Parser, tag : String) -> Bool {
-  let mut i = self.tag_stack.length()
+fn Parser::pop_tag(self : Parser, line : Int32, tag : String) -> Bool {
+  guard self.tag_scopes.get(self.loc(line).file) is Some(tags) else {
+    return false
+  }
+  let mut i = tags.length()
   while i > 0 {
     i = i - 1
-    if self.tag_stack[i] == tag {
-      self.tag_stack.remove(i) |> ignore
+    if tags[i] == tag {
+      tags.remove(i) |> ignore
       return true
     }
   }
@@ -311,10 +397,16 @@ fn Parser::pop_tag(self : Parser, tag : String) -> Bool {
 }
 
 ///|
-fn collect_indented(parser : Parser) -> Array[(Array[Token], Int32)] {
+fn collect_indented(
+  parser : Parser,
+  header : Int32,
+) -> Array[(Array[Token], Int32)] {
   let result = []
+  let file = parser.loc(header).file
   while parser.next_line is Some(line) {
-    if is_blank_line(line) || !starts_whitespace(line) {
+    if is_blank_line(line) ||
+      !starts_whitespace(line) ||
+      parser.loc(parser.index + 1).file != file {
       break
     }
     let pair = parser.take_tokens()
@@ -347,7 +439,11 @@ fn parse_metadata_value(
     guard parse_number_expression(cursor, parser, line) is Some(number) else {
       return None
     }
-    if cursor.kind() is Word(currency) && is_valid_currency(currency) {
+    if cursor.kind() is Word(currency) &&
+      currency != "NULL" &&
+      currency != "TRUE" &&
+      currency != "FALSE" &&
+      ledger_currency(currency) {
       cursor.advance() |> ignore
       return Some(@ast.MAmount(@ast.Amount::new(number, currency)))
     }
@@ -576,7 +672,7 @@ fn parse_amount(cursor : Cursor, parser : Parser, line : Int32) -> @ast.Amount? 
   }
   let currency = match cursor.take_word() {
     Some(w) =>
-      if is_valid_currency(w) {
+      if ledger_currency(w) {
         w
       } else {
         parser.error(line, "parse.currency", "invalid currency `" + w + "`")
@@ -618,103 +714,115 @@ fn TokenKind::describe_token(self : TokenKind) -> String {
 
 ///|
 fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? {
-  let total = match cursor.kind() {
-    LDoubleBrace => true
-    LBrace => false
-    _ => return None
-  }
+  let total = cursor.kind() is LDoubleBrace
   cursor.advance() |> ignore
   let mut number : @decimal.Decimal? = None
+  let mut seen_amount = false
   let mut currency : String? = None
   let mut date : @ast.Date? = None
   let mut label : String? = None
   let mut merge = false
-  while true {
-    match cursor.kind() {
-      RDoubleBrace => {
-        if !total {
-          parser.error(
-            line, "parse.cost", "unexpected `}}` in cost specification",
-          )
-        }
-        cursor.advance() |> ignore
-        break
-      }
-      RBrace => {
-        if total {
-          parser.error(
-            line, "parse.cost", "unexpected `}` in total cost specification",
-          )
-        }
-        cursor.advance() |> ignore
-        break
-      }
-      Eof => {
-        parser.error(line, "parse.cost", "unterminated cost specification")
-        break
-      }
-      Comma => cursor.advance() |> ignore
-      Star => {
-        merge = true
-        cursor.advance() |> ignore
-      }
-      Tag(_) => {
-        parser.error(line, "parse.cost", "unexpected tag in cost specification")
-        cursor.advance() |> ignore
-      }
-      Str(s) => {
-        label = Some(s)
-        cursor.advance() |> ignore
-      }
-      Word(w) =>
-        if parser.looks_like_number(w) {
-          match parse_number_expression(cursor, parser, line) {
-            Some(n) => {
-              number = Some(n)
-              match cursor.kind() {
-                Word(c) =>
-                  if is_valid_currency(c) {
-                    currency = Some(c)
-                    cursor.advance() |> ignore
-                  }
-                _ => ()
-              }
-            }
-            None => ()
-          }
-        } else {
-          match parser.date(w) {
-            Some(d) => {
-              date = Some(d)
-              cursor.advance() |> ignore
-            }
-            None =>
-              if is_valid_currency(w) {
-                currency = Some(w)
-                cursor.advance() |> ignore
-              } else {
-                parser.error(
-                  line,
-                  "parse.cost",
-                  "unexpected `" + w + "` in cost specification",
-                )
-                cursor.advance() |> ignore
-              }
-          }
-        }
-      _ => {
-        parser.error(
-          line,
-          "parse.cost",
-          "unexpected " +
-          cursor.kind().describe_token() +
-          " in cost specification",
-        )
-        cursor.advance() |> ignore
-      }
+  let closes = fn() {
+    if total {
+      cursor.kind() is RDoubleBrace
+    } else {
+      cursor.kind() is RBrace
     }
   }
-  let filled : @ast.CostSpec = {
+  if !closes() {
+    // Like the reference grammar, a leading comma is legal only when followed by a component.
+    if cursor.kind() is Comma {
+      cursor.advance() |> ignore
+    }
+    while true {
+      match cursor.kind() {
+        Star => {
+          if merge {
+            parser.error(line, "parse.cost", "Duplicate merge-cost spec")
+          }
+          merge = true
+          cursor.advance() |> ignore
+        }
+        Str(s) => {
+          if label is None {
+            label = Some(s)
+          } else {
+            parser.error(line, "parse.cost", "Duplicate label: " + s)
+          }
+          cursor.advance() |> ignore
+        }
+        Word(w) =>
+          if parser.looks_like_number(w) {
+            guard parse_number_expression(cursor, parser, line) is Some(n) else {
+              return None
+            }
+            let cur = if cursor.kind() is Word(c) && ledger_currency(c) {
+              cursor.advance() |> ignore
+              Some(c)
+            } else {
+              None
+            }
+            if seen_amount {
+              parser.error(line, "parse.cost", "Duplicate cost")
+            } else {
+              seen_amount = true
+              number = Some(n)
+              currency = cur
+            }
+          } else if parser.date(w) is Some(d) {
+            if date is None {
+              date = Some(d)
+            } else {
+              parser.error(
+                line,
+                "parse.cost",
+                "Duplicate date: " + d.to_string(),
+              )
+            }
+            cursor.advance() |> ignore
+          } else if ledger_currency(w) {
+            if seen_amount {
+              parser.error(line, "parse.cost", "Duplicate cost")
+            } else {
+              seen_amount = true
+              currency = Some(w)
+            }
+            cursor.advance() |> ignore
+          } else {
+            parser.error(
+              line,
+              "parse.cost",
+              "unexpected " +
+              cursor.kind().describe_token() +
+              " in cost specification",
+            )
+            return None
+          }
+        _ => {
+          parser.error(
+            line,
+            "parse.cost",
+            "unexpected " +
+            cursor.kind().describe_token() +
+            " in cost specification",
+          )
+          return None
+        }
+      }
+      if closes() {
+        break
+      }
+      if !(cursor.kind() is Comma) {
+        parser.error(
+          line, "parse.cost", "expected a comma or closing braces in cost specification",
+        )
+        return None
+      }
+      cursor.advance() |> ignore
+    }
+  }
+  cursor.advance() |> ignore
+  Some({
     number_per: if total {
       None
     } else {
@@ -730,8 +838,7 @@ fn parse_cost(cursor : Cursor, parser : Parser, line : Int32) -> @ast.CostSpec? 
     label,
     merge,
     present: true,
-  }
-  Some(filled)
+  })
 }
 
 ///|
@@ -747,12 +854,23 @@ fn parse_price_annotation(
   }
   cursor.advance() |> ignore
   match parse_amount(cursor, parser, line) {
-    Some(amount) =>
+    Some(amount) => {
+      let amount = if amount.number.is_negative() {
+        parser.error(
+          line,
+          "parse.price",
+          "Negative prices are not allowed: " + amount.to_string(),
+        )
+        @ast.Amount::new(amount.number.abs(), amount.currency)
+      } else {
+        amount
+      }
       if total {
         Some(@ast.PriceAnno::Total(amount))
       } else {
         Some(@ast.PriceAnno::PerUnit(amount))
       }
+    }
     None => None
   }
 }
@@ -822,7 +940,7 @@ fn parse_posting(
           Some(number) => {
             let currency = match cursor.take_word() {
               Some(c) =>
-                if is_valid_currency(c) {
+                if ledger_currency(c) {
                   c
                 } else {
                   parser.error(
@@ -840,7 +958,7 @@ fn parse_posting(
           }
           None => return None
         }
-      } else if is_valid_currency(w) {
+      } else if ledger_currency(w) {
         cursor.advance() |> ignore
         posting.units_currency = Some(w)
       } else {
@@ -850,7 +968,8 @@ fn parse_posting(
     _ => ()
   }
   if cursor.kind() is LBrace || cursor.kind() is LDoubleBrace {
-    posting.cost = parse_cost(cursor, parser, line)
+    guard parse_cost(cursor, parser, line) is Some(cost) else { return None }
+    posting.cost = Some(cost)
   }
   if cursor.kind() is At || cursor.kind() is AtAt {
     posting.price = parse_price_annotation(cursor, parser, line)
@@ -861,6 +980,7 @@ fn parse_posting(
       "parse.posting",
       "unexpected " + cursor.kind().describe_token() + " at end of posting",
     )
+    return None
   }
   Some(posting)
 }
@@ -873,7 +993,7 @@ fn parse_tags_and_links(
 ) -> Unit {
   while !cursor.eof() {
     match cursor.kind() {
-      Tag(t) => {
+      Tag(t) if t != "" => {
         push_unique(tags, t)
         cursor.advance() |> ignore
       }
@@ -916,25 +1036,31 @@ fn parse_transaction(
       }
     _ => ()
   }
-  let mut payee : String? = None
-  let narration = match cursor.kind() {
-    Str(s) => {
-      cursor.advance() |> ignore
-      match cursor.kind() {
-        Str(s2) => {
-          payee = Some(s)
-          cursor.advance() |> ignore
-          s2
-        }
-        _ => s
+  let strings : Array[String] = []
+  while true {
+    match cursor.kind() {
+      Str(s) => {
+        strings.push(s)
+        cursor.advance() |> ignore
       }
-    }
-    Eof | Tag(_) | Link(_) => ""
-    _ => {
-      parser.error(line, "parse.narration", "invalid transaction header")
-      return None
+      Word("|") => {
+        if !parser.pipe_scopes.get(parser.loc(line).file).unwrap_or(false) {
+          parser.error(line, "parse.transaction", "Pipe symbol is deprecated.")
+        }
+        cursor.advance() |> ignore
+      }
+      _ => break
     }
   }
+  if strings.length() > 2 {
+    parser.error(
+      line, "parse.transaction", "Too many strings on transaction description",
+    )
+    collect_indented(parser, line) |> ignore
+    return None
+  }
+  let payee = if strings.length() == 2 { Some(strings[0]) } else { None }
+  let narration = strings.last().unwrap_or("")
   let tags : Array[String] = []
   let links : Array[String] = []
   parse_tags_and_links(cursor, tags, links)
@@ -946,7 +1072,7 @@ fn parse_transaction(
   }
   let txn = @ast.Transaction::new(flag, payee, narration, tags, links)
   let own_meta = @ast.Meta::new()
-  let continuations = collect_indented(parser)
+  let continuations = collect_indented(parser, line)
   let mut posting_count = 0
   for pair in continuations {
     let line_tokens = pair.0
@@ -998,17 +1124,35 @@ fn parse_transaction(
           }
           None => ()
         }
-      Tag(t) if t != "" => {
-        handled = true
-        push_unique(txn.tags, t)
-      }
-      Link(l) => {
-        handled = true
-        push_unique(txn.links, l)
-      }
+      Tag(t) if t != "" => handled = true
+      Link(_) => handled = true
       _ => ()
     }
     if handled {
+      if line_tokens[0].kind is Tag(_) || line_tokens[0].kind is Link(_) {
+        let body = Cursor::new(line_tokens)
+        let tags = []
+        let links = []
+        parse_tags_and_links(body, tags, links)
+        if !body.eof() {
+          parser.error(
+            meta_line, "parse.transaction", "unexpected token after tags or links",
+          )
+          return None
+        }
+        if posting_count > 0 {
+          parser.error(
+            line, "parse.transaction", "tags or links not allowed after first posting",
+          )
+        } else {
+          for tag in tags {
+            push_unique(txn.tags, tag)
+          }
+          for link in links {
+            push_unique(txn.links, link)
+          }
+        }
+      }
       continue
     }
     match parse_posting(line_tokens, parser, meta_line) {
@@ -1016,10 +1160,10 @@ fn parse_transaction(
         txn.postings.push(posting)
         posting_count = posting_count + 1
       }
-      None => ()
+      None => return None
     }
   }
-  for tag in parser.active_tags() {
+  for tag in parser.active_tags(line) {
     push_unique(txn.tags, tag)
   }
   let entry = @ast.Entry::new(
@@ -1027,7 +1171,10 @@ fn parse_transaction(
     parser.loc(line),
     @ast.Directive::DTransaction(txn),
   )
-  entry.meta = merge_meta(parser.meta_stack, own_meta)
+  entry.meta = match parser.meta_scopes.get(entry.loc.file) {
+    Some(scope) => merge_meta(scope.active, own_meta)
+    None => own_meta
+  }
   Some(entry)
 }
 
@@ -1057,40 +1204,27 @@ fn parse_open(
     return None
   }
   let currencies = []
-  let mut booking : String? = None
-  while !cursor.eof() {
-    match cursor.kind() {
-      Comma => cursor.advance() |> ignore
-      Str(s) => {
-        // Booking method names are validated semantically so that an invalid
-        // method produces a bean-check style diagnostic on the open directive.
-        booking = Some(s)
-        cursor.advance() |> ignore
-      }
-      Word(w) =>
-        if is_booking_method(w) {
-          booking = Some(w)
-          cursor.advance() |> ignore
-        } else if is_valid_currency(w) {
-          currencies.push(w)
-          cursor.advance() |> ignore
-        } else {
-          parser.error(
-            line,
-            "parse.open",
-            "unexpected `" + w + "` in open directive",
-          )
-          cursor.advance() |> ignore
-        }
-      _ => {
-        parser.error(
-          line,
-          "parse.open",
-          "unexpected " + cursor.kind().describe_token() + " in open directive",
-        )
-        cursor.advance() |> ignore
-      }
+  if cursor.kind() is Word(w) && ledger_currency(w) {
+    currencies.push(w)
+    cursor.advance() |> ignore
+  }
+  while cursor.kind() is Comma {
+    cursor.advance() |> ignore
+    guard cursor.take_word() is Some(w) && ledger_currency(w) else {
+      parser.error(line, "parse.open", "expected a currency after comma")
+      return None
     }
+    currencies.push(w)
+  }
+  let booking = match cursor.take_string() {
+    Some("") => None
+    other => other
+  }
+  if !cursor.eof() {
+    parser.error(
+      line, "parse.open", "unexpected token after open currencies or booking method",
+    )
+    return None
   }
   let open : @ast.Open = { account, currencies, booking, }
   let entry = @ast.Entry::new(
@@ -1134,6 +1268,7 @@ fn parse_close(
       cursor.kind().describe_token() +
       " at end of close directive",
     )
+    return None
   }
   let close : @ast.Close = { account, }
   let entry = @ast.Entry::new(
@@ -1163,7 +1298,7 @@ fn parse_commodity(
       return None
     }
   }
-  if !is_valid_currency(currency) {
+  if !ledger_currency(currency) {
     parser.error(line, "parse.currency", "invalid currency `" + currency + "`")
     return None
   }
@@ -1175,6 +1310,7 @@ fn parse_commodity(
       cursor.kind().describe_token() +
       " at end of commodity directive",
     )
+    return None
   }
   let commodity : @ast.Commodity = { currency, }
   let entry = @ast.Entry::new(
@@ -1223,6 +1359,7 @@ fn parse_pad(
       cursor.kind().describe_token() +
       " at end of pad directive",
     )
+    return None
   }
   let entry = @ast.Entry::new(
     date,
@@ -1289,7 +1426,7 @@ fn parse_balance(
   }
   let currency = match cursor.take_word() {
     Some(c) =>
-      if is_valid_currency(c) {
+      if ledger_currency(c) {
         c
       } else {
         parser.error(line, "parse.currency", "invalid currency `" + c + "`")
@@ -1310,6 +1447,7 @@ fn parse_balance(
       cursor.kind().describe_token() +
       " at end of balance directive",
     )
+    return None
   }
   let entry = @ast.Entry::new(
     date,
@@ -1335,7 +1473,7 @@ fn parse_price(
   cursor.index = start
   let currency = match cursor.take_word() {
     Some(c) =>
-      if is_valid_currency(c) {
+      if ledger_currency(c) {
         c
       } else {
         parser.error(line, "parse.currency", "invalid currency `" + c + "`")
@@ -1358,6 +1496,7 @@ fn parse_price(
       cursor.kind().describe_token() +
       " at end of price directive",
     )
+    return None
   }
   let entry = @ast.Entry::new(
     date,
@@ -1409,6 +1548,7 @@ fn parse_two_strings(
       keyword +
       " directive",
     )
+    return None
   }
   Some((first, second))
 }
@@ -1489,11 +1629,11 @@ fn parse_note(
       return None
     }
   }
-  let tags = parser.tag_stack.copy()
+  let tags = parser.active_tags(line)
   let links : Array[String] = []
   parse_tags_and_links(cursor, tags, links)
   if !cursor.eof() {
-    if cursor.kind() is Word(word) && !is_valid_currency(word) {
+    if cursor.kind() is Word(word) && !ledger_currency(word) {
       parser.error(line, "parse.token", "Invalid token: '" + word + "'")
     } else {
       parser.error(
@@ -1550,9 +1690,15 @@ fn parse_document(
       return None
     }
   }
-  let tags : Array[String] = []
+  let tags = parser.active_tags(line)
   let links : Array[String] = []
   parse_tags_and_links(cursor, tags, links)
+  if !cursor.eof() {
+    parser.error(
+      line, "parse.document", "unexpected token after document filename, tags or links",
+    )
+    return None
+  }
   let entry = @ast.Entry::new(
     date,
     parser.loc(line),
@@ -1587,14 +1733,6 @@ fn parse_custom(
         values.push(@ast.CustomValue::CString(s))
         cursor.advance() |> ignore
       }
-      Tag(t) => {
-        values.push(@ast.CustomValue::CTag(t))
-        cursor.advance() |> ignore
-      }
-      Star => {
-        parser.error(line, "parse.custom", "unexpected `*` in custom directive")
-        cursor.advance() |> ignore
-      }
       Word(w) =>
         if w == "TRUE" || w == "FALSE" {
           values.push(@ast.CustomValue::CBool(w == "TRUE"))
@@ -1606,37 +1744,30 @@ fn parse_custom(
               cursor.advance() |> ignore
             }
             None =>
-              match @decimal.Decimal::parse(w) {
-                Some(n) => {
-                  cursor.advance() |> ignore
-                  match cursor.kind() {
-                    Word(c) =>
-                      if is_valid_currency(c) {
-                        values.push(
-                          @ast.CustomValue::CAmount(@ast.Amount::new(n, c)),
-                        )
-                        cursor.advance() |> ignore
-                      } else {
-                        values.push(@ast.CustomValue::CNumber(n))
-                      }
-                    _ => values.push(@ast.CustomValue::CNumber(n))
-                  }
+              if parser.looks_like_number(w) {
+                guard parse_number_expression(cursor, parser, line) is Some(n) else {
+                  return None
                 }
-                None =>
-                  if w.contains(":") && lexical_account(w) {
-                    values.push(@ast.CustomValue::CAccount(w))
-                    cursor.advance() |> ignore
-                  } else if is_valid_currency(w) {
-                    values.push(@ast.CustomValue::CCurrency(w))
-                    cursor.advance() |> ignore
-                  } else {
-                    parser.error(
-                      line,
-                      "parse.custom",
-                      "unexpected `" + w + "` in custom directive",
-                    )
-                    cursor.advance() |> ignore
-                  }
+                if cursor.kind() is Word(c) &&
+                  c != "TRUE" &&
+                  c != "FALSE" &&
+                  c != "NULL" &&
+                  ledger_currency(c) {
+                  values.push(@ast.CustomValue::CAmount(@ast.Amount::new(n, c)))
+                  cursor.advance() |> ignore
+                } else {
+                  values.push(@ast.CustomValue::CNumber(n))
+                }
+              } else if w.contains(":") && lexical_account(w) {
+                values.push(@ast.CustomValue::CAccount(w))
+                cursor.advance() |> ignore
+              } else {
+                parser.error(
+                  line,
+                  "parse.custom",
+                  "unexpected `" + w + "` in custom directive",
+                )
+                return None
               }
           }
         }
@@ -1648,7 +1779,7 @@ fn parse_custom(
           cursor.kind().describe_token() +
           " in custom directive",
         )
-        cursor.advance() |> ignore
+        return None
       }
     }
   }
@@ -1667,6 +1798,18 @@ fn apply_option(
   value : String,
   line : Int32,
 ) -> Unit {
+  if name == "filename" || name == "plugin" {
+    parser.error(line, "parse.option", "option `" + name + "` is read-only")
+    return
+  }
+  if name == "plugin_processing_mode" && value != "raw" && value != "default" {
+    parser.error(
+      line,
+      "parse.option",
+      "invalid plugin_processing_mode `" + value + "`",
+    )
+    return
+  }
   parser.ledger.options.add_raw(name, value)
   let options = parser.ledger.options
   if name == "title" {
@@ -1683,7 +1826,8 @@ fn apply_option(
     }
   } else if name == "tolerance_multiplier" ||
     name == "inferred_tolerance_multiplier" {
-    match @decimal.Decimal::parse(value) {
+    let number = if value == "" { "0" } else { value }
+    match @decimal.Decimal::parse(number) {
       Some(n) => options.tolerance_multiplier = n
       None =>
         parser.error(
@@ -1714,7 +1858,16 @@ fn apply_option(
       )
     }
   } else if name == "infer_tolerance_from_cost" {
-    options.infer_tolerance_from_cost = ["true", "1"].contains(value.to_lower())
+    options.infer_tolerance_from_cost = ["true", "on", "1"].contains(
+      value.to_lower(),
+    )
+  } else if name == "allow_pipe_separator" {
+    parser.pipe_scopes[parser.loc(line).file] = ["true", "1", "yes"].contains(
+      value.to_lower(),
+    )
+    parser.error(
+      line, "parse.option", "Allowing pipe separator temporarily; this will go away eventually.",
+    )
   } else if name == "account_rounding" {
     options.account_rounding = Some(value)
   } else if name == "operating_currency" {
@@ -1729,7 +1882,7 @@ fn apply_option(
     for part in parts {
       pair.push(view_to_string(part))
     }
-    if pair.length() == 2 && is_valid_currency(pair[0]) {
+    if pair.length() == 2 && (is_valid_currency(pair[0]) || pair[0] == "*") {
       match @decimal.Decimal::parse(pair[1]) {
         Some(n) => options.display_precision.set(pair[0], n)
         None =>
@@ -1775,6 +1928,7 @@ fn parse_option(parser : Parser, tokens : Array[Token], line : Int32) -> Unit {
       cursor.kind().describe_token() +
       " at end of option directive",
     )
+    return
   }
   apply_option(parser, name, value, line)
 }
@@ -1799,6 +1953,7 @@ fn parse_plugin(parser : Parser, tokens : Array[Token], line : Int32) -> Unit {
       parser.error(
         line, "parse.plugin", "plugin configuration must be a string",
       )
+      return
     }
   }
   if !cursor.eof() {
@@ -1809,6 +1964,7 @@ fn parse_plugin(parser : Parser, tokens : Array[Token], line : Int32) -> Unit {
       cursor.kind().describe_token() +
       " at end of plugin directive",
     )
+    return
   }
   parser.ledger.plugins.push({ name, config, loc: parser.loc(line), })
 }
@@ -1834,58 +1990,30 @@ fn parse_include(parser : Parser, tokens : Array[Token], line : Int32) -> Unit {
       cursor.kind().describe_token() +
       " at end of include directive",
     )
+    return
   }
   parser.ledger.includes.push((path, parser.loc(line)))
 }
 
 ///|
-fn parse_push_tag(parser : Parser, tokens : Array[Token], line : Int32) -> Unit {
-  let cursor = Cursor::new(tokens)
-  cursor.index = 1
-  match cursor.peek().kind {
-    Tag(t) => {
-      parser.tag_stack.push(t)
-      cursor.advance() |> ignore
-    }
-    _ => {
-      parser.error(line, "parse.pushtag", "pushtag expects a tag")
-      return
-    }
+fn parse_tag_control(
+  parser : Parser,
+  tokens : Array[Token],
+  line : Int32,
+  push : Bool,
+) -> Unit {
+  let code = if push { "parse.pushtag" } else { "parse.poptag" }
+  guard tokens.length() == 3 && tokens[1].kind is Tag(tag) && tag != "" else {
+    parser.error(line, code, "expected exactly one tag")
+    return
   }
-  if !cursor.eof() {
+  if push {
+    parser.push_tag(line, tag)
+  } else if !parser.pop_tag(line, tag) {
     parser.error(
       line,
-      "parse.pushtag",
-      "unexpected " + cursor.kind().describe_token() + " after tag",
-    )
-  }
-}
-
-///|
-fn parse_pop_tag(parser : Parser, tokens : Array[Token], line : Int32) -> Unit {
-  let cursor = Cursor::new(tokens)
-  cursor.index = 1
-  match cursor.peek().kind {
-    Tag(t) => {
-      if !parser.pop_tag(t) {
-        parser.error(
-          line,
-          "parse.poptag",
-          "poptag without matching pushtag for `#" + t + "`",
-        )
-      }
-      cursor.advance() |> ignore
-    }
-    _ => {
-      parser.error(line, "parse.poptag", "poptag expects a tag")
-      return
-    }
-  }
-  if !cursor.eof() {
-    parser.error(
-      line,
-      "parse.poptag",
-      "unexpected " + cursor.kind().describe_token() + " after tag",
+      code,
+      "poptag without matching pushtag for `#" + tag + "`",
     )
   }
 }
@@ -1926,15 +2054,20 @@ fn parse_push_meta(
         return
       }
     }
-    parser.push_stack_meta(key, value)
-  } else {
-    parser.pop_stack_meta(key)
-  }
-  if !cursor.eof() {
+    if !cursor.eof() {
+      parser.error(
+        line, "parse.pushmeta", "unexpected token after metadata value",
+      )
+      return
+    }
+    parser.push_stack_meta(parser.loc(line).file, key, value)
+  } else if !cursor.eof() {
+    parser.error(line, "parse.popmeta", "unexpected token after metadata key")
+  } else if !parser.pop_stack_meta(parser.loc(line).file, key) {
     parser.error(
       line,
-      "parse.pushmeta",
-      "unexpected " + cursor.kind().describe_token() + " after metadata",
+      "parse.popmeta",
+      "popmeta without matching pushmeta for `" + key + "`",
     )
   }
 }
@@ -1979,7 +2112,6 @@ fn parse_dated_directive(
     Word("custom") => parse_custom(parser, date, tokens, line, 2)
     Word("txn") => parse_transaction(parser, date, tokens, line, 1)
     Star | Tag("") => parse_transaction(parser, date, tokens, line, 1)
-    Str(_) => parse_transaction(parser, date, tokens, line, 1)
     Word(w) =>
       if is_flag_word(w) {
         parse_transaction(parser, date, tokens, line, 1)
@@ -2003,7 +2135,7 @@ fn attach_continuation_meta(
   entry : @ast.Entry,
   line : Int32,
 ) -> Bool {
-  let continuations = collect_indented(parser)
+  let continuations = collect_indented(parser, line)
   let own_meta = @ast.Meta::new()
   let mut lexical_error = false
   for pair in continuations {
@@ -2047,9 +2179,9 @@ fn parse_toplevel(parser : Parser, tokens : Array[Token], line : Int32) -> Unit 
       } else if w == "include" {
         parse_include(parser, tokens, line)
       } else if w == "pushtag" {
-        parse_push_tag(parser, tokens, line)
+        parse_tag_control(parser, tokens, line, true)
       } else if w == "poptag" {
-        parse_pop_tag(parser, tokens, line)
+        parse_tag_control(parser, tokens, line, false)
       } else if w == "pushmeta" {
         parse_push_meta(parser, tokens, line, true)
       } else if w == "popmeta" {
@@ -2063,7 +2195,7 @@ fn parse_toplevel(parser : Parser, tokens : Array[Token], line : Int32) -> Unit 
           None => {
             // Still consume indented lines so that the rest of the file can
             // be parsed and reported.
-            let _ = collect_indented(parser)
+            let _ = collect_indented(parser, line)
           }
         }
       }
@@ -2074,7 +2206,7 @@ fn parse_toplevel(parser : Parser, tokens : Array[Token], line : Int32) -> Unit 
             parser.ledger.entries.push(entry)
           }
         None => {
-          let _ = collect_indented(parser)
+          let _ = collect_indented(parser, line)
         }
       }
   }
@@ -2089,7 +2221,7 @@ pub fn parse_source(
   let parser = Parser::new(file, source, source_map)
   while parser.next_line is Some(line) {
     let line_no = parser.index + 1
-    if is_blank_line(line) {
+    if is_blank_line(line) || ignored_heading(line) {
       parser.advance_line()
       continue
     }
@@ -2105,10 +2237,32 @@ pub fn parse_source(
       continue
     }
     if tokens.any(fn(t) { t.kind is Invalid(_) }) {
-      collect_indented(parser) |> ignore
+      collect_indented(parser, line_no) |> ignore
       continue
     }
     parse_toplevel(parser, tokens, line_no)
+  }
+  for file, tags in parser.tag_scopes {
+    for tag in tags {
+      parser.ledger.add_error(
+        @ast.Diagnostic::new(
+          "parse.pushtag",
+          "Unbalanced pushed tag: '" + tag + "'",
+          @ast.Loc::new(file, 0),
+        ),
+      )
+    }
+  }
+  for file, scope in parser.meta_scopes {
+    for key, _ in scope.history {
+      parser.ledger.add_error(
+        @ast.Diagnostic::new(
+          "parse.pushmeta",
+          "Unbalanced metadata key '" + key + "'",
+          @ast.Loc::new(file, 0),
+        ),
+      )
+    }
   }
   if parser.query_signed_zero[0] {
     for entry in parser.ledger.entries {
@@ -2133,7 +2287,29 @@ fn Parser::number(self : Parser, text : String) -> @decimal.Decimal? {
   if self.numbers.get(text) is Some(number) {
     return Some(number)
   }
-  let result = @decimal.Decimal::parse(text)
+  let normalized = normal_ledger_number(text)
+  if normalized.contains(",") {
+    let mut width = 0
+    let mut grouped = false
+    for c in normalized {
+      if c == '.' {
+        break
+      }
+      if c == ',' {
+        if width == 0 || width > 3 || (grouped && width != 3) {
+          return None
+        }
+        grouped = true
+        width = 0
+      } else if c.is_ascii_digit() {
+        width += 1
+      }
+    }
+    if grouped && width != 3 {
+      return None
+    }
+  }
+  let result = @decimal.Decimal::parse(normalized)
   if result is Some(number) && self.numbers.length() < literal_cache_limit {
     self.numbers[text] = number
   }

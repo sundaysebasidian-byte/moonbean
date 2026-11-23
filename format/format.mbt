@@ -87,8 +87,7 @@ fn format_is_directive(word : String) -> Bool {
     | "pushtag"
     | "poptag"
     | "pushmeta"
-    | "popmeta"
-    | "txn" => true
+    | "popmeta" => true
     _ => false
   }
 }
@@ -102,10 +101,10 @@ fn format_is_transaction_header(text : String) -> Bool {
   if trimmed.length() < 12 {
     return false
   }
-  if trimmed.get_char(10) != Some(' ') {
+  if trimmed.get_char(10) != Some(' ') && trimmed.get_char(10) != Some('\t') {
     return false
   }
-  let after = format_view(trimmed[11:])
+  let after = format_trimmed(format_view(trimmed[11:]))
   let word = format_first_token(after)
   !format_is_directive(word)
 }
@@ -141,7 +140,7 @@ fn format_split_first(text : String) -> (String, String) {
     if c == ' ' || c == '\t' {
       break
     }
-    i = i + 1
+    i = i + (if c.to_int() > 0xFFFF { 2 } else { 1 })
   }
   let head = format_view(text[0:i])
   let rest = format_trimmed(format_view(text[i:]))
@@ -195,17 +194,23 @@ fn format_pad_right(text : String, width : Int32) -> String {
 }
 
 ///|
+priv struct FormatRecord {
+  text : String
+  preserve : Bool
+}
+
+///|
 fn format_block(
   sb : StringBuilder,
   header : String,
-  body : Array[String],
+  body : Array[FormatRecord],
 ) -> Unit {
   sb.write_string(header)
   sb.write_string("\n")
   let postings : Array[FormatPosting] = []
   let mut width = 0
   for line in body {
-    let posting = format_posting(line)
+    let posting = format_posting(line.text)
     if !posting.metadata && posting.rest.length() > 0 {
       if posting.account_part.length() > width {
         width = posting.account_part.length()
@@ -232,70 +237,65 @@ fn format_block(
 }
 
 ///|
-fn contains_multiline_string(source : String) -> Bool {
-  let mut rest = source[:]
-  let mut quoted = false
-  while rest.find("\"") is Some(index) {
-    let prefix = rest[0:index]
-    if quoted && prefix.find("\n") is Some(_) {
-      return true
+fn format_records(source : String) -> Array[FormatRecord] {
+  let records = []
+  let mut start = 0
+  while start < source.length() {
+    let physical = start +
+      source[start:].find("\n").unwrap_or(source.length() - start)
+    let logical = if source[start:physical].find("\"") is Some(_) {
+      @syntax.logical_line_end(source, start~)
+    } else {
+      physical
     }
-    if !quoted && prefix.find(";") is Some(_) {
-      let last_line = prefix.rev_find("\n").map(fn(i) { i + 1 }).unwrap_or(0)
-      if prefix[last_line:].find(";") is Some(_) {
-        match rest[index:].find("\n") {
-          Some(end) => {
-            rest = rest[index + end + 1:]
-            continue
-          }
-          None => return false
-        }
-      }
-    }
-    let mut backslashes = 0
-    let mut i = index - 1
-    while i >= 0 && rest.get_char(i) == Some('\\') {
-      backslashes += 1
-      i -= 1
-    }
-    if !quoted || backslashes % 2 == 0 {
-      quoted = !quoted
-    }
-    rest = rest[index + 1:]
+    records.push({
+      text: source[start:logical].to_owned(),
+      preserve: logical > physical,
+    })
+    start = logical + 1
   }
-  false
+  records
 }
 
 ///|
 pub fn format_source(source : String) -> String {
-  if contains_multiline_string(source) {
-    return if source.has_suffix("\n") { source } else { source + "\n" }
-  }
-  let lines : Array[String] = []
-  for view in source.split("\n") {
-    lines.push(format_view(view))
-  }
-  let line_count = if lines.length() > 0 && lines[lines.length() - 1] == "" {
-    lines.length() - 1
-  } else {
-    lines.length()
-  }
+  let lines = format_records(source)
+  let line_count = lines.length()
   let sb = StringBuilder()
   let mut i = 0
   while i < line_count {
     let line = lines[i]
-    if format_is_transaction_header(line) {
-      let header = format_trimmed(line)
-      let body : Array[String] = []
+    if format_is_transaction_header(line.text) {
+      let header = if line.preserve {
+        line.text
+      } else {
+        format_trimmed(line.text)
+      }
+      let body : Array[FormatRecord] = []
       i = i + 1
-      while i < line_count && format_starts_indented(lines[i]) {
+      while i < line_count && format_starts_indented(lines[i].text) {
         body.push(lines[i])
         i = i + 1
       }
-      format_block(sb, header, body)
+      if line.preserve || body.any(fn(record) { record.preserve }) {
+        sb.write_string(line.text)
+        sb.write_string("\n")
+        for record in body {
+          sb.write_string(record.text)
+          sb.write_string("\n")
+        }
+      } else {
+        format_block(sb, header, body)
+      }
       continue
     }
-    sb.write_string(format_trim_end(line))
+    sb.write_string(
+      if line.preserve {
+        line.text
+      } else {
+        format_trim_end(line.text)
+      },
+    )
     sb.write_string("\n")
     i = i + 1
   }

@@ -4,6 +4,13 @@
 
 - Verify the wasm-gc BQL/inventory smoke on headless Chrome 157 and Wasmtime 50.0.2 with an explicit test adapter, against identical moonrun/Node outputs. Add a reproducible host runner and raw evidence; document bare Wasmtime's missing MoonBit imports and the remaining calendar/benchmark host limits.
 
+## 0.3.0
+
+- Keep included files' metadata and tags in their own parser scope. Correct ledger amount grouping, metadata/file boundaries, and supplementary Unicode account formatting.
+- Add BQL aggregate filters, grouped summaries, statistical and calendar functions, conditional expressions, list functions, saved query and typed custom rows, explicit pagination, and top-level UNION ALL. The extension guide describes what differs from beanquery.
+- Export CLI query tables as CSV, keep structured output for typed queries, and reuse rows and columns in the tested paging, derived-table and mixed-currency paths.
+- Preserve the existing public checks and use the current BigInt parser API supported by the compiler.
+
 ## 0.2.8
 
 - Parse multiline strings with physical source locations, reject unterminated literals, and preserve whitespace in multiline ledgers during formatting.

@@ -271,3 +271,59 @@ test "include expansion preserves multiline logical strings and source maps" {
   assert_eq(parsed.errors.length(), 0)
   assert_eq(parsed.entries[1].loc.line, 3)
 }
+
+///|
+test "include expansion reads only lowercase include directives" {
+  let requests = []
+  let source = "INCLUDE \"upper.bean\"\nInclude \"mixed.bean\"\ninclude \"valid.bean\"\n"
+  let expanded = @moonbean.expand_includes(source, "books", fn(path) {
+    requests.push(path)
+    Some("2024-01-02 open Assets:Cash USD\n")
+  })
+  assert_eq(requests, ["books/valid.bean"])
+  assert_true(expanded.source.contains("INCLUDE"))
+  assert_true(expanded.source.contains("Include"))
+  let ledger = @moonbean.check_source(
+    "root.bean",
+    expanded.source,
+    source_map=expanded.source_map,
+  )
+  assert_eq(ledger.errors.length(), 2)
+  assert_eq(ledger.entries.length(), 1)
+}
+
+///|
+test "indented include reports grammar errors without losing its referenced file" {
+  let requested = []
+  let source = "2024-01-01 * \"dropped\"\n  include \"nested.bean\"\n\tinclude \"tabbed.bean\"\ninclude \"real.bean\"\n2024-01-05 * \"kept\"\n"
+  let expanded = @moonbean.expand_includes(
+    source,
+    "root",
+    fn(path) {
+      requested.push(path)
+      let name = if path.has_suffix("nested.bean") {
+        "nested"
+      } else if path.has_suffix("tabbed.bean") {
+        "tabbed"
+      } else {
+        "plain"
+      }
+      Some("2024-01-02 * \"" + name + "\"")
+    },
+    file="root.bean",
+  )
+  assert_eq(requested, [
+    "root/nested.bean", "root/tabbed.bean", "root/real.bean",
+  ])
+  assert_true(expanded.source.contains("  include \"nested.bean\""))
+  assert_true(expanded.source.contains("\tinclude \"tabbed.bean\""))
+  assert_eq(expanded.source_map[1].line, 2)
+  assert_eq(expanded.source_map[2].file, "root/nested.bean")
+  let ledger = @moonbean.check_source(
+    "root.bean",
+    expanded.source,
+    source_map=expanded.source_map,
+  )
+  assert_eq(ledger.errors.length(), 2)
+  assert_eq(ledger.entries.length(), 4)
+}

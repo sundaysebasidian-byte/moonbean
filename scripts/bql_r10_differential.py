@@ -1,5 +1,5 @@
 """R10 aggregate-clause Cartesian probes; public oracle execution only."""
-import itertools,json,subprocess,sys
+import itertools,json,re,subprocess,sys
 from pathlib import Path
 from bql_object_differential import equivalent
 from bql_table_differential import error_category
@@ -25,8 +25,28 @@ def cases():
   out.append(dict(query=q,ledger='tests/r9/tx.beancount'))
  return out
 
+# These two narrowly documented MoonBean extensions still must not be
+# represented as upstream syntax conformance. Refer to the oracle's existing
+# posting counts and groups, and assert the exact result/error independently.
+GLOBAL_HAVING = re.compile(
+ r'SELECT (?:DISTINCT )?count\(\*\) FROM #postings'
+ r'( WHERE count\(\*\)>0)? HAVING (count\(\*\)>0|true)'
+ r'(?: ORDER BY (account|number|account_sortkey\(account\)|count\(\*\) DESC))?'
+ r'(?: LIMIT ([02]))?'
+)
+OFFSET_CASE = 'SELECT account,count(*) LIMIT 2 OFFSET 1'
+SCOPED_REFERENCE = [
+ dict(query='SELECT count(*) FROM #postings', ledger='tests/r9/tx.beancount'),
+ dict(query='SELECT account,count(*)', ledger='tests/r9/tx.beancount'),
+]
+
 def run(ours,oracle):
- probes=cases();p=subprocess.run([str(Path(oracle)/'python'),__file__,'--worker'],input=json.dumps(probes),text=True,capture_output=True,check=True);expected=json.loads(p.stdout);out=[]
+ probes=cases()
+ p=subprocess.run([str(Path(oracle)/'python'),__file__,'--worker'],input=json.dumps(probes+SCOPED_REFERENCE),text=True,capture_output=True,check=True)
+ expected=json.loads(p.stdout)
+ total, account_groups=expected[-2:]
+ assert total['category']==account_groups['category']=='success'
+ out=[]
  for case,b in zip(probes,expected):
   a=subprocess.run([ours,'query',case['ledger'],case['query'],'--json'],capture_output=True,text=True)
   if not a.returncode:
@@ -51,6 +71,22 @@ def run(ours,oracle):
    elif 'ORDER BY sum(number)+number' in q:boundary='mixed ORDER BY row references'
   if b['category']=='success' and ac=='syntax' and q in ['SELECT number>10,count(*)','SELECT account,count(*)=count(*)']:boundary='Boolean/comparison projections'
   if boundary:ok=True
+  if case['ledger']==SCOPED_REFERENCE[0]['ledger'] and b['category']=='syntax':
+   if match := GLOBAL_HAVING.fullmatch(q):
+    where,having,order,limit=match.groups()
+    if having=='true':
+     ok=ac=='compilation' and 'query.invalid_aggregate: HAVING must be aggregate' in output
+    elif order and order!='count(*) DESC':
+     ok=ac=='compilation' and 'query.invalid_group: uncovered ORDER BY' in output
+    elif where:
+     ok=ac=='compilation' and 'query.invalid_aggregate' in output
+    else:
+     rows=[] if limit=='0' else total['rows']
+     ok=ac=='success' and equivalent(av,rows)
+    boundary='global aggregate HAVING extension checked against posting counts or exact diagnostics'
+   elif q==OFFSET_CASE:
+    ok=ac=='success' and equivalent(av,account_groups['rows'][1:3])
+    boundary='OFFSET extension checked against sliced oracle groups'
   out.append(dict(**case,ours=ac,oracle=b['category'],boundary=boundary,conformant=conformant,ok=ok,permissive=b['category']!='success' and ac=='success',detail='' if ok else str((a.stdout,b))[:800]))
  return out
 if __name__=='__main__':

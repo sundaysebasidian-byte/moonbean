@@ -5,11 +5,14 @@ import {
   "sundaysebasidian-byte/moonbean/query",
   "sundaysebasidian-byte/moonbean/realization",
   "sundaysebasidian-byte/moonbean/validation",
-  "moonbitlang/core/async",
   "moonbitlang/core/async/fs",
   "moonbitlang/core/env",
 }
 
 supported_targets = "-all+native"
+
+options(
+  "allow-experimental-packages": [ "moonbitlang/core/async/fs" ],
+)
 
 pkgtype(kind: "executable")

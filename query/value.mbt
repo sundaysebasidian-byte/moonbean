@@ -313,6 +313,47 @@ fn pad_right(text : String, width : Int32) -> String {
 }
 
 ///|
+fn csv_row(output : StringBuilder, fields : Array[String]) -> Unit {
+  for i in 0..<fields.length() {
+    if i > 0 {
+      output.write_char(',')
+    }
+    let field = fields[i]
+    if field.contains(",") ||
+      field.contains("\"") ||
+      field.contains("\r") ||
+      field.contains("\n") {
+      output.write_char('"')
+      for c in field {
+        if c == '"' {
+          output.write_char('"')
+        }
+        output.write_char(c)
+      }
+      output.write_char('"')
+    } else {
+      output.write_string(field)
+    }
+  }
+  output.write_string("\r\n")
+}
+
+///|
+/// Serialize successful tables with a header, CRLF records and text cells.
+/// NULL is an empty field. PRINT and failed queries have no CSV result.
+pub fn QueryResult::to_csv(self : QueryResult) -> String? {
+  if self.error is Some(_) || self.kind is DirectiveText(_) {
+    return None
+  }
+  let output = StringBuilder()
+  csv_row(output, self.columns)
+  for row in self.rows {
+    csv_row(output, row.map(fn(value) { value.to_text() }))
+  }
+  Some(output.to_string())
+}
+
+///|
 pub fn QueryResult::to_json(self : QueryResult) -> String {
   let sb = StringBuilder()
   match self.error {
@@ -372,7 +413,8 @@ pub fn QueryResult::failure(self : QueryResult) -> QueryError? {
     Some(message) =>
       if message.has_prefix("compilation ") {
         Some(Compilation(message))
-      } else if message.has_prefix("query.oracle_type_error") {
+      } else if message.has_prefix("query.oracle_type_error") ||
+        message.has_prefix("evaluation ") {
         Some(Evaluation(message))
       } else if message.has_prefix("unsupported ") ||
         message.has_prefix("unknown function ") ||
