@@ -43,27 +43,7 @@ pub fn QueryResult::is_ok(self : QueryResult) -> Bool {
 
 ///|
 fn query_json_escape(text : String) -> String {
-  let sb = StringBuilder()
-  for i in 0..<text.length() {
-    let ch = match text.get_char(i) {
-      Some(c) => c
-      None => continue
-    }
-    match ch {
-      '"' => sb.write_string("\\\"")
-      '\\' => sb.write_string("\\\\")
-      '\n' => sb.write_string("\\n")
-      '\r' => sb.write_string("\\r")
-      '\t' => sb.write_string("\\t")
-      other =>
-        if other.to_int() < 32 {
-          sb.write_string("\\u00" + repr_hex(other.to_int(), 2))
-        } else {
-          sb.write_char(other)
-        }
-    }
-  }
-  sb.to_string()
+  @realization.json_escape(text)
 }
 
 ///|

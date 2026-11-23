@@ -475,3 +475,19 @@ test "inverse FX conversion rounding remains visible and exactly balanced" {
     content="true",
   )
 }
+
+///|
+test "financial JSON never leaks a control byte into a quoted string" {
+  let digits = "0123456789abcdef"
+  for n in 0..<32 {
+    let c = n.unsafe_to_char()
+    let s = @realization.json_escape("😀" + c.to_string() + "中")
+    let escaped = match n {
+      9 => "\\t"
+      10 => "\\n"
+      13 => "\\r"
+      _ => "\\u00" + digits[n / 16:n / 16 + 1].to_owned() + digits[n % 16:n % 16 + 1].to_owned()
+    }
+    assert_eq(s, "😀" + escaped + "中")
+  }
+}

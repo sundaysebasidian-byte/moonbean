@@ -213,24 +213,26 @@ pub fn PriceDb::to_json(self : PriceDb) -> String {
 ///|
 pub fn json_escape(text : String) -> String {
   let sb = StringBuilder()
-  for i in 0..<text.length() {
-    match text.get_char(i) {
-      Some(ch) =>
-        if ch == '"' {
-          sb.write_string("\\\"")
-        } else if ch == '\\' {
-          sb.write_string("\\\\")
-        } else if ch == '\n' {
-          sb.write_string("\\n")
-        } else if ch == '\r' {
-          sb.write_string("\\r")
-        } else if ch == '\t' {
-          sb.write_string("\\t")
+  let hex = "0123456789abcdef"
+  for c in text.iter() {
+    match c {
+      '"' => sb.write_string("\\\"")
+      '\\' => sb.write_string("\\\\")
+      '\n' => sb.write_string("\\n")
+      '\r' => sb.write_string("\\r")
+      '\t' => sb.write_string("\\t")
+      _ => {
+        let n = c.to_int()
+        if n < 32 {
+          sb.write_string("\\u00")
+          sb.write_char(hex.get_char(n / 16).unwrap())
+          sb.write_char(hex.get_char(n % 16).unwrap())
         } else {
-          sb.write_char(ch)
+          sb.write_char(c)
         }
-      None => ()
+      }
     }
   }
   sb.to_string()
 }
+

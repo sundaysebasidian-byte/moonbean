@@ -198,7 +198,7 @@ pub fn Report::to_json(self : Report) -> String {
   self.diagnostics
   .map(fn(d) {
     "{\"code\":\"" +
-    d.code +
+    json_escape(d.code) +
     "\",\"account\":\"" +
     json_escape(d.account) +
     "\",\"currency\":\"" +
