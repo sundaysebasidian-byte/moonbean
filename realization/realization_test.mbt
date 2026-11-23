@@ -587,3 +587,15 @@ test "direct inventory aggregates duplicate public lots and removes explicit zer
   assert_true(r.combined_inventory("Assets:Missing").is_empty())
   assert_eq(r.combined_inventory("Assets:Public", subtree=true).positions[0].units.to_string(), "3 USD")
 }
+
+///|
+test "human reports honor render_commas without changing machine-readable amounts" {
+  let source = "option \"render_commas\" \"yes\"\n2024-01-01 open Assets:Bank USD\n2024-01-01 open Equity:Capital USD\n2024-01-02 * \"seed\"\n  Assets:Bank 1234567.50 USD\n  Equity:Capital -1234567.50 USD\n"
+  let r = realized(source)
+  let report = @realization.trial_balance(r)
+  let pretty = report.to_text_with_options(r.options)
+  assert_true(pretty.contains("1,234,567.50 USD") && pretty.contains("-1,234,567.50 USD"))
+  assert_true(!report.to_json().contains(",567"))
+  assert_true(report.to_json().contains("1234567.50"))
+  assert_true(!report.to_text_with_options(@ast.Options::new()).contains(",567"))
+}

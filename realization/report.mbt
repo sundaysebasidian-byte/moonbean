@@ -51,8 +51,23 @@ fn pad_left(text : String, width : Int32) -> String {
 }
 
 ///|
-fn amount_text(amount : @ast.Amount) -> String {
-  amount.number.to_string() + " " + amount.currency
+fn amount_text(amount : @ast.Amount, commas~ : Bool = false) -> String {
+  let text = amount.number.to_string()
+  if !commas {
+    return text + " " + amount.currency
+  }
+  let whole_end = text.find(".").unwrap_or(text.length())
+  let start = if text.has_prefix("-") { 1 } else { 0 }
+  let b = StringBuilder()
+  for i in 0..<text.length() {
+    if i > start && i < whole_end && (whole_end - i) % 3 == 0 {
+      b.write_char(',')
+    }
+    b.write_char(text.get_char(i).unwrap())
+  }
+  b.write_char(' ')
+  b.write_string(amount.currency)
+  b.to_string()
 }
 
 ///|
@@ -67,11 +82,11 @@ fn max_label_width(rows : Array[ReportRow], fallback : Int32) -> Int32 {
 }
 
 ///|
-fn max_amount_width(rows : Array[ReportRow]) -> Int32 {
+fn max_amount_width(rows : Array[ReportRow], commas : Bool) -> Int32 {
   let mut width = 1
   for row in rows {
-    if amount_text(row.amount).length() > width {
-      width = amount_text(row.amount).length()
+    if amount_text(row.amount, commas~).length() > width {
+      width = amount_text(row.amount, commas~).length()
     }
   }
   width
@@ -83,30 +98,31 @@ fn render_rows(
   rows : Array[ReportRow],
   label_width : Int32,
   amount_width : Int32,
+  commas : Bool,
 ) -> Unit {
   for row in rows {
     sb.write_string(pad_right(row.label, label_width))
     sb.write_string("  ")
-    sb.write_string(pad_left(amount_text(row.amount), amount_width))
+    sb.write_string(pad_left(amount_text(row.amount, commas~), amount_width))
     sb.write_string("\n")
   }
 }
 
 ///|
-fn Report::render_text(self : Report) -> String {
+fn Report::render_text(self : Report, commas : Bool) -> String {
   let sb = StringBuilder()
   sb.write_string(self.title)
   sb.write_string("\n")
   let label_width = max_label_width(self.rows, 7)
-  let amount_width = max_amount_width(self.rows.copy() + self.totals.copy())
+  let amount_width = max_amount_width(self.rows.copy() + self.totals.copy(), commas)
   sb.write_string(pad_right("Account", label_width))
   sb.write_string("  ")
   sb.write_string(pad_left("Amount", amount_width))
   sb.write_string("\n")
-  render_rows(sb, self.rows, label_width, amount_width)
+  render_rows(sb, self.rows, label_width, amount_width, commas)
   if self.totals.length() > 0 {
     sb.write_string("\n")
-    render_rows(sb, self.totals, label_width, amount_width)
+    render_rows(sb, self.totals, label_width, amount_width, commas)
   }
   for issue in self.diagnostics {
     sb.write_string(
@@ -127,6 +143,11 @@ fn Report::render_text(self : Report) -> String {
 ///|
 /// Renders using inferred currency precision without changing stored amounts.
 pub fn Report::to_text(self : Report) -> String {
+  self.text_with_grouping(false)
+}
+
+///|
+fn Report::text_with_grouping(self : Report, commas : Bool) -> String {
   fn display(row : ReportRow) -> ReportRow {
     match self.display_scales.get(row.amount.currency) {
       Some(scale) =>
@@ -140,7 +161,7 @@ pub fn Report::to_text(self : Report) -> String {
       None => row
     }
   }
-  { ..self, rows: self.rows.map(display), totals: self.totals.map(display), }.render_text()
+  { ..self, rows: self.rows.map(display), totals: self.totals.map(display), }.render_text(commas)
 }
 
 ///|
@@ -997,5 +1018,5 @@ pub fn Report::to_text_with_options(
   for (currency, precision) in options.display_precision {
     scales.set(currency, precision.scale())
   }
-  { ..self, display_scales: scales, }.to_text()
+  { ..self, display_scales: scales, }.text_with_grouping(options.render_commas)
 }
