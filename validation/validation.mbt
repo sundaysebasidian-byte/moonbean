@@ -477,7 +477,7 @@ fn accumulated_quantity(
 ///|
 fn balance_tolerance(ctx : Context, balance : @ast.Balance) -> @decimal.Decimal {
   match balance.tolerance {
-    Some(explicit) => explicit.abs()
+    Some(explicit) => explicit
     None =>
       balance.amount.number
       .last_digit_place()
@@ -632,7 +632,7 @@ fn process_balance(
   if difference.abs().less_equal(tolerance) {
     return
   }
-  let direction = if difference.is_positive() {
+  let direction = if !difference.is_negative() {
     "too little"
   } else {
     "too much"

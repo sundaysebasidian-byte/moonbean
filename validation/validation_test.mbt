@@ -938,3 +938,15 @@ test "negative basis and zero costed quantity are reported without changing the 
   assert_eq(find_transaction(result,"zero quantity").unwrap().postings[0]
     .units.unwrap().to_string(), "0 ABC")
 }
+
+///|
+test "explicit balance tolerance is signed and is not an absolute allowance" {
+  let result = validated(
+    #|2024-01-01 open Assets:Cash
+    #|2024-01-02 balance Assets:Cash 0 ~ -0.50 USD
+    #|2024-01-03 balance Assets:Cash 0 ~ +0.50 USD
+    #|
+  )
+  assert_eq(result.errors.map(fn(e) { (e.loc.line,e.code) }), [(2,"validation.balance")])
+  assert_true(result.errors[0].message.contains("0 too little"))
+}
