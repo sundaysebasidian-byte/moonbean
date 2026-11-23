@@ -506,3 +506,15 @@ test "financial statements retain balances under configured account roots" {
   assert_eq(row_for(balance.totals,"Total Actif").unwrap().amount.to_string(), "65 USD")
   assert_eq(row_for(income.totals,"Net Income").unwrap().amount.to_string(), "65 USD")
 }
+
+///|
+test "as-of account metadata does not reveal future account opens or closes" {
+  let source = "2024-01-01 open Assets:Old USD\n2024-01-05 close Assets:Old\n2024-01-06 open Assets:New USD\n"
+  let early = realized(source, at=Some("2024-01-03"))
+  assert_eq(early.account_names(), ["Assets:Old"])
+  assert_true(early.accounts.get("Assets:New") is None)
+  assert_true(early.accounts.get("Assets:Old").unwrap().close_date is None)
+  let late = realized(source, at=Some("2024-01-06"))
+  assert_eq(late.account_names(), ["Assets:New","Assets:Old"])
+  assert_eq(late.accounts.get("Assets:Old").unwrap().close_date.unwrap().to_string(), "2024-01-05")
+}
