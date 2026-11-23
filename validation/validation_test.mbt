@@ -1011,3 +1011,26 @@ test "zero units with an explicit total price do not create currency value" {
   }
   assert_eq(rates,[("2024-01-02","0 USD"),("2024-01-03","6 USD")])
 }
+
+///|
+test "padding from inside the same asserted subtree cannot make the balance pass" {
+  for source in ["Assets:Cash", "Assets:Cash:Vault"] {
+    let prefix =
+      #|2024-01-01 open Assets:Cash
+      #|2024-01-01 open Assets:Cash:Vault
+      #|2024-01-01 open Assets:Cashflow
+      #|
+    let v = validated(prefix + "2024-01-02 pad Assets:Cash \{source}\n"+
+      "2024-01-03 balance Assets:Cash 12 USD\n")
+    assert_eq(v.errors.map(fn(e) {(e.code,e.loc.line)}),[("validation.balance",5)])
+    assert_true(v.errors[0].message.contains("12 too little"))
+  }
+  let sibling = validated(
+    #|2024-01-01 open Assets:Cash
+    #|2024-01-01 open Assets:Cashflow
+    #|2024-01-02 pad Assets:Cash Assets:Cashflow
+    #|2024-01-03 balance Assets:Cash 12 USD
+    #|
+  )
+  assert_eq(sibling.errors.length(),0)
+}

@@ -610,7 +610,10 @@ fn process_balance(
       pad.inserted = true
       ctx.pads[index] = pad
       insert_padding(ctx, pad, balance.amount, difference, entry.loc)
-      return
+      // The two synthesized legs cancel inside the same balance subtree.
+      if !is_subaccount(pad.source, balance.account) {
+        return
+      }
     }
     _ => ()
   }
