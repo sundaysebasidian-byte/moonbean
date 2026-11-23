@@ -217,8 +217,7 @@ fn strptime_date(
         ]
         let mut found = false
         for j in 0..<7 {
-          if raw.to_lower() == names[j] ||
-            raw.to_lower() == names[j][:3].to_owned() {
+          if raw.to_lower() == (if field == 'A' { names[j] } else { names[j][:3].to_owned() }) {
             weekday = j
             found = true
           }

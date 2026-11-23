@@ -2683,3 +2683,15 @@ test "strptime verifies the full UTC offset even when only the date is returned"
     assert_eq(r.rows[0][0].to_text(), "2024-01-01")
   }
 }
+
+///|
+test "English weekday names must match their requested strptime width" {
+  for (text, pattern) in [("Monday", "%a"), ("Mon", "%A"), ("Fri", "%A"), ("Friday", "%a")] {
+    let r = queried(ledger_source(), "SELECT parse_date('" + text + "', '" + pattern + "') LIMIT 1")
+    assert_true(r.failure() is Some(@query.Evaluation(_)))
+  }
+  for (text, pattern) in [("MON", "%a"), ("monday", "%A")] {
+    let r = queried(ledger_source(), "SELECT parse_date('" + text + "', '" + pattern + "') LIMIT 1")
+    assert_eq(r.rows[0][0].to_text(), "1900-01-01")
+  }
+}
