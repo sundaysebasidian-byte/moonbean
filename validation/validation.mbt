@@ -1146,7 +1146,24 @@ fn process_transaction(
       false
     }
   })
-  if independent_auto {
+  let multi_auto = missing.length() == 1 &&
+    weights.length() > 1 &&
+    postings[missing[0]].units_currency is None &&
+    postings[missing[0]].cost is None &&
+    postings[missing[0]].price is None
+  if multi_auto {
+    let index = missing[0]
+    let p = postings[index]
+    let synthesized = []
+    for weight in weights.copy() {
+      if !weight.number.is_zero() {
+        let item = { ..p, units_currency: Some(weight.currency), meta: p.meta.copy() }
+        interpolate_missing(ctx, entry, item, weights)
+        synthesized.push(item)
+      }
+    }
+    booked[index] = synthesized
+  } else if independent_auto {
     for i in missing {
       interpolate_missing(ctx, entry, postings[i], weights)
     }
@@ -1180,7 +1197,7 @@ fn process_transaction(
       }
     }
     postings.clear()
-    if independent_auto {
+    if independent_auto || multi_auto {
       // Real groups are ordered by their first source posting, not by map keys.
       let groups : Map[String, Array[@ast.Posting]] = Map([])
       let group_order = []

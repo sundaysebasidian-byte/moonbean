@@ -893,3 +893,24 @@ test "one explicitly typed automatic posting per currency balances mixed opening
   let malformed = validated(source.replace_all(old="Equity:Euro EUR",new="Equity:Euro USD"))
   assert_true(has_error(malformed, "validation.missing"))
 }
+
+///|
+test "an untyped balancing line expands to each nonzero currency group" {
+  let result = validated(
+    #|2024-01-01 open Assets:Bank
+    #|2024-01-01 open Equity:Opening
+    #|2024-01-02 * "Import multicurrency opening"
+    #|  Assets:Bank 7 EUR
+    #|  Assets:Bank 0 JPY
+    #|  Assets:Bank 10 USD
+    #|  Equity:Opening
+    #|
+  )
+  assert_eq(result.errors.length(), 0)
+  let opening = find_transaction(result, "Import multicurrency opening").unwrap()
+  assert_eq(opening.postings.map(fn(p) { p.units.unwrap().to_string() }),
+    ["7 EUR", "-7 EUR", "0 JPY", "10 USD", "-10 USD"])
+  assert_eq(result.inventory("Equity:Opening").quantity("EUR").to_string(), "-7")
+  assert_eq(result.inventory("Equity:Opening").quantity("USD").to_string(), "-10")
+  assert_true(opening.postings[1].meta.get("__automatic__") is Some(@ast.MBool(true)))
+}
