@@ -1161,19 +1161,14 @@ fn process_transaction(
 /// used by reports and the query engine.
 pub fn validate_ledger(ledger : @ast.Ledger) -> ValidatedLedger {
   let ctx = Context::new(ledger)
-  for diagnostic in ledger.errors {
-    ctx.errors.push(diagnostic)
-  }
-  for pair in ledger.options.raw {
-    if pair.0 == "inferred_tolerance_multiplier" {
-      warning(
-        ctx,
-        "validation.deprecated_option",
-        "Renamed to 'tolerance_multiplier'.",
-        @ast.Loc::new(ledger_file_name(ledger), 0),
-      )
+for diagnostic in ledger.errors {
+    if diagnostic.code == "validation.deprecated_option" {
+      ctx.warnings.push(diagnostic)
+    } else {
+      ctx.errors.push(diagnostic)
     }
   }
+
   let ordered = sorted_entries(ledger.entries)
   for entry in ordered {
     match entry.directive {
@@ -1299,14 +1294,7 @@ pub fn validate_ledger(ledger : @ast.Ledger) -> ValidatedLedger {
   }
 }
 
-///|
-fn ledger_file_name(ledger : @ast.Ledger) -> String {
-  if ledger.entries.length() > 0 {
-    ledger.entries[0].loc.file
-  } else {
-    "<ledger>"
-  }
-}
+
 
 ///|
 fn txn_signature(entry : @ast.Entry, txn : @ast.Transaction) -> String {

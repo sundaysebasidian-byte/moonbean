@@ -1826,6 +1826,9 @@ fn apply_option(
     }
   } else if name == "tolerance_multiplier" ||
     name == "inferred_tolerance_multiplier" {
+    if name == "inferred_tolerance_multiplier" {
+      parser.error(line, "validation.deprecated_option", "Renamed to 'tolerance_multiplier'.")
+    }
     let number = if value == "" { "0" } else { value }
     match @decimal.Decimal::parse(number) {
       Some(n) => options.tolerance_multiplier = n
