@@ -1,8 +1,8 @@
-# Compatibility contract (0.3.0)
+# Compatibility contract (0.4.0)
 
 ## Endpoint and evidence
 
-The compatibility endpoint is **beancount 3.2.3 syntax and accounting semantics plus the complete beanquery 0.2.0 language**. This is a target, not a claim that the endpoint has been reached. MoonBean 0.3.0 does **not** implement the full endpoint. The [BQL extension guide](bql_extensions.md) identifies MoonBean extensions separately from upstream compatibility. The explicit gaps below remain release limitations.
+The compatibility endpoint is **beancount 3.2.3 syntax and accounting semantics plus the complete beanquery 0.2.0 language**. This is a target, not a claim that the endpoint has been reached. MoonBean 0.4.0 does **not** implement the full endpoint. The [BQL extension guide](bql_extensions.md) identifies MoonBean extensions separately from upstream compatibility. The explicit gaps below remain release limitations.
 
 Oracle metadata was obtained through public runtime descriptors, independently authored parser inputs, and CLI `.tables`, `.describe`, `.help targets` and statement probes. No upstream source or fixtures were inspected or copied. Reproduce with the pinned oracle Python: `python scripts/compatibility_inventory.py`. [Machine-readable inventory](evidence/compatibility-inventory.json) retains signatures, defaults, repeated-assignment probes, columns and command results. A descriptor or successful parse is not semantic conformance evidence.
 
@@ -450,7 +450,7 @@ uninstalled calendar providers at a fixed epoch. Full timezone/DST and rolling-y
 oracle coverage remains Node-only. Wasmtime calendar integration and the wasm
 (non-GC) adapter paths remain unverified. See the host smoke results below.
 
-## wasm-gc host smoke (0.2.8 source, Unreleased evidence)
+## wasm-gc host smoke (run on the 0.2.8 source; shipped since 0.4.0)
 
 Built with Moon 0.1.20261104 on macOS arm64 from `90e6668`. The unchanged
 `examples/library_demo` entry point checks a small ledger, realizes its cash

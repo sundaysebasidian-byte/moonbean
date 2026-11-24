@@ -9,12 +9,12 @@ virtual environment only by the reproduction script. All ledgers under
 
 | Item | Value |
 | --- | --- |
-| Date | 2026-11-06 |
+| Date | 2026-11-06 (environment of the original run; the 0.4.0 re-run is recorded in the proposal and CHANGELOG) |
 | Platform | macOS (arm64) |
 | MoonBit | 0.1.20261104 |
 | Oracle | beancount 3.2.3 |
 | Oracle query tool | beanquery 0.2.0 |
-| MoonBean | local 0.2.1; not pushed or published |
+| MoonBean | 0.2.1 at the time of this run; the current published version is 0.4.0 |
 
 ## What is compared
 

@@ -1,6 +1,6 @@
 # Performance (0.2.7)
 
-## wasm-gc host correctness checks (Unreleased)
+## wasm-gc host correctness checks (shipped in 0.4.0)
 
 The [host smoke evidence](evidence/wasm-hosts.md) adds headless Chrome
 157.0.8103.79 and Wasmtime 50.0.2 (with an explicit test-only platform/time/print
