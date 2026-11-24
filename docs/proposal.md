@@ -1,5 +1,4 @@
 # MoonBean 申报书
-
 - 项目名称：MoonBean — Beancount v3 兼容的纯文本复式记账引擎
 - 仓库：https://github.com/sundaysebasidian-byte/moonbean
 - 在线体验：https://sundaysebasidian-byte.github.io/moonbean/
@@ -10,7 +9,7 @@ Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运
 
 ## 兼容终点与当前边界
 
-兼容终点是 beancount 3.2.3 的语法与记账语义，以及 beanquery 0.2.0 全集；0.2.8 尚未达到全集，不作完整兼容声明。[逐项清单](compatibility.md)列出全部 oracle 表/列、函数签名、option 默认值和当前证据与缺口。
+兼容终点是 beancount 3.2.3 的语法与记账语义，以及 beanquery 0.2.0 全集；当前版本 0.4.0 尚未达到全集，不作完整兼容声明。[逐项清单](compatibility.md)列出全部 oracle 表/列、函数签名、option 默认值和当前证据与缺口。
 
 | 范围 | 当前可核对边界 |
 | --- | --- |
@@ -19,11 +18,15 @@ Beancount 依赖 Python，难以嵌入应用，也不能在浏览器里离线运
 | option | booking、容差推断、按币种和通配符默认容差有证据；operating_currency 仅单币种报表转换；account_rounding、render_commas、documents 等未实现的效果逐项披露，不能仅凭解析成功计为兼容 |
 | plugin 与扩展 | 五个内置插件有差分证据，其余 Python 插件警告且不执行；AVERAGE、{*}、裸 FROM balances 库存语义均为扩展 |
 
-0.2.8 的 R14 返工修复 flag 字符集、紧贴单词的引号词法与恢复、前导小数点、重复元数据、无空格算式、混合证券交易中的裸数量货币推断，以及相对 document 尾斜杠。未闭合引号的恢复受多行字符串实际闭合位置约束，不承诺逐物理行恢复。733 份复审账本已追踪，其中 23 项为旧有扩展／未知 option 透传边界。当前返工验收与原始内存证据的来源分开列在 R14 验收中。
+0.2.8（已发布，是 0.4.0 的基础）的 R14 返工修复 flag 字符集、紧贴单词的引号词法与恢复、前导小数点、重复元数据、无空格算式、混合证券交易中的裸数量货币推断，以及相对 document 尾斜杠。未闭合引号的恢复受多行字符串实际闭合位置约束，不承诺逐物理行恢复。733 份复审账本已追踪，其中 23 项为旧有扩展／未知 option 透传边界。当前返工验收与原始内存证据的来源分开列在 R14 验收中。
 
 0.2.8 补入多行字符串、金额与空值元数据、未闭合字符串诊断、原始行号、空 narration 和零残差自动 posting，并核验 native check 的 document 路径。保留的 9 个复审分类差异对应 oracle 拒绝的 AVERAGE／成本合并扩展。含多行字符串的账本由 fmt 保留原文布局。时钟接入以 Node 上的 wasm-gc 测试为证；wasm-gc 构建另在 Chrome 157 与 Wasmtime 50.0.2（需测试适配器，裸命令行缺 MoonBit imports）上跑通演示冒烟，完整输出哈希与 moonrun 一致，Wasmer 未安装未测，[宿主证据](evidence/wasm-hosts.md)，链接 host_clock 时必须在实例化时提供 import。已解析的零值／非法回调和未调用 install 的情况使用 UTC。R14 返工后完整差分 22344/22344、三目标各 207 项单测与 215 项时钟检查通过；重新完成 24 次 native/JS 短程交错 A/B。早期三组 moonrun／Node 内存配对仅证明其原始候选源码，本次未重跑大规模 Wasm 内存采样；完整证据与共享主机限制见本轮验收。
 
+0.3.0 与 0.4.0（均已发布，0.4.0 于 2026-11-23 上架 mooncakes）在 0.2.8 之上继续按 oracle 逐项修正：included 文件的元数据与标签保持各自作用域、FIFO 空头回补与带日期成本、多币种平衡与 pad、负数与 Unicode 十进制容差、自定义账户根、BQL 日历解析与 CSV 空字段；新增 BQL 聚合过滤、分组摘要、统计与日历函数、条件与列表函数、已存查询与自定义行、显式分页和顶层 UNION ALL。这些新增语法是 MoonBean 扩展，不是 beanquery 兼容声明，边界见 [BQL 扩展指南](bql_extensions.md)。0.4.0 的变更记录写明不承诺排序和报价查找对所有账本或运行时都更快，本轮没有重跑性能矩阵。
+
 ## 一致性证据
+
+- 0.4.0 发布后，在干净克隆（`2990c20`）上用 beancount 3.2.3 与 beanquery 0.2.0 重新核验，MoonBit 0.1.20261119：native、js、wasm-gc、wasm 四个目标的单元测试各 340/340；120 份自编账本中 118 份可比较并全部一致，另 2 份使用扩展，不计为一致；两个随机种子各 1000 份账本，各有 142 份仅因 AVERAGE 扩展不同，其余差异为 0；BQL 差分 22348/22348（含期望拒绝和解析健壮性检查）。上述是有限语料的结果，不是对全部 Beancount/BQL 行为的等价证明。
 
 - R13（0.2.7）三目标单元测试各 193/193，完整 BQL 差分 20549/20549，实际 JS-hosted Wasm 时钟检查 99/99；宿主 import 与 UTC 回退覆盖跨日和 DST。wasm-gc 百万 FIFO 默认堆场景完成，峰值 RSS 1,390,510,080 字节；main 配对仍因堆耗尽失败，峰值 1,462,255,616 字节。[当前验收](evidence/r13-acceptance.md)保留全部阶段数值。
 - R13 按 Lead 决定仅完成三轮短 native/JS 交错 A/B；100k/1M 解析中位数比值为 0.410–0.591，native 1M format 为 1.338 倍、JS 1M regex 为 1.322 倍，另保留一次 64.691 s 的 native booking 样本，原因未确认。完整 30% 矩阵门禁标为 pending idle-host rerun by Lead。
